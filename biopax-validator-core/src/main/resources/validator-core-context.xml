@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:oxm="http://www.springframework.org/schema/oxm"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-1.5.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+    
+    <import resource="classpath:rules-context.xml"/>
+    
+    <context:property-placeholder location="classpath:validator.properties"/>
+    
+    <bean id="validator" class="org.biopax.validator.impl.ValidatorImpl" />
+ 
+	<!-- BiopaxValidatorUtils configuration -->
+	
+    <oxm:jaxb2-marshaller id="resultsMarshaller" xmlns="http://www.biopax.org/validator">
+		<oxm:class-to-be-bound name="org.biopax.validator.result.Validation"/>
+		<oxm:class-to-be-bound name="org.biopax.validator.result.ValidatorResponse"/>
+	</oxm:jaxb2-marshaller>
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>validator</value>
+				<value>rule-descriptions</value>
+				<value>error-codes</value>
+				<value>profile-info</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="utils" class="org.biopax.validator.utils.BiopaxValidatorUtils">
+		<property name="xsltResource" value="classpath:default-result.xsl"/>
+		<property name="messageSource" ref="messageSource" />
+		<property name="marshaller" ref="resultsMarshaller" />
+		<property name="locale" value="en" />
+		<property name="maxErrors" value="${max.errors}" />
+	</bean>
+       
+    <!--
+		For the following codes, no error messages will be shown during the
+		initial BioPAX data import. Codes are case-sensitive.
+	-->
+	<util:set id="parserIgnoredErrorCodes" value-type="java.lang.String">
+		<!-- 
+		<value>all</value>
+		-->
+	</util:set>
+
+	<!-- end of BiopaxValidatorUtils config. -->
+
+	<bean id="editorMap3" class="org.biopax.paxtools.io.simpleIO.SimpleEditorMap">
+		<constructor-arg type="org.biopax.paxtools.model.BioPAXLevel" value="L3"/>
+	</bean>
+
+	<bean id="editorMap2" class="org.biopax.paxtools.io.simpleIO.SimpleEditorMap">
+		<constructor-arg type="org.biopax.paxtools.model.BioPAXLevel" value="L2"/>
+	</bean>
+
+	<oxm:jaxb2-marshaller id="miriamUnmarshaller"
+		xsi:schemaLocation="http://www.biomodels.net/MIRIAM/ classpath:resources/Miriam.xsd"
+		contextPath="net.biomodels.miriam" />
+
+  	<bean id="ontologyUtils" class="org.biopax.validator.utils.OntologyUtils">
+		<constructor-arg value="http://www.ebi.ac.uk/ontology-lookup/services/OntologyQuery"/>
+	</bean>
+
+   <!-- a helper and a proxy to access MIRIAM and MI database citation and regexps 
+   		to validate their corresponding IDs -->
+    <bean id="xrefHelper" class="org.biopax.validator.utils.XrefHelper">
+    	<constructor-arg><bean class="org.biopax.validator.utils.DbSynonyms"/></constructor-arg>
+        <constructor-arg value="classpath:resources/Miriam.xml"/>
+        <constructor-arg ref="miriamUnmarshaller" />
+        <constructor-arg ref="ontologyUtils" />
+    </bean>
+	
+	<bean id="cacheAdministrator" class="com.opensymphony.oscache.general.GeneralCacheAdministrator" destroy-method="destroy">
+        	<constructor-arg index="0">
+        		<props>
+        			<prop key="cache.capacity">${cache.capacity}</prop>
+        			<prop key="cache.path">${cache.path}</prop>
+			</props>
+		</constructor-arg>
+	</bean>
+
+	<bean id="cache" factory-bean="cacheAdministrator" factory-method="getCache"/>
+	
+</beans>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!-- additional rule-specific configuration -->
+
+	<!-- DataPropertyIllegalValueRule configuration -->
+	<util:set id="warnOnDataPropertyValues" value-type="java.lang.String">
+		<value>0</value>
+		<value>-1</value>
+		<value>NULL</value>
+		<value>NIL</value>
+	</util:set>
+
+	<!-- XrefRule configuration -->
+	
+	<!-- allow ONLY listed db names for UnificationXrefs-->
+	<util:map id="dbAllow" key-type="java.lang.Class" value-type="java.lang.String">
+	</util:map>
+	
+	<!-- disallow listed db names (and all synonyms) for for UnificationXrefs -->
+	<util:map id="dbDeny" key-type="java.lang.Class" value-type="java.lang.String">
+		<entry key="org.biopax.paxtools.model.level3.Dna" value="uniprot:pubmed"/>
+		<entry key="org.biopax.paxtools.model.level3.Rna" value="uniprot"/>
+		<entry key="org.biopax.paxtools.model.level3.SmallMolecule" value="uniprot"/>
+		<entry key="org.biopax.paxtools.model.level3.PhysicalEntity" value="go"/>
+		<entry key="org.biopax.paxtools.model.level3.ProteinReference" value="OMIM"/>
+		<entry key="org.biopax.paxtools.model.level3.ProteinReference" value="Entrez Gene"/>
+		<entry key="org.biopax.paxtools.model.level3.Interaction" value="PSI-MI"/>
+	</util:map>
+
+	<!--
+		This is for certain database references do not apply to all the BioPAX
+		objects, so such constraits (not in OWL spec.) should be specified in
+		addition to the 'db' controlled vocabulary rule (which promotes the
+		use of Miriam as a primary source of db names and MI 'database
+		citation' as the second option)
+	-->
+	<util:set id="manuallyAddedDbSynonyms">
+		<list>
+			<value>ENTREZ GENE</value>
+			<value>ENTREZ_GENE</value>
+			<value>LOCUS_LINK</value>
+			<value>LOCUSLINK</value>
+			<value>LOCUS-LINK</value>
+			<value>ENTREZGENE</value>
+			<value>ENTREZ GENE/LOCUSLINK</value>
+		</list>
+		<list>
+			<value>NCBI PUBCHEM</value>
+			<value>PUBCHEM COMPOUND</value>
+			<value>PUBCHEM</value>
+		</list>
+		<list>
+			<value>PUBMED</value>
+			<value>PMID</value>
+		</list>
+		<list>
+			<value>UNIPROT</value>
+			<value>SWISS-PROT</value>
+			<value>SWISSPROT</value>
+			<value>SWISSTREMBL</value>
+			<value>SWP</value>
+			<value>SWISS-PROT/TREMBL</value>
+			<value>UNIPROTKB</value>
+			<value>REACTOME PROTEIN</value>
+			<value>UNIPROT KNOWLEDGE BASE</value>
+			<value>PIR</value>
+			<value>PIR-SSD</value>
+		</list>
+		<list>
+			<value>ECOCYC</value>
+			<value>ECOO157CYC</value>
+		</list>
+		<list>
+			<value>GO</value>
+			<value>GENE ONTOLOGY</value>
+			<value>GENE_ONTOLOGY</value>
+		</list>
+		<list>
+			<value>UM-BBD</value>
+			<value>UMBBD</value>
+		</list>
+		<list>
+			<value>PSI-MI</value>
+			<value>PSI MI</value>
+			<value>PSIMI</value>
+		</list>
+		<list>
+			<value>REFSEQ PROTEIN</value>
+			<value>REFSEQ</value>
+			<value>REF_SEQ</value>
+			<value>REF-SEQ</value>
+			<value>REF_SEQ PROTEIN</value>
+		</list>
+		<list>
+			<value>GENE SYMBOL</value>
+			<value>GENE_SYMBOL</value>
+		</list>
+		<list>
+			<value>TAXONOMY</value>
+			<value>NCBI TAXONOMY</value>
+			<value>NCBI_TAXONOMY</value>
+			<value>NCBI-TAXONOMY</value>
+			<value>TAXON</value>
+		</list>
+		<list>
+			<value>NCBI GENBANK</value>
+			<value>GENBANK</value>
+		</list>
+		<list>
+			<value>NCBI GI</value>
+			<value>ENTREZ GI</value>
+			<value>GI</value>
+		</list>
+		<list>
+			<value>PROTEIN GENBANK IDENTIFIER</value>
+			<value>GENPEPT</value>
+		</list>
+		<list>
+			<value>KEGG</value>
+			<value>COMPOUND</value>
+			<value>KEGG COMPOUND</value>
+		</list>
+		<list>
+			<value>KEGG GENOMES</value>
+			<value>KEGG GENOME</value>
+		</list>
+		<list>
+			<value>KEGG LIGAND</value>
+			<value>LIGAND</value>
+		</list>
+		<list>
+			<value>AFFYMETRIX</value>
+		</list>
+		<list>
+			<value>KEGG Glycan</value>
+			<value>GLYCAN</value>
+		</list>
+		<list>
+			<value>IOB</value>
+		</list>
+		<list>
+			<value>SGD</value>
+		</list>
+		<list>
+			<value>ENCODE</value>
+		</list>
+		<list>
+			<value>AMAZE</value>
+		</list>
+		<list>
+			<value>EMBL</value>
+		</list>
+		<list>
+			<value>HUGE</value>
+		</list>
+		<list>
+			<value>HPRD</value>
+		</list>
+		<list>
+			<value>UNIPARC</value>
+		</list>
+		<list>
+			<value>SWISS-MODEL</value>
+		</list>
+		<list>
+			<value>CAS</value>
+		</list>
+		<list>
+			<value>UNIGENE</value>
+		</list>
+	</util:set>
+
+	<!-- end of the XrefRule config. -->
+     
+     <!-- default max. displayName length = 25 symbols -->
+	<util:map id="maxDisplayNameLengths" key-type="java.lang.Class" value-type="java.lang.Integer">
+		<entry key="org.biopax.paxtools.model.level3.Provenance" value="50"/>
+	</util:map>
+
+    <context:component-scan base-package="org.biopax.validator.rules"/>
+
+</beans>
