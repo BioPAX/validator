@@ -157,7 +157,7 @@ public class IntegrationTest {
     	InteractionTypeCvRule rule =  
              (InteractionTypeCvRule) context.getBean("interactionTypeCvRule");    
     	
-    	System.out.println(rule.getAllowedTerms().toString());
+    	System.out.println(rule.getValidTerms().toString());
     	
     	
         InteractionVocabulary v = factory3.createInteractionVocabulary();

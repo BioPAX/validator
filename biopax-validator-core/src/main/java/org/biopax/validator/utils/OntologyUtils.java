@@ -1,30 +1,86 @@
 package org.biopax.validator.utils;
 
-import java.io.File;
-import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.*;
+
+import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biopax.validator.impl.AbstractCvRule;
 import org.biopax.validator.impl.CvTermRestriction;
 import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.util.ResourceUtils;
+
+import com.opensymphony.oscache.base.NeedsRefreshException;
+import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
 import uk.ac.ebi.ook.web.services.Query;
 import uk.ac.ebi.ook.web.services.client.QueryServiceFactory;
 
-
-//TODO implement/add terms cache
+/**
+ * Access to biological controlled vocabularies 
+ * via OLS (EBI) and local cache for particular 
+ * validation rules (CV rules and xrefHelper).
+ * 
+ * THIS REQUIRES INTERNET CONNECTION 
+ * (unless the cache was created in previous runs)
+ * 
+ * @author rodche
+ *
+ */
 public class OntologyUtils {
 	private final static Log log = LogFactory.getLog(OntologyUtils.class);
 	
 	private Query ontologyQuery;
 	
-	public OntologyUtils(String url) throws Exception {
-		ontologyQuery = QueryServiceFactory.getQueryService(url, "OLS");
+	 // cache pairs <String, Set<String>> (CVrule name, set of valid terms) in file system
+	private GeneralCacheAdministrator cacheAdministrator;
+	
+	public OntologyUtils(String url, GeneralCacheAdministrator cacheAdministrator) 
+		throws Exception 
+	{
+		this.ontologyQuery = QueryServiceFactory.getQueryService(url, "OLS");
+		this.cacheAdministrator = cacheAdministrator;
+	}
+	
+	/**
+	 * Gets the Osache cache administrator.
+	 * 
+	 * @return
+	 */
+	public GeneralCacheAdministrator getCacheAdministrator() {
+		return cacheAdministrator;
+	}
+	
+	/**
+	 * Gets valid ontology terms (and synonyms)
+	 * using the constraints from the rule bean.
+	 * 
+	 * @param cvRule
+	 * @return
+	 */
+	public Set<String> getValidTerms(AbstractCvRule<?> cvRule) {
+		try {
+			return (Set<String>) cacheAdministrator.getFromCache(cvRule.getName());
+		} catch (NeedsRefreshException e) {
+			if(log.isDebugEnabled())
+				log.debug("Now re-bulding the set of valid CV terms for " 
+						+ cvRule.getName() + "...");
+		}
+
+		Set<String> terms = getValidTermNamesLowerCase(cvRule.getRestrictions());
+		boolean saved = false;
+		try {
+			cacheAdministrator.putInCache(cvRule.getName(), terms);
+			cacheAdministrator.flushEntry(cvRule.getName());
+			saved = true;
+		} finally {
+			if(!saved) {
+				cacheAdministrator.cancelUpdate(cvRule.getName());
+			}
+		}
+		return terms;
 	}
 	
 	
@@ -36,7 +92,7 @@ public class OntologyUtils {
 	 * @param restrictions - objects that specify required ontology terms
 	 * @return set of names (strings)
 	 */
-	public Set<String> getValidTermNames(Collection<CvTermRestriction> restrictions) {
+	private Set<String> getValidTermNames(Collection<CvTermRestriction> restrictions) {
 		Set<String> terms = new HashSet<String>();
 		
 		// first, collect all the valid terms
@@ -82,39 +138,136 @@ public class OntologyUtils {
 	
 	
 	/**
-	 * Gets term names and synonyms, using the 
-	 * restriction bean to filter the whole ontology
-	 * (restriction's 'not' property is ignored)
+	 * Gets term names and synonyms using the 
+	 * restriction bean to filter the data.
+	 * (restriction's 'NOT' property is ignored here)
 	 * 
 	 * @param restriction
 	 * @return
 	 */
-	public Collection<String> getTermNames(CvTermRestriction restriction) {
-		Set<String> names = new HashSet<String>();
+	public Set<String> getTermNames(CvTermRestriction restriction) {
+		Set<String> terms = new HashSet<String>();
 		
-		String ontologyId = restriction.getOntologyId();
-		String term = ontologyQuery.getTermById(restriction.getId(), ontologyId);
-		if(term == null) {
-			log.error("Cannot Get " + restriction.getOntologyId()
-					+ " Ontology Term for the Accession: " + restriction.getId());
-			return names;
+		String ontology = restriction.getOntologyId();
+		String accession = restriction.getId();
+		String term = null;
+		
+		try {
+			term = ontologyQuery.getTermById(accession, ontology);
+		} catch (RemoteException e) {
+			throw new BiopaxValidatorException(e);
 		}
 		
+		if(term == null || term.length() == 0 
+				|| term.equals( accession ) ) {
+			throw new BiopaxValidatorException(
+				"It did not find the term name using " +
+				restriction.getOntologyId() + " Ontology " 
+				+ " and the " + restriction.getId());
+		}
+		
+		// add this term name and synonyms if it's allowed
 		if(restriction.isTermAllowed()) {
-			names.add(term);
+			terms.add(StringEscapeUtils.unescapeXml(term));
+			fetchSynonyms(accession, ontology, terms);
 		}
+		
 		if (restriction.getChildrenAllowed() == UseChildTerms.ALL) {
-			names.addAll(ontologyAccess.getAllChildren(term));
+			fetchAllChildren(accession, ontology, terms);
 		} else if (restriction.getChildrenAllowed() == UseChildTerms.DIRECT) {
-			names.addAll(ontologyAccess.getDirectChildren(term));
+			fetchDirectChildren(accession, ontology, terms);
 		}
-		
-		// FIX xml escape symbols that come from the OntologyManager (a bug?)
-		Collection<String> originalNames = OntologyUtils.getTermNames(terms);
-		for(String name : originalNames) {
-			names.add(StringEscapeUtils.unescapeXml(name));
-		}
-		
-		return names;
+
+		return terms;
 	}
+	
+	/**
+	 * Gets CV term's direct children names and synonyms
+	 * 
+	 * @param accession
+	 * @param ontologyId
+	 * @param dest
+	 */
+	public void fetchDirectChildren(String accession, String ontologyId, Set<String> dest) {
+		fetchChildren(accession, ontologyId, 1, dest);
+	}
+
+	/**
+	 * Gets CV term's all children names and synonyms
+	 * 
+	 * @param accession
+	 * @param ontologyId
+	 * @param dest
+	 */
+	void fetchAllChildren(String accession, String ontologyId, Set<String> dest) {
+		fetchChildren(accession, ontologyId, -1, dest);
+	}
+	
+
+	private void fetchChildren(String accession, String ontologyId, int level, Set<String> dest) {
+		final int[] relationshipTypes = {1, 2, 3, 4};
+		Map kids = new HashMap();
+		try {
+			kids = ontologyQuery.getTermChildren(accession, ontologyId, 
+					level, relationshipTypes);			
+		} catch (RemoteException e) {
+			throw new BiopaxValidatorException(e);
+		}
+		
+		// also add synonyms
+        for ( Object o : kids.keySet() ) {
+            Object v = kids.get( o ); // get name by accession
+            if ( o instanceof String && v instanceof String ) {
+                fetchSynonyms((String)o, ontologyId, dest);
+                dest.add(StringEscapeUtils.unescapeXml((String)v));
+            } else {
+                throw new IllegalStateException( "OLS query returned unexpected result!" +
+                            " Expected Map with key and value of class String," +
+                            " but found key class: " + o.getClass().getName() +
+                            " and value class: " + v.getClass().getName() );
+            }
+        }
+	}
+	
+	/**
+	 * Gets term synonyms from its metadata
+	 * 
+	 * @param accession
+	 * @param ontologyID
+	 * @param dest
+	 */
+	public void fetchSynonyms(String accession, String ontologyID,
+			Set<String> dest) {
+		Map metadata = null;
+		try {
+			metadata = ontologyQuery.getTermMetadata(accession, ontologyID);
+		} catch (Exception e) {
+			log.warn("Error while loading term synonyms from OLS "
+					+ "for term: " + accession, e);
+			return;
+		}
+
+		for (Object k : metadata.keySet()) {
+			final String key = (String) k;
+			// That's the only way OLS provides synonyms, all keys are different
+			// so we are fishing out keywords :(
+			if (key != null
+					&& (key.contains("synonym") || key
+							.contains("Alternate label"))) {
+				String value = (String) metadata.get(k);
+				if (value != null) {
+					dest.add(StringEscapeUtils.unescapeXml(value.trim()));
+				}
+			}
+		}
+	}
+    
+    /**
+     * Flushes CV terms cache
+     */
+    @PreDestroy
+    public void flushCache() {
+    	cacheAdministrator.flushAll();
+    }
+    
 }

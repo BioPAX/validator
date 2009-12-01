@@ -31,7 +31,7 @@ public class Level3RulesUnitTest {
 
 	Level3Factory level3; // to create BioPAX objects
 	SimpleExporter exporter; // to write OWL examples of what rule checks
-	final static String OUTDIR = "testfiles/data/";
+	final static String OUTDIR = "target";
 	
 	@Before
 	public void setUp() {
@@ -316,7 +316,7 @@ public class Level3RulesUnitTest {
     }
 	
     
-    @Test
+    //@Test
     public void testDuplicateNamesByExporter() throws IOException {
     	Protein p = level3.createProtein();
     	String name = "aDisplayName";

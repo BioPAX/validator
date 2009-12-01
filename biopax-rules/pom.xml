@@ -27,11 +27,11 @@
     			<groupId>axis</groupId>
     		</exclusion>
     		<exclusion>
-    			<artifactId>axis-wsdl4j</artifactId>
+    			<artifactId>axis-jaxrpc</artifactId>
     			<groupId>axis</groupId>
     		</exclusion>
     		<exclusion>
-    			<artifactId>axis-jaxrpc</artifactId>
+    			<artifactId>axis-wsdl4j</artifactId>
     			<groupId>axis</groupId>
     		</exclusion>
     	</exclusions>

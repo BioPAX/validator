@@ -64,31 +64,34 @@
 	</bean>
 
 	<oxm:jaxb2-marshaller id="miriamUnmarshaller"
-		xsi:schemaLocation="http://www.biomodels.net/MIRIAM/ classpath:resources/Miriam.xsd"
+		xsi:schemaLocation="http://www.biomodels.net/MIRIAM/ classpath:Miriam.xsd"
 		contextPath="net.biomodels.miriam" />
 
   	<bean id="ontologyUtils" class="org.biopax.validator.utils.OntologyUtils">
 		<constructor-arg value="http://www.ebi.ac.uk/ontology-lookup/services/OntologyQuery"/>
+		<constructor-arg ref="cacheAdministrator"/>
 	</bean>
 
    <!-- a helper and a proxy to access MIRIAM and MI database citation and regexps 
    		to validate their corresponding IDs -->
     <bean id="xrefHelper" class="org.biopax.validator.utils.XrefHelper">
     	<constructor-arg><bean class="org.biopax.validator.utils.DbSynonyms"/></constructor-arg>
-        <constructor-arg value="classpath:resources/Miriam.xml"/>
+        <constructor-arg value="classpath:Miriam.xml"/>
         <constructor-arg ref="miriamUnmarshaller" />
         <constructor-arg ref="ontologyUtils" />
     </bean>
 	
+	<!-- oscache configuration (to store CV rules valid terms) -->
 	<bean id="cacheAdministrator" class="com.opensymphony.oscache.general.GeneralCacheAdministrator" destroy-method="destroy">
-        	<constructor-arg index="0">
-        		<props>
+        <constructor-arg index="0">
+        	<props>
         			<prop key="cache.capacity">${cache.capacity}</prop>
         			<prop key="cache.path">${cache.path}</prop>
+        			<prop key="cache.memory">true</prop>
+        			<prop key="cache.blocking">true</prop>
+        			<prop key="cache.persistence.class">com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener</prop>
 			</props>
 		</constructor-arg>
 	</bean>
-
-	<bean id="cache" factory-bean="cacheAdministrator" factory-method="getCache"/>
 	
 </beans>

@@ -6,10 +6,14 @@ import javax.annotation.PostConstruct;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biopax.validator.impl.CvTermRestriction;
+import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
+
 import net.biomodels.miriam.Miriam;
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 
+import com.opensymphony.oscache.base.NeedsRefreshException;
 
 /**
  * This helps validate Xrefs, trying different database synonymous 
@@ -20,8 +24,9 @@ import org.springframework.oxm.Unmarshaller;
  */
 public class XrefHelper {
     private static final Log log = LogFactory.getLog(XrefHelper.class);
+    private static final String CACHE_KEY = "xrefHelper";
     
-    private Map<String, Regexp> databases;
+    private Map<String, Pattern> databases;
     private DbSynonyms dbSynonyms;
     private Resource miriamXmlResource;
     private Unmarshaller miriamUnmarshaller;
@@ -30,14 +35,27 @@ public class XrefHelper {
     public XrefHelper(DbSynonyms synonyms, Resource miriamXmlResource, 
     		Unmarshaller miriamUnmarshaller, OntologyUtils ontologyUtils) {
     	this.dbSynonyms = synonyms;
-    	this.databases = new HashMap<String, Regexp>();
+    	this.databases = new HashMap<String, Pattern>();
     	this.miriamXmlResource = miriamXmlResource;
     	this.miriamUnmarshaller = miriamUnmarshaller;
     	this.ontologyUtils = ontologyUtils;
     }
            
-    @PostConstruct
+    @SuppressWarnings("unchecked")
+	@PostConstruct
     public void init() {
+    	// first, try getting "databases" from cache
+    	try {
+			databases = (Map<String, Pattern>) ontologyUtils
+				.getCacheAdministrator().getFromCache(CACHE_KEY);
+			return;
+		} catch (NeedsRefreshException e) {
+			if(log.isDebugEnabled())
+				log.debug("Re-bulding the db name/pattern cache...");
+		}
+    	
+		// Retrieve database names and ID patterns
+		
     	// adds user-configured synonyms to databases
     	for(List<String> group : dbSynonyms.getGroups()) {
     		for(String db : group) {
@@ -45,14 +63,31 @@ public class XrefHelper {
     		}
     	}
     	
-    	// adds names from MI
-    	loadMIDatabaseCitation();
-    	
-    	
+		// loads names from MI: all children terms of 'database citation'
+		Set<String> terms = ontologyUtils.getTermNames(new CvTermRestriction(
+				"MI:0444", "MI", false, UseChildTerms.ALL, false));
+		for (String term : terms) {
+			String db = dbName(term);
+			databases.put(db, null);
+		}
+
     	// adds names and assigns regexps from Miriam;
     	// also makes those names primary synonyms
     	importMiriam();
         
+    	
+    	// add to chache
+    	boolean saved = false;
+    	try {
+    		ontologyUtils.getCacheAdministrator().putInCache(CACHE_KEY, databases);
+    		ontologyUtils.getCacheAdministrator().flushEntry(CACHE_KEY);
+    		saved = true;
+    	} finally {
+    		if(!saved) {
+    			ontologyUtils.getCacheAdministrator().cancelUpdate(CACHE_KEY);
+    		}
+    	}
+    	
         if(log.isTraceEnabled()) {
         	StringBuffer sb = new StringBuffer("(test) GO synonyms loaded:");
         	for(String sy: dbSynonyms.getSynonyms("go")) {
@@ -70,16 +105,6 @@ public class XrefHelper {
         }
     }
        
-
-    private void loadMIDatabaseCitation() {
-        //OntologyAccess os = ontologyUtils.getOntologyAccess("MI");
-        Collection<String> terms = new HashSet<String>(); //= OntologyUtils.getTermNames(os.getValidTerms("MI:0444",true,false));
-        for(String term: terms) {
-            String db = dbName(term);
-            databases.put(db, null);
-        }
-    }
-
     /**
      * Lists database name variants.
      *
@@ -101,7 +126,7 @@ public class XrefHelper {
     public boolean checkIdFormat(String db, String id) {
     	String dbName = dbName(db);
         if(canCheckIdFormatIn(dbName)) {
-        	return getRegexp(dbName).find(id);
+        	return databases.get(dbName).matcher(id).find();
         }
         return true;
     }
@@ -120,7 +145,8 @@ public class XrefHelper {
         return databases.containsKey(db);
     }
 
-    public void importMiriam() {
+    // get db/regex form MIRIAM (xml export)
+    private void importMiriam() {
         try {
             Miriam miriam = (Miriam) miriamUnmarshaller.unmarshal(
             		new StreamSource(miriamXmlResource.getInputStream()));
@@ -133,50 +159,21 @@ public class XrefHelper {
             
             for(Miriam.Datatype dt: miriam.getDatatype()) {
                 String db = dbName(dt.getName());            
-                Regexp rx = new Regexp();
-                rx.setExpr(dt.getPattern()); // this also compiles the startChar
+                Pattern pattern = Pattern.compile(dt.getPattern());
                 dbSynonyms.addSynonym(db, db, true); // make it a primary db name
                 if (dt.getSynonyms() != null) {
                     dbSynonyms.addSynonyms(dt.getSynonyms().getSynonym(), db);
                 }
                 // set patterns for all synonyms
                 for (String s : getSynonymsForDbName(db)) {
-                	databases.put(s, rx);
+                	databases.put(s, pattern);
                 }
             }   
         } catch (Exception ex) {
             throw new RuntimeException("Error in MIRIAM import.", ex);
         }
     }
-    
 
-    /**
-     * To create ID validating patterns (compiled).
-     */
-    private final class Regexp {
-        private String expr;
-        private Pattern pattern;
-
-        public void setExpr(String re) {
-            this.expr = re;
-            pattern = Pattern.compile(expr);
-        }
-
-        public String getExpr() {
-            return expr;
-        }
-
-        public boolean find(String id) {
-            Matcher m = pattern.matcher(id);
-            return m.find();
-        }
-        
-        @Override
-        public String toString() {
-        	return expr;
-        }
-    }
-    
     /**
      * Gets the regular expression corresponding 
      * to the database.
@@ -185,13 +182,9 @@ public class XrefHelper {
      * @return regular expression to check its ID
      */
     public String getRegexpString(String db) {
-    	return databases.get(dbName(db)).getExpr();
+    	return databases.get(dbName(db)).pattern();
     }
 
-    private Regexp getRegexp(String db) {
-    	return databases.get(dbName(db));
-    }
-    
     public String dbName(String name) {
     	return dbSynonyms.dbName(name);
     }
@@ -201,7 +194,8 @@ public class XrefHelper {
     }
     
     public boolean areSynonyms(String db1, String db2) {
-    	// dbName function is also to use right (pre-configured) capitalization
+    	// dbName function is used here also to get right 
+    	// name capitalization
     	return getSynonymsForDbName(db1).contains(dbName(db2));
     }
 }

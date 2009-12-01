@@ -34,6 +34,14 @@
 						</descriptorRefs>
 					</configuration>
 				</plugin>
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<configuration>
+						<argLine>-javaagent:../lib/spring-agent.jar</argLine>
+						<!-- system class loader required to pass javaagent to all tests -->
+						<useSystemClassLoader>true</useSystemClassLoader>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -50,6 +58,12 @@
 			<artifactId>biopax-validator-core</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-agent</artifactId>
+			<version>2.5.6.SEC01</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 </project>
