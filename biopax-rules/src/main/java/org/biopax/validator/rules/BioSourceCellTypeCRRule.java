@@ -6,8 +6,7 @@ import org.biopax.validator.impl.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
- * Checks:
- * BioSource.cellType cardinality/range.
+ * Checks BioSource.cellType cardinality/range constraint: the property has none or one CellVocabulary value.
  * @author rodche
  */
 @Component

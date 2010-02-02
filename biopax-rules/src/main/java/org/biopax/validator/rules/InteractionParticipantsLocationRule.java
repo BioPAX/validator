@@ -24,30 +24,28 @@ public final class InteractionParticipantsLocationRule extends
 		Set<Entity> ents = thing.getParticipant();
 		if(ents != null) {
 		for (Entity e1 : ents) {
-				if (e1 instanceof PhysicalEntity 
-					&& ((PhysicalEntity) e1).getCellularLocation() != null) 
-					{
-						for (Entity e2 : ents) {
-						if (e2 instanceof PhysicalEntity 
-							&& !e1.equals(e2)
-							&& !((PhysicalEntity) e1).getCellularLocation()
-							.isEquivalent(((PhysicalEntity) e2).getCellularLocation())) 
-						{ 
-							if(thing instanceof Transport) { // except for transport
-								Transport tr = (Transport) thing;
-								boolean onDifferentSides = 
-									(tr.getLeft().contains(e1) && !tr.getLeft().contains(e2))
-									||
-									(!tr.getLeft().contains(e1) && tr.getLeft().contains(e2));
-								
-								if(onDifferentSides) {
-									continue;
-								}
-								// otherwise (diff. locations on the same side), error is to be reported
+			if (e1 instanceof PhysicalEntity) 
+			{
+				for (Entity e2 : ents) 
+				{
+					if (e2 instanceof PhysicalEntity && !e1.equals(e2)
+					&& !((PhysicalEntity) e1).hasEquivalentCellularLocation((PhysicalEntity) e2)) 
+					{ 
+						if(thing instanceof Transport) 
+						{ // except for transport
+							Transport tr = (Transport) thing;
+							boolean onDifferentSides = 
+								(tr.getLeft().contains(e1) && !tr.getLeft().contains(e2))
+								||
+								(!tr.getLeft().contains(e1) && tr.getLeft().contains(e2));
+							
+							if(onDifferentSides) {
+								continue; // no error
 							}
-						
-							error(thing, "multiple.location", e1, e2);
 						}
+						// report error
+						error(thing, "multiple.location", e1, e2);
+					  }
 					}
 				}
 			}

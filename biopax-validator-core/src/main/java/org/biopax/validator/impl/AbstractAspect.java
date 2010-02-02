@@ -14,6 +14,7 @@ import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.validator.Behavior;
 import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.result.Validation;
+import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 
 /**
@@ -37,36 +38,48 @@ abstract class AbstractAspect {
     /**
      * Registers the error with the proper attributes.
      * 
-     * @param models
+     * This must be public method (for unclear reason, otherwise causes an AOP exception...)
+     * 
+     * @param obj associated with a validation result objects
      * @param error
      */
-    public void report(Collection<Validation> keys, ErrorType error) {
+    public void report(Object obj, ErrorType error) {
 		// Skip 'ignored' ones
 		if (utils.isIgnoredCode(error.getCode())) {
 			return;
 		}
+		
+		Collection<Validation> keys = validator.findValidation(obj);			
+		if(keys.isEmpty()) {
+			// the object is not associated neither with parser nor model
+			log.warn("No active validations exist for the object " 
+					+ obj + "; user won't get this message: " + error);
+		}
+		
 		// add to the corresponding validation result
 		for(Validation result: keys) { 
 			if(log.isTraceEnabled()) {
 				log.trace("reports: " + error.toString() 
-						+ " "+ error.getErrorCase().toArray()[0] + " in: " + result.getDescription());
+						+ " "+ error.getErrorCase().toArray()[0] + 
+						" in: " + result.getDescription());
 			}
 			result.addError(error);
 		}
 	}
         
 	/**
-	 * Registers external exceptions.
+	 * Registers other (external) exceptions.
 	 * 
 	 * The exception class, i.e., simple name in lower case, 
 	 * is used as the error code, and the 'object' is to
 	 * find the corresponding validation result where this 
 	 * problem should be added.
 	 * 
+	 * This must be public method (for unclear reason, otherwise causes an AOP exception...)
+	 * 
 	 * @param t
 	 * @param obj model, element, or another related to the BioPAX data object
-	 * @param args optional message arguments (to be added as text
-	 *  at the end of the original error message)
+	 * @param args optional message arguments (to be added as text at the end of the original error message)
 	 */
     public void reportException(Throwable t, Object obj, Object... args) {
     	final String rule = "interceptor";
@@ -92,24 +105,21 @@ abstract class AbstractAspect {
 		if(t instanceof XMLStreamException) {
 			XMLStreamException ex = (XMLStreamException) t;
 			msg += "; "  + ex.getLocation().toString();
+		} else if(t instanceof BiopaxValidatorException) {
+			msg += "; " + 
+				((BiopaxValidatorException)t).getMsgArgs().toString();
 		}
 		
 		if (utils != null) {
 			if(args.length>0) msg += "; " + BiopaxValidatorUtils.toString(args);
 			ErrorType error = utils.createError(
 				id, "syntax.error", rule, Behavior.ERROR, msg);
-			Collection<Validation> keys = validator.findKey(obj);
-			if(!keys.isEmpty()) {
-				report(keys, error);
-			} else { 
-				// the object is not associated neither with parser nor model
-				log.warn("For object " +
-						obj + ", user won't see this message: " + msg);
-			}
+			report(obj, error);
 		}
 		
 		if(log.isTraceEnabled()) {
-			log.trace("reportException: " + msg, t);
+			log.trace("reportException (validator bean= "
+					+ validator	+"): " + msg, t);
 		}
 
 	}

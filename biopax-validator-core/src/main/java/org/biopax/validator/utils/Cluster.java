@@ -7,7 +7,8 @@ import java.util.Set;
 public abstract class Cluster<T> {
 
 	/**
-	 * Separates the elements into sets of equivalent ones.
+	 * Separates the elements into sets of "equivalent" 
+	 * (depending on implementation) ones.
 	 * 
 	 * @param elements
 	 * @param clusterMaxSize TODO

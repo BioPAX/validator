@@ -87,4 +87,12 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
 	public String getProperty() {
 		return property;
 	}
+	
+	/**
+	 * Gets the internal OntologyUtils instance
+	 * @return
+	 */
+	public OntologyUtils getOntologyUtils() {
+		return ontologyUtils;
+	}
 }

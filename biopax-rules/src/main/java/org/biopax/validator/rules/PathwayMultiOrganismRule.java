@@ -17,12 +17,8 @@ import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.stereotype.Component;
 
 /**
- * Pathway.organism - for multi-organism networks must specify 
- * organism on the component physical entities (within interactions) 
- * and pathways, instead of using this property. 
- * What to do if it's not the case? 
- * Three options: skip, delete this one, 
- * or rewrite nested organism properties with this value.
+ * Warn if a pathway and its component have different (not null) 'organism' values.
+ * What to do? (ignore, delete this value, or override nested organism properties with pathway's value)
  * 
  * @author rodche
  */
@@ -34,21 +30,16 @@ public class PathwayMultiOrganismRule extends AbstractRule<Pathway>
 	EditorMap editorMap3;
 	
     public void check(final Pathway pathway)   {
-    	
     	final Collection<BioPAXElement> organisms = new HashSet<BioPAXElement>();
-    	final BioSource organism = pathway.getOrganism();
+    	final BioSource organism = pathway.getOrganism(); // not null - due to the canCheck method!
+    	//but..
+    	if(organism==null) return; // we do not care
     	
     	TraverserRunner runner = new TraverserRunner(editorMap3) {
-    		BioSource bioSrc = organism;
     		@Override
 			protected void visitObjectValue(BioPAXElement value, Model model, PropertyEditor editor) {
-				if(value instanceof BioSource) {
-					if(bioSrc == null) {
-						bioSrc = (BioSource) value; 
-						organisms.add(value);
-						return;
-					}		
-					if(!value.isEquivalent(bioSrc)) {
+				if(value instanceof BioSource) {	
+					if(!value.isEquivalent(organism)) {
 						organisms.add(value);
 					}
 				} else {
@@ -66,7 +57,8 @@ public class PathwayMultiOrganismRule extends AbstractRule<Pathway>
     }
 
     public boolean canCheck(Object thing) {
-        return thing instanceof Pathway;
+        return thing instanceof Pathway
+        	&& ((Pathway)thing).getOrganism() != null;
     }
 
     @Override

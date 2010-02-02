@@ -34,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 
 @Controller
+@RequestMapping("/validator/*")
 public class ValidatorController {
 	final static Log log = LogFactory.getLog(ValidatorController.class);
 
@@ -50,10 +51,10 @@ public class ValidatorController {
 		this.utils = utils;
 	}	
       
-    @RequestMapping(method=RequestMethod.GET)
+    @RequestMapping(value="checkUrl", method=RequestMethod.GET)
     public void checkUrl() {};
     
-    @RequestMapping(method=RequestMethod.POST)
+    @RequestMapping(value="checkUrl", method=RequestMethod.POST)
     public ModelAndView checkUrl(@RequestParam String url, @RequestParam String retDesired) throws IOException  {
     	if(log.isInfoEnabled()) log.info("checkUrl : " + url);
     	ValidatorResponse validatorResponse = new ValidatorResponse();
@@ -70,12 +71,13 @@ public class ValidatorController {
 		result.setDescription(modelName);
 		validator.importModel(result, in.getInputStream());
 		validator.validate(result);
-    	validatorResponse.addResult(result);
+    	validatorResponse.addValidationResult(result);
+    	validator.getResults().remove(result);
   		return getResponseView(retDesired, validatorResponse);
     }
 	
 
-    @RequestMapping(method=RequestMethod.GET)
+    @RequestMapping(value="checkFile", method=RequestMethod.GET)
     public void checkFile() {	
     } // show form
    
@@ -83,7 +85,7 @@ public class ValidatorController {
     /*
 	 * validates several BioPAX files
 	 */
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value="checkFile", method = RequestMethod.POST)
 	public ModelAndView checkFile(HttpServletRequest request)
 			throws IOException {
 				
@@ -109,7 +111,8 @@ public class ValidatorController {
 				validation.setDescription(filename);
 				validator.importModel(validation, in.getInputStream());
 				validator.validate(validation);
-				validatorResponse.addResult(validation);
+				validatorResponse.addValidationResult(validation);
+				validator.getResults().remove(validation);
 			}
 			
 		}

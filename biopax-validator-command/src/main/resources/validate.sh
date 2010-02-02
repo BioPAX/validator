@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# find validator's home dir...
 # resolve links - $0 may be a softlink
 PRG="$0"
 while [ -h "$PRG" ]; do
@@ -12,23 +13,28 @@ while [ -h "$PRG" ]; do
   fi
 done
 
-# Get standard environment variables
 PRGDIR=`dirname "$PRG"`
-# if one wants absolute path (also in the classpath), uncomment hte next line
-#PRGDIR=`cd "$PRGDIR" ; pwd`
+# make it full path
+PRGDIR=`cd "$PRGDIR" ; pwd -P`
 
-echo BioPAX Validator Home Dir: `cd "$PRGDIR" ; pwd`
-echo Current dir: `pwd`
+echo BioPAX Validator Home Dir: $PRGDIR
 
-test -d "$PRGDIR"/build/classes || `cd "$PRGDIR" ; ant build`
+test -d "$PRGDIR"/build/classes || { 
+	echo Building the BioPAX Validator Application from Sources...
+	$CURDIR=`pwd -P`
+	cd $PRGDIR 
+	ant build
+	cd $CURDIR
+}
 
 test -d "$PRGDIR"/build/classes || {
-       echo "Failed." >&2
+       echo "Build Failed." >&2
        exit 1
 }
 
-CLASSPATH=$CLASSPATH:$PRGDIR/build/classes;
+echo Starting...
 
+CLASSPATH=$PRGDIR/build/classes
 # interate over all jars in PRGDIR/lib and add to class path
 JARS="$PRGDIR/lib/*.jar"
 for jar in $(ls $JARS); do
@@ -36,8 +42,7 @@ for jar in $(ls $JARS); do
 done
 
 export CLASSPATH
+#echo Using Classpath: $CLASSPATH
 
-echo Using Classpath: $CLASSPATH
-
-# execute validator
-$JAVA_HOME/bin/java -javaagent:$PRGDIR/lib/spring-agent.jar -Xmx2048m -Xms512m org.biopax.validator.Main $1 $2
+# run validator
+$JAVA_HOME/bin/java -cp $CLASSPATH -javaagent:$PRGDIR/lib/spring-agent.jar -Xmx2048m -Xms256m org.biopax.validator.Main $1 $2

@@ -6,6 +6,8 @@ import org.biopax.validator.impl.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
+ * Checks Conversion.conversionDirection cardinality/range: 0 or 1 ConversionDirectionType value
+ * 
  * @author rodche
  */
 @Component

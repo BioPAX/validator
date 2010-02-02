@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Checks:
- * EntityReference properties cardinality/range.
+ * EntityReference.entityReferenceType cardinality/range.
  * @author rodche
  */
 @Component

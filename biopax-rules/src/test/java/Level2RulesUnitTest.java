@@ -1,5 +1,3 @@
-package tests;
-
 import static org.junit.Assert.*;
 import org.biopax.paxtools.impl.level2.Level2FactoryImpl;
 import org.biopax.paxtools.model.*;
@@ -8,7 +6,7 @@ import org.biopax.validator.rules.BiochemPathwayStepOneConversionRule;
 import org.junit.Before;
 import org.junit.Test;
 
-public class Level2RulesUnitTest {
+class Level2RulesUnitTest extends TestBasic {
 
 	Level2Factory level2;
 	

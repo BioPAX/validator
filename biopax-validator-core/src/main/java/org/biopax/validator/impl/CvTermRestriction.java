@@ -1,23 +1,16 @@
 package org.biopax.validator.impl;
 
-import java.io.Serializable;
-
 /**
  * @author rodch
  */
-public class CvTermRestriction implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class CvTermRestriction {
+	
 	private final String id; //e.g., "GO:0005575"
     private final String ontologyId; // "GO"
 	private final boolean termAllowed;
     private final UseChildTerms childrenAllowed;
     private final boolean not;
 	
-    public CvTermRestriction() {
-    	this(null, null, false, null, false);
-	}
-    
 	public CvTermRestriction(String id, String ontologyId, boolean useThisTerm, 
 			UseChildTerms useChildTerms, boolean isNot) {
 		this.id = id;
@@ -58,17 +51,5 @@ public class CvTermRestriction implements Serializable {
 	
 	public enum UseChildTerms {
 		ALL, DIRECT, NONE;
-	}
-	
-	@Override
-	public int hashCode() {
-		return toString().hashCode();
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		return 
-			obj instanceof CvTermRestriction 
-				&& toString().equals(obj.toString());
 	}
 }

@@ -6,6 +6,10 @@ import org.biopax.validator.impl.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
+ * Checks: 
+ * Catalysis.catalysisDirection cardinality/range 
+ * constraint: none or one CatalysisDirectionType
+ * 
  * @author rodche
  */
 @Component

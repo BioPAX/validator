@@ -11,9 +11,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Checks:
- * If stepDirection of BiochemicalPathwayStep is not empty then direction 
- * of the Catalysis instance is either blank or "LEFT-TO-RIGHT".
- * 
+ * If stepDirection of BiochemicalPathwayStep is not empty, then direction 
+ * of the Catalysis instance is either blank or "LEFT-TO-RIGHT";
  * and the corresponding conversionDirection property (of the Conversion, if any) 
  * in the stepConversion property is specified as "REVERSIBLE".
  * 

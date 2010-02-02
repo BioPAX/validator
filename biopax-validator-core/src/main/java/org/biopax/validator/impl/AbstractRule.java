@@ -123,29 +123,36 @@ public abstract class AbstractRule<T> implements Rule<T> {
     }
              
     /**
-     * Registers an error case.
-     *
-     * (this is to be wrapped using an AOP advice)
+     * A precious piece of code that registers errors:
+     * not only it throws the exception (good for debugging),
+     * but also kicks off AOP that makes use of this 
+     * method and its arguments at runtime to actually 
+     * report the error case!
+     * (this is done within the BehaviorAspect)
      * 
      * @param object that is invalid or caused the error
      * @param code error code, e.g., 'illegal.value'
      * @param args extra parameters for the error message template
      */
-    protected void error(Object object, String code, Object... args) {
-    	/*
-    	 * throws the exception only for debugging purpose,
-    	 * as AOP interceptors use the error method and arguments
-    	 * at runtime for the routine error reporting ;)
-    	 */
+    public void error(Object object, String code, Object... args) {
     	throw new BiopaxValidatorException(code, args);
     }
-    
+       
     public boolean isPostModelOnly() {
     	return postModelOnly;
     }
     
     public void setPostModelOnly(boolean postModelOnly) {
 		this.postModelOnly = postModelOnly;
+	}
+    
+    
+    public MessageSource getRulesMessageSource() {
+		return rulesMessageSource;
+	}
+    
+    public void setRulesMessageSource(MessageSource rulesMessageSource) {
+		this.rulesMessageSource = rulesMessageSource;
 	}
     
 }

@@ -13,11 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Different UnificationXrefs shall point to different resources
- * (not to be semantically equivalent)
- * 
- * XReferrable, UnificationXref
- * 
+ * UnificationXref applicability rule
+ *
  * @author rodche
  */
 @Component
@@ -42,8 +39,7 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
      * Constructor requires the two sets to be defined in 
      * the Spring application context.
      * 
-     * @param allow
-     * @param deny
+     * @param xrefHelper
      */
     @Autowired
     public UnificationXrefLimitedRule (XrefHelper xrefHelper) {

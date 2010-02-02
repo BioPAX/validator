@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 
 @Controller
+@RequestMapping("/config/*")
 public class ConfigController {
 	final static Log log = LogFactory.getLog(ConfigController.class);
 
@@ -45,20 +46,20 @@ public class ConfigController {
         return Behavior.values();
     }
          
-	@RequestMapping(method=RequestMethod.GET)
+	@RequestMapping(value="rules", method=RequestMethod.GET)
     public @ModelAttribute("rules") Collection<Rule<?>> rules() {
   		return validator.getRules();
     }
 	
 	@Secured("ROLE_ADMIN")
-    @RequestMapping(method=RequestMethod.POST)
+    @RequestMapping(value="rule", method=RequestMethod.POST)
     public String rule(HttpServletRequest request) {
     	Rule r = validator.findRuleByName(request.getParameter("name"));
     	r.setBehavior(Behavior.valueOf(request.getParameter("behavior")));
     	return "redirect:rules.html";
     }    
 
-    @RequestMapping(method=RequestMethod.GET)
+    @RequestMapping(value="rule.html", method=RequestMethod.GET)
     public @ModelAttribute("rule") Rule rule(@RequestParam(required=true) String name) {
     	Rule r = validator.findRuleByName(name);
         return r;
@@ -66,13 +67,13 @@ public class ConfigController {
         
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(method=RequestMethod.POST)
+    @RequestMapping(value="errors", method=RequestMethod.POST)
     public String errors(@RequestParam("maxErrors") String maxErrors) {
     	utils.setMaxErrors(Integer.parseInt(maxErrors));
-		return "redirect:errors.html";
+		return "redirect:errors";
     }    
 
-    @RequestMapping(method=RequestMethod.GET)
+    @RequestMapping(value="errors", method=RequestMethod.GET)
     public @ModelAttribute("utils") BiopaxValidatorUtils errors() {
     	return this.utils;
     }

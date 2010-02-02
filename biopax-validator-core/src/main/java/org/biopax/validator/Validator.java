@@ -31,14 +31,21 @@ public interface Validator {
 	 */
 	Rule<?> findRuleByName(String ruleName);
 	
+	
 	/**
-	 * Assigns the name for the BioPAX data, 
-	 * associates a validation report with it,
-	 * and creates the in-memory model.
+	 * Gets all the currently registered validation results.
 	 * 
-	 * The name is a key to the validation result 
-	 * where all the problems related to this data
-	 * are reported.
+	 * @return
+	 */
+	Collection<Validation> getResults();
+	
+	
+	/**
+	 * Associates a validation report with the BioPAX data
+	 * and creates the in-memory model (Paxtools Model).
+	 * 
+	 * The validation result is object where all the problems 
+	 * related to this data instance are collected.
 	 * 
 	 * @param validation
 	 * @param inputStream
@@ -46,26 +53,13 @@ public interface Validator {
 	void importModel(Validation validation, InputStream inputStream);
 
 	/**
-	 * Assigns the name for the existing BioPAX Model 
-	 * and associates a new validation report with it.
+	 * Associates an object, such as BioPAX model, element, 
+	 * InputStream; with the given validation result.
 	 * 
-	 * The name is a key to the validation result 
-	 * where all the problems related to this data
-	 * are reported.
-	 * 
-	 * @param validation
-	 * @param model
-	 */
-	void addModel(Validation validation, Model model);
-
-	/**
-	 * Associates an object, such as BioPAX model or InputStream,
-	 * with the given name and corresponding validation report.
-	 * 
-	 * There are errors that may occur during the data import
-	 * but before the actual model is created, e.g., 
+	 * Some errors may occur during the data import
+	 * but before the model is created, e.g., 
 	 * those in the XML/RDF header or software bugs.
-	 * However, we want to report these kind of problems as well.
+	 * And we want to report these problems as well.
 	 * 
 	 * @param element object (e.g., existing Model)
 	 * @param validation 
@@ -74,31 +68,22 @@ public interface Validator {
 	
 	
 	/**
-	 * Associate a property value with a validation result(s)
-	 * using the parent element to find the key. This allows for
+	 * Associates, e.g., a property value with validation results
+	 * by using the 'parent' element to find it. This allows for
 	 * errors to be reported while model is being read,
-	 * maybe even before the child element is added to the model.
+	 * maybe before the child element is added to the model.
 	 * 
 	 * @param parent BioPAX element
 	 * @param child value
 	 */
 	void indirectlyAssociate(Object parent, Object child);
 	
-	
-	/**
-	 * Checks whether the validator contains the key (unique model name),
-	 * and thus the associated objects in its registry.
-	 * 
-	 * @param key Validation
-	 * @return
-	 */
-	boolean contains(Validation key);
-	
 
 	/**
-	 * Removes the object from the corresponding registry,
-	 * so it won't be forcedly associated with the model 
-	 * and its validation result anymore.
+	 * Removes the object from the specified validation registry,
+	 * so it is not associated (explicitly) with the model 
+	 * and its validation result anymore (but may be still
+	 * indirectly associated via its membership in a registered model).
 	 * 
 	 * @param o element to "forget"
 	 * @param key validation object
@@ -107,13 +92,13 @@ public interface Validator {
 	
 	
 	/**
-	 * Removes the object from the internal 'objects' registry, 
-	 * so that it won't be artificially (forcedly) associated with validation 
-	 * results anymore. However, the element can still be a member 
-	 * of several models that are registered with the validator, there
-	 * won't be a problem to find where to report errors. 
+	 * Removes the object from all the validations, 
+	 * so that it won't be (directly) associated with any  
+	 * result anymore. However, the element can still be a member 
+	 * of several models that are registered with the validator, 
+	 * and there is no problem to successfully report errors. 
 	 * 
-	 * @param o element to de-associate
+	 * @param o element to release
 	 */
 	void freeObject(Object o);
 	
@@ -124,7 +109,7 @@ public interface Validator {
 	 * @param obj a BioPAX element, Model, or even SimpleReader
 	 * @return
 	 */
-	Collection<Validation> findKey(Object obj);
+	Collection<Validation> findValidation(Object obj);
 	
 	/**
 	 * Post-model validation. 
@@ -137,14 +122,6 @@ public interface Validator {
 	 */
 	void validate(Validation validation);
 
-
-	/**
-	 * Forget the validation result
-	 * (this won't necessarily destroy it).
-	 * 
-	 * @param key
-	 */
-	void free(Validation key);
 	
 	/**
 	 * Get associated model(s)
@@ -152,6 +129,6 @@ public interface Validator {
 	 * @param key
 	 * @return
 	 */
-	public Collection<Model> getModel(Validation key);
+	public Collection<Model> findModel(Validation key);
 	
 }

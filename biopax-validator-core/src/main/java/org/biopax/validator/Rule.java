@@ -19,7 +19,6 @@ public interface Rule<T> {
      * Validates the object.
      * 
      * @param thing to validate
-     * @return errors
      */
 	void check(T thing);
 
@@ -35,13 +34,13 @@ public interface Rule<T> {
      * 
      * @return tip/description
      */
-    public String getTip();
+    String getTip();
     
     /**
      * 
      * @return Rule's (bean) name
      */
-    public String getName();
+    String getName();
     
     
     /**
@@ -55,14 +54,14 @@ public interface Rule<T> {
      * 
      * @return current Behavior
      */
-    public Behavior getBehavior();
+    Behavior getBehavior();
 
     /**
      * Sets behavior property for the rule.
      * 
      * @param behavior
      */
-    public void setBehavior(Behavior behavior);
+    void setBehavior(Behavior behavior);
     
     /**
      * A "post-model" rule should not  
@@ -72,8 +71,17 @@ public interface Rule<T> {
      * the model is built or several 
      * related modifications are complete.
      * 
-     * @return
+     * @return boolean
      */
     boolean isPostModelOnly();
        
+    
+    /**
+     * Reports errors
+     * 
+     * @param object where the problem is
+     * @param code error 'code'
+     * @param args optional arguments for the error message
+     */
+    void error(Object object, String code, Object... args);
 }

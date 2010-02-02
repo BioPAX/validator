@@ -15,6 +15,10 @@ import org.springframework.beans.factory.annotation.Configurable;
  *
  * It checks all qualified rules for each individual 
  * BioPAX element before and after it's modified.
+ * 
+ * This AOP aspect must use Load-Time Weaving (LTW)
+ * (checkit's configured in the META-INF/aop.xml, and 
+ * JVM is started with -javaagent:spring-agent.jar option)!
  *
  * @author rodche
  */
@@ -93,19 +97,38 @@ public class ControlAspect extends AbstractAspect {
 			 * parent BioPAX element.
 			 */
 			if(log.isDebugEnabled()) {
-				log.debug("Won't check 'data type' child " + value 
-						+ " of element " + parent);
-				
+				log.debug("Skipping check 'data type' value : " + value 
+						+ " of element " + parent 
+						+ " before it's assigned (will do after)");	
 			}
+			
 			return;
 		} 
+		
+		/* trying not to lost any 'intermediate' errors, we
+		 temporarily associate the 'value' with a validation result 
+		 through its 'parent' (element or model);
+		 there is no effect if 'parent' is null though.
+		 */
 		validator.indirectlyAssociate(parent, value);
+		
+		// check all rules that can do this element
 		for (Rule rule : validator.getRules()) {
-			if (!rule.isPostModelOnly() &&  rule.canCheck(value)) {
+			if (!rule.isPostModelOnly() && rule.canCheck(value)) {
 				rule.check(value);
 			}
 		}
+		
+		/* break the temporary association 
+		 (but if the BioPAX element (value) has been already part of a model,
+		 it is still associated with the model's Validation result anyway)
+		*/
 		validator.freeObject(value);
+
+		if(log.isTraceEnabled()) {
+			log.trace("Validator bean: " + validator);
+		}
+		
 	}
 	
 }

@@ -45,11 +45,11 @@ public class Validation implements Serializable {
 	 * 
 	 * @return
 	 */
-	public Collection<? extends ErrorType> getError() {
+	public Collection<ErrorType> getError() {
 		return error;
 	}
 
-	public void setError(Collection<? extends ErrorType> errors) {
+	public void setError(Collection<ErrorType> errors) {
 		error.clear();
 		error.addAll(errors);
 	}
@@ -70,8 +70,7 @@ public class Validation implements Serializable {
 	 * the new error cases will be copied to it;
 	 * otherwise, the new one is simply added to the set.
 	 * 
-	 * @param code error code
-	 * @return
+	 * @param e Error type
 	 */
 	public void addError(ErrorType e) {	
 		for(ErrorType et: error) {
@@ -157,7 +156,7 @@ public class Validation implements Serializable {
 		return objects;
 	}
 	
-	
+
 	public <T> Collection<T> getObjects(final Class<T> filterBy) {
 		return new AbstractFilterSet<T>(objects) {
 			protected boolean filter(Object value) {

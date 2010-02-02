@@ -21,20 +21,20 @@ import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.MessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.oxm.Marshaller;
+import org.springframework.util.ResourceUtils;
 
 import org.w3c.dom.*;
 
 /**
  * A utility class.
  * 
- * This keeps the "global errors" object (used by AOP aspects)
- * and a list of currently ignored error types; also
- * provides tools to properly register, merge, OXM, and resolve 
- * validation errors to human-readable verbose messages.  
+ * This is injected into other beans, keeps several global settings and objects,
+ * e.g., marshaller, and also provides static service methods to register, 
+ * merge, do OXM, and resolve validation errors to human-readable verbose messages.  
  *
  * @author rodche
  */
@@ -49,12 +49,7 @@ public class BiopaxValidatorUtils {
     private final Set<String> ignoredCodes;
     public static int maxErrors = Integer.MAX_VALUE;
     
-    /* TODO create a dynamic store (here?) that will be populated with BioPAX objects 
-     * and corresponding errors and warnings. Multiple validation tasks can run simultaneously, 
-     * and both AOP (Controller and Exceptions aspects) and validation rules need to know 
-     * where to report errors they caught.
-     */
-    
+   
     public BiopaxValidatorUtils() {
 		
 		this.ignoredCodes = new HashSet<String>();
@@ -81,7 +76,7 @@ public class BiopaxValidatorUtils {
 		return resultsMarshaller;
 	}
     
-	public void setMessageSource(ResourceBundleMessageSource messageSource) {
+	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
@@ -390,6 +385,17 @@ public class BiopaxValidatorUtils {
     	names.addAll(e1.getName());
     	names.retainAll(e2.getName());
     	return names;
+    }
+
+    /**
+     * Gets the validator's home directory path.
+     * 
+     * @return
+     * @throws IOException 
+     */
+    public static String getHomeDir() throws IOException {
+		Resource r =  new FileSystemResource(ResourceUtils.getFile("classpath:"));
+		return r.createRelative("..").getFile().getCanonicalPath();
     }
 
 }

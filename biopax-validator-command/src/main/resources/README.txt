@@ -1,23 +1,47 @@
-********************************
-       BioPAX Validator
-********************************
+/** BioPAX Validator, Version 2.0 
+ **
+ ** Copyright (c) 2009 University of Toronto (UofT)
+ ** and Memorial Sloan-Kettering Cancer Center (MSKCC).
+ **
+ ** This is free software; you can redistribute it and/or modify it
+ ** under the terms of the GNU Lesser General Public License as published
+ ** by the Free Software Foundation; either version 2.1 of the License, or
+ ** any later version.
+ **
+ ** This library is distributed in the hope that it will be useful, but
+ ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ ** documentation provided hereunder is on an "as is" basis, and
+ ** both UofT and MSKCC have no obligations to provide maintenance, 
+ ** support, updates, enhancements or modifications.  In no event shall
+ ** UofT or MSKCC be liable to any party for direct, indirect, special,
+ ** incidental or consequential damages, including lost profits, arising
+ ** out of the use of this software and its documentation, even if
+ ** UofT or MSKCC have been advised of the possibility of such damage.  
+ ** See the GNU Lesser General Public License for more details.
+ **
+ ** You should have received a copy of the GNU Lesser General Public License
+ ** along with this software; if not, write to the Free Software Foundation,
+ ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA;
+ ** or find it at http://www.fsf.org/ or http://www.gnu.org.
+ **/
 
-An open source validation framework for BioPAX, 
-started by the Pathway Commons project team 
-(www.pathwaycommons.org)
+TODO: PLEASE U P D A T E THIS TEXT (COPIED FROM PREVIOUS VERSION)!
 
-This is basically created with Java 6, Paxtools, 
-Spring Framework (AOP, MVC), and other open source jars. 
-This implementation targets the BioPAX Level 3, 
-but it does also support previous levels as well: 
-Level 1 is auto-converted to L2, and L2 is validated,
-but, unlike for L3, not many L2 rules have been implemented.
+An open source validation framework for BioPAX (www.biopax.org).
+
+This is basically created with Java (5 or 6), Paxtools, Spring Framework (AOP,
+MVC), and other open source jars. This implementation targets the 
+BioPAX Level 3, but also it does support previous levels: Level 1 is auto-
+converted to L2, and L2 is validated alike the L3, but not all L2 rules have 
+been implemented.
 
 Project URL: http://sourceforge.net/projects/biopax/
 
-********************************
+
+******************************************************************************
 DESIGN
-********************************
+******************************************************************************
 
 I. Framework
 
@@ -51,7 +75,7 @@ II. Validation
 
 III. Errors, Logging, Behavior (actions to undertake)
  1. Logging 
- 	- commons-logging, log4j.jar, and log4j.xml
+ 	- commons-logging and log4j.xml
  2. Errors 
     - AOP, MessageSource (Spring), resource bundles and object-xml mapping (OXM) 
     are used to collect errors, translate into messages, and create the validation report.
@@ -61,23 +85,40 @@ III. Errors, Logging, Behavior (actions to undertake)
 
 
 
-********************************
+******************************************************************************
  INSTALL
-********************************
-Download the latest BioPAX validator ZIP release from: 
+******************************************************************************
+
+Download the latest BioPAX validator ZIP from: 
 
 http://sourceforge.net/projects/biopax/files/
 
 Unpack; switch to the directory to continue.
 
-NOTE: default is that validator will download latest controlled vocabularies 
-from the Ontology Lookup Service (OLS). You may change this behavior by
-replacing the 'ontologies-remote.xml' with 'ontologies.xml' in the 
-src/applicationContext.xml file.
+NOTE:
+BioPAX Validator is now shipped with a 'cache' directory
+where the rule-specific sets of controlled vocabulary terms are stored 
+(serialized). If the 'cache' (or any file from it) is deleted or cleaned 
+(this is also the way to update ;)), then the validator will be refreshing 
+the required terms from the Ontology Lookup Service (OLS) at startup. This
+MAY TAKE LONG LONG TIME (>15 min) to complete (blame the current API that 
+retrieves synonyms), and in case of deploying such a WAR without 'cache' 
+on a Tomcat App. server, it will probably fail to start due to timeout.
 
-********************************
- USING AS CONSOLE APPLICATION
-********************************
+So, if you want to update the ontology terms, consider first starting the 
+validator from console without any arguments. Exit once it's finished (pressing
+Enter several times). Next time it won't take long to run. 
+Update WAR ('ant war') and (re-)deploy ('cache' is included in the new web assembly)
+
+Optionally, 
+build Java documentation (/doc directory is created):
+
+$ant javadoc
+
+
+******************************************************************************
+ USING CONSOLE APPLICATION
+******************************************************************************
 Execute:
 
 $sh validate.sh
@@ -103,9 +144,9 @@ You may provide any URL instead of file:..
 (with little modification in the Main class it's possible to query for PC pathways)
 
 
-********************************
-USING AS WEB APPLICATION
-********************************
+******************************************************************************
+USING WEB APPLICATION
+******************************************************************************
 
 PREREQUISITES:
 
@@ -118,31 +159,11 @@ PREREQUISITES:
 (one can set the JAVA_OPTS variable and/or modify the Tomcat's startup script)
 
 BUILD:
-
-Edit, if required, the WEB-INF/web.xml configuration file.
-
-If you plan accessing the validator SOAP web service programmatically, 
-and from other computers (not only via http://localhost/biopax-validator/),
-modify the <init-param> value of CXFServlet in the the Tomcat's 
-WEB-INF/web.xml file. This is not required at all if you validate 
-BioPAX files using the browser interface only.
-(this guarantees that the generated WSDL and page (http://localhost:8080/biopax-validator/services/) 
-contains correct URL):
-...
-  <servlet>
-    <servlet-name>CXFServlet</servlet-name>
-    <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-    <init-param>
-    	<param-name>base-address</param-name>
-    	<param-value>http://localhost:8080/biopax-validator/services</param-value>
-	</init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  
-Configure Security: see WEB-INF/users.properties and WEB-INF/security-config.xml
+ 
+(Optionally) configure security: see WEB-INF/users.properties and WEB-INF/security-config.xml
 (secured access is used to control validation rules behavior at runtime)
 
-Finally, execute
+then execute
 
 $ant war
 
@@ -162,20 +183,16 @@ it is usually uninstalled automatically by Tomcat.
 
 
 
-********************************
+******************************************************************************
  DEVELOPER NOTES
-********************************
+******************************************************************************
 
 The most important thing is to make sure the validator 
-starts using Java 6 with the following JVM options:
+starts using Java 6 with, e.g., the following JVM options:
 
--javaagent:lib/spring-agent.jar -Xmx2048m -Xms512m
+-javaagent:lib/spring-agent.jar -Xmx2048m -Xms256m
 
-(one may need to provide the full path to the spring-agent.jar)
-
-It requires at least -Xmx1024m option, and the reason is 
-that every time at startup the Ontology Manager parses and caches 
-several OBO files (GO, PSI-MI, etc. ontologies)
+(one may have to provide the full path to the spring-agent.jar)
 
 All the needed jars are in the /lib folder.
 
@@ -184,8 +201,11 @@ from the src/resources/Miriam.xsd using 'ant bind' command.
 
 Debugging
 
-- to disable LTW AOP - edit the META-INF/aop.xml
-- to "physically" exclude a rule from being checked - in java source file
+There are several levels...
+
+- to disable LTW AOP, set <context:load-time-weaver aspectj-weaving="off"/> 
+  in the applicationContext.xml; or edit the META-INF/aop.xml
+- to "physically" exclude any rule from being checked - in java source file
    comment out the @Component annotation (the bean won't be auto-created).
 - set "<ruleName>.behavior=ignore" in the messages.properties file
    (good to test AOP and configuration without doing real validation).

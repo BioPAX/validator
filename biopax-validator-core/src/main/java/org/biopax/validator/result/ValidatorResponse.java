@@ -39,11 +39,11 @@ public class ValidatorResponse implements Serializable {
 	}
 	
 	/**
-	 * Add new result.
+	 * Add new Validation (result).
 	 * 
 	 * @param result
 	 */
-	public void addResult (Validation result) {
+	public void addValidationResult (Validation result) {
 		this.validationResult.add(result);
 	}
 

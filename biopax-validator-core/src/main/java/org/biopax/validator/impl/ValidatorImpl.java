@@ -13,6 +13,7 @@ import org.biopax.validator.result.Validation;
 import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 
 /**
@@ -24,11 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 
  * @author rodche
  */
+@Configurable
 public class ValidatorImpl implements Validator {	
 	private static final Log log = LogFactory.getLog(ValidatorImpl.class);
 	
     @Autowired
 	private Set<Rule<?>> rules;  
+    
 	private final Set<Validation> results;
     
     
@@ -45,13 +48,18 @@ public class ValidatorImpl implements Validator {
 	}
 
     
+    public Collection<Validation> getResults() {
+    	return results;
+    }
+    
+    
 	@SuppressWarnings("unchecked")
 	public void validate(Validation validation) {
 		if (validation == null) {
 			throw new BiopaxValidatorException("Failed! Did import or add the model?");
 		}
 		
-		for (Model model : getModel(validation)) {
+		for (Model model : findModel(validation)) {
 			if (model != null) {
 				if (log.isDebugEnabled()) {
 					log.debug("validating model: " + model + " that has "
@@ -77,8 +85,7 @@ public class ValidatorImpl implements Validator {
 		}
 
 	}
-	       
-
+	
 	public Rule<?> findRuleByName(String name) {
 		Rule<?> found = null;
 		if (name != null || !"".equals(name)) {
@@ -94,37 +101,31 @@ public class ValidatorImpl implements Validator {
 
 
 	public void importModel(Validation validation, InputStream inputStream) {
-		if (contains(validation)) {
-			log.warn("Key '" + validation + "' has been used already (will merge with those results, if any)!");
-			// may cause a ConcurrentModificationException (which is usually ignored by the rest of the app.)
-			//free(key);
-		} else {
-			// register a new validation result:
-			results.add(validation);
-		}
-		
 		// add the parser
 		SimpleReader simpleReader = new SimpleReader();
 		associate(inputStream, validation);
 		associate(simpleReader, validation);
-	
 		// build the model and associate it with the key (for the post-validation, later in the 'validate' method):
 		Model model = simpleReader.convertFromOWL(inputStream); // during this here, many errors/warnings may be reported via AOP ;)
-		addModel(validation, model);
-	}
-	
-	
-	public void addModel(Validation validation, Model model) {
 		associate(model, validation);
 	}
 	
 	
-	public void associate(Object element, Validation validation) {
-		validation.getObjects().add(element);
+	public void associate(Object obj, Validation validation) {
+		if (!getResults().contains(validation)) {
+			getResults().add(validation); // registered a new validation result
+		} else {
+			if(log.isInfoEnabled())
+				log.info(obj + " object is associated with existing result");
+		}
+		validation.getObjects().add(obj);
+		
+		if(log.isDebugEnabled())
+			log.debug("this validator : " + this);
 	}
 
 
-	public Collection<Validation> findKey(Object o) {
+	public Collection<Validation> findValidation(Object o) {
 		// add forcedly associated keys
 		Collection<Validation> keys = new HashSet<Validation>();	
 		
@@ -162,11 +163,6 @@ public class ValidatorImpl implements Validator {
 		key.getObjects().remove(o);
 	}
 
-
-	public boolean contains(Validation key) {
-		return results.contains(key);
-	}
-
 	
 	public void freeObject(Object o) {
 		for(Validation r : results) {
@@ -184,20 +180,16 @@ public class ValidatorImpl implements Validator {
 			return; // do not (this is ok)
 		}
 
-		for (Validation key : findKey(parent)) {
+		for (Validation key : findValidation(parent)) {
 			associate(child, key);
 		}
 	}
 			
 	
-	public Collection<Model> getModel(Validation key) {
+	public Collection<Model> findModel(Validation key) {
 		Collection<Model> mms = new HashSet<Model>();
 		mms.addAll(key.getObjects(Model.class));
 		return mms;
 	}
 
-	
-	public void free(Validation key) {
-		results.remove(key);
-	}
 }

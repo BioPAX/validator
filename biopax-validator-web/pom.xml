@@ -10,7 +10,6 @@
 	<artifactId>biopax-validator-web</artifactId>
 	<packaging>war</packaging>
 	<name>biopax-validator-web Spring-WS Application</name>
-	<version>2.0-SNAPSHOT</version>
 	<url>http://www.springframework.org/spring-ws</url>
 	<build>
 		<finalName>biopax-validator-web</finalName>

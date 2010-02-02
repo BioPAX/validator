@@ -38,8 +38,8 @@ public class XrefRule extends AbstractRule<Xref>{
 						logger.warn("Can't check IDs (no regexp) for " + db);
 					}
 				} else if (!xrefHelper.checkIdFormat(db, id)) {
-					error(x, "invalid.id.format", db, id, xrefHelper
-							.getRegexpString(db));
+					error(x, "invalid.id.format", db, id, 
+							xrefHelper.getRegexpString(db));
 				}
 			} 
 		} 

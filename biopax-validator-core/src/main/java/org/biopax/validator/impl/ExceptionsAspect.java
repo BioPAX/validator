@@ -1,7 +1,6 @@
 package org.biopax.validator.impl;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,10 +16,10 @@ import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.io.simpleIO.SimpleReader.Triple;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
+import org.biopax.paxtools.model.level3.Named;
 import org.biopax.validator.Behavior;
 import org.biopax.validator.Rule;
 import org.biopax.validator.result.ErrorType;
-import org.biopax.validator.result.Validation;
 import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 
@@ -29,12 +28,16 @@ import org.biopax.validator.utils.BiopaxValidatorUtils;
  * all the validation exceptions together with 
  * external exceptions that may happen in the PaxTools
  * and other libraries. 
+ * 
+ * This one must use Load-Time Weaving (LTW)
+ * (checkit's configured in the META-INF/aop.xml, and 
+ * JVM is started with -javaagent:spring-agent.jar option)!
  *
  * @author rodche
  */
 @Configurable
 @Aspect
-@Order(20) // i.e., after the BehaviorAspect
+@Order(50) // i.e., runs within the BehaviorAspect
 public class ExceptionsAspect extends AbstractAspect {
 	private static final Log log = LogFactory.getLog(ExceptionsAspect.class);
 
@@ -65,9 +68,6 @@ public class ExceptionsAspect extends AbstractAspect {
     		return;
     	}
     	
-    	// find the keys (of reports) for the models that contain this element
-    	Collection<Validation> keys = validator.findKey(thing);
-    	
     	/*
     	 * Rule may throw exceptions
     	 * to be caught and reported 
@@ -79,13 +79,12 @@ public class ExceptionsAspect extends AbstractAspect {
     	} catch (Throwable t) {
    			log.error(rule.getName() + ".check(" + thingId 
     					+ ") caught the exception: " + t.toString(), t);
-   			String msg = (t instanceof BiopaxValidatorException) 
-   				? t.getMessage() 
-   					+ "; " + ((BiopaxValidatorException)t).getMsgArgs().toString()
-   				: t.getMessage();
-    		ErrorType error = utils.createError(thingId, t.getClass().getSimpleName(), 
-    				rule.getName(), Behavior.ERROR, msg);
-    		report(keys, error);
+   			String msg = t.getMessage();
+   			if(t instanceof BiopaxValidatorException) msg += "; " 
+   				+ ((BiopaxValidatorException)t).getMsgArgs().toString();
+   			ErrorType error = utils.createError(thingId, 
+   					t.getClass().getSimpleName(), rule.getName(), Behavior.ERROR, msg);
+    		report(thing, error);
     	}
   
     }
@@ -205,10 +204,35 @@ public class ExceptionsAspect extends AbstractAspect {
     	} catch (NullPointerException e) {
     		bpeId = reader.getXmlStreamInfo();
 		}
-    	Collection<Validation> keys = validator.findKey(reader);
 		ErrorType error = utils.createError(bpeId, "unknown.biopax.class", 
 				"reader", Behavior.ERROR, reader.getXmlStreamInfo());
-		report(keys, error);	
+		report(reader, error);	
 	}
     
+	/**
+	 * Duplicate names syntax rule: 
+	 * if a value is set either for the standardName 
+	 * or displayName, adding it to the name is not necessary
+	 * (best practices)
+	 * 
+	 * @param jp
+	 * @param name
+	 */
+	@Before("target(org.biopax.paxtools.model.level3.Named) " +
+			"&& ( execution(public void addName(*)) || execution(public void set*(*)) ) " +
+			"&& args(name)")
+	public void adviseAddName(JoinPoint jp, String name) {
+		Named bpe = (Named) jp.getTarget();
+		if (log.isDebugEnabled()) {
+			log.debug("duplicateNamesControl rule checks: " + bpe
+					+ " gets name " + name);
+		}
+		if (bpe.getName().contains(name)) {
+			ErrorType error = utils.createError(
+				BiopaxValidatorUtils.getId(bpe), "duplicate.names",
+					"duplicateNamesAdvice", Behavior.ERROR, name);
+			report(bpe, error);
+		}
+	}
+
 }

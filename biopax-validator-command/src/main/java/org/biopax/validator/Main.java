@@ -18,7 +18,7 @@ import org.springframework.util.ResourceUtils;
  * PC BioPAX Validator (console), which
  * checks from the user input or a "batch" file.
  *
- * See: README.txt, applicationContext.xml, messages.properties
+ * See: README.txt, context.xml, messages.properties
  *
  * @author rodche
  */
@@ -28,7 +28,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {				
 		// this does 90% of the job ;)
-		ctx = new ClassPathXmlApplicationContext("validator-ontext.xml");
+		ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 		// Rules are now loaded, and AOP is listening for BioPAX model method calls.
 		
         // get the beans to work with
@@ -52,31 +52,34 @@ public class Main {
         	listAllRules(System.out, validator.getRules());
         }
 		
-		Scanner sc = new Scanner(System.in);
 		boolean isQuit = false; // user interaction loop breaking condition
 		String input = null;
 		String output = null;
 		if(args.length > 0) {
-			isQuit = true;
+			isQuit = true; // quite the shell after job is done
 			input = args[0];
 		}
 		if(args.length > 1) {
 			output = args[1];
 		}
 		
-		// start the interactive shell
-    	PrintWriter writer = (output==null)? new PrintWriter(System.err) : new PrintWriter(output);
-        do {	
+		Scanner sc = new Scanner(System.in);
+		PrintWriter writer = (output==null) ? new PrintWriter(System.out) : new PrintWriter(output);
+		
+        do {
 			if(!isQuit) {
 				input = null;
-				System.out.println("Which directory, file, URL, or batch file to use?\n"
-								+ "Please Specify One of the Following: Path, Biopax File "
-								+ "(prefixed with 'file:'), batch file (as 'list:filename'), or URL");
+				System.out.println("Please Specify a Directory, OWL File "
+								+ "(as 'file:filename.owl'), Batch ('list:filename.txt'), " +
+								"or URL");
+				System.out.println("INPUT: ");
 				input = sc.nextLine();
-				System.out.println("Where do you want to write the results? \n(Simply Press Enter for the STDERR output) ");
+				System.out.println("Where do you want to write the results? \n" +
+						"(Default Is Console Output)");
+				System.out.println("OUTPUT: ");
 				output = sc.nextLine();
 				if (output == null || "".equals(output.trim()) ) {
-		        	writer = new PrintWriter(System.err);
+		        	writer = new PrintWriter(System.out);
 				} else {
 					writer = new PrintWriter(output);
 				}
@@ -87,19 +90,16 @@ public class Main {
 				ValidatorResponse validatorResponse = runBatch(validator, getResourcesToValidate(input));
 				utils.write(validatorResponse, writer);
 			}
-			writer.flush();
-			if (!isQuit) {
-				System.out.println();
-				System.out.println("Exit? (Yes/no) "); // default is to quit
-				if(!"no".equalsIgnoreCase(sc.nextLine())) {
-					break;
+			if(!isQuit) {
+				System.out.println("\nAre You Going to Continue? (NO/yes) "); // default is to quit
+				if (!"yes".equalsIgnoreCase(sc.nextLine().trim())) {
+					isQuit = true;
 				}
-			}
+			}	
 			
 		} while (!isQuit);
         
-        System.out.println("Cheers!");
-        System.exit(0);
+        System.out.println("Thank you.");
     }
 	
 	
@@ -123,7 +123,8 @@ public class Main {
 					e.printStackTrace();
 				}
 			}
-			response.addResult(result);
+			response.addValidationResult(result);
+			validator.getResults().remove(result);
 			if (log.isInfoEnabled()) 
 				log.info("Done.");
 		}

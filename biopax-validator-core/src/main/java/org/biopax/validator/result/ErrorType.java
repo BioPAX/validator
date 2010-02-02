@@ -34,13 +34,13 @@ public class ErrorType implements Serializable {
 		this.type = type;
 	}
 	
-	public Collection<? extends ErrorCaseType> getErrorCase() {
+	public Collection<ErrorCaseType> getErrorCase() {
 		List<ErrorCaseType> list = new ArrayList<ErrorCaseType>(errorCase);
 		Collections.sort(list);
 		return list;
 	}
 
-	public void setErrorCase(Collection<? extends ErrorCaseType> errorCases) {
+	public void setErrorCase(Collection<ErrorCaseType> errorCases) {
 		this.errorCase.clear();
 		this.errorCase.addAll(errorCases);
 	}
@@ -72,7 +72,7 @@ public class ErrorType implements Serializable {
 		errorCase.add(newCase);
 	}
 	
-	public void addCases(Collection<? extends ErrorCaseType> cases) {
+	public void addCases(Collection<ErrorCaseType> cases) {
 		this.errorCase.addAll(cases);
 	}
 	

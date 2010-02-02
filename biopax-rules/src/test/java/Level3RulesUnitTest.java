@@ -1,17 +1,15 @@
-package tests;
-
 import static org.junit.Assert.*;
 
 import java.io.*;
 
+import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.impl.level3.Level3FactoryImpl;
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
+import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.Rule;
 import org.biopax.validator.rules.*;
 import org.biopax.validator.utils.*;
-import org.junit.Before;
 import org.junit.Test;
 
 
@@ -23,21 +21,14 @@ import org.biopax.paxtools.model.level3.Process;
  * that illustrate the corresponding rule violation.
  * 
  * TODO Test all the L3 rules and generate OWL examples (for invalid cases).
- * TODO Test not only wrong but also valid use cases.
+ * TODO Also test valid use cases (look for 'false positives').
  * 
  * @author rodch
  */
-public class Level3RulesUnitTest {
+class Level3RulesUnitTest extends TestBasic {
 
-	Level3Factory level3; // to create BioPAX objects
-	SimpleExporter exporter; // to write OWL examples of what rule checks
-	final static String OUTDIR = "target";
-	
-	@Before
-	public void setUp() {
-		level3 = new Level3FactoryImpl();
-		exporter = new SimpleExporter(BioPAXLevel.L3);
-	}
+	Level3Factory level3 = new Level3FactoryImpl(); // to create BioPAX objects
+	EditorMap editorMap = new SimpleEditorMap(BioPAXLevel.L3);
 	
 	@Test
 	public void testBiochemicalPathwayStepProcessOnlyControlCRRule() 
@@ -209,51 +200,77 @@ public class Level3RulesUnitTest {
 		Rule rule = new BiochemReactParticipantsLocationRule();
 		BiochemicalReaction reaction = level3.createTransportWithBiochemicalReaction();	
 		reaction.setRDFId("#transportWithBiochemicalReaction");
-		Rna left = level3.createRna(); left.setRDFId("#rna");
-		Rna right = level3.createRna(); right.setRDFId("#movedRna");
-		EntityFeature feature = level3.createFragmentFeature();
+		reaction.addComment("This Transport contains one Rna that did not change its " +
+			"cellular location (error!) and another one that did not have any (which is now ok)");
+		
+		// to generate example
+		Model m = level3.createModel();
+		m.add(reaction);
+		
+		Rna left = level3.createRna(); left.setRDFId("#Rna1");
+		Rna right = level3.createRna(); right.setRDFId("#modRna1");
+		EntityFeature feature = level3.createModificationFeature();
 		feature.setRDFId("feature1");
 		right.addFeature(feature);
 		right.addComment("modified");
-		
 		RnaReference rnaReference = level3.createRnaReference();
-		rnaReference.setRDFId("#rnaref");
+		rnaReference.setRDFId("#rnaRef");
 		// set the same type (entity reference)
 		left.setEntityReference(rnaReference);
 		right.setEntityReference(rnaReference);
-
 		CellularLocationVocabulary cl = level3.createCellularLocationVocabulary();
 		CellularLocationVocabulary cr = level3.createCellularLocationVocabulary();
-		cl.setRDFId("#cl"); cl.addTerm("cytoplasm");
-		cr.setRDFId("#cr"); cr.addTerm("membrane");
-		left.addName("rnaLeft");
-		right.addName("rnaRight");
+		cl.setRDFId("#cl"); cl.addTerm("nucleus");
+		cr.setRDFId("#cr"); cr.addTerm("cytoplasm");
+		left.setDisplayName("rnaLeft1");
+		right.setDisplayName("rnaRight1");
 		reaction.addLeft(left);
 		reaction.addRight(right);
-		
-		// ok
+
+		// set different locations
 		left.setCellularLocation(cl); 
 		right.setCellularLocation(cr); 
+		// make sure it's valid
 		rule.check(reaction);
 		
-		// nok	
+		// now set the same location on both sides and check	
 		right.setCellularLocation(cl); 
-		right.addComment("location not changed?");
-		// check for: same entity (names intersection), diff. location
 		try {
 			rule.check(reaction); 
 			fail("must throw BiopaxValidatorException");
 		} catch(BiopaxValidatorException e) {
-			// generate the example OWL
-			Model m = level3.createModel();
-			m.add(reaction);
 			m.add(left); m.add(right);
 			m.add(rnaReference);
 			m.add(cl); m.add(cr);
 			m.add(feature);
-			writeExample("testBiochemReactParticipantsLocationRule_Transport.owl", m);
 		}
 		
+		// Now check with location is null on one side
+		right = level3.createRna(); right.setRDFId("#Rna2");
+		left = level3.createRna(); left.setRDFId("#modRna2");
+		left.addFeature(feature);
+		left.addComment("modified");
+		
+		// set the same type (entity reference)
+		left.setEntityReference(rnaReference);
+		right.setEntityReference(rnaReference);
+		left.setDisplayName("rnaLeft2");
+		right.setDisplayName("rnaRight2");
+		reaction.addLeft(left);
+		reaction.addRight(right);
+		right.setCellularLocation(cr); 
+		m.add(left);
+		m.add(right);
+		
+		// generate the example OWL
+		writeExample("testBiochemReactParticipantsLocationRule_Transport.owl", m);
+
+		// fix the error for the first Rna:
+		right = (Rna) m.getByID("#modRna1");
+		right.setCellularLocation(cr);
+		
+		// check again
+		rule.check(reaction);
 	}
 	
 	
@@ -303,20 +320,9 @@ public class Level3RulesUnitTest {
 		}
 		
 		writeExample("testBiopaxElementIdRule.owl", m);
-		
 	}
 	
-    private void writeExample(String file, Model model) {
-    	try {
-			exporter.convertToOWL(model, 
-					new FileOutputStream(OUTDIR + file));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-    }
-	
-    
-    //@Test
+    @Test
     public void testDuplicateNamesByExporter() throws IOException {
     	Protein p = level3.createProtein();
     	String name = "aDisplayName";
@@ -326,15 +332,53 @@ public class Level3RulesUnitTest {
     	Model m = level3.createModel();
     	m.add(p);
     	writeExample("testDuplicateNamesByExporter.xml", m);
+    	
+    	// read back and tricky-test
     	BufferedReader in = new BufferedReader(new FileReader(
-    			OUTDIR + "testDuplicateNamesByExporter.xml"));
+    			TEST_DATA_DIR + "testDuplicateNamesByExporter.xml"));
     	char[] buf = new char[1000];
     	in.read(buf);
     	String xml = new String(buf);
     	if(xml.indexOf(name) != xml.lastIndexOf(name)) {
     		fail("displayName gets duplicated by the SimpleExporter!");
-    	}
-    	
+    	}	
     }
     
+    
+    @Test
+    public void testProteinReferenceOrganismCRRule() throws IOException {
+    	ProteinReferenceOrganismCRRule rule = new ProteinReferenceOrganismCRRule();
+    	rule.setEditorMap(editorMap); // in real application it's set automatically at load time
+    	
+    	BioSource bioSource = level3.createBioSource();
+    	bioSource.setRDFId("BioSource-Human");
+    	bioSource.setDisplayName("Homo sapiens");
+    	UnificationXref taxonXref = level3.createUnificationXref();
+    	taxonXref.setDb("taxonomy");
+    	taxonXref.setRDFId("Taxonomy_UnificationXref_9606");
+    	taxonXref.setId("9606");
+    	bioSource.setTaxonXref(taxonXref);
+    	ProteinReference pr = level3.createProteinReference();
+    	pr.setRDFId("ProteinReference1");
+    	pr.setDisplayName("ProteinReference1");
+    	pr.addComment("No value is set for the 'organism' property (must be exactly one)!");
+    	
+    	try {
+    		rule.check(pr);
+    		fail("must throw BiopaxValidatorException");
+    	} catch (Exception e) {
+        	// write the example
+        	Model m = level3.createModel();
+        	m.add(taxonXref);
+        	m.add(bioSource);
+        	m.add(pr);
+        	writeExample("testProteinReferenceOrganismCRRule", m);
+		}
+    	
+    	pr.setOrganism(bioSource);
+    	rule.check(pr);
+    	
+    	// thnx to the API, it's impossible to add more than one 'organism' value, so - no more tests are required
+    }
+
 }
