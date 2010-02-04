@@ -18,7 +18,7 @@
 		<security:intercept-url pattern="/admin.html" filters="none"/>
 		<!-- 
 		<security:intercept-url pattern="/???*" access="ROLE_ADMIN,ROLE_MEMBER" />
-		<security:intercept-url pattern="/validator/**" access="IS_AUTHENTICATED_FULLY" />
+		<security:intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
 		-->
 		<security:logout/>
 	</security:http>

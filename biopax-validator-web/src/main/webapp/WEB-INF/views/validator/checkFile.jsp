@@ -2,7 +2,7 @@
 
 <h1>Choose up to Ten BioPAX Files:</h1>
 <div>
-<form action="checkFile.html" enctype="multipart/form-data" method="post">
+<form enctype="multipart/form-data" method="post">
 	<div class="form-row">
 		<input id="file" type="file" name="file_1" accept="application/rdf+xml"/>
 	</div>
@@ -25,6 +25,6 @@
 </div>
 <script src="<c:url value="/scripts/multifile_compressed.js" />"> </script>
 <script>
-	var multi_selector = new MultiSelector( document.getElementById( 'files_list' ), 50);
+	var multi_selector = new MultiSelector( document.getElementById( 'files_list' ), 25);
 	multi_selector.addElement( document.getElementById( 'file' ) );
 </script>

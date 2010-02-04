@@ -8,8 +8,7 @@
     <p><fmt:message key="${statusMessageKey}"/></p>
 </c:if>
 
-<c:url var="url" value="/config/rule.html" /> 
-<form:form action="${url}" commandName="rule" method="post">
+<form:form commandName="rule" method="post">
     <fieldset>
         <div class="form-row">
             <label for="Name">Name: </label><br/>

@@ -2,7 +2,7 @@
 
 <h1>Specify a BioPAX URL or PathwayCommons ID</h1>
 <div>
-<form action="checkUrl.html" method="post">
+<form method="post">
     <div class="form-row">
         <input class="input" type="text" name="url"/>
     </div>       

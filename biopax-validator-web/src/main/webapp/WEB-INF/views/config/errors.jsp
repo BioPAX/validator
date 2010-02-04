@@ -4,8 +4,7 @@
 
 <h1>Errors Framework Settings</h1>
 
-<c:url var="url" value="/config/errors.html"/>
-<form:form action="${url}" commandName="utils">
+<form:form commandName="utils">
 <fieldset>
        <div class="form-row">
             <label for="enabled">Max. Errors</label>

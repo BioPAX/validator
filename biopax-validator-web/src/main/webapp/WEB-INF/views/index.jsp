@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<h1>How to Submit BioPAX Data?</h1>
+<h1>How to Check BioPAX Data?</h1>
 <div>
 <br/>
 <c:url var="goFile" value="/validator/checkFile.html" />
@@ -10,6 +10,6 @@
 <div>
 <br/>
 <c:url var="goUrl" value="/validator/checkUrl.html" />
-<a href='<c:out value="${goUrl}"/>'>Load from a URL</a>
+<a href='<c:out value="${goUrl}"/>'>Get from URL</a>
 <br/>
 </div>

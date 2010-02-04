@@ -12,8 +12,8 @@ To upload and validate BioPAX files,
 send a multi-part HTTP POST query 
 to <a href='<c:out value="${goFile}"/>'>this page</a>
 <br/>
-By default the server accepts up to fifty 
-OWL files and 50Mb altogether, which is configurable.
+By default the server accepts up to 25 
+OWL files or 25Mb altogether.
 </div>
 <br/>
 <div>
@@ -27,7 +27,7 @@ Optionally, set the parameter  <em>&quot;retDesired&quot;</em> value "html" (def
 </div>
 <br/>
 <div>
-Example BioPAX validator client can be found in the <em>/validator</em> folder at: <br/>
+Example BioPAX validator client can be found in the <em>/paxtools</em> folder at: <br/>
 <a href="http://sourceforge.net/projects/biopax/files/">BioPAX Project Files</a>
 (it connects to the http://www.biopax.org/biopax-validator/)<br/>
 or in the BioPAX CVS.
