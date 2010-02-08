@@ -46,9 +46,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author rodche
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:applicationContext.xml"})
-class ApplicationContextTest {
-    static final String TEST_PATHWAY = "classpath:data/biopax3-short-metabolic-pathway.owl";
+@ContextConfiguration(locations = {"classpath:validator-context.xml"})
+public class ApplicationContextTest {
+    static final String TEST_PATHWAY = "classpath:biopax3-short-metabolic-pathway.owl";
       
     @Autowired
     Validator validator;
@@ -58,7 +58,7 @@ class ApplicationContextTest {
 
     Level3FactoryImpl factory3 = (Level3FactoryImpl) BioPAXLevel.L3.getDefaultFactory();
     
-	final static String TEST_DATA_DIR = "testfiles/data/";
+	final static String TEST_DATA_DIR = "target";
 	
 	SimpleExporter exporter = 
 		new SimpleExporter(BioPAXLevel.L3);

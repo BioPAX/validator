@@ -5,6 +5,7 @@ import java.io.*;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.impl.level3.Level3FactoryImpl;
 import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
+import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.Rule;
@@ -25,10 +26,22 @@ import org.biopax.paxtools.model.level3.Process;
  * 
  * @author rodch
  */
-class Level3RulesUnitTest extends TestBasic {
+public class Level3RulesUnitTest {
 
-	Level3Factory level3 = new Level3FactoryImpl(); // to create BioPAX objects
-	EditorMap editorMap = new SimpleEditorMap(BioPAXLevel.L3);
+	static Level3Factory level3 = new Level3FactoryImpl(); // to create BioPAX objects
+	static EditorMap editorMap = new SimpleEditorMap(BioPAXLevel.L3);
+	static SimpleExporter exporter = new SimpleExporter(BioPAXLevel.L3);
+	final static String TEST_DATA_DIR = "target";
+	
+	void writeExample(String file, Model model) {
+    	try {
+			exporter.convertToOWL(model, 
+					new FileOutputStream(TEST_DATA_DIR + file));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+    }
+	
 	
 	@Test
 	public void testBiochemicalPathwayStepProcessOnlyControlCRRule() 

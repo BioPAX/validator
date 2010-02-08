@@ -10,19 +10,19 @@
 
 <bp:InteractionVocabulary rdf:about="InteractionType_phosphorylation">
  <bp:comment rdf:datatype = "xsd:string">This is the PSI-MI ID of the interaction type between the enzyme and the substrate</bp:comment>
- <bp:xref rdf:resource="MI_0217" />
+ <bp:xref rdf:resource="#MI_0217" />
  <bp:term rdf:datatype = "xsd:string">Phosphorylation</bp:term>
 </bp:InteractionVocabulary>
 
 <bp:InteractionVocabulary rdf:about="InteractionType_phosphorylation_reaction">
  <bp:comment rdf:datatype = "xsd:string">This is the PSI-MI ID of the interaction type between the enzyme and the substrate</bp:comment>
- <bp:xref rdf:resource="MI_0217" />
+ <bp:xref rdf:resource="#MI_0217" />
  <bp:term rdf:datatype = "xsd:string">phosphorylation reaction</bp:term>
 </bp:InteractionVocabulary>
 
 <bp:InteractionVocabulary rdf:about="InteractionType_ubiquitination">
  <bp:comment rdf:datatype = "xsd:string">This is the PSI-MI ID of the interaction type between the enzyme and the substrate</bp:comment>
- <bp:xref rdf:resource="MI_0220" />
+ <bp:xref rdf:resource="#MI_0220" />
  <bp:term rdf:datatype = "xsd:string">Ubiquitination</bp:term>
 </bp:InteractionVocabulary>
 

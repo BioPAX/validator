@@ -28,7 +28,7 @@ import uk.ac.ebi.ook.web.services.client.QueryServiceFactory;
 public class OntologyUtils {
 	private final static Log log = LogFactory.getLog(OntologyUtils.class);
 	
-	public static final String CACHE_DIR_LOCAL_NAME = "cache";
+	public static final String CACHE_DIR_LOCAL_NAME = "../cache";
 	
 	private Query ontologyQuery;
 	private final String cacheDir;

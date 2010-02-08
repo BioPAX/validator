@@ -168,7 +168,7 @@ public class IntegrationTest {
     	// but... what a surprise, the following may fail!
 
         SimpleReader r = new SimpleReader(BioPAXLevel.L3);
-    	Model m = r.convertFromOWL(getClass().getResourceAsStream("/data/IntercationVocabulary-Phosphorylation.xml"));
+    	Model m = r.convertFromOWL(getClass().getResourceAsStream("IntercationVocabulary-Phosphorylation.xml"));
     	InteractionVocabulary vv = (InteractionVocabulary) m.getByID("Interaction_Phosphorylation");
         rule.check(vv);
     }
