@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 import java.io.*;
 
 import org.biopax.paxtools.impl.level3.Level3FactoryImpl;
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
@@ -20,7 +19,6 @@ import org.biopax.validator.rules.XrefRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-//import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -46,10 +44,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author rodche
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:validator-context.xml"})
-public class ApplicationContextTest {
-    static final String TEST_PATHWAY = "classpath:biopax3-short-metabolic-pathway.owl";
-      
+@ContextConfiguration(locations = {"classpath:validator-aop-context.xml"})
+public class AOPAspectJLTWIntegrationTest {
     @Autowired
     Validator validator;
     
@@ -58,25 +54,11 @@ public class ApplicationContextTest {
 
     Level3FactoryImpl factory3 = (Level3FactoryImpl) BioPAXLevel.L3.getDefaultFactory();
     
-	final static String TEST_DATA_DIR = "target";
-	
-	SimpleExporter exporter = 
-		new SimpleExporter(BioPAXLevel.L3);
-	
-	void writeExample(String file, Model model) {
-    	try {
-			exporter.convertToOWL(model, 
-					new FileOutputStream(TEST_DATA_DIR + file));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-    }
-    
-    
     @Test
     //@DirtiesContext //do not!
     public void testValidator() throws IOException {
-    	Resource resource = context.getResource(TEST_PATHWAY);
+    	Resource resource = context
+    		.getResource("classpath:biopax3-short-metabolic-pathway.owl");
     	Validation result = new Validation();
     	result.setDescription(resource.getDescription());
     	validator.importModel(result, resource.getInputStream());
@@ -175,8 +157,8 @@ public class ApplicationContextTest {
     @Test
     public void testDuplicateNamesImport() throws IOException {
     	Validation validation = new Validation();
-    	validator.importModel(validation, new FileInputStream(TEST_DATA_DIR 
-					+ "testDuplicateNamesImport.xml"));
+    	validator.importModel(validation, getClass()
+    			.getResourceAsStream("testDuplicateNamesImport.xml"));
     	ErrorType error = validation.findError("duplicate.names", Behavior.ERROR);
     	assertNotNull(error);
     }

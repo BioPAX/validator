@@ -10,15 +10,14 @@
 <div style="float: left; padding-left: 4em">
 <a href="http://sf.net/tracker/?group_id=85345">Report Issue</a>
 </div>
-<div style="float: right">
+<div style="float: right; padding-left: 2em">
 <a href="http://www.gnu.org/licenses/lgpl-3.0.txt">
 <img src="<c:url value="/images/lgplv3-88x31.png" />" width="88" height="31"/>
 </a>
 </div>
-<div style="float: right">
-Uses 
+<div style="float: right; padding-left: 2em">
 <a href="http://www.ebi.ac.uk/ontology-lookup">
-<img src="<c:url value="/images/ols-logo-small.jpg" />" width="88" height="31"/>
+<img src="<c:url value="/images/ols-logo-small.jpg" />"/>
 </a>
 </div>
 <div style="float: right; padding-right: 2em">

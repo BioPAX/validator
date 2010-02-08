@@ -1,5 +1,6 @@
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -21,7 +22,7 @@ public class Level2RulesUnitTest {
 	void writeExample(String file, Model model) {
     	try {
 			exporter.convertToOWL(model, 
-					new FileOutputStream(TEST_DATA_DIR + file));
+				new FileOutputStream(TEST_DATA_DIR + File.separator + file));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

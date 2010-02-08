@@ -1,0 +1,22 @@
+<!DOCTYPE aspectj PUBLIC
+        "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+    <weaver options="-verbose -showWeaveInfo -XmessageHandlerClass:org.springframework.aop.aspectj.AspectJWeaverMessageHandler -Xreweavable">
+        <!-- only weave classes within packages that match listed -->
+        <include within="org.biopax.validator.impl.*" />
+        <include within="org.biopax.paxtools..*" />
+    </weaver>
+    <aspects>
+        <!-- use only the following aspects for weaving -->
+        <aspect name="org.biopax.validator.impl.BehaviorAspect" />
+        <aspect name="org.biopax.validator.impl.ExceptionsAspect" />
+        <aspect name="org.biopax.validator.impl.ControlAspect" />
+                
+        <!-- these are added automatically when JVM started
+           - with -javaagent:lib/spring-agent.jar option
+           - (see aop.xml inside spring-aspects.jar)
+        <aspect name="org.springframework.beans.factory.aspectj.AnnotationBeanConfigurerAspect" />
+        <aspect name="org.springframework.transaction.aspectj.AnnotationTransactionAspect" />
+        -->
+    </aspects>
+</aspectj>

@@ -5,6 +5,7 @@ import java.util.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -15,11 +16,11 @@ import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.Behavior;
+import org.biopax.validator.rules.CellularLocationCvRule;
 import org.biopax.validator.rules.InteractionTypeCvRule;
 import org.biopax.validator.rules.XrefRule;
 import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.utils.XrefHelper;
-import org.biopax.validator.rules.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -32,9 +33,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:validator-core-context.xml"}) // AOP disabled
-public class IntegrationTest {
-    static final String TEST_PATHWAY = "biopax3-short-metabolic-pathway.owl";
-    
+public class IntegrationTest {    
     @Autowired
     XrefHelper xrefHelper;
     
@@ -54,6 +53,7 @@ public class IntegrationTest {
 
     @Test
     public void testRange1() {
+        System.out.println("test Range (1)");
         Evidence ev = (Evidence) factory3.createEvidence();
         EvidenceCodeVocabulary ec = factory3.createEvidenceCodeVocabulary();
         ev.addEvidenceCode(ec);
@@ -94,16 +94,21 @@ public class IntegrationTest {
 	 */
     @Test
     public void testSynonymsWereRead() {
-    	System.out.println("testSynonymsWereRead");
     	List<String> gs = xrefHelper.getSynonymsForDbName("go"); 	
     	assertTrue(gs.contains("GO"));
     	assertTrue(gs.contains("GENE ONTOLOGY"));
     	assertTrue(gs.contains("GENE_ONTOLOGY"));
     }
 
+    
+    @Test
+    public void testXRefHelper() {
+    	assertFalse(xrefHelper.getMiriam().getDatatype().isEmpty());
+    }
+    
+    
     @Test
     public void testXRefHelperContainsSynonyms() {
-    	System.out.println("testXRefHelperContainsSynonyms");	
     	assertTrue(xrefHelper.contains("GO"));
     	assertTrue(xrefHelper.contains("GENE ONTOLOGY"));
     	assertTrue(xrefHelper.contains("GENE_ONTOLOGY"));
@@ -111,16 +116,14 @@ public class IntegrationTest {
     
     @Test
     public void testPrimarySynonym() {
-    	System.out.println("testPrimarySynonym");  	
-    	System.out.println("not in Miriam: PIR");
+    	//not in Miriam: PIR
     	assertEquals("UNIPROT", xrefHelper.getSynonymsForDbName("pir").get(0));
-    	System.out.println("Miriam: Gene Ontology");
+    	//Miriam: Gene Ontology
     	assertEquals("GENE ONTOLOGY", xrefHelper.getSynonymsForDbName("go").get(0));
     }
     
     @Test
     public void testHasRegexp() {
-    	System.out.println("testHasRegexp");
     	List<String> goes = xrefHelper.getSynonymsForDbName("go");
     	for(String db: goes) {
     		assertEquals("^GO:\\d{7}$", xrefHelper.getRegexpString(db));
@@ -132,15 +135,12 @@ public class IntegrationTest {
  	   Xref xref = factory3.createUnificationXref();
  	   XrefRule r = (XrefRule) context.getBean("xrefRule");
  	   
- 	   System.out.println("XrefRule is trying to match 'GO:0005737' against " 
- 			   + xrefHelper.getRegexpString("GO"));
+ 	   //XrefRule is trying to match 'GO:0005737'
  	   xref.setDb("GO");
  	   xref.setId("GO:0005737");
 	   r.check(xref);
 
- 	   // one more
- 	   System.out.println("XrefRule is trying to match 'XP_001075834' against " 
- 			   + xrefHelper.getRegexpString("RefSeq"));
+ 	   // XrefRule is trying to match 'XP_001075834'
  	   xref.setDb("RefSeq");
  	   xref.setId("XP_001075834");
 	   r.check(xref);
@@ -156,8 +156,7 @@ public class IntegrationTest {
     	InteractionTypeCvRule rule =  
              (InteractionTypeCvRule) context.getBean("interactionTypeCvRule");    
     	
-    	System.out.println(rule.getValidTerms().toString());
-    	
+    	assertFalse(rule.getValidTerms().isEmpty());
     	
         InteractionVocabulary v = factory3.createInteractionVocabulary();
         v.addTerm("Phosphorylation");
@@ -165,15 +164,15 @@ public class IntegrationTest {
         v.setRDFId("okCVTerm");
         rule.check(v);
     	
-    	// but... what a surprise, the following may fail!
-
+    	// what a surprise, the following used to fail (before it's been fixed)
         SimpleReader r = new SimpleReader(BioPAXLevel.L3);
     	Model m = r.convertFromOWL(getClass().getResourceAsStream("IntercationVocabulary-Phosphorylation.xml"));
     	InteractionVocabulary vv = (InteractionVocabulary) m.getByID("Interaction_Phosphorylation");
         rule.check(vv);
     }
     
-    @Test(expected=BiopaxValidatorException.class)
+    
+    @Test
     public void testCellularLocationRuleWrong() {
         CellularLocationCvRule instance =  
                 (CellularLocationCvRule) context.getBean("cellularLocationCvRule");
@@ -182,7 +181,11 @@ public class IntegrationTest {
         lcv.addTerm("LOCATION?");
         lcv.setRDFId("badTerm");    
         assertTrue(instance.canCheck(lcv));
-       	instance.check(lcv);
+        try {
+        	instance.check(lcv);
+        	fail("Expected BiopaxValidatorException!");
+        } catch (BiopaxValidatorException e) {
+		}
     }
     
     @Test
@@ -196,24 +199,34 @@ public class IntegrationTest {
     }
 
 
-    @Test(expected=BiopaxValidatorException.class)
+    @Test
     public void testXrefRuleWrong() {
         XrefRule instance =  (XrefRule) context.getBean("xrefRule");
         instance.setBehavior(Behavior.ERROR);
         UnificationXref x = factory3.createUnificationXref();
-        x.setDb("LOCATION?");
-        instance.check(x);
+        x.setDb("ILLEGAL DB NAME");
+        try {
+        	instance.check(x);
+        	fail("Must throw BiopaxValidatorException!");
+        } catch (BiopaxValidatorException e) {
+			//ok
+		}
     }
     
 
-    @Test(expected=BiopaxValidatorException.class)
+    @Test
     public void testXrefRule() {
         XrefRule instance =  (XrefRule) context.getBean("xrefRule");
         instance.setBehavior(Behavior.ERROR);
         UnificationXref x = factory3.createUnificationXref();
         x.setDb("reactome");
         x.setId("0000000");
-        instance.check(x);
+        try {
+        	instance.check(x);
+        	fail("Must throw BiopaxValidatorException!");
+        } catch (BiopaxValidatorException e) {
+			//ok
+		}
     }
    
     @Test
@@ -256,13 +269,12 @@ public class IntegrationTest {
 		}
         
         writeExample("testInteractionTypeRule.owl", m);
-    }
-    
+    } 
     
     private void writeExample(String file, Model model) {
     	try {
 			exporter.convertToOWL(model, 
-					new FileOutputStream(OUTDIR + file));
+					new FileOutputStream(OUTDIR + File.separator + file));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

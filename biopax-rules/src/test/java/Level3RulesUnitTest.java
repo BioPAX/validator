@@ -36,7 +36,7 @@ public class Level3RulesUnitTest {
 	void writeExample(String file, Model model) {
     	try {
 			exporter.convertToOWL(model, 
-					new FileOutputStream(TEST_DATA_DIR + file));
+				new FileOutputStream(TEST_DATA_DIR + File.separator + file));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -348,7 +348,7 @@ public class Level3RulesUnitTest {
     	
     	// read back and tricky-test
     	BufferedReader in = new BufferedReader(new FileReader(
-    			TEST_DATA_DIR + "testDuplicateNamesByExporter.xml"));
+    			TEST_DATA_DIR + File.separator + "testDuplicateNamesByExporter.xml"));
     	char[] buf = new char[1000];
     	in.read(buf);
     	String xml = new String(buf);
