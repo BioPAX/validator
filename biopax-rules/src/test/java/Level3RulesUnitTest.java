@@ -394,4 +394,65 @@ public class Level3RulesUnitTest {
     	// thnx to the API, it's impossible to add more than one 'organism' value, so - no more tests are required
     }
 
+	@Test
+	public void testControlTypeRule() throws IOException
+	{
+		Rule rule = new ControlTypeRule();	
+		Catalysis ca = level3.createCatalysis();
+		ca.setRDFId("catalysis1");
+		rule.check(ca); // controlType==null, no error expected
+		ca.setControlType(ControlType.ACTIVATION);
+		rule.check(ca); // no error expected
+		ca.setControlType(ControlType.INHIBITION);
+		ca.addComment("error: illegal controlType");
+		try {
+			rule.check(ca); 
+			fail("must throw BiopaxValidatorException");
+		} catch(BiopaxValidatorException e) {
+		}
+		
+		TemplateReactionRegulation tr = level3.createTemplateReactionRegulation();
+		tr.setRDFId("regulation1");
+		tr.setControlType(ControlType.INHIBITION);
+		rule.check(tr); // no error...
+		tr.setControlType(ControlType.ACTIVATION_ALLOSTERIC);
+		tr.addComment("error: illegal controlType");
+		try {
+			rule.check(tr); 
+			fail("must throw BiopaxValidatorException");
+		} catch(BiopaxValidatorException e) {
+		}
+		
+		// write the example XML
+		Model m = level3.createModel();
+		ca.setControlType(ControlType.INHIBITION); // set wrong
+		tr.setControlType(ControlType.ACTIVATION_ALLOSTERIC); // set bad
+		m.add(ca);
+		m.add(tr);
+		writeExample("testControlTypeRule.owl",m);
+	}
+	
+    
+	@Test
+	public void testDegradationConversionDirectionRule() throws IOException
+	{
+		Rule rule = new DegradationConversionDirectionRule();
+		Conversion dg = level3.createDegradation();
+		dg.setRDFId("degradation-conversion-1");
+		rule.check(dg); // direction is null, no error
+		dg.setConversionDirection(ConversionDirectionType.REVERSIBLE);
+		dg.addComment("error: illegal conversionDirection");
+		try {
+			rule.check(dg); 
+			fail("must throw BiopaxValidatorException");
+		} catch(BiopaxValidatorException e) {
+		}
+		
+		// write the example
+		Model m = level3.createModel();
+		dg.setConversionDirection(ConversionDirectionType.REVERSIBLE);
+		m.add(dg);
+		writeExample("testDegradationConversionDirectionRule.owl",m);		
+	}
+    
 }

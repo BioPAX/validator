@@ -4,9 +4,8 @@ import org.biopax.paxtools.model.level3.ControlledVocabulary;
 import org.biopax.validator.impl.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
-//TODO this is disabled rule (not sure if apply)
 
-//@Component
+@Component
 public class ControlledVocabularyTermCRRule extends
 		CardinalityAndRangeRule<ControlledVocabulary> {
 
