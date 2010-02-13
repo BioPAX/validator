@@ -2,6 +2,7 @@ package org.biopax.validator.rules;
 
 import javax.annotation.Resource;
 
+import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
 
@@ -9,7 +10,6 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.pathway;
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.impl.TraverserRunner;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,20 +27,22 @@ public class Level2AcyclicPathwayRule extends AbstractRule<pathway> {
 		return thing instanceof pathway;
 	}
 
-	public void check(pathway thing) {
-		TraverserRunner checker = new TraverserRunner(editorMap2)
+	public void check(final pathway thing) {
+		AbstractTraverser checker = new AbstractTraverser(editorMap2)
 		{
 			@Override
-			protected void visitObjectValue(BioPAXElement value, Model model,  PropertyEditor editor) {
+			protected void visit(Object value, BioPAXElement parent, 
+					Model model,  PropertyEditor editor) {
 				if (value instanceof pathway && 
-					start.getRDFId().equalsIgnoreCase(value.getRDFId())) {
-						error(start, "cyclic.inclusion", path);
+					thing.getRDFId().equalsIgnoreCase(((BioPAXElement) value).getRDFId())) {
+						error(thing, "cyclic.inclusion", 
+								getCurrentParentsList().toString());
 				} 
-				traverse(value, model);
+				traverse((BioPAXElement) value, model);
 			}
 		};
 		
-		checker.run(thing, null);
+		checker.traverse(thing, null);
 	}
 
 }

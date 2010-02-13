@@ -5,7 +5,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.impl.TraverserRunner;
+import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
@@ -61,29 +61,21 @@ public class DataPropertyIlliegalValueRule extends AbstractRule<Model> {
 			(model.getLevel() == BioPAXLevel.L3)
 				? editorMap3 : editorMap2;
 		
-		TraverserRunner checker = new TraverserRunner(editorMap) {
-
+		AbstractTraverser checker = new AbstractTraverser(editorMap) {
 			@Override
-			protected void visitObjectValue(BioPAXElement value, Model model,
-					PropertyEditor editor) {
-				// nothing to do
-			}
-			
-			@Override
-			protected void visitDataValue(Object value, BioPAXElement parent,
+			protected void visit(Object value, BioPAXElement parent,
 					Model model, PropertyEditor editor) {
-				super.visitDataValue(value, parent, model, editor);
-				if (value != null) {
+				if (value != null && !(value instanceof BioPAXElement)) {
 					if (warnOnDataPropertyValues.contains(value.toString().trim().toUpperCase())) {
 						error(parent, "illegal.property.value", editor.getProperty(), value);
 					}
 				}
 			}
-			
 		};
 		
-		checker.run(null, model);
-
+		for(BioPAXElement e: model.getObjects()) {
+			checker.traverse(e, model);
+		}
 	}
 	
 	@Override

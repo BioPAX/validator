@@ -1,5 +1,6 @@
 package org.biopax.validator.rules;
 
+import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.model.BioPAXElement;
@@ -10,7 +11,6 @@ import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.util.ClassFilterSet;
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.impl.TraverserRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -48,11 +48,10 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
     boolean findProteinOnTheOtherSide(final Conversion conversion, 
     		final SimplePhysicalEntity prot, final String side) 
     {
-       TraverserRunner runner = new TraverserRunner(editorMap3) {
-    	    boolean found;
-    	    
+    	AbstractTraverser runner = new AbstractTraverser(editorMap3) {
     		@Override
-			protected void visitObjectValue(BioPAXElement value, Model model, PropertyEditor editor) {
+			protected void visit(Object value, BioPAXElement parent, 
+					Model model, PropertyEditor editor) {
     			if(!editor.getProperty().equals(side)) {
     				return; // skip same-side participants
     			}
@@ -62,21 +61,21 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
 					&& ((SimplePhysicalEntity)value).getEntityReference()
 						.isEquivalent(prot.getEntityReference())) 
 				{
-					found = true;
+					
+					throw new RuntimeException("found!");
+					
 				} else if (value instanceof Complex){ 
-					traverse(value, model);
+					traverse((Complex) value, model);
 				}
 			}
-    		
-    		@Override
-    		public boolean run(BioPAXElement conversion, Model model) {
-    			found = false;
-    			super.run(conversion, model);
-    			return found;
-    		}
     	};
     	
-   		return runner.run(conversion, null);
+    	try {
+   		runner.traverse(conversion, null);
+    	} catch (RuntimeException e) {
+			return true;
+		}
+   		return false;
     }
     
     public boolean canCheck(Object thing) {

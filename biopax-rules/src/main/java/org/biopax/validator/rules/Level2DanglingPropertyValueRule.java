@@ -2,13 +2,13 @@ package org.biopax.validator.rules;
 
 import javax.annotation.Resource;
 
+import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.impl.TraverserRunner;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,11 +33,11 @@ public class Level2DanglingPropertyValueRule extends AbstractRule<Model> {
 
 	public void check(Model model) {
 		
-		TraverserRunner traverser = new TraverserRunner(editorMap2) {
+		AbstractTraverser traverser = new AbstractTraverser(editorMap2) {
 			@Override
-			protected void visitObjectValue(BioPAXElement value, Model model,
+			protected void visit(Object value, BioPAXElement parent, Model model,
 					PropertyEditor editor) {
-				if(!model.contains(value)) {
+				if(value instanceof BioPAXElement && !model.contains((BioPAXElement) value)) {
 					error(value, "dangling.value", 
 						editor.getDomain().getSimpleName(), editor.getProperty());
 				} 	
@@ -45,6 +45,8 @@ public class Level2DanglingPropertyValueRule extends AbstractRule<Model> {
 		};
 		
 		// starts from each element in the model and visits its properties
-		traverser.run(null, model); 
+		for(BioPAXElement e : model.getObjects()) {
+			traverser.traverse(e, model); 
+		}
 	}
 }

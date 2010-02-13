@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import javax.annotation.Resource;
 
+import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
@@ -12,7 +13,6 @@ import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.BioSource;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.impl.TraverserRunner;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.stereotype.Component;
 
@@ -35,20 +35,21 @@ public class PathwayMultiOrganismRule extends AbstractRule<Pathway>
     	//but..
     	if(organism==null) return; // we do not care
     	
-    	TraverserRunner runner = new TraverserRunner(editorMap3) {
+    	AbstractTraverser runner = new AbstractTraverser(editorMap3) {
     		@Override
-			protected void visitObjectValue(BioPAXElement value, Model model, PropertyEditor editor) {
+			protected void visit(Object value, BioPAXElement parent, 
+					Model model, PropertyEditor editor) {
 				if(value instanceof BioSource) {	
-					if(!value.isEquivalent(organism)) {
-						organisms.add(value);
+					if(!((BioPAXElement) value).isEquivalent(organism)) {
+						organisms.add((BioPAXElement) value);
 					}
-				} else {
-					traverse(value, model);
+				} else if (value instanceof BioPAXElement){
+					traverse((BioPAXElement) value, model);
 				}
 			}
     	};
     	
-   		runner.run(pathway, null);
+   		runner.traverse(pathway, null);
    		
 		if(organisms.size()>0) {
 			error(pathway, "multi.organism.pathway", organism,
