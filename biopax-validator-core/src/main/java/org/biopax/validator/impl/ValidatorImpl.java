@@ -7,7 +7,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.BioPAXElement;
+import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
+import org.biopax.paxtools.model.level2.interaction;
+import org.biopax.paxtools.model.level2.pathway;
+import org.biopax.paxtools.model.level2.physicalEntityParticipant;
+import org.biopax.paxtools.model.level3.Gene;
+import org.biopax.paxtools.model.level3.Interaction;
+import org.biopax.paxtools.model.level3.Pathway;
+import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.validator.Rule;
 import org.biopax.validator.result.Validation;
 import org.biopax.validator.utils.BiopaxValidatorException;
@@ -81,6 +89,18 @@ public class ValidatorImpl implements Validator {
 				
 			} else {
 				log.warn("Model is null (" + validation + ")");
+			}
+			
+			// add comments and stats
+			if(model != null && model.getLevel() == BioPAXLevel.L3) {
+				validation.addComment("number of interactions : " + model.getObjects(Interaction.class).size());
+				validation.addComment("number of physical entities : " + model.getObjects(PhysicalEntity.class).size());
+				validation.addComment("number of genes : " + model.getObjects(Gene.class).size());
+				validation.addComment("number of pathways : " + model.getObjects(Pathway.class).size());
+			} else {
+				validation.addComment("number of interactions : " + model.getObjects(interaction.class).size());
+				validation.addComment("number of participants : " + model.getObjects(physicalEntityParticipant.class).size());
+				validation.addComment("number of pathways : " + model.getObjects(pathway.class).size());
 			}
 		}
 

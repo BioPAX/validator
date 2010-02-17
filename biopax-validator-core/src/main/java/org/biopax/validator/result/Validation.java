@@ -18,6 +18,7 @@ public class Validation implements Serializable {
 	private final Set<ErrorType> error;
 	private String fixedOwl;
 	private String description;
+	private final Set<String> comment;
 	
 	// "forcedly" associated objects, i.e., parser, model(s), and dangling elements 
 	private final Set<Object> objects; 
@@ -27,14 +28,14 @@ public class Validation implements Serializable {
 	public Validation() {
 		this.error = new HashSet<ErrorType>();
 		this.description = "unknown";
+		this.comment = new HashSet<String>();
 		this.objects = new HashSet<Object>();
 	}
 
 	// Constructor that is used in the Validator
 	public Validation(String name) {
-		this.error = new HashSet<ErrorType>();
-		this.description = name;
-		this.objects = new HashSet<Object>();
+		this();
+		description = name;
 	}	
 	
 	/**
@@ -95,6 +96,20 @@ public class Validation implements Serializable {
 		return description;
 	}
 	
+	public void setComment(Collection<String> comments) {
+		this.comment.clear();
+		this.comment.addAll(comments);
+	}
+	
+	public void addComment(String comment) {
+		this.comment.add(comment);
+	}
+	
+	public Collection<String> getComment() {
+		return comment;
+	}
+	
+	
 	@XmlAttribute
 	public String getSummary() {
 		StringBuffer result = new StringBuffer();
@@ -138,12 +153,16 @@ public class Validation implements Serializable {
 		int count = 0;
 		
 		for(ErrorType et : getError()) {
+			// skip warnings?
 			if(ignoreWarnings == true && et.getType() == Behavior.WARNING) {
 				continue;
 			}
+			
+			// skip other codes?
 			if(code != null && !code.equalsIgnoreCase(et.getCode())) {
 				continue;
 			}
+			
 			count += et.countErrors(forObject, reportedBy);
 		}
 		

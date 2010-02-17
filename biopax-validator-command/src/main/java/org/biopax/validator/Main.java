@@ -28,7 +28,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {				
 		// this does 90% of the job ;)
-		ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+		ctx = new ClassPathXmlApplicationContext("validator-context.xml");
 		// Rules are now loaded, and AOP is listening for BioPAX model method calls.
 		
         // get the beans to work with

@@ -29,16 +29,19 @@ public class Level2AcyclicPathwayRule extends AbstractRule<pathway> {
 
 	public void check(final pathway thing) {
 		AbstractTraverser checker = new AbstractTraverser(editorMap2)
-		{
+ {
 			@Override
-			protected void visit(Object value, BioPAXElement parent, 
-					Model model,  PropertyEditor editor) {
-				if (value instanceof pathway && 
-					thing.getRDFId().equalsIgnoreCase(((BioPAXElement) value).getRDFId())) {
-						error(thing, "cyclic.inclusion", 
+			protected void visit(Object value, BioPAXElement parent,
+					Model model, PropertyEditor editor) {
+				if (value instanceof BioPAXElement) {
+					if (value instanceof pathway
+							&& thing.getRDFId().equalsIgnoreCase(
+									((BioPAXElement) value).getRDFId())) {
+						error(thing, "cyclic.inclusion",
 								getCurrentParentsList().toString());
-				} 
-				traverse((BioPAXElement) value, model);
+					}
+					traverse((BioPAXElement) value, model);
+				}
 			}
 		};
 		

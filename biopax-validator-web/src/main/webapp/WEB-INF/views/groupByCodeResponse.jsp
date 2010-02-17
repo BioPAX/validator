@@ -15,6 +15,9 @@
 <ul>
 <c:forEach var="result" items="${response.validationResult}" varStatus="rstatus">
 	<li><u>Resource:&nbsp;${result.description}&nbsp;<a href="javascript:switchit('result${rstatus.index}')">${result.summary}</a></u></li>
+	<c:forEach var="comment" items="${result.comment}">
+		<li>${comment}</li>
+	</c:forEach>
 	<ul id="result${rstatus.index}" style="display: none">
 	<c:forEach var="errorType" items="${result.error}" varStatus="estatus">
 		<li><a href="javascript:switchit('result${rstatus.index}type${estatus.index}')">${errorType.type}</a>&nbsp;(<em>${errorType.code}</em>):&nbsp;${errorType.message}</li>
