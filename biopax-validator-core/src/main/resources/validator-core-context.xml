@@ -30,7 +30,7 @@
 				<value>validator</value>
 				<value>rule-descriptions</value>
 				<value>error-codes</value>
-				<value>profile-info</value>
+				<value>profile-ideal</value>
 			</list>
 		</property>
 	</bean>
@@ -67,8 +67,8 @@
 		xsi:schemaLocation="http://www.biomodels.net/MIRIAM/ classpath:Miriam.xsd"
 		contextPath="net.biomodels.miriam" />
 
-  	<bean id="ontologyUtils" class="org.biopax.validator.utils.OntologyUtils">
-		<constructor-arg value="http://www.ebi.ac.uk/ontology-lookup/services/OntologyQuery"/>
+  	<bean id="cvTermsFetcher" class="org.biopax.validator.utils.CvTermsFetcher">
+		 <constructor-arg value="classpath:ontologies.xml" />
 	</bean>
 	
 	<!-- a helper and a proxy to access MIRIAM and MI database citation and regexps 
@@ -77,7 +77,7 @@
 		<constructor-arg ref="manuallyAddedDbSynonyms"/>
         <constructor-arg value="classpath:Miriam.xml"/>
         <constructor-arg ref="miriamUnmarshaller" />
-        <constructor-arg ref="ontologyUtils" />
+        <constructor-arg ref="cvTermsFetcher" />
     </bean>
 	
 </beans>

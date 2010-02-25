@@ -22,23 +22,21 @@ import org.springframework.oxm.Unmarshaller;
  */
 public class XrefHelper {
     private static final Log log = LogFactory.getLog(XrefHelper.class);
-    private static final String NAMES_CACHE = "xrefHelperDbs";
-    private static final String SYNONYMS_CACHE = "xrefHelperSyns";
     
     private Map<String, Pattern> databases;
-    private OntologyUtils ontologyUtils;
+    private CvTermsFetcher cvTermsFetcher;
     private Miriam miriam;
 	private Set<List<String>> customDbSynonyms;
     
     public XrefHelper(Set<List<String>> customDbSynonyms, Resource miriamXmlResource, 
-    		Unmarshaller miriamUnmarshaller, OntologyUtils ontologyUtils) 
+    		Unmarshaller miriamUnmarshaller, CvTermsFetcher cvTermsFetcher) 
     	throws Exception 
     {
     	this.customDbSynonyms = (customDbSynonyms != null) 
     		? customDbSynonyms 
     			: new HashSet<List<String>>();
     	
-    	this.ontologyUtils = ontologyUtils;
+    	this.cvTermsFetcher = cvTermsFetcher;
     	
     	// load Miriam
     	this.miriam = (Miriam) miriamUnmarshaller.unmarshal(
@@ -52,44 +50,29 @@ public class XrefHelper {
            
     @SuppressWarnings("unchecked")
 	@PostConstruct
-    public void init() {
-    	// first, try getting "databases" from cache
-    	Map<String, Pattern> dbs = (Map<String, Pattern>) ontologyUtils.getFromCache(NAMES_CACHE);	
-		Set<List<String>> syns = (Set<List<String>>) ontologyUtils.getFromCache(SYNONYMS_CACHE);	
-		if (dbs == null || dbs.isEmpty() || syns == null || syns.isEmpty()) {
-			if (log.isInfoEnabled())
-				log.info("Re-bulding the db name/pattern cache...");
-			// Retrieve database names and ID patterns
-			databases = new HashMap<String, Pattern>();
-			
-			// adds user-configured synonyms to databases
-			for (List<String> group : customDbSynonyms) {
-				for (String db : group) {
-					databases.put(db, null);
-				}
-			}
+	public void init() {
+		// Retrieve database names and ID patterns
+		databases = new HashMap<String, Pattern>();
 
-			// loads names from MI: all children terms of 'database citation'
-			Set<String> terms = 
-				ontologyUtils.getTermNames(new CvTermRestriction("MI:0444", "MI", 
-						false, UseChildTerms.ALL, false));
-			for (String term : terms) {
-				String db = dbName(term);
+		// adds user-configured synonyms to databases
+		for (List<String> group : customDbSynonyms) {
+			for (String db : group) {
 				databases.put(db, null);
 			}
-
-			// adds names and assigns regexps from Miriam;
-			// also makes those names primary synonyms
-			importMiriam();
-
-			// add to chache
-			ontologyUtils.putInCache(NAMES_CACHE, databases);
-			ontologyUtils.putInCache(SYNONYMS_CACHE, customDbSynonyms);
-		} else {
-			this.databases = dbs;
-			this.customDbSynonyms = syns;
 		}
-    }
+
+		// loads names from MI: all children terms of 'database citation'
+		Set<String> terms = cvTermsFetcher.getTermNames(new CvTermRestriction(
+				"MI:0444", "MI", false, UseChildTerms.ALL, false));
+		for (String term : terms) {
+			String db = dbName(term);
+			databases.put(db, null);
+		}
+
+		// adds names and assigns regexps from Miriam;
+		// also makes those names primary synonyms
+		importMiriam();
+	}
     
     // get db names and regex form MIRIAM
 	private void importMiriam() {

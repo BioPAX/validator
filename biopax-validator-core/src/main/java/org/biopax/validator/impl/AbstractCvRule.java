@@ -5,7 +5,7 @@ import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.biopax.validator.utils.OntologyUtils;
+import org.biopax.validator.utils.CvTermsFetcher;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 public abstract class AbstractCvRule<T> extends AbstractRule<T> {
     
 	@Resource
-    protected OntologyUtils ontologyUtils;
+    protected CvTermsFetcher cvTermsFetcher;
     
     protected final Class<T> domain;
     protected final String property; // helps validate generic ControlledVocabulary instances
@@ -46,7 +46,13 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
     @PostConstruct
     public void init() {
     	super.init();
-    	setValidTerms(ontologyUtils.getValidTerms(this));
+    	if(cvTermsFetcher != null) {
+    		setValidTerms(cvTermsFetcher.getValidTermNames(this));
+    	} else {
+    		if(logger.isInfoEnabled()) {
+    			logger.info("rule created but  (cvTermsFetcher=null)");
+    		}
+    	}
     };
     
     
@@ -89,10 +95,10 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
 	}
 	
 	/**
-	 * Gets the internal OntologyUtils instance
+	 * Gets the internal CvTermsFetcher instance
 	 * @return
 	 */
-	public OntologyUtils getOntologyUtils() {
-		return ontologyUtils;
+	public CvTermsFetcher getCvTermsFetcher() {
+		return cvTermsFetcher;
 	}
 }

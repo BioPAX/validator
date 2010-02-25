@@ -15,8 +15,8 @@
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<source>1.5</source>
-						<target>1.5</target>
+						<source>1.6</source>
+						<target>1.6</target>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -29,6 +29,24 @@
 		</pluginManagement>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>rodche</id>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>biopax.snapshots</id>
+					<name>Local BioPAX Snapshots Repository</name>
+					<url>file:///Volumes/Work/m2repo-biopax/snapshots</url>
+				</snapshotRepository>
+				<repository>
+					<id>biopax.releases</id>
+					<name>Local BioPAX Repository</name>
+					<url>file:///Volumes/Work/m2repo-biopax/releases</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+	</profiles>
+
 	<repositories>
 		<repository>
 			<id>biopax.snapshots</id>
@@ -38,6 +56,22 @@
 				<enabled>false</enabled>
 			</releases>
 			<snapshots>
+			</snapshots>
+		</repository>
+				<repository>
+			<id>biopax.releases</id>
+			<name>BioPAX Repository at Sourceforge</name>
+			<url>http://biopax.sourceforge.net/m2repo/releases/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>ebi-repo</id>
+			<name>The EBI internal repository</name>
+			<url>http://www.ebi.ac.uk/~maven/m2repo</url>
+			<snapshots>
+				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 	</repositories>
@@ -137,18 +171,6 @@
 			<version>1.5.8</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
-			<version>1.1.1</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4.1</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 			<version>2.5.6.SEC01</version>
@@ -163,5 +185,6 @@
 		<module>biopax-rules</module>
 		<module>biopax-validator-command</module>
 		<module>biopax-validator-test</module>
+		<module>obo-fetcher</module>
 	</modules>
 </project>

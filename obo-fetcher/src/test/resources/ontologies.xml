@@ -1,0 +1,16 @@
+<cvSourceList>
+
+    <cvSource source="File"
+              uri="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/genomic-proteomic/protein/psi-mod.obo"
+              format="OBO"
+              name="PSI-MOD"
+              identifier="MOD"
+              version="1.260"/>
+              
+    <cvSource source="file" uri="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/genomic-proteomic/so.obo"
+              format="OBO" name="Sequence Ontology" identifier="SO"/>
+
+    <cvSource source="file" uri="http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/mi/rel25/data/psi-mi25.obo"
+              format="OBO" name="Molecular Interaction" identifier="MI"/>
+
+</cvSourceList>

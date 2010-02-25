@@ -59,33 +59,38 @@ public abstract class AbstractRule<T> implements Rule<T> {
      * 
      */
 	@PostConstruct
-    public void init() {
-        /*
-        * set value as specified in the properties file,
-        * or use the default value (it doesn't throw exceptions or return null)
-        */
-        // behavior
-        String value = rulesMessageSource.getMessage(
-                    getName() + ".behavior", null,
-                    "ERROR", Locale.getDefault()
-                );
-        setBehavior(Behavior.valueOf(value.toUpperCase()));
+	public void init() {
+		/*
+		 * set value as specified in the properties file, or use the default
+		 * value (it doesn't throw exceptions or return null)
+		 */
+		if (rulesMessageSource != null) {
+			// behavior
+			String value = rulesMessageSource.getMessage(getName()
+					+ ".behavior", null, "ERROR", Locale.getDefault());
+			setBehavior(Behavior.valueOf(value.toUpperCase()));
 
-        // description
-        this.tip = rulesMessageSource.getMessage(
-                    getName(), null, "", Locale.getDefault() 
-                );
-        if(tip==null || "".equals(tip)) {
-        	tip = "description is not found in the messages.properties file";
-        } else {
-        	tip = StringEscapeUtils.escapeHtml(tip);
-        }
-        
-        // set isPostModelOnly
-        String pmo = rulesMessageSource.getMessage(
-                getName() + ".postmodelonly", null, "true", Locale.getDefault());
-        setPostModelOnly(Boolean.parseBoolean(pmo));
-    }
+			// description
+			this.tip = rulesMessageSource.getMessage(getName(), null, "",
+					Locale.getDefault());
+			if (tip == null || "".equals(tip)) {
+				tip = "description is not found in the messages.properties file";
+			} else {
+				tip = StringEscapeUtils.escapeHtml(tip);
+			}
+
+			// set isPostModelOnly
+			String pmo = rulesMessageSource.getMessage(getName()
+					+ ".postmodelonly", null, "true", Locale.getDefault());
+			setPostModelOnly(Boolean.parseBoolean(pmo));
+		} else {
+			if(logger.isInfoEnabled()) {
+				logger.info("using no configuration" +
+						"(rule created outside the Validator context?)" +
+						"; messageSource=null.");
+			}
+		}
+	}
 
     /**
      * Rule's (Spring bean) name.
