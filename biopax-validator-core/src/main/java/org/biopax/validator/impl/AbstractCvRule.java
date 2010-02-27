@@ -5,7 +5,7 @@ import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.biopax.validator.utils.CvTermsFetcher;
+import org.biopax.validator.utils.OntologyManagerAdapter;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 public abstract class AbstractCvRule<T> extends AbstractRule<T> {
     
 	@Resource
-    protected CvTermsFetcher cvTermsFetcher;
+    protected OntologyManagerAdapter ontologyManager;
     
     protected final Class<T> domain;
     protected final String property; // helps validate generic ControlledVocabulary instances
@@ -46,11 +46,11 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
     @PostConstruct
     public void init() {
     	super.init();
-    	if(cvTermsFetcher != null) {
-    		setValidTerms(cvTermsFetcher.getValidTermNames(this));
+    	if(ontologyManager != null) {
+    		setValidTerms(ontologyManager.getValidTermNames(this));
     	} else {
     		if(logger.isInfoEnabled()) {
-    			logger.info("rule created but  (cvTermsFetcher=null)");
+    			logger.info("rule created but  (ontologyManager=null)");
     		}
     	}
     };
@@ -95,10 +95,10 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
 	}
 	
 	/**
-	 * Gets the internal CvTermsFetcher instance
+	 * Gets the internal OntologyManagerAdapter instance
 	 * @return
 	 */
-	public CvTermsFetcher getCvTermsFetcher() {
-		return cvTermsFetcher;
+	public OntologyManagerAdapter getOntologyManagerAdapter() {
+		return ontologyManager;
 	}
 }

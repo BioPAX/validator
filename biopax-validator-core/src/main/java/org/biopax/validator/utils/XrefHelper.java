@@ -24,19 +24,19 @@ public class XrefHelper {
     private static final Log log = LogFactory.getLog(XrefHelper.class);
     
     private Map<String, Pattern> databases;
-    private CvTermsFetcher cvTermsFetcher;
+    private OntologyManagerAdapter ontologyManager;
     private Miriam miriam;
 	private Set<List<String>> customDbSynonyms;
     
     public XrefHelper(Set<List<String>> customDbSynonyms, Resource miriamXmlResource, 
-    		Unmarshaller miriamUnmarshaller, CvTermsFetcher cvTermsFetcher) 
+    		Unmarshaller miriamUnmarshaller, OntologyManagerAdapter ontologyManager) 
     	throws Exception 
     {
     	this.customDbSynonyms = (customDbSynonyms != null) 
     		? customDbSynonyms 
     			: new HashSet<List<String>>();
     	
-    	this.cvTermsFetcher = cvTermsFetcher;
+    	this.ontologyManager = ontologyManager;
     	
     	// load Miriam
     	this.miriam = (Miriam) miriamUnmarshaller.unmarshal(
@@ -62,7 +62,7 @@ public class XrefHelper {
 		}
 
 		// loads names from MI: all children terms of 'database citation'
-		Set<String> terms = cvTermsFetcher.getTermNames(new CvTermRestriction(
+		Set<String> terms = ontologyManager.getTermNames(new CvTermRestriction(
 				"MI:0444", "MI", false, UseChildTerms.ALL, false));
 		for (String term : terms) {
 			String db = dbName(term);

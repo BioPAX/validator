@@ -26,8 +26,8 @@ import psidev.psi.tools.ontology_manager.interfaces.OntologyTermI;
  * @author rodche
  *
  */
-public class CvTermsFetcher extends OntologyManager {
-	private final static Log log = LogFactory.getLog(CvTermsFetcher.class);
+public class OntologyManagerAdapter extends OntologyManager {
+	private final static Log log = LogFactory.getLog(OntologyManagerAdapter.class);
 	
 	/**
 	 * Constructor
@@ -36,7 +36,7 @@ public class CvTermsFetcher extends OntologyManager {
 	 * @throws IOException 
 	 * @throws OntologyLoaderException 
 	 */
-	public CvTermsFetcher(Resource ontologiesConfigXml)
+	public OntologyManagerAdapter(Resource ontologiesConfigXml)
 	{
 		super();
 		OntologyManagerContext.getInstance().setStoreOntologiesLocally(true); // to work fast!
