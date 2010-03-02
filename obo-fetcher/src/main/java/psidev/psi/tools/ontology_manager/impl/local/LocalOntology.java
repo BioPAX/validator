@@ -62,7 +62,7 @@ public class LocalOntology implements OntologyAccess {
                         log.debug( "Parsing URL: " + url );
                     }
 
-                    ontology = loader.parseOboFile( url );
+                    ontology = loader.parseOboFile( url, ontologyID );
                 } catch ( OntologyLoaderException e ) {
                     throw new OntologyLoaderException( "OboFile parser failed with Exception: ", e );
                 }

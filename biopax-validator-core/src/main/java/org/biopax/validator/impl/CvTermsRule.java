@@ -2,10 +2,10 @@ package org.biopax.validator.impl;
 
 import java.util.*;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.biopax.paxtools.controller.EditorMap;
-import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.level3.Level3Element;
 import org.biopax.paxtools.model.level3.ControlledVocabulary;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
@@ -29,16 +29,20 @@ public abstract class CvTermsRule<T extends Level3Element> extends AbstractCvRul
     	super(domain, property, restrictions);
     }
    
+    @PostConstruct
+    public void init() {
+    	super.init();
+		this.editor = (property != null && !ControlledVocabulary.class.isAssignableFrom(domain)) 
+			? editorMap3.getEditorForProperty(property, this.domain)
+			: null;    	
+    };
+    
+    
 	public void check(T thing) {
 		// a set of CVs for this rule to validate
 		Collection<ControlledVocabulary> vocabularies = new HashSet<ControlledVocabulary>();
-		PropertyEditor editor = (property != null) 
-			? editorMap3.getEditorForProperty(property, ((Level3Element)thing).getModelInterface())
-			: null;
-		// if the 'property' is not set, we expect a ControlledVocabulary object
+		// if the editor is null, we expect a ControlledVocabulary object!
 		if(editor == null) {
-			// throws ClassCastException if the rule is malformed 
-			// (should either use correct property or ControlledVocabulary class)!
 			vocabularies.add((ControlledVocabulary)thing); 
 		} else if(editor.isMultipleCardinality()) {
 			vocabularies = (Collection<ControlledVocabulary>) editor.getValueFromBean(thing);

@@ -103,7 +103,7 @@ public class LocalOntologyTest {
 
     @Test
     public void isObsolete_unknown_accession() throws Exception {
-        final OntologyTermI term = new OntologyTermImpl( "MI:xxxx", "bogus term" );
+        final OntologyTermI term = new OntologyTermImpl("MI", "MI:xxxx", "bogus term" );
         Assert.assertFalse(mi.isObsolete( term ));
     }
 
@@ -132,13 +132,13 @@ public class LocalOntologyTest {
         final Set<OntologyTermI> children = mi.getDirectChildren( term );
         Assert.assertNotNull( children );
         Assert.assertEquals( 2, children.size() );
-        Assert.assertTrue( children.contains( new OntologyTermImpl( "MI:0602", "chemical footprinting" ) ) );
-        Assert.assertTrue( children.contains( new OntologyTermImpl( "MI:0605", "enzymatic footprinting" ) ) );
+        Assert.assertTrue( children.contains( new OntologyTermImpl("MI", "MI:0602", "chemical footprinting" ) ) );
+        Assert.assertTrue( children.contains( new OntologyTermImpl("MI", "MI:0605", "enzymatic footprinting" ) ) );
     }
 
     @Test
     public void getDirectChildren_unknown_accession() throws Exception {
-        final OntologyTermI term = new OntologyTermImpl( "MI:xxxx", "bogus term" );
+        final OntologyTermI term = new OntologyTermImpl("MI", "MI:xxxx", "bogus term" );
 
         final Set<OntologyTermI> children = mi.getDirectChildren( term );
         Assert.assertNotNull( children );
@@ -153,18 +153,18 @@ public class LocalOntologyTest {
         final Set<OntologyTermI> children = mi.getAllChildren( term );
         Assert.assertNotNull( children );
         Assert.assertEquals( children.toString(), 7, children.size() );
-        Assert.assertTrue( children.contains( new OntologyTermImpl( "MI:0602", "chemical footprinting" ) ) );
-        Assert.assertTrue( children.contains( new OntologyTermImpl( "MI:0605", "enzymatic footprinting" ) ) );
-        Assert.assertTrue( children.contains( new OntologyTermImpl( "MI:0603", "dimethylsulphate footprinting" ) ) );
-        Assert.assertTrue( children.contains( new OntologyTermImpl( "MI:0604", "potassium permanganate footprinting" ) ) );
-        Assert.assertTrue( children.contains( new OntologyTermImpl( "MI:0606", "DNase I footprinting" ) ) );
-        Assert.assertTrue( children.contains( new OntologyTermImpl( "MI:0814", "protease accessibility laddering" ) ) );
-        Assert.assertTrue( children.contains( new OntologyTermImpl( "MI:0901", "isotope label footprinting" ) ) );
+        Assert.assertTrue( children.contains( new OntologyTermImpl("MI", "MI:0602", "chemical footprinting" ) ) );
+        Assert.assertTrue( children.contains( new OntologyTermImpl("MI", "MI:0605", "enzymatic footprinting" ) ) );
+        Assert.assertTrue( children.contains( new OntologyTermImpl("MI", "MI:0603", "dimethylsulphate footprinting" ) ) );
+        Assert.assertTrue( children.contains( new OntologyTermImpl("MI", "MI:0604", "potassium permanganate footprinting" ) ) );
+        Assert.assertTrue( children.contains( new OntologyTermImpl("MI", "MI:0606", "DNase I footprinting" ) ) );
+        Assert.assertTrue( children.contains( new OntologyTermImpl("MI", "MI:0814", "protease accessibility laddering" ) ) );
+        Assert.assertTrue( children.contains( new OntologyTermImpl("MI", "MI:0901", "isotope label footprinting" ) ) );
     }
 
     @Test
     public void getAllChildren_unknown_accession() throws Exception {
-        final OntologyTermI term = new OntologyTermImpl( "MI:xxxx", "bogus term" );
+        final OntologyTermI term = new OntologyTermImpl("MI", "MI:xxxx", "bogus term" );
 
         final Set<OntologyTermI> children = mi.getAllChildren( term );
         Assert.assertNotNull( children );
@@ -183,12 +183,12 @@ public class LocalOntologyTest {
         final Set<OntologyTermI> parents = mi.getDirectParents( term );
         Assert.assertNotNull( parents );
         Assert.assertEquals( 1, parents.size() );
-        Assert.assertTrue( parents.contains( new OntologyTermImpl( "MI:0045", "experimental interaction detection" ) ) );
+        Assert.assertTrue( parents.contains( new OntologyTermImpl("MI", "MI:0045", "experimental interaction detection" ) ) );
     }
 
     @Test
     public void getDirectParents_unknown_accession() throws Exception {
-        final OntologyTermImpl term = new OntologyTermImpl( "MI:xxxx", "bogus term" );
+        final OntologyTermImpl term = new OntologyTermImpl("MI", "MI:xxxx", "bogus term" );
         final Set<OntologyTermI> parents = mi.getDirectParents( term );
         Assert.assertNotNull( parents );
         Assert.assertEquals( 0, parents.size() );
@@ -202,14 +202,14 @@ public class LocalOntologyTest {
         final Set<OntologyTermI> parents = mi.getAllParents( term );
         Assert.assertNotNull( parents );
         Assert.assertEquals( 3, parents.size() );
-        Assert.assertTrue( parents.contains( new OntologyTermImpl( "MI:0045", "experimental interaction detection" ) ) );
-        Assert.assertTrue( parents.contains( new OntologyTermImpl( "MI:0001", "interaction detection method" ) ) );
-        Assert.assertTrue( parents.contains( new OntologyTermImpl( "MI:0000", "molecular interaction" ) ) );
+        Assert.assertTrue( parents.contains( new OntologyTermImpl("MI", "MI:0045", "experimental interaction detection" ) ) );
+        Assert.assertTrue( parents.contains( new OntologyTermImpl("MI", "MI:0001", "interaction detection method" ) ) );
+        Assert.assertTrue( parents.contains( new OntologyTermImpl("MI", "MI:0000", "molecular interaction" ) ) );
     }
 
     @Test
     public void getAllParents_unknown_accession() throws Exception {
-        final OntologyTermImpl term = new OntologyTermImpl( "MI:xxxx", "bogus term" );
+        final OntologyTermImpl term = new OntologyTermImpl("MI", "MI:xxxx", "bogus term" );
 
         final Set<OntologyTermI> parents = mi.getAllParents( term );
         Assert.assertNotNull( parents );

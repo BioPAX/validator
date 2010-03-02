@@ -69,7 +69,7 @@ public class OboLoader extends AbstractLoader {
     //////////////////////////////
     // User's methods
 
-    private OntologyImpl buildOntology() {
+    private OntologyImpl buildOntology(String ontologyID) {
 
         OntologyImpl ontology = new OntologyImpl();
 
@@ -78,7 +78,7 @@ public class OboLoader extends AbstractLoader {
             TermBean term = ( TermBean ) iterator.next();
 
             // convert term into a OboTerm
-            OntologyTermI ontologyTerm = new OntologyTermImpl( term.getIdentifier(), term.getName() );
+            OntologyTermI ontologyTerm = new OntologyTermImpl(ontologyID, term.getIdentifier(), term.getName() );
             final Collection<TermSynonymBean> synonyms = (Collection<TermSynonymBean>) term.getSynonyms();
             if( synonyms != null ) {
                 for ( TermSynonymBean synonym : synonyms ) {
@@ -116,7 +116,7 @@ public class OboLoader extends AbstractLoader {
      * @param file the input file. It has to exist and to be readable, otherwise it will break.
      * @return a non null IntactOntology.
      */
-    public Ontology parseOboFile( File file ) {
+    public Ontology parseOboFile( File file, String ontologyID) {
 
         if ( !file.exists() ) {
             throw new IllegalArgumentException( file.getAbsolutePath() + " doesn't exist." );
@@ -135,7 +135,7 @@ public class OboLoader extends AbstractLoader {
         //process into relations
         process();
 
-        return buildOntology();
+        return buildOntology(ontologyID);
     }
 
     private File getRegistryFile() throws OntologyLoaderException {
@@ -164,7 +164,7 @@ public class OboLoader extends AbstractLoader {
      * @return an ontology
      * @see #parseOboFile(File file)
      */
-    public Ontology parseOboFile( URL url ) throws OntologyLoaderException {
+    public Ontology parseOboFile( URL url, String ontologyID ) throws OntologyLoaderException {
 
         // load config file (ie. a map)
         // check if that URL has already been loaded
@@ -350,7 +350,7 @@ public class OboLoader extends AbstractLoader {
             }
 
             // Parse file
-            return parseOboFile( ontologyFile );
+            return parseOboFile( ontologyFile, ontologyID );
 
         } catch ( IOException e ) {
             throw new OntologyLoaderException( "Error while loading URL (" + url + ")", e );

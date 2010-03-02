@@ -8,15 +8,20 @@ import java.util.Collection;
  */
 public interface OntologyTermI {
 
-    public String getTermAccession();
+    String getTermAccession();
 
-    public String getPreferredName();
+    String getPreferredName();
 
-    public void setTermAccession( String accession );
+    void setTermAccession( String accession );
 
-    public void setPreferredName( String preferredName );
+    void setPreferredName( String preferredName );
 
-    public Collection<String> getNameSynonyms();
+    Collection<String> getNameSynonyms();
 
-    public void setNameSynonyms( Collection<String> nameSynonyms );
+    void setNameSynonyms( Collection<String> nameSynonyms );
+    
+    String getOntologyName();
+    
+    void setOntologyName(String ontologyName);
+    
 }

@@ -5,6 +5,7 @@ import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.validator.utils.OntologyManagerAdapter;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -24,6 +25,7 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
     protected final String property; // helps validate generic ControlledVocabulary instances
     protected final Set<CvTermRestriction> restrictions;
 	private Set<String> validTerms;
+	protected PropertyEditor editor;
   
     /**
      * Constructor.
@@ -40,7 +42,7 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
         this.restrictions = new HashSet<CvTermRestriction>(restrictions.length);
     	for(CvTermRestriction c: restrictions) {
         	this.restrictions.add(c);
-        }
+        }    	
     }
 	
     @PostConstruct
@@ -54,6 +56,8 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
     		}
     	}
     };
+    
+    
     
     
 	protected void fix(T t, Object... values) {
@@ -100,5 +104,16 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
 	 */
 	public OntologyManagerAdapter getOntologyManagerAdapter() {
 		return ontologyManager;
+	}
+	
+	/**
+	 * Gets the corresponding CV property editor.
+	 * Returns null if either the 'domain' itself is of CV type
+	 * or the 'property' is null.
+	 * 
+	 * @return
+	 */
+	public PropertyEditor getEditor() {
+		return editor;
 	}
 }

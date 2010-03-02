@@ -20,6 +20,8 @@ public class OntologyTermImpl implements OntologyTermI {
     private String name;
 
     private Collection<String> nameSynonyms;
+    
+    private String ontologyName;
 
     //////////////////////////
     // Constructors
@@ -28,11 +30,12 @@ public class OntologyTermImpl implements OntologyTermI {
         setTermAccession( acc );
     }
 
-    public OntologyTermImpl( String acc, String name ) {
-        this( acc );
-        this.name = name;
+    public OntologyTermImpl( String ont, String acc, String name ) {
+    	this(acc);
+    	this.name = name;
+        this.ontologyName = ont;
     }
-
+    
     ///// ///// ///// ///// /////
     // Getter & Setter
 
@@ -94,4 +97,14 @@ public class OntologyTermImpl implements OntologyTermI {
         result = acc.hashCode();
         return result;
     }
+
+	@Override
+	public String getOntologyName() {
+		return this.ontologyName;
+	}
+
+	@Override
+	public void setOntologyName(String ontologyName) {
+		this.ontologyName = ontologyName;
+	}
 }
