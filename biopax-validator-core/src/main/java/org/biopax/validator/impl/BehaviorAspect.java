@@ -1,9 +1,5 @@
 package org.biopax.validator.impl;
 
-import java.util.Set;
-
-import javax.annotation.Resource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -35,9 +31,6 @@ public class BehaviorAspect extends AbstractAspect {
     
     @Autowired
     private BiopaxValidatorUtils utils;
-    
-    @Resource
-    private Set<String> parserIgnoredErrorCodes;
     
     @Around("execution(public void org.biopax.validator.Rule*+.check(*)) && args(thing)")
     public void checkBehavior(ProceedingJoinPoint jp, Object thing) throws Throwable {
@@ -113,25 +106,6 @@ public class BehaviorAspect extends AbstractAspect {
 			// suppress the above processed exception
 		}
     }
-    
-    
-    /**
-     * @deprecated this is for debugging now; better use rule's postModelOnly property
-     * 
-     * Temporarily sets the list of error codes
-     * to ignore during the model is being read.
-     * 
-     * @param jp
-     * @return
-     * @throws Throwable
-     */
-    @Around("execution(* org.biopax.validator.Validator*+.importModel(..))")
-	public Object setParserIgnoredCodes(ProceedingJoinPoint jp) throws Throwable {
-		utils.addIgnoredCodes(parserIgnoredErrorCodes);
-		Object o = jp.proceed();
-		utils.removeIgnoredCodes(parserIgnoredErrorCodes);
-		return o;
-	}
     
 }
 

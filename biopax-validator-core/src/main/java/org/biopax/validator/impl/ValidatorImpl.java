@@ -64,7 +64,7 @@ public class ValidatorImpl implements Validator {
 	@SuppressWarnings("unchecked")
 	public void validate(Validation validation) {
 		if (validation == null) {
-			throw new BiopaxValidatorException("Failed! Did import or add the model?");
+			throw new BiopaxValidatorException("Failed! Did you import or add a model?");
 		}
 		
 		for (Model model : findModel(validation)) {

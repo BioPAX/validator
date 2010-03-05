@@ -26,20 +26,22 @@ public class XrefRule extends AbstractRule<Xref>{
         String db = x.getDb();
 		if (db != null) { 
 			// check db is valid
-			if (!xrefHelper.contains(db)) {
+			String preferedDbName = xrefHelper.getPrimaryDbName(db);
+			if (preferedDbName == null) {
 				error(x, "unknown.db", db);
 				return;
 			}
 
 			String id = x.getId();
 			if (id != null) {
-				if (!xrefHelper.canCheckIdFormatIn(db)) {
+				if (!xrefHelper.canCheckIdFormatIn(preferedDbName)) {
 					if (logger.isWarnEnabled()) {
-						logger.warn("Can't check IDs (no regexp) for " + db);
+						logger.warn("Can't check IDs (no regexp) for " 
+								+ db + " (" + preferedDbName + ")");
 					}
-				} else if (!xrefHelper.checkIdFormat(db, id)) {
+				} else if (!xrefHelper.checkIdFormat(preferedDbName, id)) {
 					error(x, "invalid.id.format", db, id, 
-							xrefHelper.getRegexpString(db));
+							xrefHelper.getRegexpString(preferedDbName));
 				}
 			} 
 		} 

@@ -19,9 +19,13 @@ import psidev.psi.tools.ontology_manager.interfaces.OntologyAccess;
 import psidev.psi.tools.ontology_manager.interfaces.OntologyTermI;
 
 /**
- * Access to biological ontologies (controlled vocabularies) 
+ * Access to biological controlled vocabularies.
+ * This component is built from a modified PSIDEV tool, Ontology Manager, 
+ * by extending it and adding several "proxy" methods that allow to extract 
+ * validator-specific data only once and free the memory after it, if required.
+ * However, it does not hide base class's methods.
  * 
- * THIS REQUIRES INTERNET CONNECTION 
+ * REQUIRES INTERNET CONNECTION (when configured to use OBO URLs)
  * 
  * @author rodche
  *
@@ -192,4 +196,31 @@ public class OntologyManagerAdapter extends OntologyManager {
 		return terms;
 	}
 	
+	/**
+	 * Search for terms using a name (synonym) name.
+	 * The search is case insensitive.
+	 * It iterates through all loaded ontologies, so use with caution!
+	 * 
+	 * @return
+	 */
+	public Set<OntologyTermI> searchTermByName(String name) {
+		Set<OntologyTermI> found  = new HashSet<OntologyTermI>();
+		
+		for(String ontologyId: getOntologyIDs()) {
+			OntologyAccess oa = getOntologyAccess(ontologyId);
+			for(OntologyTermI term : oa.getOntology().getOntologyTerms()) {
+				if(term.getPreferredName().equalsIgnoreCase(name)) {
+					found.add(term);
+				} else {
+					for(String syn : term.getNameSynonyms()) {
+						if(syn.equalsIgnoreCase(name)) {
+							found.add(term);
+						}
+					}
+				}
+			}
+		}
+		
+		return found;
+	}
 }

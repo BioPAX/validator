@@ -2,16 +2,14 @@ package org.biopax.validator.utils;
 
 import java.util.*;
 import java.util.regex.*;
-import javax.annotation.PostConstruct;
-import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.validator.impl.CvTermRestriction;
-import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
 
-import net.biomodels.miriam.Miriam;
-import org.springframework.core.io.Resource;
-import org.springframework.oxm.Unmarshaller;
+import psidev.psi.tools.ontology_manager.OntologyUtils;
+import psidev.psi.tools.ontology_manager.impl.OntologyTermImpl;
+import psidev.psi.tools.ontology_manager.interfaces.OntologyAccess;
+
+import uk.ac.ebi.miriam.lib.MiriamLink;
 
 /**
  * This helps validate Xrefs, trying different database synonymous 
@@ -20,158 +18,158 @@ import org.springframework.oxm.Unmarshaller;
  *
  * @author rodche
  */
-public class XrefHelper {
+public class XrefHelper extends MiriamLink {
     private static final Log log = LogFactory.getLog(XrefHelper.class);
     
-    private Map<String, Pattern> databases;
+    private Map<String, Pattern> dataPatterns;
+    private Set<List<String>> synonyms;
     private OntologyManagerAdapter ontologyManager;
-    private Miriam miriam;
-	private Set<List<String>> customDbSynonyms;
+	
     
-    public XrefHelper(Set<List<String>> customDbSynonyms, Resource miriamXmlResource, 
-    		Unmarshaller miriamUnmarshaller, OntologyManagerAdapter ontologyManager) 
-    	throws Exception 
-    {
-    	this.customDbSynonyms = (customDbSynonyms != null) 
-    		? customDbSynonyms 
-    			: new HashSet<List<String>>();
-    	
+    public XrefHelper(Set<List<String>> extraSynonyms, OntologyManagerAdapter ontologyManager) 
+    		throws Exception 
+    {   	
     	this.ontologyManager = ontologyManager;
     	
-    	// load Miriam
-    	this.miriam = (Miriam) miriamUnmarshaller.unmarshal(
-        		new StreamSource(miriamXmlResource.getInputStream()));
-        if (log.isDebugEnabled()) {
-            log.debug("MIRIAM XML imported, version: "
-                + miriam.getDataVersion() + ", datatypes: "
-                + miriam.getDatatype().size());
-        }
-    }
-           
-    @SuppressWarnings("unchecked")
-	@PostConstruct
-	public void init() {
-		// Retrieve database names and ID patterns
-		databases = new HashMap<String, Pattern>();
-
-		// adds user-configured synonyms to databases
-		for (List<String> group : customDbSynonyms) {
-			for (String db : group) {
-				databases.put(db, null);
-			}
-		}
-
-		// loads names from MI: all children terms of 'database citation'
-		Set<String> terms = ontologyManager.getTermNames(new CvTermRestriction(
-				"MI:0444", "MI", false, UseChildTerms.ALL, false));
-		for (String term : terms) {
-			String db = dbName(term);
-			databases.put(db, null);
-		}
-
-		// adds names and assigns regexps from Miriam;
-		// also makes those names primary synonyms
-		importMiriam();
-	}
-    
-    // get db names and regex form MIRIAM
-	private void importMiriam() {
-		for (Miriam.Datatype dt : miriam.getDatatype()) {
-			String db = dbName(dt.getName());
-			Pattern pattern = Pattern.compile(dt.getPattern());
-			addSynonym(db, db, true); // make it a primary db name
-			if (dt.getSynonyms() != null) {
-				addSynonyms(dt.getSynonyms().getSynonym(), db);
-			}
-			// set patterns for all synonyms
-			for (String s : getSynonymsForDbName(db)) {
-				databases.put(s, pattern);
-			}
-		}
-	}
-       
-	/**
-	 * Gets user-defined synonymous groups of database names
-	 * (order matters within a group - the first is primary one)
-	 * @return
-	 */
-	public Set<List<String>> getCustomDbSynonyms() {
-		return customDbSynonyms;
-	}
-	
-    /**
-     * Gets Miriam data model.
-     * 
-     * @return
-     */
-    public Miriam getMiriam() {
-		return miriam;
-	}
-	
-	/**
-	 * Adds alternative database name. 
-	 * 
-	 * @param newName
-	 * @param name
-	 * @param isToBePrimary
-	 */
-	public void addSynonym(final String newName, final String name, boolean isToBePrimary) {
-		String synonym = dbName(newName);
-		String member = dbName(name);
-		List<String> list = getSynonymsForDbName(member);
-		int idx = (isToBePrimary) ? 0 : list.size();
-		if(list.isEmpty()) {
-			list.add(member);
-			customDbSynonyms.add(list);
-			list.add(idx, synonym);
-		} else {
-			boolean alreadyPresent = list.contains(synonym);
-			if(alreadyPresent && isToBePrimary) { 	
-				list.remove(synonym);
-			}
-			list.add(idx, synonym);
-		}
-	}
-	
-	public void addSynonyms(Collection<String> synonyms, String member) {
-		String dbName = dbName(member);
-		List<String> g = getSynonymsForDbName(dbName);
-		if(g.isEmpty()) {
-			g.add(dbName);
-			customDbSynonyms.add(g);
+		if(!isLibraryUpdated() && log.isInfoEnabled()) {
+			log.info("There is a new version of the MiriamLink available!");
 		}
 		
-		for(String n : synonyms) {
-			n = dbName(n);
-			if(!g.contains(n)) {
-				g.add(n);
+		// all database names and ID patterns go here
+		this.dataPatterns = new HashMap<String, Pattern>();
+		
+		// add pre-configured synonyms, if any
+		this.synonyms = (extraSynonyms != null && !extraSynonyms.isEmpty()) 
+			? this.synonyms = extraSynonyms 
+			: new HashSet<List<String>>();
+		
+		// adds names and assigns regexps from Miriam;
+		// also makes those names primary synonyms
+		for (String dt : getDataTypesName()) {
+			String db = dbName(dt);
+			String regexp = getDataTypePattern(dt);
+			Pattern pattern = Pattern.compile(regexp);
+			List<String> synonyms = new ArrayList<String>();
+			synonyms.add(db);
+			String[] otherNames = getDataTypeSynonyms(dt);
+			if (otherNames != null && otherNames.length>0) {
+				synonyms.addAll(Arrays.asList(otherNames));
+			}
+			addDb(true, synonyms);
+			// set patterns for all synonyms
+			for (String s : getSynonymsForDbName(db)) {
+				dataPatterns.put(s, pattern);
 			}
 		}
+
+		// load db names from MI 'database citation'
+		OntologyAccess mi = ontologyManager.getOntologyAccess("MI");
+		Collection<String> termNames = OntologyUtils.getTermNames(
+				mi.getAllChildren(new OntologyTermImpl("MI:0444"))); 
+		for (String term : termNames) {
+			String db = dbName(term);
+			
+		}
+		
+    }
+
+	
+	/**
+	 * Merge new db names with existing groups.
+	 * 
+	 * @param makePrimary
+	 * @param names
+	 */
+	public void addDb(boolean makePrimary, final List<String> synonyms) {
+		String firstName = dbName(synonyms.get(0));
+		
+		// find a group and merge
+		boolean isNewGroup = true;
+		for(List<String> g : this.synonyms) {
+			if(!Collections.disjoint(g, synonyms)) {
+				isNewGroup = false;
+				for(String n : synonyms) {
+					if(!g.contains(n)) {
+						g.add(n);
+					}
+				}
+				if(makePrimary) {
+					if(g.contains(firstName)) {
+						g.remove(firstName);
+					}
+					g.add(0, firstName);
+				}
+				break;
+			}
+		}
+		
+		// when merged with existing group
+		if(!isNewGroup) {
+			// make sure groups do not intersect
+			assert(xcheck());
+		} else {
+			// add as a new group
+			this.synonyms.add(synonyms);
+		}
+
 	}
 
 	
+	private boolean xcheck() {
+		Object[] lists = this.synonyms.toArray();
+		for(int i=0; i < lists.length; i++) {
+			List<String> li = (List<String>) lists[i];
+			for(int j=i+1; j < lists.length; j++) {
+				if(!Collections.disjoint(li, (Collection<?>) lists[j])) {
+					return false; // they intersect :(
+				}
+			}
+		}
+		return true; // now intersection found :)
+	}
+	
+	/**
+	 * Removes tail spaces and converts to upper case
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public String dbName(String name) {
 		return name.trim().toUpperCase();
 	}
 	
 	
     /**
-     * Lists database name variants.
+     * Gets database name and its variants.
+     * The first in the list is the recommended one.
      *
      * @param name
      * @return set of equivalent database names
      */
     public List<String> getSynonymsForDbName(String name) {
 		String dbName = dbName(name);
-		for(List<String> g : customDbSynonyms) {
-			if (g.contains(dbName)) {
-				return g;
+		
+		for(List<String> group : synonyms) {
+			if (group.contains(dbName)) {
+				return group;
 			}
 		}
-		// return empty list
 		return new ArrayList<String>();
     }
 
+    
+    /**
+     * Gets the primary name for the DB.
+     * It returns NULL for "unknown" database name. 
+     * 
+     * @param name
+     * @return
+     */
+    public String getPrimaryDbName(String name) {
+    	List<String> syns = getSynonymsForDbName(name);
+    	return (syns.isEmpty()) ? null : syns.get(0);
+    }
+    
     /**
      * Checks whether the ID format is valid for the database.
      * 
@@ -182,10 +180,7 @@ public class XrefHelper {
      */
     public boolean checkIdFormat(String db, String id) {
     	String dbName = dbName(db);
-        if(canCheckIdFormatIn(dbName)) {
-        	return databases.get(dbName).matcher(id).find();
-        }
-        return true;
+       	return dataPatterns.get(dbName).matcher(id).find();
     }
 
     /**
@@ -194,13 +189,9 @@ public class XrefHelper {
      */
     public boolean canCheckIdFormatIn(String name) {
         String db = dbName(name);
-        return contains(db) && databases.get(db) != null;
+        return dataPatterns.get(db) != null;
     }
 
-    public boolean contains(String name) {
-        String db = dbName(name);
-        return databases.containsKey(db);
-    }
 
     /**
      * Gets the regular expression corresponding 
@@ -210,15 +201,11 @@ public class XrefHelper {
      * @return regular expression to check its ID
      */
     public String getRegexpString(String db) {
-    	return databases.get(dbName(db)).pattern();
+    	return dataPatterns.get(dbName(db)).pattern();
     }
 
     
-    public boolean hasSynonyms(String name) {
-    	return !getSynonymsForDbName(name).isEmpty();
-    }
-    
-    public boolean areSynonyms(String db1, String db2) {
+    public boolean isSynonyms(String db1, String db2) {
     	// dbName function is used here also to get right 
     	// name capitalization
     	return getSynonymsForDbName(db1).contains(dbName(db2));

@@ -10,36 +10,7 @@
 	<artifactId>biopax-validator-core</artifactId>
 	<name>BioPAX Validator Core</name>
 	<version>2.0-SNAPSHOT</version>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jaxb2-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<clearOutputDir>false</clearOutputDir>
-					<packageName>net.biomodels.miriam</packageName>
-					<schemaDirectory>${basedir}/src/main/resources</schemaDirectory>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>xerces</groupId>
-						<artifactId>xercesImpl</artifactId>
-						<version>2.8.1</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-		</plugins>
-	</build>
-  
+ 
   <dependencies>
   	<dependency>
   		<groupId>commons-lang</groupId>
@@ -92,5 +63,10 @@
   		<version>2.0-SNAPSHOT</version>
   		<scope>compile</scope>
   	</dependency>
+  	  	<dependency>
+    	<groupId>uk.ac.ebi</groupId>
+    	<artifactId>miriam-lib</artifactId>
+    	<version>1.1.0</version>
+    </dependency>
   </dependencies>
 </project>

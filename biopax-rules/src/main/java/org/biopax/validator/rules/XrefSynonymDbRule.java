@@ -28,12 +28,10 @@ public class XrefSynonymDbRule extends AbstractRule<Xref>{
         	return;
         }
 
-		if (xrefHelper.contains(db) && xrefHelper.hasSynonyms(db)) {
-			String primary = xrefHelper.getSynonymsForDbName(db).get(0);
-			if (!xrefHelper.dbName(db).equalsIgnoreCase(primary)) {
-				error(x, "db.name.spelling", db, primary);
-				fix(x, primary);
-			}
+        String primary = xrefHelper.getPrimaryDbName(db);
+		if (primary != null && !primary.equals(xrefHelper.dbName(db))) {
+			error(x, "db.name.spelling", db, primary);
+			fix(x, primary);
 		}
 			
     }

@@ -137,7 +137,7 @@ public class BiopaxValidatorUtils {
      * @param bpe
      * @return
      */
-   	static public String getLocalId(BioPAXElement bpe) {
+   	public static String getLocalId(BioPAXElement bpe) {
 		String id = bpe.getRDFId();
 		return (id != null) ? id.replaceFirst("^.+#", "") : null;
 	}

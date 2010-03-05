@@ -29,7 +29,7 @@ public class BioSourceTaxonXrefRule extends AbstractRule<BioSource> {
         if (x != null) {
             String db = x.getDb();
             if (db != null) {
-                if (!xrefHelper.areSynonyms(db, "taxonomy")) {
+                if (!xrefHelper.isSynonyms(db, "taxonomy")) {
                     error(bioSource, "not.taxon.db", db);
                 }
             }

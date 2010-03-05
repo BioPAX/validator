@@ -42,7 +42,7 @@
 		use of Miriam as a primary source of db names and MI 'database
 		citation' as the second option)
 	-->
-	<util:set id="manuallyAddedDbSynonyms">
+	<util:set id="extraDbSynonyms">
 		<list>
 			<value>ENTREZ GENE</value>
 			<value>ENTREZ_GENE</value>

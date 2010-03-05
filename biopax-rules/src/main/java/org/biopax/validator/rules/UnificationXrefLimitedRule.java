@@ -53,7 +53,7 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
     
 	public void check(UnificationXref x) {
 		
-		if (x.getDb() == null || !helper.contains(x.getDb())) {
+		if (x.getDb() == null || helper.getPrimaryDbName(x.getDb())==null) {
 			// this rule does not care about invalid databases (names)
 			return;
 		}

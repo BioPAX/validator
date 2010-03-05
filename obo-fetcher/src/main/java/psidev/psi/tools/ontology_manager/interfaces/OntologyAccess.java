@@ -1,5 +1,6 @@
 package psidev.psi.tools.ontology_manager.interfaces;
 
+import psidev.psi.tools.ontology_manager.impl.local.Ontology;
 import psidev.psi.tools.ontology_manager.impl.local.OntologyLoaderException;
 
 import java.io.File;
@@ -92,4 +93,11 @@ public interface OntologyAccess {
      * @return a non null set of ontology terms.
      */
     public Set<OntologyTermI> getAllChildren( OntologyTermI term );
+    
+    /**
+     * Gets the underlying implementation
+     * 
+     * @return
+     */
+    public Ontology getOntology();
 }

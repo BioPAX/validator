@@ -40,7 +40,7 @@ abstract class AbstractAspect {
      * 
      * This must be public method (for unclear reason, otherwise causes an AOP exception...)
      * 
-     * @param obj associated with a validation result objects
+     * @param obj associated with a validation result objects (can be even InputStream, during import, but usually is a BioPAX element)
      * @param error
      */
     public void report(Object obj, ErrorType error) {

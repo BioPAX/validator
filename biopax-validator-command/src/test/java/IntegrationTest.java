@@ -101,17 +101,12 @@ public class IntegrationTest {
     }
 
     
-    @Test
-    public void testXRefHelper() {
-    	assertFalse(xrefHelper.getMiriam().getDatatype().isEmpty());
-    }
-    
     
     @Test
     public void testXRefHelperContainsSynonyms() {
-    	assertTrue(xrefHelper.contains("GO"));
-    	assertTrue(xrefHelper.contains("GENE ONTOLOGY"));
-    	assertTrue(xrefHelper.contains("GENE_ONTOLOGY"));
+    	assertNotNull(xrefHelper.getPrimaryDbName("GO"));
+    	assertNotNull(xrefHelper.getPrimaryDbName("GENE ONTOLOGY"));
+    	assertNotNull(xrefHelper.getPrimaryDbName("GENE_ONTOLOGY"));
     }
     
     @Test

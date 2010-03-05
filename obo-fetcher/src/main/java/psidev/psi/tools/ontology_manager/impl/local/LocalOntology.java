@@ -196,4 +196,10 @@ public class LocalOntology implements OntologyAccess {
 
         return null;
     }
+    
+    public Ontology getOntology() {
+		return ontology;
+	}
+    
+    
 }
