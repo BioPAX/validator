@@ -2,36 +2,42 @@ package org.biopax.validator.utils;
 
 import java.util.*;
 import java.util.regex.*;
+
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Configurable;
 
-import psidev.psi.tools.ontology_manager.OntologyUtils;
 import psidev.psi.tools.ontology_manager.impl.OntologyTermImpl;
 import psidev.psi.tools.ontology_manager.interfaces.OntologyAccess;
+import psidev.psi.tools.ontology_manager.interfaces.OntologyTermI;
 
 import uk.ac.ebi.miriam.lib.MiriamLink;
 
 /**
- * This helps validate Xrefs, trying different database synonymous 
- * and misspelled names, and validating referenced 'id' against the 
- * MIRIAM database.
+ * This helps validate xref's 'db', where different database synonymous 
+ * or misspelled names are often used, and 'id' that should match the 
+ * datasource's pattern.
  *
  * @author rodche
  */
-public class XrefHelper extends MiriamLink {
+@Configurable
+public class XrefHelper {
     private static final Log log = LogFactory.getLog(XrefHelper.class);
     
     private Map<String, Pattern> dataPatterns;
     private Set<List<String>> synonyms;
+    private MiriamLink miriamLink;
     private OntologyManagerAdapter ontologyManager;
 	
     
-    public XrefHelper(Set<List<String>> extraSynonyms, OntologyManagerAdapter ontologyManager) 
+    public XrefHelper(Set<List<String>> extraSynonyms, 
+    	OntologyManagerAdapter ontologyManager, MiriamLink miriamLink) 
     		throws Exception 
     {   	
-    	this.ontologyManager = ontologyManager;
     	
-		if(!isLibraryUpdated() && log.isInfoEnabled()) {
+		if(!miriamLink.isLibraryUpdated() && log.isInfoEnabled()) {
 			log.info("There is a new version of the MiriamLink available!");
 		}
 		
@@ -43,15 +49,21 @@ public class XrefHelper extends MiriamLink {
 			? this.synonyms = extraSynonyms 
 			: new HashSet<List<String>>();
 		
+		this.ontologyManager = ontologyManager;
+		this.miriamLink = miriamLink;
+    }
+
+    @PostConstruct
+    void init() {
 		// adds names and assigns regexps from Miriam;
 		// also makes those names primary synonyms
-		for (String dt : getDataTypesName()) {
+		for (String dt : miriamLink.getDataTypesName()) {
 			String db = dbName(dt);
-			String regexp = getDataTypePattern(dt);
+			String regexp = miriamLink.getDataTypePattern(dt);
 			Pattern pattern = Pattern.compile(regexp);
 			List<String> synonyms = new ArrayList<String>();
 			synonyms.add(db);
-			String[] otherNames = getDataTypeSynonyms(dt);
+			String[] otherNames = miriamLink.getDataTypeSynonyms(dt);
 			if (otherNames != null && otherNames.length>0) {
 				synonyms.addAll(Arrays.asList(otherNames));
 			}
@@ -62,17 +74,20 @@ public class XrefHelper extends MiriamLink {
 			}
 		}
 
-		// load db names from MI 'database citation'
+		// load all names from MI 'database citation'
 		OntologyAccess mi = ontologyManager.getOntologyAccess("MI");
-		Collection<String> termNames = OntologyUtils.getTermNames(
-				mi.getAllChildren(new OntologyTermImpl("MI:0444"))); 
-		for (String term : termNames) {
-			String db = dbName(term);
-			
-		}
-		
+		Collection<OntologyTermI> terms = mi.getAllChildren(new OntologyTermImpl("MI:0444")); 
+		for (OntologyTermI term : terms) {
+			String db = dbName(term.getPreferredName());
+			List<String> synonyms = new ArrayList<String>();
+			synonyms.add(db);
+			for(String name : term.getNameSynonyms()) {
+				synonyms.add(dbName(name));
+			}
+			addDb(false, synonyms);
+		}	
     }
-
+    
 	
 	/**
 	 * Merge new db names with existing groups.
@@ -80,15 +95,15 @@ public class XrefHelper extends MiriamLink {
 	 * @param makePrimary
 	 * @param names
 	 */
-	public void addDb(boolean makePrimary, final List<String> synonyms) {
-		String firstName = dbName(synonyms.get(0));
+	public void addDb(boolean makePrimary, final List<String> theDbAndSynonyms) {
+		String firstName = dbName(theDbAndSynonyms.get(0));
 		
 		// find a group and merge
 		boolean isNewGroup = true;
 		for(List<String> g : this.synonyms) {
-			if(!Collections.disjoint(g, synonyms)) {
+			if(!Collections.disjoint(g, theDbAndSynonyms)) {
 				isNewGroup = false;
-				for(String n : synonyms) {
+				for(String n : theDbAndSynonyms) {
 					if(!g.contains(n)) {
 						g.add(n);
 					}
@@ -109,7 +124,7 @@ public class XrefHelper extends MiriamLink {
 			assert(xcheck());
 		} else {
 			// add as a new group
-			this.synonyms.add(synonyms);
+			this.synonyms.add(theDbAndSynonyms);
 		}
 
 	}
@@ -121,7 +136,10 @@ public class XrefHelper extends MiriamLink {
 			List<String> li = (List<String>) lists[i];
 			for(int j=i+1; j < lists.length; j++) {
 				if(!Collections.disjoint(li, (Collection<?>) lists[j])) {
-					return false; // they intersect :(
+					log.error("different synonyms groups intercection found: " 
+						+ li.toString() + " has names in common with " 
+						+ lists[j].toString());
+					return false;
 				}
 			}
 		}

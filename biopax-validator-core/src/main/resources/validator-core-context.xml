@@ -62,6 +62,7 @@
     <bean id="xrefHelper" class="org.biopax.validator.utils.XrefHelper">
 		<constructor-arg ref="extraDbSynonyms"/>
         <constructor-arg ref="ontologyManager" />
+        <constructor-arg><bean class="uk.ac.ebi.miriam.lib.MiriamLink"/></constructor-arg>
     </bean>
 	
 </beans>

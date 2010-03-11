@@ -42,7 +42,6 @@ public class OntologyManagerAdapter extends OntologyManager {
 	 */
 	public OntologyManagerAdapter(Resource ontologiesConfigXml)
 	{
-		super();
 		OntologyManagerContext.getInstance().setStoreOntologiesLocally(true); // to work fast!
 		try {
 			loadOntologies(ontologiesConfigXml.getInputStream());
