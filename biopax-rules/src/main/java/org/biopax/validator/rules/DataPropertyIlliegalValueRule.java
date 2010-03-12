@@ -78,9 +78,4 @@ public class DataPropertyIlliegalValueRule extends AbstractRule<Model> {
 		}
 	}
 	
-	@Override
-	protected void fix(Model t, Object... values) {
-		// TODO Auto-generated method stub
-		
-	}
 }

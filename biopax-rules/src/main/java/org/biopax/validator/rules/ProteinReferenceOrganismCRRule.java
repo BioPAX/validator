@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.BioSource;
 import org.biopax.paxtools.model.level3.ProteinReference;
-import org.biopax.validator.impl.CardinalityAndRangeRule;
+import org.biopax.validator.impl.Level3CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class ProteinReferenceOrganismCRRule extends CardinalityAndRangeRule<ProteinReference> {
+public class ProteinReferenceOrganismCRRule extends Level3CardinalityAndRangeRule<ProteinReference> {
 	public ProteinReferenceOrganismCRRule() {
 		super(ProteinReference.class, "organism", 1, 1, BioSource.class);
 	}

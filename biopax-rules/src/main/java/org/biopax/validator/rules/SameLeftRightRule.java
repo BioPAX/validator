@@ -42,8 +42,6 @@ public class SameLeftRightRule extends AbstractRule<Conversion>
     }
 
     @Override
-	protected void fix(Conversion t, Object... values) {
-		// TODO Auto-generated method stub
-		
+    public void fix(Conversion t, Object... values) {		
 	}
 }

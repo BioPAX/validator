@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.ModificationFeature;
 import org.biopax.paxtools.model.level3.SequenceLocation;
-import org.biopax.validator.impl.CardinalityAndRangeRule;
+import org.biopax.validator.impl.Level3CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class ModificationFeatureLocationCRRule extends CardinalityAndRangeRule<ModificationFeature> {
+public class ModificationFeatureLocationCRRule extends Level3CardinalityAndRangeRule<ModificationFeature> {
 	public ModificationFeatureLocationCRRule() {
 		super(ModificationFeature.class, "featureLocation", 1, 1, SequenceLocation.class);
 	}

@@ -32,8 +32,6 @@ public class ComplexAssemblyHasComplexParticipantRule extends AbstractRule<Compl
     }
 
     @Override
-	protected void fix(ComplexAssembly t, Object... values) {
-		// TODO Auto-generated method stub
-		
+	public void fix(ComplexAssembly t, Object... values) {
 	}
 }

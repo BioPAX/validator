@@ -21,6 +21,4 @@ public class BiopaxElementIdRule extends AbstractRule<BioPAXElement> {
 			error(thing, "invalid.rdf.id", "null value");
 	}
 	
-	@Override
-	protected void fix(BioPAXElement t, Object... values) {}
 }

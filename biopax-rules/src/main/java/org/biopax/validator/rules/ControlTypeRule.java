@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class ControlTypeRule extends AbstractRule<Control> {
 
 	@Override
-	protected void fix(Control t, Object... values) {
+	public void fix(Control t, Object... values) {
 		if(t instanceof Catalysis) {
 			((Catalysis)t).setControlType(ControlType.ACTIVATION);
 		} else if (t instanceof TemplateReactionRegulation){

@@ -38,8 +38,6 @@ public class UniqueUnificationXrefRule extends AbstractRule<UnificationXref> {
     }
 
 	@Override
-	protected void fix(UnificationXref t, Object... values) {
-		// TODO Auto-generated method stub
-		
+	public void fix(UnificationXref t, Object... values) {
 	}
 }

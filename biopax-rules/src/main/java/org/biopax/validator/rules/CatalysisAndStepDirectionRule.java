@@ -18,9 +18,7 @@ import org.springframework.stereotype.Component;
 public class CatalysisAndStepDirectionRule extends AbstractRule<Catalysis> {
 
 	@Override
-	protected void fix(Catalysis t, Object... values) {
-		// TODO Auto-generated method stub
-		
+	public void fix(Catalysis t, Object... values) {	
 	}
 
 	public boolean canCheck(Object thing) {

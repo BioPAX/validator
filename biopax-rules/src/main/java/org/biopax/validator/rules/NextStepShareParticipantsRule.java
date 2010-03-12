@@ -74,7 +74,7 @@ public final class NextStepShareParticipantsRule extends AbstractRule<PathwaySte
 	}
 	
 	
-	protected void fix(PathwayStep t, Object... values) {
+	public void fix(PathwayStep t, Object... values) {
 		// is very difficult ;)
 	}
 

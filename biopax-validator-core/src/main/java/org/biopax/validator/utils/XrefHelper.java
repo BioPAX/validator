@@ -13,7 +13,7 @@ import psidev.psi.tools.ontology_manager.impl.OntologyTermImpl;
 import psidev.psi.tools.ontology_manager.interfaces.OntologyAccess;
 import psidev.psi.tools.ontology_manager.interfaces.OntologyTermI;
 
-import uk.ac.ebi.miriam.lib.MiriamLink;
+import org.biopax.miriam.MiriamLink;
 
 /**
  * This helps validate xref's 'db', where different database synonymous 
@@ -37,10 +37,6 @@ public class XrefHelper {
     		throws Exception 
     {   	
     	
-		if(!miriamLink.isLibraryUpdated() && log.isInfoEnabled()) {
-			log.info("There is a new version of the MiriamLink available!");
-		}
-		
 		// all database names and ID patterns go here
 		this.dataPatterns = new HashMap<String, Pattern>();
 		

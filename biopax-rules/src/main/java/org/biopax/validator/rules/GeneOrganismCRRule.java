@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.Gene;
 import org.biopax.paxtools.model.level3.BioSource;
-import org.biopax.validator.impl.CardinalityAndRangeRule;
+import org.biopax.validator.impl.Level3CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class GeneOrganismCRRule extends CardinalityAndRangeRule<Gene> {
+public class GeneOrganismCRRule extends Level3CardinalityAndRangeRule<Gene> {
 	public GeneOrganismCRRule() {
 		super(Gene.class, "organism", 0, 1, BioSource.class);
 	}

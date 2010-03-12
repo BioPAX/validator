@@ -59,9 +59,7 @@ public class NotAllowedInstancesRule extends AbstractRule<BioPAXElement> {
 	}
 
 	@Override
-	protected void fix(BioPAXElement t, Object... values) {
-		// TODO Auto-generated method stub
-		
+	public void fix(BioPAXElement t, Object... values) {
 	}
     
 }

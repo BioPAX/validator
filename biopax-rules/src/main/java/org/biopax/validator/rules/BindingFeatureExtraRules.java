@@ -21,13 +21,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class BindingFeatureExtraRules extends AbstractRule<Model> {
 
-	@Override
-	protected void fix(Model t, Object... values) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 	public boolean canCheck(Object thing) {
 		return thing instanceof Model 
 			&& ((Model)thing).getLevel() == BioPAXLevel.L3;

@@ -3,7 +3,7 @@ package org.biopax.validator.rules;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.BioSource;
 import org.biopax.paxtools.model.level3.SmallMoleculeReference;
-import org.biopax.validator.impl.CardinalityAndRangeRule;
+import org.biopax.validator.impl.Level3CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class EntityReferenceOrganismCRRule extends CardinalityAndRangeRule<EntityReference> {
+public class EntityReferenceOrganismCRRule extends Level3CardinalityAndRangeRule<EntityReference> {
 	public EntityReferenceOrganismCRRule() {
 		super(EntityReference.class, "organism", 0, 1, BioSource.class);
 		/**

@@ -40,9 +40,7 @@ public class EntityReferenceXrefRule extends AbstractRule<EntityReference> {
 	}
 
 	@Override
-	protected void fix(EntityReference t, Object... values) {
-		// TODO Auto-generated method stub
-		
+	public void fix(EntityReference t, Object... values) {
 	}
 
 }

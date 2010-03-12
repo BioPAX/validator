@@ -36,17 +36,12 @@ public abstract class AbstractRule<T> implements Rule<T> {
         logger = LogFactory.getLog(this.getClass()); // concrete class
     }
         
+
     /**
-     * Will try to correct a specific BioPAX error.
-     * 
-     * This method is not public, because it is fired 
-     * automatically as a result of the check method
-     * that depends on the current behavior setting.
-     * 
-     * @param t
-     * @param values
+     * TODO override, if required, in subclasses
      */
-    protected abstract void fix(T t, Object... values);
+    public void fix(T t, Object... values) {
+    }
            
     /**
      * Rule setup.

@@ -84,8 +84,6 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
     }
 
     @Override
-	protected void fix(SimplePhysicalEntity t, Object... values) {
-		// TODO Auto-generated method stub
-		
+    public void fix(SimplePhysicalEntity t, Object... values) {	
 	}
 }

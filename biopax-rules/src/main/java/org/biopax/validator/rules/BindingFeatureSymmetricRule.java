@@ -14,9 +14,7 @@ import org.springframework.stereotype.Component;
 public class BindingFeatureSymmetricRule extends AbstractRule<BindingFeature> {
 
 	@Override
-	protected void fix(BindingFeature t, Object... values) {
-		// TODO Auto-generated method stub
-		
+	public void fix(BindingFeature t, Object... values) {	
 	}
 
 

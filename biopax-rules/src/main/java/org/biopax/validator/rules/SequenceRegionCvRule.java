@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.SequenceRegionVocabulary;
 import org.biopax.validator.impl.CvTermRestriction;
-import org.biopax.validator.impl.CvTermsRule;
+import org.biopax.validator.impl.Level3CvTermsRule;
 import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class SequenceRegionCvRule extends CvTermsRule<SequenceRegionVocabulary> {
+public class SequenceRegionCvRule extends Level3CvTermsRule<SequenceRegionVocabulary> {
 
 	public SequenceRegionCvRule() {
 		super(SequenceRegionVocabulary.class, null, 

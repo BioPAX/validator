@@ -19,12 +19,13 @@ import org.springframework.beans.factory.annotation.Configurable;
  * TODO implement simple traversing of properties, e.g., accept "modificationFeature/modificationType"
  */
 @Configurable
-public abstract class CvTermsRule<T extends Level3Element> extends AbstractCvRule<T> {
+public abstract class Level3CvTermsRule<T extends Level3Element> 
+	extends AbstractCvRule<T> {
     
     @Resource
     private EditorMap editorMap3;
   
-    public CvTermsRule(Class<T> domain, String property, CvTermRestriction... restrictions)
+    public Level3CvTermsRule(Class<T> domain, String property, CvTermRestriction... restrictions)
     {
     	super(domain, property, restrictions);
     }

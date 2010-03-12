@@ -63,7 +63,6 @@ public class PathwayMultiOrganismRule extends AbstractRule<Pathway>
     }
 
     @Override
-	protected void fix(Pathway t, Object... values) {
-		// TODO Auto-generated method stub
+    public void fix(Pathway t, Object... values) {
 	}
 }

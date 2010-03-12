@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRule<BiochemicalPathwayStep> {
 
 	@Override
-	protected void fix(BiochemicalPathwayStep t, Object... values) {
+	public void fix(BiochemicalPathwayStep t, Object... values) {
 		
 		if(values[0] instanceof Catalysis) {
 			((Catalysis)values[0]).setCatalysisDirection((CatalysisDirectionType) values[1]);

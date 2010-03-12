@@ -18,11 +18,6 @@ public class AcyclicPathwayRule extends AbstractRule<Pathway> {
 	@Resource
 	EditorMap editorMap3;
 	
-	@Override
-	protected void fix(Pathway t, Object... values) {
-		// TODO Auto-generated method stub
-	}
-
 	public boolean canCheck(Object thing) {
 		return thing instanceof Pathway;
 	}

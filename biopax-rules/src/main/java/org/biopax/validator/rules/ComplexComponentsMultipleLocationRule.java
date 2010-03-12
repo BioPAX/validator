@@ -50,9 +50,7 @@ public final class ComplexComponentsMultipleLocationRule extends
 	}
 
 	@Override
-	protected void fix(Complex t, Object... values) {
-		// TODO Auto-generated method stub
-		
+	public void fix(Complex t, Object... values) {
 	}
 
 }

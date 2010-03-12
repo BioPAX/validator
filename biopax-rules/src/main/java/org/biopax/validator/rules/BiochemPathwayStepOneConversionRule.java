@@ -32,7 +32,7 @@ public final class BiochemPathwayStepOneConversionRule extends AbstractRule<Bioc
 	}
 
 	@Override
-	protected void fix(BiochemicalPathwayStep t, Object... values) {
+	public void fix(BiochemicalPathwayStep t, Object... values) {
 		// TODO Auto-generated method stub
 		
 	}	

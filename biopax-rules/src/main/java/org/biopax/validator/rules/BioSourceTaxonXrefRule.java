@@ -37,9 +37,7 @@ public class BioSourceTaxonXrefRule extends AbstractRule<BioSource> {
     }
 
 	@Override
-	protected void fix(BioSource t, Object... values) {
-		// TODO Auto-generated method stub
-		
+	public void fix(BioSource t, Object... values) {
 	}
 
 }

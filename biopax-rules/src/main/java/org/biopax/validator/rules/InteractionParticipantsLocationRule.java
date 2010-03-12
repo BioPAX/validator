@@ -57,9 +57,7 @@ public final class InteractionParticipantsLocationRule extends
 	}
 
 	@Override
-	protected void fix(Interaction t, Object... values) {
-		// TODO Auto-generated method stub
-		
+	public void fix(Interaction t, Object... values) {		
 	}
 
 }

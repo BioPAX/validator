@@ -23,9 +23,7 @@ import org.springframework.stereotype.Component;
 public class ComplexComponentsSameLocationRule extends AbstractRule<Complex> {
 	
 	@Override
-	protected void fix(Complex t, Object... values) {
-		// TODO Auto-generated method stub
-
+	public void fix(Complex t, Object... values) {
 	}
 
 	public boolean canCheck(Object thing) {

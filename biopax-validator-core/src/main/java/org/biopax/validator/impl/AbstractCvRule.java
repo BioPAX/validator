@@ -58,12 +58,6 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
     };
     
     
-    
-    
-	protected void fix(T t, Object... values) {
-		// TODO Auto-generated method stub	
-	}
-
 	public boolean canCheck(Object thing) {
 		return domain.isInstance(thing);
 	}

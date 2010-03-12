@@ -188,5 +188,6 @@
 		<module>biopax-validator-command</module>
 		<module>biopax-validator-test</module>
 		<module>obo-fetcher</module>
+		<module>miriam-lib</module>
 	</modules>
 </project>

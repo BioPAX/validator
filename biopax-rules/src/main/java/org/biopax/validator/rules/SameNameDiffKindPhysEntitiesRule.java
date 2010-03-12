@@ -7,11 +7,9 @@ import java.util.Set;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
-import org.biopax.validator.Validator;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.biopax.validator.utils.Cluster;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,9 +23,6 @@ import org.springframework.stereotype.Component;
 public class SameNameDiffKindPhysEntitiesRule extends
 		AbstractRule<Model> {
 
-	@Autowired
-	Validator validator;
-	
 	public void check(Model model) {
 			Set<SimplePhysicalEntity> peers = new HashSet<SimplePhysicalEntity>(
 				model.getObjects(SimplePhysicalEntity.class));
@@ -62,9 +57,4 @@ public class SameNameDiffKindPhysEntitiesRule extends
 			&& ((Model)thing).getLevel()==BioPAXLevel.L3;
 	}
 
-	@Override
-	protected void fix(Model t, Object... values) {
-		// TODO Auto-generated method stub
-		
-	}
 }

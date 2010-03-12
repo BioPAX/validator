@@ -20,7 +20,9 @@ import org.springframework.beans.factory.annotation.Configurable;
  * 
  */
 @Configurable
-public abstract class Level2CvTermsRule<T extends Level2Element> extends AbstractCvRule<T> {
+public abstract class Level2CvTermsRule<T extends Level2Element> 
+	extends AbstractCvRule<T> {
+	
     @Resource
     private EditorMap editorMap2;
     

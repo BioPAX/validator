@@ -25,10 +25,6 @@ public class Level2DanglingElementRule extends AbstractRule<Model> {
 	@Resource
 	EditorMap editorMap2;
 	
-	@Override
-	protected void fix(Model t, Object... values) {
-		// TODO Auto-generated method stub
-	}
 
 	public boolean canCheck(Object thing) {
 		return thing instanceof Model

@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.ConversionDirectionType;
-import org.biopax.validator.impl.CardinalityAndRangeRule;
+import org.biopax.validator.impl.Level3CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class ConversionDirectionCRRule extends CardinalityAndRangeRule<Conversion> {
+public class ConversionDirectionCRRule extends Level3CardinalityAndRangeRule<Conversion> {
 	public ConversionDirectionCRRule() {
 		super(Conversion.class, "conversionDirection", 0, 1, ConversionDirectionType.class);
 	}

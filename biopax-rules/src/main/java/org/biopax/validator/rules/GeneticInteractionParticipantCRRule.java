@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.Gene;
 import org.biopax.paxtools.model.level3.GeneticInteraction;
-import org.biopax.validator.impl.CardinalityAndRangeRule;
+import org.biopax.validator.impl.Level3CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class GeneticInteractionParticipantCRRule extends CardinalityAndRangeRule<GeneticInteraction> {
+public class GeneticInteractionParticipantCRRule extends Level3CardinalityAndRangeRule<GeneticInteraction> {
 	public GeneticInteractionParticipantCRRule() {
 		super(GeneticInteraction.class, "participant", 2, 0, Gene.class);
 	}

@@ -7,9 +7,7 @@ import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.validator.utils.BiopaxValidatorException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * 
@@ -19,7 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  */
 
 @Configurable
-public abstract class CardinalityAndRangeRule<E extends BioPAXElement> 
+public abstract class BasicCardinalityAndRangeRule<E extends BioPAXElement> 
 	extends AbstractRule<E> 
 {
 	protected EditorMap editorMap;
@@ -31,7 +29,7 @@ public abstract class CardinalityAndRangeRule<E extends BioPAXElement>
 	String rangesAsString = "";
 	
 	// Constructor with arguments
-	public CardinalityAndRangeRule(
+	public BasicCardinalityAndRangeRule(
 			Class<E> domain, String property, 
 			int min, int max, Class<?>... ranges) {
 		this.domain = domain;
@@ -42,12 +40,6 @@ public abstract class CardinalityAndRangeRule<E extends BioPAXElement>
 		for(Class<?> cl : ranges) {
 			rangesAsString += cl.getSimpleName() + " ";
 		}
-	}
-	
-	
-	@Autowired
-	public void setEditorMap(@Qualifier("editorMap3") EditorMap editorMap) {
-		this.editorMap = editorMap;
 	}
 	
 	
@@ -133,11 +125,6 @@ public abstract class CardinalityAndRangeRule<E extends BioPAXElement>
 					p, p.getClass().getSimpleName(), 
 					rangesAsString);
 		}
-	}
-
-	@Override
-	protected void fix(E t, Object... values) {
-		// TODO Auto-generated method stub
 	}
 
 

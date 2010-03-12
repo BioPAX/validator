@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.EvidenceCodeVocabulary;
 import org.biopax.validator.impl.CvTermRestriction;
-import org.biopax.validator.impl.CvTermsRule;
+import org.biopax.validator.impl.Level3CvTermsRule;
 import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class EvidenceCodeCvRule extends CvTermsRule<EvidenceCodeVocabulary> {
+public class EvidenceCodeCvRule extends Level3CvTermsRule<EvidenceCodeVocabulary> {
 
 	public EvidenceCodeCvRule() {
 		super(EvidenceCodeVocabulary.class, null, 

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class DegradationConversionDirectionRule extends AbstractRule<Degradation> {
 
 	@Override
-	protected void fix(Degradation t, Object... values) {
+	public void fix(Degradation t, Object... values) {
 		t.setConversionDirection(ConversionDirectionType.LEFT_TO_RIGHT);
 	}
 

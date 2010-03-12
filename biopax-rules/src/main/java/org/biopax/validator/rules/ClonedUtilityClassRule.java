@@ -46,9 +46,4 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 		return thing instanceof Model && ((Model)thing).getLevel() == BioPAXLevel.L3;
 	}
 
-	@Override
-	protected void fix(Model t, Object... values) {
-		// TODO Auto-generated method stub
-		
-	}
 }

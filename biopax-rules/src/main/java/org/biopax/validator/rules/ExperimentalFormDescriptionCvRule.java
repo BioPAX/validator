@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.ExperimentalFormVocabulary;
 import org.biopax.validator.impl.CvTermRestriction;
-import org.biopax.validator.impl.CvTermsRule;
+import org.biopax.validator.impl.Level3CvTermsRule;
 import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class ExperimentalFormDescriptionCvRule extends CvTermsRule<ExperimentalFormVocabulary> {
+public class ExperimentalFormDescriptionCvRule extends Level3CvTermsRule<ExperimentalFormVocabulary> {
   
     public ExperimentalFormDescriptionCvRule() {
 		super(ExperimentalFormVocabulary.class, null, 

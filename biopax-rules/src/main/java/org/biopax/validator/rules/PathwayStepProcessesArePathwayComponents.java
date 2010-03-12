@@ -38,9 +38,7 @@ public final class PathwayStepProcessesArePathwayComponents extends AbstractRule
 	}
 
 	@Override
-	protected void fix(PathwayStep t, Object... values) {
-		// TODO Auto-generated method stub
-		
+	public void fix(PathwayStep t, Object... values) {	
 	}
 		
 }

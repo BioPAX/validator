@@ -48,6 +48,6 @@ public class XrefRule extends AbstractRule<Xref>{
     }
 
 	@Override
-	protected void fix(Xref t, Object... values) {
+	public void fix(Xref t, Object... values) {
 	}
 }

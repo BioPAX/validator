@@ -35,8 +35,7 @@ public class DisplayNameRule extends AbstractRule<Named> {
     }
 
 	@Override
-	protected void fix(Named t, Object... values) {
-		// TODO Auto-generated method stub
+	public void fix(Named t, Object... values) {
 	}
 
 }

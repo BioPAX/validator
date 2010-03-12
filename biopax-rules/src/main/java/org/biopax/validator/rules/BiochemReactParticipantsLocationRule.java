@@ -65,7 +65,7 @@ public class BiochemReactParticipantsLocationRule extends AbstractRule<Biochemic
     }
 
     @Override
-	protected void fix(BiochemicalReaction t, Object... values) {
+    public void fix(BiochemicalReaction t, Object... values) {
 		// TODO Auto-generated method stub
 		
 	}

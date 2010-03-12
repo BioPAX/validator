@@ -19,8 +19,7 @@ public class Level2AcyclicPathwayRule extends AbstractRule<pathway> {
 	EditorMap editorMap2;
 	
 	@Override
-	protected void fix(pathway t, Object... values) {
-		// TODO Auto-generated method stub
+	public void fix(pathway t, Object... values) {
 	}
 
 	public boolean canCheck(Object thing) {

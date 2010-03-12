@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Evidence properties and cardinality constraints.
  * 
  * This is not a trivial "cardinality and range rule" that
- * cannot simply extend the CardinalityAndRangeRule class.
+ * cannot simply extend the Level3CardinalityAndRangeRule class.
  * 
  * @author rodche
  */
@@ -67,9 +67,7 @@ public class EvidencePropertiesUsageRule extends AbstractRule<Evidence> {
 	}
 
 	@Override
-	protected void fix(Evidence t, Object... values) {
-		// TODO Auto-generated method stub
-		
+	public void fix(Evidence t, Object... values) {	
 	}
 
 }

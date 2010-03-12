@@ -37,7 +37,7 @@ public class XrefSynonymDbRule extends AbstractRule<Xref>{
     }
 
 	@Override
-	protected void fix(Xref t, Object... values) {
+	public void fix(Xref t, Object... values) {
 		t.setDb((String) values[0]);
 	}
 }

@@ -29,9 +29,7 @@ public class ProteinReferenceNamesRule extends AbstractRule<ProteinReference> {
 	}
 
 	@Override
-	protected void fix(ProteinReference t, Object... values) {
-		// TODO Auto-generated method stub
-		
+	public void fix(ProteinReference t, Object... values) {	
 	}
 
 }
