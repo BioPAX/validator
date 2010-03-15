@@ -83,7 +83,7 @@ public class MiriamLink
 	    }
 	    catch (Exception e)
 	    {
-	        throw new RuntimeException("Exception occurred during the communication: ", e);
+	        throw new RuntimeException(e);
 	    }
 	}
 
@@ -195,7 +195,7 @@ public class MiriamLink
 		if (resources != null) {
 			for (Resource resource : resources.getResource()) {
 				String link = resource.getDataEntry();
-				link = link.replaceFirst("\\$id", id);
+				link = link.replaceFirst("\\$id", URLEncoder.encode(id));
 				locations.add(link);
 			}
 		}
@@ -263,7 +263,7 @@ public class MiriamLink
     
     /**
 	 * Retrieves the common name of a data type.
-	 * @param uri URI (URL or URN) of a data type
+	 * @param uri URI (URL or URN), or nickname of a data type
 	 * @return the common name of the data type
 	 */
     public String getName(String uri)
@@ -433,7 +433,7 @@ public class MiriamLink
 	
     
     /**
-     * Retrieves the internal identifier (stable and perennial) of all the resources (for example: "MIR:00100008" (bind) ).
+     * Retrieves the resource by id (for example: "MIR:00100008" (bind) ).
      * @return list of the identifier of all the data types
      */
     public Resource getResource(String id)

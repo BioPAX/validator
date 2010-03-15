@@ -2,6 +2,11 @@ package org.biopax.miriam;
 
 import static org.junit.Assert.*;
 
+import java.util.*;
+
+import net.biomodels.miriam.Resource;
+import net.biomodels.miriam.Miriam.Datatype;
+
 import org.biopax.miriam.MiriamLink;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +19,9 @@ public class MiriamLinkTest {
 	static final String MIETRY_PREFIX = "http://www.ebi.ac.uk/ontology-lookup/?termId=";
 	static final String MI = "Molecular Interactions Ontology";
 	static final String MISYN = "mi";
+	static final String MIRESID = "MIR:00100142";
+	static final String MIID = "MIR:00000109";
+	
 
 	@Before
 	public void setUp() throws Exception {
@@ -39,44 +47,51 @@ public class MiriamLinkTest {
 		assertEquals(MIURN, uris[0]);
 	}
 
-	//@Test
+	@Test
 	public final void testGetResourceLocation() {
-		fail("Not yet implemented"); // TODO
+		assertEquals("UK", link.getResourceLocation(MIRESID));
 	}
 
-	//@Test
+	@Test
 	public final void testGetResourceInstitution() {
-		fail("Not yet implemented"); // TODO
+		assertEquals("European Bioinformatics Institute", link.getResourceInstitution(MIRESID));
 	}
 
-	//@Test
+	@Test
 	public final void testGetURI() {
-		fail("Not yet implemented"); // TODO
+		assertEquals("urn:miriam:obo.mi:MI%3A0000", link.getURI(MISYN, "MI:0000"));
 	}
 
-	//@Test
+	@Test
 	public final void testGetDataTypeDef() {
-		fail("Not yet implemented"); // TODO
+		String def = link.getDataTypeDef(MISYN);
+		assertNotNull(def);
+		assertTrue(def.contains("MI is developed by"));
 	}
 
-	//@Test
+	@Test
 	public final void testGetLocations() {
-		fail("Not yet implemented"); // TODO
+		String[] locs = link.getLocations(MI, "MI:0000");
+		assertTrue(locs.length>0);
+		assertEquals("http://www.ebi.ac.uk/ontology-lookup/?termId=MI%3A0000", locs[0]);
 	}
 
-	//@Test
+	@Test
 	public final void testGetDataResources() {
-		fail("Not yet implemented"); // TODO
+		String[] drs = link.getDataResources(MI);
+		assertTrue(drs.length == 1);
+		assertEquals("http://www.ebi.ac.uk/ontology-lookup/", drs[0]);
 	}
 
-	//@Test
+	@Test
 	public final void testIsDeprecated() {
-		fail("Not yet implemented"); // TODO
+		assertFalse(link.isDeprecated("urn:miriam:hmdb"));
+		assertTrue(link.isDeprecated("http://www.hmdb.ca/"));
 	}
 
-	//@Test
+	@Test
 	public final void testGetDataTypePattern() {
-		fail("Not yet implemented"); // TODO
+		assertEquals("^MI:\\d{4}$", link.getDataTypePattern(MI));
 	}
 
 	@Test
@@ -86,49 +101,65 @@ public class MiriamLinkTest {
 		assertEquals(MISYN.toLowerCase(), synons[0].toLowerCase());
 	}
 
-	//@Test
+	@Test
 	public final void testGetName() {
-		fail("Not yet implemented"); // TODO
+		assertEquals(MI, link.getName(MIURN));
 	}
 
-	//@Test
+	
 	public final void testGetNames() {
-		fail("Not yet implemented"); // TODO
+		String[] names = link.getNames(MIURN);
+		assertTrue(names.length==2);
+		String s = names[0] + names[1];
+		assertTrue(s.contains("MI"));
+		assertTrue(s.contains(MI));
 	}
 
-	//@Test
+	@Test
 	public final void testGetDataTypesName() {
-		fail("Not yet implemented"); // TODO
+		String[] dts = link.getDataTypesName();
+		List<String> names = Arrays.asList(dts);
+		assertFalse(names.contains("MI"));
+		assertTrue(names.contains(MI));
+		assertTrue(names.contains("CluSTr"));
 	}
 
-	//@Test
+	@Test
 	public final void testGetDataTypesId() {
-		fail("Not yet implemented"); // TODO
+		String[] dts = link.getDataTypesId();
+		List<String> names = Arrays.asList(dts);
+		assertTrue(names.contains(MIID));
+		assertTrue(names.contains("MIR:00000021"));
 	}
 
-	//@Test
+	@Test
 	public final void testCheckRegExp() {
-		fail("Not yet implemented"); // TODO
+		assertTrue(link.checkRegExp("MI:0000", MI));
+		assertFalse(link.checkRegExp("0000", MI));
 	}
 
-	//@Test
+	@Test
 	public final void testGetOfficialDataTypeURIDatatype() {
-		fail("Not yet implemented"); // TODO
+		Datatype dt = link.getDatatype(MI);
+		assertNotNull(dt);
+		assertEquals(MIID, dt.getId());
+		String urn = link.getOfficialDataTypeURI(dt);
+		assertEquals(MIURN, urn);
 	}
 
-	//@Test
-	public final void testGetDatatype() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	//@Test
+	@Test
 	public final void testGetResourcesId() {
-		fail("Not yet implemented"); // TODO
+		String[] rs = link.getResourcesId();
+		List<String> names = Arrays.asList(rs);
+		assertTrue(names.contains(MIRESID));
+		assertTrue(names.contains("MIR:00100096"));
 	}
 
-	//@Test
+	@Test
 	public final void testGetResource() {
-		fail("Not yet implemented"); // TODO
+		Resource resource = link.getResource("MIR:00100008");
+		assertNotNull(resource);
+		assertEquals("Canada", resource.getDataLocation());
 	}
 
 }
