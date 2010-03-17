@@ -1,6 +1,7 @@
 package org.biopax.validator.impl;
 
 import org.biopax.validator.Behavior;
+import org.biopax.validator.Messenger;
 import org.biopax.validator.Rule;
 import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
@@ -12,7 +13,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.MessageSource;
 
@@ -34,7 +34,7 @@ public abstract class AbstractRule<T> implements Rule<T> {
     @Resource
     private MessageSource rulesMessageSource;
     
-    @Autowired
+    @Resource
     private Messenger messenger;
     
     public AbstractRule() {
@@ -128,23 +128,7 @@ public abstract class AbstractRule<T> implements Rule<T> {
     }
              
 
-	/**
-     * Call this method from a validation rule implementation 
-     * every time when a new error case is found! 
-     * 
-     * Although not required when using AspectJ LTW only, 
-     * this, however, allows for Spring's proxy-based AOP aspects 
-     * (one may want to use when integrating the BioPAX validation framework with other applications) 
-     * 
-     * This particularly helps to resolve one of the problems discussed here: 
-     * http://trulsjor.wordpress.com/2009/08/10/spring-aop-the-silver-bullet/
-     * (previously, Rule.check method called Rule.error method...)
-     * 
-     * @param object that is invalid or caused the error
-     * @param code error code, e.g., 'illegal.value'
-     * @param args extra parameters for the error message template
-     */
-    protected void error(Object object, String code, Object... args) {
+    public void error(Object object, String code, Object... args) {
     	Messenger m = getMessenger();
     	if(m != null) {
     		m.sendErrorCase(this, object, code, args); // to be processed...

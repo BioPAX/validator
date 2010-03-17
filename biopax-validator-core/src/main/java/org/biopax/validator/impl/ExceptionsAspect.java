@@ -36,11 +36,9 @@ import org.biopax.validator.utils.BiopaxValidatorUtils;
  */
 @Configurable
 @Aspect
-@Order(25)
+@Order(50) // 'adviseRuleExceptions' runs within the BehaviorAspect's 'checkBehavior'!
 public class ExceptionsAspect extends AbstractAspect {
 	private static final Log log = LogFactory.getLog(ExceptionsAspect.class);
-
-	
 
 	/**
 	 * Registers all the BioPAX errors and warnings 
@@ -56,7 +54,7 @@ public class ExceptionsAspect extends AbstractAspect {
 	 * @param args extra parameters of the error message
 	 * @throws Throwable
 	 */
-    @Around("execution(public void org.biopax.validator.impl.Messenger*+.sendErrorCase(..)) " +
+    @Around("execution(void org.biopax.validator.Messenger*+.sendErrorCase(..)) " +
     	"&& args(rule, thing, code, args)")
     public void adviseSendErrorCase(ProceedingJoinPoint jp, Rule rule, Object thing,
     		String code, Object... args) throws Throwable 
@@ -122,13 +120,14 @@ public class ExceptionsAspect extends AbstractAspect {
     		jp.proceed(); // go ahead validating the 'thing'
     		
     	} catch (Throwable t) {
-   			log.error(rule.getName() + ".check(" + thingId 
-    					+ ") caught the exception: " + t.toString(), t);
+   			log.fatal(rule.getName() + ".check(" + thingId 
+    			+ ") threw the exception: " + t.toString(), t);
    			String msg = t.getMessage();
-   			if(t instanceof BiopaxValidatorException) msg += "; " 
-   				+ ((BiopaxValidatorException)t).getMsgArgs().toString();
-    		report(thing, thingId, 
-   				t.getClass().getSimpleName(), rule.getName(), Behavior.ERROR, msg);
+   			if(t instanceof BiopaxValidatorException) { 
+   				msg += "; " + ((BiopaxValidatorException)t).getMsgArgs().toString();
+   			}
+    		report(thing, thingId, t.getClass().getSimpleName(), 
+    				rule.getName(), Behavior.ERROR, msg);
     	}
   
     }

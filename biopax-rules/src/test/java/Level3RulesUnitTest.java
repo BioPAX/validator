@@ -9,7 +9,7 @@ import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.Rule;
-import org.biopax.validator.impl.Messenger;
+import org.biopax.validator.impl.SimplyThrowExceptionMessenger;
 import org.biopax.validator.rules.*;
 import org.biopax.validator.utils.*;
 import org.junit.Test;

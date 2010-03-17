@@ -16,7 +16,7 @@
     
     <bean id="validator" class="org.biopax.validator.impl.ValidatorImpl" />
     
-    <bean id="messenger" class="org.biopax.validator.impl.Messenger"/>
+    <bean id="messenger" class="org.biopax.validator.impl.SimplyThrowExceptionMessenger"/>
     
 	<!-- BiopaxValidatorUtils configuration -->
 	

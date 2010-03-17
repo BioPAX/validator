@@ -10,6 +10,7 @@ import org.biopax.validator.Rule;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.core.annotation.Order;
 
 /**
  * This is a behavior aspect to let go or skip
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Configurable;
  */
 @Configurable
 @Aspect
+@Order(25) // 'checkBehavior' runs around the ExceptionsAspect's 'adviseRuleExceptions'!
 public class BehaviorAspect extends AbstractAspect {
     private static final Log logger  = LogFactory.getLog(BehaviorAspect.class);
     

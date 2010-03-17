@@ -87,4 +87,23 @@ public interface Rule<T> {
      * @param values
      */
     void fix(T t, Object... values);
+
+    
+	/**
+     * Call this method from a validation rule implementation 
+     * every time when a new error case is found! 
+     * 
+     * Although not required when using AspectJ LTW only, 
+     * this, however, allows for Spring's proxy-based AOP aspects 
+     * (one may want to use when integrating the BioPAX validation framework with other applications) 
+     * 
+     * This particularly helps to resolve one of the problems discussed here: 
+     * http://trulsjor.wordpress.com/2009/08/10/spring-aop-the-silver-bullet/
+     * (previously, Rule.check method called Rule.error method...)
+     * 
+     * @param object that is invalid or caused the error
+     * @param code error code, e.g., 'illegal.value'
+     * @param args extra parameters for the error message template
+     */
+    void error(Object object, String code, Object... args);
 }
