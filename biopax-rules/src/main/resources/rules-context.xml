@@ -183,5 +183,5 @@
 	</util:map>
 
     <context:component-scan base-package="org.biopax.validator.rules"/>
-
+ 
 </beans>

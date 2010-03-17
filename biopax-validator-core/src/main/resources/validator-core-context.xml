@@ -15,7 +15,9 @@
     <context:property-placeholder location="classpath:validator.properties"/>
     
     <bean id="validator" class="org.biopax.validator.impl.ValidatorImpl" />
- 
+    
+    <bean id="messenger" class="org.biopax.validator.impl.Messenger"/>
+    
 	<!-- BiopaxValidatorUtils configuration -->
 	
     <oxm:jaxb2-marshaller id="resultsMarshaller" xmlns="http://www.biopax.org/validator">

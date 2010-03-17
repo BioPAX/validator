@@ -9,6 +9,7 @@ import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.Rule;
+import org.biopax.validator.impl.Messenger;
 import org.biopax.validator.rules.*;
 import org.biopax.validator.utils.*;
 import org.junit.Test;
@@ -31,6 +32,7 @@ public class Level3RulesUnitTest {
 	static Level3Factory level3 = new Level3FactoryImpl(); // to create BioPAX objects
 	static EditorMap editorMap = new SimpleEditorMap(BioPAXLevel.L3);
 	static SimpleExporter exporter = new SimpleExporter(BioPAXLevel.L3);
+	
 	final static String TEST_DATA_DIR = "target";
 	
 	void writeExample(String file, Model model) {
@@ -48,6 +50,7 @@ public class Level3RulesUnitTest {
 		throws IOException
 	{
 		Rule rule = new BiochemicalPathwayStepProcessOnlyControlCRRule();	
+		
 		BiochemicalPathwayStep step = level3.createBiochemicalPathwayStep();
 		step.setRDFId("step1");
 		Conversion conv = level3.createBiochemicalReaction();

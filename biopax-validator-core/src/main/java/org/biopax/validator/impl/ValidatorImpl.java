@@ -17,6 +17,7 @@ import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.validator.Rule;
+import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.result.Validation;
 import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.Validator;
@@ -39,6 +40,7 @@ public class ValidatorImpl implements Validator {
 	
     @Autowired
 	private Set<Rule<?>> rules;  
+    
     
 	private final Set<Validation> results;
     
@@ -212,4 +214,24 @@ public class ValidatorImpl implements Validator {
 		return mms;
 	}
 
+    
+    public void report(Object obj, ErrorType error) 
+    {	
+		Collection<Validation> keys = findValidation(obj);			
+		if(keys.isEmpty()) {
+			// the object is not associated neither with parser nor model
+			log.warn("No active validations exist for the object " 
+					+ obj + "; user won't get this message: " + error);
+		}
+		
+		// add to the corresponding validation result
+		for(Validation result: keys) { 
+			if(log.isTraceEnabled()) {
+				log.trace("reports: " + error.toString() 
+						+ " "+ error.getErrorCase().toArray()[0] + 
+						" in: " + result.getDescription());
+			}
+			result.addError(error);
+		}
+	}
 }

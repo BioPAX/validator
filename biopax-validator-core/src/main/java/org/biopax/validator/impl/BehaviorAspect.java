@@ -7,12 +7,9 @@ import org.aspectj.lang.annotation.*;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.validator.Behavior;
 import org.biopax.validator.Rule;
-import org.biopax.validator.result.ErrorType;
-import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.core.annotation.Order;
 
 /**
  * This is a behavior aspect to let go or skip
@@ -25,7 +22,6 @@ import org.springframework.core.annotation.Order;
  */
 @Configurable
 @Aspect
-@Order(10) // must be the highest priority among other aspects
 public class BehaviorAspect extends AbstractAspect {
     private static final Log logger  = LogFactory.getLog(BehaviorAspect.class);
     
@@ -61,50 +57,6 @@ public class BehaviorAspect extends AbstractAspect {
             }
            	jp.proceed();
         }
-    }
-     
-	
-	/**
-	 * Registers all the BioPAX errors and warnings 
-	 * found by the validation rules. 
-	 *
-	 * The BioPAX element RDFId and rule name
-	 * are reported along with error cases.
-	 * 
-	 * @param jp AOP Proceeding Joint Point
-	 * @param thing a BioPAX element
-	 * @throws Throwable 
-	 */
-    @Around("execution(void org.biopax.validator.impl.AbstractRule+.error(..)) " +
-    		"&& args(thing, code, args)")
-    public void adviseRuleError(ProceedingJoinPoint jp, Object thing, 
-    		String code, Object... args) throws Throwable {
-    	// get the rule that checks now
-    	Rule<?> rule = (Rule<?>) jp.getThis();
-    	String nameRule = rule.getName();
-    	
-    	if (logger.isTraceEnabled()) 
-    		logger.trace(nameRule + " found a problem : " + code);
-    			
-    	// get object's ID
-    	String thingId = BiopaxValidatorUtils.getId(thing);
-    	
-    	if(thingId == null) {
-    		if (logger.isTraceEnabled()) logger.trace("RDFId is not set yet; skipping.");
-    		return;
-    	}
-    	
-    	Behavior errOrWarn = (rule.getBehavior() == Behavior.WARNING) 
-    		? Behavior.WARNING : Behavior.ERROR;   	
-    	ErrorType error = utils.createError(thingId, code, 
-				nameRule, errOrWarn, args);			
-		report(thing, error);
-    	
-		try {
-			jp.proceed(); // in fact, dummy
-		} catch (BiopaxValidatorException e) {
-			// suppress the above processed exception
-		}
     }
     
 }

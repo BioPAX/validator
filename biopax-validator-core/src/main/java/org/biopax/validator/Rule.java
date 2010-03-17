@@ -77,16 +77,6 @@ public interface Rule<T> {
        
     
     /**
-     * Reports errors
-     * 
-     * @param object where the problem is
-     * @param code error 'code'
-     * @param args optional arguments for the error message
-     */
-    void error(Object object, String code, Object... args);
-    
-    
-    /**
      * Will try to correct a specific BioPAX error.
      * 
      * This method is not public, because it is fired 

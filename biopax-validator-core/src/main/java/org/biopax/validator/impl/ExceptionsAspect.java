@@ -19,7 +19,6 @@ import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Named;
 import org.biopax.validator.Behavior;
 import org.biopax.validator.Rule;
-import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 
@@ -37,10 +36,56 @@ import org.biopax.validator.utils.BiopaxValidatorUtils;
  */
 @Configurable
 @Aspect
-@Order(50) // i.e., runs within the BehaviorAspect
+@Order(25)
 public class ExceptionsAspect extends AbstractAspect {
 	private static final Log log = LogFactory.getLog(ExceptionsAspect.class);
 
+	
+
+	/**
+	 * Registers all the BioPAX errors and warnings 
+	 * found by the validation rules. 
+	 *
+	 * The BioPAX element RDFId and rule name
+	 * are reported along with error cases.
+	 * 
+	 * @param jp AOP Proceeding Joint Point
+	 * @param rule validation rule that found the error case
+	 * @param thing object associated with the error case
+	 * @param code error code
+	 * @param args extra parameters of the error message
+	 * @throws Throwable
+	 */
+    @Around("execution(public void org.biopax.validator.impl.Messenger*+.sendErrorCase(..)) " +
+    	"&& args(rule, thing, code, args)")
+    public void adviseSendErrorCase(ProceedingJoinPoint jp, Rule rule, Object thing,
+    		String code, Object... args) throws Throwable 
+    {    	    	
+    	String nameRule = rule.getName();
+    	
+    	if (log.isTraceEnabled()) 
+    		log.trace(nameRule + " found a problem : " + code);
+    			
+    	// get object's ID
+    	String thingId = BiopaxValidatorUtils.getId(thing);
+    	
+    	if(thingId == null) {
+    		if (log.isTraceEnabled()) log.trace("RDFId is not set yet; skipping.");
+    		return;
+    	}
+    	
+    	Behavior errOrWarn = (rule.getBehavior() == Behavior.WARNING) 
+    		? Behavior.WARNING : Behavior.ERROR;   	
+		report(thing, thingId, code, nameRule, errOrWarn, args);
+
+		try {
+			jp.proceed(); // in fact, dummy
+		} catch (BiopaxValidatorException e) {
+			// suppress the above processed exception
+		}
+    }
+	
+	
 	/**
 	 * This is the central method to register 
 	 * any "UNEXPECTED" problems with the 
@@ -82,9 +127,8 @@ public class ExceptionsAspect extends AbstractAspect {
    			String msg = t.getMessage();
    			if(t instanceof BiopaxValidatorException) msg += "; " 
    				+ ((BiopaxValidatorException)t).getMsgArgs().toString();
-   			ErrorType error = utils.createError(thingId, 
-   					t.getClass().getSimpleName(), rule.getName(), Behavior.ERROR, msg);
-    		report(thing, error);
+    		report(thing, thingId, 
+   				t.getClass().getSimpleName(), rule.getName(), Behavior.ERROR, msg);
     	}
   
     }
@@ -204,9 +248,8 @@ public class ExceptionsAspect extends AbstractAspect {
     	} catch (NullPointerException e) {
     		bpeId = reader.getXmlStreamInfo();
 		}
-		ErrorType error = utils.createError(bpeId, "unknown.biopax.class", 
-				"reader", Behavior.ERROR, reader.getXmlStreamInfo());
-		report(reader, error);	
+		report(reader, bpeId, "unknown.biopax.class", 
+			"reader", Behavior.ERROR, reader.getXmlStreamInfo());	
 	}
     
 	/**
@@ -228,10 +271,8 @@ public class ExceptionsAspect extends AbstractAspect {
 					+ " gets name " + name);
 		}
 		if (bpe.getName().contains(name)) {
-			ErrorType error = utils.createError(
-				BiopaxValidatorUtils.getId(bpe), "duplicate.names",
+			report(bpe, BiopaxValidatorUtils.getId(bpe), "duplicate.names",
 					"duplicateNamesAdvice", Behavior.ERROR, name);
-			report(bpe, error);
 		}
 	}
 

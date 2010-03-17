@@ -3,6 +3,7 @@ package org.biopax.validator.impl;
 import org.biopax.validator.Behavior;
 import org.biopax.validator.Rule;
 import org.biopax.validator.utils.BiopaxValidatorException;
+import org.biopax.validator.utils.BiopaxValidatorUtils;
 
 import java.util.Locale;
 import javax.annotation.PostConstruct;
@@ -11,6 +12,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.MessageSource;
 
@@ -31,6 +33,9 @@ public abstract class AbstractRule<T> implements Rule<T> {
     
     @Resource
     private MessageSource rulesMessageSource;
+    
+    @Autowired
+    private Messenger messenger;
     
     public AbstractRule() {
         logger = LogFactory.getLog(this.getClass()); // concrete class
@@ -122,20 +127,33 @@ public abstract class AbstractRule<T> implements Rule<T> {
         this.behavior = behavior;
     }
              
-    /**
-     * A precious piece of code that registers errors:
-     * not only it throws the exception (good for debugging),
-     * but also kicks off AOP that makes use of this 
-     * method and its arguments at runtime to actually 
-     * report the error case!
-     * (this is done within the BehaviorAspect)
+
+	/**
+     * Call this method from a validation rule implementation 
+     * every time when a new error case is found! 
+     * 
+     * Although not required when using AspectJ LTW only, 
+     * this, however, allows for Spring's proxy-based AOP aspects 
+     * (one may want to use when integrating the BioPAX validation framework with other applications) 
+     * 
+     * This particularly helps to resolve one of the problems discussed here: 
+     * http://trulsjor.wordpress.com/2009/08/10/spring-aop-the-silver-bullet/
+     * (previously, Rule.check method called Rule.error method...)
      * 
      * @param object that is invalid or caused the error
      * @param code error code, e.g., 'illegal.value'
      * @param args extra parameters for the error message template
      */
-    public void error(Object object, String code, Object... args) {
-    	throw new BiopaxValidatorException(code, args);
+    protected void error(Object object, String code, Object... args) {
+    	Messenger m = getMessenger();
+    	if(m != null) {
+    		m.sendErrorCase(this, object, code, args); // to be processed...
+    	} else {
+    		logger.error(this.getName() + 
+    			": cannot register the validation error due to the messenger object is null");
+    		throw new BiopaxValidatorException(code, 
+    				BiopaxValidatorUtils.getId(object), args);
+    	}
     }
        
     public boolean isPostModelOnly() {
@@ -155,4 +173,11 @@ public abstract class AbstractRule<T> implements Rule<T> {
 		this.rulesMessageSource = rulesMessageSource;
 	}
     
+    public Messenger getMessenger() {
+		return messenger;
+	}
+    
+    public void setMessenger(Messenger messenger) {
+		this.messenger = messenger;
+	}
 }

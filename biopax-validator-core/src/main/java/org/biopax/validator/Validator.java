@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.biopax.paxtools.model.Model;
+import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.result.Validation;
+import org.biopax.validator.utils.BiopaxValidatorException;
 
 /**
  * BioPAX Validator interface
@@ -130,5 +132,15 @@ public interface Validator {
 	 * @return
 	 */
 	public Collection<Model> findModel(Validation key);
+
+	
+    /**
+     * Adds the validation error (with proper attributes)
+     * to corresponding registered validation objects.
+     * 
+     * @param obj associated with a validation result objects (can be even InputStream, during import, but usually is a BioPAX element)
+     * @param error
+     */
+	public void report(Object obj, ErrorType error);
 	
 }
