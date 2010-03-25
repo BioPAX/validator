@@ -60,6 +60,12 @@ public class MiriamLinkTest {
 	@Test
 	public final void testGetURI() {
 		assertEquals("urn:miriam:obo.mi:MI%3A0000", link.getURI(MISYN, "MI:0000"));
+		
+		try{
+			link.getURI(MISYN, "MI_0000");
+			fail("must throw IllegalArgumentException (wrong ID format)");
+		} catch (IllegalArgumentException e) {
+		}
 	}
 
 	@Test

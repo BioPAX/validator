@@ -164,8 +164,14 @@ public class MiriamLink
     public String getURI(String name, String id)
     {
     	Datatype datatype = getDatatype(name);
-        return getOfficialDataTypeURI(datatype) 
-        	+ ":" + URLEncoder.encode(id);
+    	String db = datatype.getName();
+    	if(checkRegExp(id, db)) {
+    		return getOfficialDataTypeURI(datatype)	+ ":" + URLEncoder.encode(id);
+    	} 
+    	
+    	throw new IllegalArgumentException(
+				"ID pattern mismatch. db=" + db + ", id=" + id
+				+ ", regexp: " + datatype.getPattern());
     }
     
     
