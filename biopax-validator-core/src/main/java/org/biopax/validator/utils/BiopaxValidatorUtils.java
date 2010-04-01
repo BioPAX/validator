@@ -1,6 +1,5 @@
 package org.biopax.validator.utils;
 
-import org.biopax.paxtools.io.pathwayCommons.PathwayCommonsIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.level3.Named;
 import org.biopax.validator.Behavior;
@@ -327,26 +326,6 @@ public class BiopaxValidatorUtils {
 		}
 		return domResult;
 	}
-	
-	 /**
-     * Gets pathway resource from the Pathway Commons.
-     *
-     * @param pcID Pathway Commons ID
-     * @return Resource
-     * @throws java.io.IOException
-     */
-    public static Resource getResourceByPcId(String pcID) throws IOException {
-        String urlName = PathwayCommonsIOHandler.default_prefix
-        +PathwayCommonsIOHandler.command
-        +"get_record_by_cpath_id"
-		+ "&"+ PathwayCommonsIOHandler.version
-		+ PathwayCommonsIOHandler.default_version
-		+ "&q=" + pcID + "&"+
-		PathwayCommonsIOHandler.output 
-		+ PathwayCommonsIOHandler.default_output_format;
-        
-        return new UrlResource(urlName);
-    }
 
     
     public ErrorType createError(String objectName, String errorCode, 

@@ -58,14 +58,7 @@ public class ValidatorController {
     public ModelAndView checkUrl(@RequestParam String url, @RequestParam String retDesired) throws IOException  {
     	if(log.isInfoEnabled()) log.info("checkUrl : " + url);
     	ValidatorResponse validatorResponse = new ValidatorResponse();
-    	Resource in;
-		if (url.startsWith("pc:")) {
-			// get data from a pathwaycommons.org WS, using pathway ID:
-			in = BiopaxValidatorUtils.getResourceByPcId(url.substring(3));	
-		} else {
-			// or - from local or remote (must be OWL) file:
-			in = new UrlResource(url);
-		}
+    	Resource in = new UrlResource(url);
 		String modelName = in.getDescription();
 		Validation result = new Validation();
 		result.setDescription(modelName);

@@ -1,4 +1,3 @@
-pc:550837
 file:testfiles/data/biopax-example-short-pathway.owl
 file:testfiles/data/biopax3-protein-interaction.owl
 <*illegal line test*>

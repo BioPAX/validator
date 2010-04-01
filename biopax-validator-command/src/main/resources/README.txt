@@ -135,7 +135,6 @@ path/dir - to check all the OWL files in the directory (is probably the best cho
 file:path/file.owl - to check a single file;
 classpath:path/file.owl - to check a file that can be found in java classpath (currently it's relative to the 'build' directory).
 http://www.link.to/somer-biopax/ - to validate from a URL resource (remote file or service)
-pc:123456 - to retrieve and check a pathway from Pathway Commons
 list:input.txt - execute lines, each like the above, from the specified 'batch' file
 
 Validation messages will be written to the STDERR, unless user specified a file name.

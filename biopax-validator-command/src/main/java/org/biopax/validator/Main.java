@@ -41,12 +41,11 @@ public class Main {
     			" Pathway Commons BioPAX Validator v1.0b, 07/2009\n\n" +
     		    "It Takes One Argument or Two (the Second Is the Output File Name)\n\n" +
     		    "For Example:\n" +
-    		    "  pc:1234567\n" +
     		    "  list:batch_file_name\n" +
     		    "  file:biopax.owl\n" +
     		    "  http://www.some.net/data.owl\n\n" +
-    		    "The Batch File Can List the Following (One Task Per Line): \n" +
-    		    "a PC Pathway ID (e.g., pc:11111), file:/path/to/file, or URL (to BioPAX data)\n";
+    		    "The Batch File Can List One Task Per Line: \n" +
+    		    "file:/path/to/file or URL (to BioPAX data)\n";
         	
         	System.out.println(usage);
         	listAllRules(System.out, validator.getRules());
@@ -156,7 +155,7 @@ public class Main {
 	        	String line;
 	            while ((line = reader.readLine()) != null && !"".equals(line.trim())) {
 	            	// check the source URL
-	            	if( !(ResourceUtils.isUrl(line) || line.startsWith("pc:")) ) {
+	            	if( !ResourceUtils.isUrl(line)) {
 	            		log.error("Invalid URL: " + line + 
 	            				". A resource must be either a " +
 	            				"pseudo URL (classpath: or file:) or standard URL!");
@@ -166,17 +165,11 @@ public class Main {
 	        	}
 	            reader.close();
 	        } else {
-	        	// a single local OWL file, link to remote data, or pc:ID
+	        	// a single local OWL file or remote data
 	        	Resource resource = null;
-				if (input.startsWith("pc:")) {
-					// get data from a pathwaycommons.org WS, using pathway ID:
-					resource = BiopaxValidatorUtils.getResourceByPcId(input.substring(3));	
-				} else {
-					// or - from local or remote (must be OWL) file:
-					if (!ResourceUtils.isUrl(input)) 
-						input = "file:" + input;
-					resource = ctx.getResource(input);
-				}
+				if (!ResourceUtils.isUrl(input)) 
+					input = "file:" + input;
+				resource = ctx.getResource(input);
 	        	setRes.add(resource);
 	        }
 	              
