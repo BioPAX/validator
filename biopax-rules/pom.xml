@@ -18,21 +18,19 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>axis</groupId>
+			<groupId>org.apache.axis</groupId>
 			<artifactId>axis</artifactId>
 			<version>1.4</version>
+			<type>jar</type>
+			<scope>compile</scope>
 			<exclusions>
 				<exclusion>
-					<artifactId>axis-saaj</artifactId>
-					<groupId>axis</groupId>
-				</exclusion>
-				<exclusion>
 					<artifactId>axis-jaxrpc</artifactId>
-					<groupId>axis</groupId>
+					<groupId>org.apache.axis</groupId>
 				</exclusion>
 				<exclusion>
-					<artifactId>axis-wsdl4j</artifactId>
-					<groupId>axis</groupId>
+					<artifactId>axis-saaj</artifactId>
+					<groupId>org.apache.axis</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
