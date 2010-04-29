@@ -1,6 +1,6 @@
-package psidev.psi.tools.ontology_manager.impl;
+package psidev.ontology_manager.impl;
 
-import psidev.psi.tools.ontology_manager.interfaces.OntologyTermI;
+import psidev.ontology_manager.OntologyTermI;
 
 import java.util.Collection;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class OntologyTermImpl implements OntologyTermI {
 
     private Collection<String> nameSynonyms;
     
-    private String ontologyName;
+    private String ontologyId;
 
     //////////////////////////
     // Constructors
@@ -33,7 +33,7 @@ public class OntologyTermImpl implements OntologyTermI {
     public OntologyTermImpl( String ont, String acc, String name ) {
     	this(acc);
     	this.name = name;
-        this.ontologyName = ont;
+        this.ontologyId = ont;
     }
     
     ///// ///// ///// ///// /////
@@ -99,12 +99,12 @@ public class OntologyTermImpl implements OntologyTermI {
     }
 
 	@Override
-	public String getOntologyName() {
-		return this.ontologyName;
+	public String getOntologyId() {
+		return this.ontologyId;
 	}
 
 	@Override
-	public void setOntologyName(String ontologyName) {
-		this.ontologyName = ontologyName;
+	public void setOntologyId(String ontologyId) {
+		this.ontologyId = ontologyId;
 	}
 }

@@ -13,16 +13,18 @@
 	<description>Runs BioPAX Validator Integration Tests in the AspectJ LTW context</description>
 
 	<build>
+	  <pluginManagement>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<argLine>-javaagent:../lib/spring-agent.jar -Xmx1024M</argLine>
-					<!-- system class loader required to pass javaagent to all tests -->
-					<useSystemClassLoader>true</useSystemClassLoader>
+					<argLine>-Xmx1024m -javaagent:${BIOPAX_HOME}/spring-agent.jar</argLine>
+					<!-- <useSystemClassLoader>true</useSystemClassLoader> -->
 				</configuration>
 			</plugin>
 		</plugins>
+	  </pluginManagement>
 	</build>
 
 	<dependencies>

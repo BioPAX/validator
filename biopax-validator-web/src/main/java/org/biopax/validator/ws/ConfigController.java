@@ -10,7 +10,7 @@ import org.biopax.validator.Behavior;
 import org.biopax.validator.Rule;
 import org.biopax.validator.Validator;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
-import org.springframework.security.annotation.Secured;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;

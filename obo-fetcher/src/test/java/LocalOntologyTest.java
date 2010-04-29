@@ -1,44 +1,75 @@
-package psidev.psi.tools.ontology_manager.impl.local;
+
 
 import static org.junit.Assert.*;
 import org.junit.*;
 
-import psidev.psi.tools.ontology_manager.OntologyManager;
-import psidev.psi.tools.ontology_manager.OntologyManagerContext;
-import psidev.psi.tools.ontology_manager.OntologyUtils;
-import psidev.psi.tools.ontology_manager.impl.OntologyTermImpl;
-import psidev.psi.tools.ontology_manager.interfaces.OntologyAccess;
-import psidev.psi.tools.ontology_manager.interfaces.OntologyTermI;
+import psidev.ontology_manager.Ontology;
+import psidev.ontology_manager.OntologyManager;
+import psidev.ontology_manager.OntologyTermI;
+import psidev.ontology_manager.impl.OntologyImpl;
+import psidev.ontology_manager.impl.OntologyLoaderException;
+import psidev.ontology_manager.impl.OntologyManagerContext;
+import psidev.ontology_manager.impl.OntologyManagerImpl;
+import psidev.ontology_manager.impl.OntologyTermImpl;
+import psidev.ontology_manager.impl.OntologyUtils;
 
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Set;
 
 /**
- * LocalOntology Tester.
+ * OntologyImpl Tester.
  *
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
+ * @author rodche (baderlab.org) - refactoring
  * @version $Id$
  * @since 2.0.0
  */
 
 public class LocalOntologyTest {
 
-    private OntologyManager manager;
-    OntologyAccess mod;
-    OntologyAccess mi;
-    OntologyAccess so;
+    static OntologyManager manager;
+    Ontology mod;
+    Ontology mi;
+    Ontology so;
     
-    public LocalOntologyTest() throws OntologyLoaderException {
-    	super();
+    static {
        	OntologyManagerContext.getInstance().setStoreOntologiesLocally(true);
         final InputStream config = LocalOntologyTest.class.getResourceAsStream( "/ontologies.xml" );
-        manager = new OntologyManager( config );
-        mod = manager.getOntologyAccess( "MOD" );
-        mi = manager.getOntologyAccess( "MI" );
-        so = manager.getOntologyAccess( "SO" );
+        try {
+			manager = new OntologyManagerImpl( config );
+		} catch (OntologyLoaderException e) {
+			fail(e.toString());
+		}
     }
+    
+    public LocalOntologyTest() {
+        mod = manager.getOntology( "MOD" );
+        mi = manager.getOntology( "MI" );
+        so = manager.getOntology( "SO" );
+	}
 
+    @Test
+    public void ontologyLoading() {
+        Collection<String> ontologyIDs = manager.getOntologyIDs();
+        Assert.assertEquals( "ontologies.xml specifies only 3 ontology.", 3, ontologyIDs.size() );
+        Assert.assertTrue( ontologyIDs.contains( "MOD" ) );
+        Assert.assertTrue( ontologyIDs.contains( "SO" ) );
+        Assert.assertTrue( ontologyIDs.contains( "MI" ) );
+
+        Ontology oa2 = manager.getOntology( "MOD" );
+        Assert.assertNotNull( oa2 );
+        Assert.assertTrue( oa2 instanceof OntologyImpl);
+        
+        oa2 = manager.getOntology( "SO" );
+        Assert.assertNotNull( oa2 );
+        Assert.assertTrue( oa2 instanceof OntologyImpl);
+        
+        oa2 = manager.getOntology( "MI" );
+        Assert.assertNotNull( oa2 );
+        Assert.assertTrue( oa2 instanceof OntologyImpl);
+    }
+    
     @Test
     public void getValidTerms() throws OntologyLoaderException {
         final Set<OntologyTermI> terms = mod.getValidTerms( "MOD:00647", true, false );

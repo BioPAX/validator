@@ -1,4 +1,4 @@
-package psidev.psi.tools.ontology_manager.interfaces;
+package psidev.ontology_manager;
 
 import java.util.Collection;
 
@@ -20,8 +20,8 @@ public interface OntologyTermI {
 
     void setNameSynonyms( Collection<String> nameSynonyms );
     
-    String getOntologyName();
+    String getOntologyId();
     
-    void setOntologyName(String ontologyName);
+    void setOntologyId(String ontologyId);
     
 }

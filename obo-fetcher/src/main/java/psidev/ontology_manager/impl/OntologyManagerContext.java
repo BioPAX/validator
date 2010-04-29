@@ -1,4 +1,4 @@
-package psidev.psi.tools.ontology_manager;
+package psidev.ontology_manager.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,8 +59,12 @@ public class OntologyManagerContext {
 
     public void setOntologyDirectory( File ontologyDirectory ) {
         if ( ontologyDirectory == null ) {
-            throw new IllegalArgumentException( "You must give a non null ontologyDirectory, use setStoreOntologiesLocally(boolean) to disable the long term storing." );
+            throw new IllegalArgumentException( "You must give a non null ontologyDirectory, " +
+            		"use setStoreOntologiesLocally(boolean) to disable the long term storing." );
         }
         this.ontologyDirectory = ontologyDirectory;
+        if (log.isInfoEnabled())
+			log.info("Using ontologies cache directory : " + 
+					this.ontologyDirectory.getAbsolutePath());
     }
 }

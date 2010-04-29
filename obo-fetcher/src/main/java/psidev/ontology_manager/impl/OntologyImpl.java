@@ -1,32 +1,62 @@
-package psidev.psi.tools.ontology_manager.impl.local;
+package psidev.ontology_manager.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import psidev.psi.tools.ontology_manager.interfaces.OntologyTermI;
+
+import psidev.ontology_manager.Ontology;
+import psidev.ontology_manager.OntologyTermI;
 
 import java.util.*;
 
 /**
- * Holder for an Ontology and provide basic search feature.
+ * Access to a local ontology in the form of an OBO file.
  *
+ * @author Florian Reisinger
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
- * @version $Id: OntologyImpl.java 656 2007-06-29 11:18:19 +0100 (Fri, 29 Jun 2007) skerrien $
- * @since <pre>04-Jan-2006</pre>
+ * @author rodche (baderlab.org) - re-factoring
+ * @since 2.0.0
  */
 public class OntologyImpl implements Ontology {
 
     public static final Log log = LogFactory.getLog( OntologyImpl.class );
+    
+    private String name;
 
-    ///////////////////////////////
-    // Instance variables
+    public OntologyImpl() {
+    	if(log.isInfoEnabled())
+    		log.info( "Creating new OntologyImpl..." );
+    }
+
+    public void setName(String name) {
+		this.name = name;
+	}
+    
+    public String getName() {
+		return name;
+	}
+    
+    public Set<OntologyTermI> getValidTerms( String accession, boolean allowChildren, boolean useTerm ) {
+        Set<OntologyTermI> collectedTerms = new HashSet<OntologyTermI>();
+
+        final OntologyTermI term = getTermForAccession( accession );
+        if ( term != null ) {
+            if ( useTerm ) {
+                collectedTerms.add( term );
+            }
+
+            if ( allowChildren ) {
+                collectedTerms.addAll( getAllChildren( term ) );
+            }
+        }
+
+        return collectedTerms;
+    }
+  
 
     /**
      * Pool of all term contained in that ontology.
      */
     private Collection<OntologyTermI> ontologyTerms = new ArrayList<OntologyTermI>( 1024 );
-
-    // TODO introduce an interface for querying/updating the relationship
-    // TODO replace the hashmap by a Lucene index -> using a different interface !!
 
     /**
      * Represent the relationship: child -> parents.
@@ -194,7 +224,7 @@ public class OntologyImpl implements Ontology {
         obsoleteTerms.add( term );
     }
 
-    public boolean isObsoleteTerm( OntologyTermI term ) {
+    public boolean isObsolete( OntologyTermI term ) {
         return obsoleteTerms.contains( term );
     }
 
@@ -289,4 +319,11 @@ public class OntologyImpl implements Ontology {
     public void print( OntologyTermI term ) {
         print( term, "" );
     }
+
+
+	@Override
+	public OntologyTermI getTermForAccession(String accession) {
+		return search(accession);
+	}
+
 }

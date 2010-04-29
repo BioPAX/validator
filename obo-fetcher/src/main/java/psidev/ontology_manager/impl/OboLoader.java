@@ -3,13 +3,13 @@
  * All rights reserved. Please see the file LICENSE
  * in the root directory of this distribution.
  */
-package psidev.psi.tools.ontology_manager.impl.local;
+package psidev.ontology_manager.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import psidev.psi.tools.ontology_manager.OntologyManagerContext;
-import psidev.psi.tools.ontology_manager.impl.OntologyTermImpl;
-import psidev.psi.tools.ontology_manager.interfaces.OntologyTermI;
+
+import psidev.ontology_manager.Ontology;
+import psidev.ontology_manager.OntologyTermI;
 import uk.ac.ebi.ook.loader.impl.AbstractLoader;
 import uk.ac.ebi.ook.loader.parser.OBOFormatParser;
 import uk.ac.ebi.ook.model.interfaces.TermRelationship;
@@ -37,7 +37,7 @@ public class OboLoader extends AbstractLoader {
 
     private static final String ONTOLOGY_REGISTRY_NAME = "ontology.registry.map";
 
-    public OboLoader( File ontologyDirectory ) {
+    public OboLoader( ) {
     }
 
     /////////////////////////////
@@ -69,9 +69,9 @@ public class OboLoader extends AbstractLoader {
     //////////////////////////////
     // User's methods
 
-    private OntologyImpl buildOntology(String ontologyID) {
+    private Ontology buildOntology(String ontologyID) {
 
-        OntologyImpl ontology = new OntologyImpl();
+        Ontology ontology = new OntologyImpl();
 
         // 1. convert and index all terms (note: at this stage we don't handle the hierarchy)
         for ( Iterator iterator = ontBean.getTerms().iterator(); iterator.hasNext(); ) {
@@ -185,15 +185,18 @@ public class OboLoader extends AbstractLoader {
         if( isKeepDownloadedOntologiesOnDisk ) {
 
             if ( ontologyDirectory == null ) {
-                throw new IllegalArgumentException( "ontology directory cannot be null, please set it using OntologyManagerContext" );
+                throw new IllegalArgumentException( "Ontology directory cannot be null, " +
+                		"please set it using OntologyManagerContext" );
             }
 
             if ( !ontologyDirectory.exists() ) {
-                throw new IllegalArgumentException( "ontology directory must exist" );
+                throw new IllegalArgumentException( "Ontology directory " + 
+                		ontologyDirectory.getPath() + " must exist" );
             }
 
             if ( !ontologyDirectory.canWrite() ) {
-                throw new IllegalArgumentException( "ontology directory must be writeable" );
+                throw new IllegalArgumentException( "Ontology directory " +
+                		ontologyDirectory.getPath() + " must be writeable" );
             }
 
             if ( log.isInfoEnabled() ) {

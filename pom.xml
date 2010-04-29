@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -20,9 +19,17 @@
 					</configuration>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<configuration>
-						<argLine>-Xmx1024M</argLine>
+						<testFailureIgnore>false</testFailureIgnore>
+						<systemProperties>
+							<property>
+								<name>log4j.configuration</name>
+								<value>file:${BIOPAX_HOME}/log4j.properties</value>
+							</property>
+						</systemProperties>
+						<argLine>-Xmx1024m -DBIOPAX_HOME=${BIOPAX_HOME}</argLine>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -86,7 +93,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.4</version>
+			<version>4.7</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -154,11 +161,10 @@
 		<module>biopax-validator-core</module>
 		<module>biopax-rules</module>
 		<module>biopax-validator-command</module>
-		<module>biopax-validator-test</module>
 		<module>obo-fetcher</module>
 		<module>miriam-lib</module>
 	</modules>
 	<properties>
-		<spring.version>2.5.6.SEC01</spring.version>
+		<spring.version>3.0.2.RELEASE</spring.version>
 	</properties>
 </project>

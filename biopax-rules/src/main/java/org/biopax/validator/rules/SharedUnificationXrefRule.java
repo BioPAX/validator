@@ -1,8 +1,6 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.UnificationXref;
-import org.biopax.paxtools.model.level3.XReferrable;
-import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -14,30 +12,22 @@ import org.springframework.stereotype.Component;
  * XReferrable, UnificationXref
  * 
  * @author rodche
- * 
- * @deprecated
- * (also reported by clonedUtilityClassRule as warning)
  */
 @Component
-public class UniqueUnificationXrefRule extends AbstractRule<UnificationXref> {
+public class SharedUnificationXrefRule extends AbstractRule<UnificationXref> {
 
 	public boolean canCheck(Object thing) {
 		return thing instanceof UnificationXref;
 	}
     
 	public void check(UnificationXref x) {
-        for (XReferrable r : x.getXrefOf()) {
-            for (Xref x2 : r.getXref()) {   		
-                if (x2 instanceof UnificationXref 
-                		&& x != x2 
-                		&& x.isEquivalent(x2)) {
-                    error(x, "cloned.unification.xref", x2, r);
-                }
-            }
+        if(x.getXrefOf().size()>1) {
+        	error(x, "shared.unification.xref", x.getXrefOf().toString());
         }
     }
 
 	@Override
 	public void fix(UnificationXref t, Object... values) {
+		
 	}
 }

@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package psidev.psi.tools.ontology_manager;
+package psidev.ontology_manager.impl;
 
-import psidev.psi.tools.ontology_manager.interfaces.OntologyTermI;
 
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import psidev.ontology_manager.OntologyTermI;
 
 /**
  * Ontology utils.

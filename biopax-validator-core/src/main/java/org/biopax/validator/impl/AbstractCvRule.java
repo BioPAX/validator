@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.biopax.paxtools.controller.PropertyEditor;
-import org.biopax.validator.utils.OntologyManagerAdapter;
+import org.biopax.validator.utils.BiopaxOntologyManager;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 public abstract class AbstractCvRule<T> extends AbstractRule<T> {
     
 	@Resource
-    protected OntologyManagerAdapter ontologyManager;
+    protected BiopaxOntologyManager ontologyManager;
     
     protected final Class<T> domain;
     protected final String property; // helps validate generic ControlledVocabulary instances
@@ -93,10 +93,10 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
 	}
 	
 	/**
-	 * Gets the internal OntologyManagerAdapter instance
+	 * Gets the internal BiopaxOntologyManager instance
 	 * @return
 	 */
-	public OntologyManagerAdapter getOntologyManagerAdapter() {
+	public BiopaxOntologyManager getOntologyManagerAdapter() {
 		return ontologyManager;
 	}
 	

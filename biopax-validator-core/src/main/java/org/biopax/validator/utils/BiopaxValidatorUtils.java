@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.oxm.Marshaller;
 import org.springframework.util.ResourceUtils;
 

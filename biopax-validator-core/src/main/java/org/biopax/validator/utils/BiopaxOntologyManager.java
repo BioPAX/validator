@@ -1,5 +1,6 @@
 package org.biopax.validator.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -11,15 +12,15 @@ import org.biopax.validator.impl.CvTermRestriction;
 import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
 import org.springframework.core.io.Resource;
 
-import psidev.psi.tools.ontology_manager.OntologyManager;
-import psidev.psi.tools.ontology_manager.OntologyManagerContext;
-import psidev.psi.tools.ontology_manager.OntologyUtils;
-import psidev.psi.tools.ontology_manager.impl.local.OntologyLoaderException;
-import psidev.psi.tools.ontology_manager.interfaces.OntologyAccess;
-import psidev.psi.tools.ontology_manager.interfaces.OntologyTermI;
+import psidev.ontology_manager.Ontology;
+import psidev.ontology_manager.OntologyTermI;
+import psidev.ontology_manager.impl.OntologyLoaderException;
+import psidev.ontology_manager.impl.OntologyManagerContext;
+import psidev.ontology_manager.impl.OntologyManagerImpl;
+import psidev.ontology_manager.impl.OntologyUtils;
 
 /**
- * Access to biological controlled vocabularies.
+ * Access to BioPAX controlled vocabularies.
  * This component is built from a modified PSIDEV tool, Ontology Manager, 
  * by extending it and adding several "proxy" methods that allow to extract 
  * validator-specific data only once and free the memory after it, if required.
@@ -30,8 +31,8 @@ import psidev.psi.tools.ontology_manager.interfaces.OntologyTermI;
  * @author rodche
  *
  */
-public class OntologyManagerAdapter extends OntologyManager {
-	private final static Log log = LogFactory.getLog(OntologyManagerAdapter.class);
+public class BiopaxOntologyManager extends OntologyManagerImpl {
+	private final static Log log = LogFactory.getLog(BiopaxOntologyManager.class);
 	
 	/**
 	 * Constructor
@@ -40,9 +41,20 @@ public class OntologyManagerAdapter extends OntologyManager {
 	 * @throws IOException 
 	 * @throws OntologyLoaderException 
 	 */
-	public OntologyManagerAdapter(Resource ontologiesConfigXml)
+	public BiopaxOntologyManager(Resource ontologiesConfigXml, String ontDir)
 	{
+		if(ontDir != null) {
+			File dir = new File(ontDir);
+			if(!dir.exists()) {
+				dir.mkdir();
+			} else if(!dir.isDirectory() || !dir.canWrite()) {
+				throw new RuntimeException("Is not a directory name or not writable : " + ontDir);
+			}
+			OntologyManagerContext.getInstance().setOntologyDirectory(dir);
+		}
+		
 		OntologyManagerContext.getInstance().setStoreOntologiesLocally(true); // to work fast!
+		
 		try {
 			loadOntologies(ontologiesConfigXml.getInputStream());
 		} catch (OntologyLoaderException e) {
@@ -164,7 +176,7 @@ public class OntologyManagerAdapter extends OntologyManager {
 	 */
 	public Set<OntologyTermI> getTerms(CvTermRestriction restriction) {
 		Set<OntologyTermI> terms = new HashSet<OntologyTermI>();
-		OntologyAccess ontologyAccess = getOntologyAccess(restriction.getOntologyId());
+		Ontology ontologyAccess = getOntology(restriction.getOntologyId());
 		OntologyTermI term = ontologyAccess.getTermForAccession(restriction.getId());
 		if(term == null) {
 			log.error("Cannot Get " + restriction.getOntologyId()
@@ -182,7 +194,7 @@ public class OntologyManagerAdapter extends OntologyManager {
 			terms.addAll(ontologyAccess.getDirectChildren(term));
 		}
 		
-		// FIX xml escape symbols that come from the OntologyManager (a bug?)
+		// FIX xml escape symbols that come from the OntologyManagerImpl (a bug?)
 		for(OntologyTermI t : terms) {
 			t.setPreferredName(StringEscapeUtils.unescapeXml(t.getPreferredName()));
 			Set<String> synonyms = new HashSet<String>();
@@ -193,33 +205,5 @@ public class OntologyManagerAdapter extends OntologyManager {
 		}
 		
 		return terms;
-	}
-	
-	/**
-	 * Search for terms using a name (synonym) name.
-	 * The search is case insensitive.
-	 * It iterates through all loaded ontologies, so use with caution!
-	 * 
-	 * @return
-	 */
-	public Set<OntologyTermI> searchTermByName(String name) {
-		Set<OntologyTermI> found  = new HashSet<OntologyTermI>();
-		
-		for(String ontologyId: getOntologyIDs()) {
-			OntologyAccess oa = getOntologyAccess(ontologyId);
-			for(OntologyTermI term : oa.getOntology().getOntologyTerms()) {
-				if(term.getPreferredName().equalsIgnoreCase(name)) {
-					found.add(term);
-				} else {
-					for(String syn : term.getNameSynonyms()) {
-						if(syn.equalsIgnoreCase(name)) {
-							found.add(term);
-						}
-					}
-				}
-			}
-		}
-		
-		return found;
 	}
 }

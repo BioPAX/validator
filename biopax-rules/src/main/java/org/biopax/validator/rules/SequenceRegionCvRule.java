@@ -21,7 +21,7 @@ public class SequenceRegionCvRule extends Level3CvTermsRule<SequenceRegionVocabu
 	public SequenceRegionCvRule() {
 		super(SequenceRegionVocabulary.class, null, 
 				new CvTermRestriction("SO:0000001","SO", false, 
-						UseChildTerms.DIRECT, false)); // OntologyManager bug: this fails to init when using 'ALL'!
+						UseChildTerms.DIRECT, false)); // OntologyManagerImpl bug: this fails to init when using 'ALL'!
 	}
 	
 }

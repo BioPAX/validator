@@ -5,14 +5,26 @@
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns:oxm="http://www.springframework.org/schema/oxm"
        xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-       http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-1.5.xsd
-       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
     
     <import resource="classpath:rules-context.xml"/>
     
     <context:property-placeholder location="classpath:validator.properties"/>
+    
+    
+	<bean id="log4jInitialization" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	  <property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
+	  <property name="targetMethod" value="initLogging" />
+	  <property name="arguments">
+		<list>
+		  <value>file:${BIOPAX_HOME}/log4j.properties</value>
+		</list>
+	  </property>
+	</bean>
+	
     
     <bean id="validator" class="org.biopax.validator.impl.ValidatorImpl" />
     
@@ -55,8 +67,9 @@
 		<constructor-arg type="org.biopax.paxtools.model.BioPAXLevel" value="L2"/>
 	</bean>
 
-  	<bean id="ontologyManager" class="org.biopax.validator.utils.OntologyManagerAdapter">
+  	<bean id="ontologyManager" class="org.biopax.validator.utils.BiopaxOntologyManager">
 		 <constructor-arg value="classpath:ontologies.xml" />
+		 <constructor-arg value="${BIOPAX_HOME}/ontologies"/>
 	</bean>
 	
 	<!-- a helper and a proxy to access MIRIAM and MI database citation and regexps 

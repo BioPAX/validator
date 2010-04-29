@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <beans xmlns="http://www.springframework.org/schema/beans"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xmlns:tx="http://www.springframework.org/schema/tx"
-		xmlns:context="http://www.springframework.org/schema/context"
-		xmlns:p="http://www.springframework.org/schema/p"
-		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
-							http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<context:annotation-config/>
+
+
+	<bean id="log4jConfigurer" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass">
+			<value>org.springframework.util.Log4jConfigurer</value>
+		</property>
+		<property name="targetMethod">
+			<value>initLogging</value>
+		</property>
+		<property name="arguments">
+			<list>
+				<value>file:${BIOPAX_HOME}/log4j.properties</value>
+			</list>
+		</property>
+	</bean>
+
 
     <bean id="validatorController" class="org.biopax.validator.ws.ValidatorController">
 		<constructor-arg ref="validator" />
@@ -40,6 +59,13 @@
         </property>
     </bean>
 
+<!-- some day...	
+	<mvc:annotation-driven>
+		<mvc:tiles definitions="/WEB-INF/tiles-defs/templates.xml" 
+			viewClass="org.springbyexample.web.servlet.view.tiles2.DynamicTilesView" />
+	</mvc:annotation-driven>
+-->
+
 	<bean id="tilesConfigurer"
 		  class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
 		<property name="definitions">
@@ -49,12 +75,12 @@
 		</property>
 	</bean>
 
-	<!-- <bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver"> -->
 	<bean id="tilesViewResolver" class="org.springbyexample.web.servlet.view.tiles2.TilesUrlBasedViewResolver">
 		<property name="viewClass" value="org.springbyexample.web.servlet.view.tiles2.DynamicTilesView" />
 		<property name="prefix" value="/WEB-INF/views/"/>
   		<property name="suffix" value=".jsp"/>
   	</bean>
+
  
     <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
         <property name="paramName" value="locale"/>

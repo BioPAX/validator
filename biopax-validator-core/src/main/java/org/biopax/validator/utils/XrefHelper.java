@@ -9,9 +9,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import psidev.psi.tools.ontology_manager.impl.OntologyTermImpl;
-import psidev.psi.tools.ontology_manager.interfaces.OntologyAccess;
-import psidev.psi.tools.ontology_manager.interfaces.OntologyTermI;
+import psidev.ontology_manager.Ontology;
+import psidev.ontology_manager.OntologyTermI;
+import psidev.ontology_manager.impl.OntologyTermImpl;
 
 import org.biopax.miriam.MiriamLink;
 
@@ -29,11 +29,11 @@ public class XrefHelper {
     private Map<String, Pattern> dataPatterns;
     private Set<List<String>> synonyms;
     private MiriamLink miriamLink;
-    private OntologyManagerAdapter ontologyManager;
+    private BiopaxOntologyManager ontologyManager;
 	
     
     public XrefHelper(Set<List<String>> extraSynonyms, 
-    	OntologyManagerAdapter ontologyManager, MiriamLink miriamLink) 
+    	BiopaxOntologyManager ontologyManager, MiriamLink miriamLink) 
     		throws Exception 
     {   	
     	
@@ -71,7 +71,7 @@ public class XrefHelper {
 		}
 
 		// load all names from MI 'database citation'
-		OntologyAccess mi = ontologyManager.getOntologyAccess("MI");
+		Ontology mi = ontologyManager.getOntology("MI");
 		Collection<OntologyTermI> terms = mi.getAllChildren(new OntologyTermImpl("MI:0444")); 
 		for (OntologyTermI term : terms) {
 			String db = dbName(term.getPreferredName());

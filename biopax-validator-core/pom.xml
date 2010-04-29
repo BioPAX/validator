@@ -17,24 +17,10 @@
   		<artifactId>commons-lang</artifactId>
   		<version>2.4</version>
   	</dependency>
-  	<!-- 
-  	<dependency>
-  		<groupId>org.apache.axis</groupId>
-  		<artifactId>axis-jaxrpc</artifactId>
-  		<version>1.4</version>
-  		<scope>runtime</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.axis</groupId>
-  		<artifactId>axis-saaj</artifactId>
-  		<version>1.4</version>
-  		<scope>runtime</scope>
-  	</dependency>
-  	-->
   	<dependency>
   		<groupId>org.springframework</groupId>
   		<artifactId>spring-aop</artifactId>
-  		<version>2.5.6.SEC01</version>
+  		<version>${spring.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.aspectj</groupId>
@@ -49,14 +35,8 @@
   	</dependency>
   	<dependency>
   		<groupId>org.springframework</groupId>
-  		<artifactId>spring-agent</artifactId>
-  		<version>2.5.6.SEC01</version>
-  		<scope>provided</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.springframework</groupId>
   		<artifactId>spring-aspects</artifactId>
-  		<version>2.5.6.SEC01</version>
+  		<version>${spring.version}</version>
   		<scope>runtime</scope>
   	</dependency>
   	<dependency>

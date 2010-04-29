@@ -3,7 +3,7 @@
  * All rights reserved. Please see the file LICENSE
  * in the root directory of this distribution.
  */
-package psidev.psi.tools.ontology_manager.impl.local;
+package psidev.ontology_manager.impl;
 
 /**
  * TODO comment this
