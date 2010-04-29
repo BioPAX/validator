@@ -254,7 +254,7 @@ public class BiopaxValidatorUtils {
 	 * @param validationResult
 	 * @param writer
 	 */
-	public void write(Validation validationResult, Writer writer, Source xslt) {
+	public static void write(Validation validationResult, Writer writer, Source xslt) {
 		Element el = asElement(validationResult);
 		transformAndWrite(el, writer, xslt);
 	}
@@ -279,7 +279,7 @@ public class BiopaxValidatorUtils {
 	 * @param validationResult
 	 * @return
 	 */
-	public Element asElement(Validation validationResult) {
+	public static Element asElement(Validation validationResult) {
 		DOMResult domResult = marshal(validationResult);
 		Element validation = (Element) domResult.getNode().getFirstChild();
 		return validation;
