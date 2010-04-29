@@ -3,6 +3,9 @@ package org.biopax.validator;
 import java.io.*;
 import java.util.*;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.validator.Validator;
@@ -33,7 +36,6 @@ public class Main {
 		
         // get the beans to work with
         Validator validator = (Validator) ctx.getBean("validator");
-        BiopaxValidatorUtils utils = (BiopaxValidatorUtils) ctx.getBean("utils");
         
         if(args.length < 1) {
         	String usage = 
@@ -87,7 +89,8 @@ public class Main {
 			if(input != null && !"".equals(input)) {
 				// go!
 				ValidatorResponse validatorResponse = runBatch(validator, getResourcesToValidate(input));
-				utils.write(validatorResponse, writer);
+				Source xsltSrc = new StreamSource(ctx.getResource("classpath:default-result.xsl").getInputStream());
+				BiopaxValidatorUtils.write(validatorResponse, writer, xsltSrc);
 			}
 			if(!isQuit) {
 				System.out.println("\nAre You Going to Continue? (NO/yes) "); // default is to quit

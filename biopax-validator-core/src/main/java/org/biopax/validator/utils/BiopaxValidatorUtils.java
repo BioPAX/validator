@@ -13,7 +13,6 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,8 +41,7 @@ public class BiopaxValidatorUtils {
     
     private Locale locale;
     private MessageSource messageSource; 
-    private Marshaller resultsMarshaller;
-    private Resource xsltResource;
+    private static Marshaller resultsMarshaller;
     private final Set<String> ignoredCodes;
     public static int maxErrors = Integer.MAX_VALUE;
     
@@ -63,7 +61,7 @@ public class BiopaxValidatorUtils {
 	}
     
     public void setMarshaller(Marshaller marshaller) {
-		this.resultsMarshaller = marshaller;
+		resultsMarshaller = marshaller;
 	}
     
 	/**
@@ -81,15 +79,7 @@ public class BiopaxValidatorUtils {
 	public MessageSource getMessageSource() {
 		return messageSource;
 	}
-	
-	public void setXsltResource(Resource xsltResource) {
-		this.xsltResource = xsltResource;
-	}
-	
-	public Resource getXsltResource() {
-		return xsltResource;
-	}
-      
+	     
 	/**
      * Gets current max number of errors to report.
      * 
@@ -252,9 +242,9 @@ public class BiopaxValidatorUtils {
 	 * @param validatorResponse
 	 * @param writer
 	 */
-	public void write(ValidatorResponse validatorResponse, Writer writer) {
+	public static void write(ValidatorResponse validatorResponse, Writer writer, Source xslt) {
 		Document doc = asDocument(validatorResponse);
-		transformAndWrite(doc, writer);
+		transformAndWrite(doc, writer, xslt);
 	}
 	
 	/**
@@ -264,9 +254,9 @@ public class BiopaxValidatorUtils {
 	 * @param validationResult
 	 * @param writer
 	 */
-	public void write(Validation validationResult, Writer writer) {
+	public void write(Validation validationResult, Writer writer, Source xslt) {
 		Element el = asElement(validationResult);
-		transformAndWrite(el, writer);
+		transformAndWrite(el, writer, xslt);
 	}
 	
 	/**
@@ -276,7 +266,7 @@ public class BiopaxValidatorUtils {
 	 * @param validatorResponse
 	 * @return
 	 */
-	public Document asDocument(ValidatorResponse validatorResponse) {
+	public static Document asDocument(ValidatorResponse validatorResponse) {
 		DOMResult domResult = marshal(validatorResponse);
 		Document validation = (Document) domResult.getNode();
 		return validation;
@@ -295,14 +285,14 @@ public class BiopaxValidatorUtils {
 		return validation;
 	}
 	
-	protected void transformAndWrite(Node resultNode, Writer writer) {
+	
+	public static void transformAndWrite(Node resultNode, Writer writer, Source xsltSource) {
 		try {
 				Source xmlSource = new DOMSource(resultNode);
 				Result result = new StreamResult(writer);
 				TransformerFactory transFact = TransformerFactory.newInstance();
 				Transformer trans = null; 
-				if (xsltResource != null) {
-					Source xsltSource = new StreamSource(xsltResource.getInputStream());
+				if (xsltSource != null) {
 					trans = transFact.newTransformer(xsltSource);
 				} else {
 					trans = transFact.newTransformer();
@@ -313,7 +303,8 @@ public class BiopaxValidatorUtils {
 		} 
 	}
 	
-	protected DOMResult marshal(Object obj) {
+	
+	protected static DOMResult marshal(Object obj) {
 		DOMResult domResult = new DOMResult();
 		try {
 			resultsMarshaller.marshal(obj, domResult);

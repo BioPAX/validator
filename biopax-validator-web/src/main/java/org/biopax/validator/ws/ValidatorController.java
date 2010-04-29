@@ -41,14 +41,12 @@ public class ValidatorController {
 	private static final String HOME = "redirect:index.html";
 	
 	private Validator validator;
-	private BiopaxValidatorUtils utils;
 	
 	public ValidatorController() {
 	}
 
-	public ValidatorController(Validator validator, BiopaxValidatorUtils utils) {
+	public ValidatorController(Validator validator) {
 		this.validator = validator;
-		this.utils = utils;
 	}	
       
     @RequestMapping(value="checkUrl", method=RequestMethod.GET)
@@ -121,7 +119,7 @@ public class ValidatorController {
     	ModelAndView mView = new ModelAndView(HOME); // fall-back
     	ModelMap model = new ModelMap();
 		if(type.equalsIgnoreCase("xml")) {
-			model.addAttribute("response", new DOMSource(utils.asDocument(validatorResponse)));
+			model.addAttribute("response", new DOMSource(BiopaxValidatorUtils.asDocument(validatorResponse)));
 			mView = new ModelAndView("xmlresponse", model);
 		} else if(type.equalsIgnoreCase("html")) {
 			model.addAttribute("response", validatorResponse);
