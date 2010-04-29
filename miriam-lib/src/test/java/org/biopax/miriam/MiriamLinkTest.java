@@ -13,7 +13,6 @@ import org.junit.Test;
 
 public class MiriamLinkTest {
 	
-	static MiriamLink link = new MiriamLink();
 	static final String MIURN = "urn:miriam:obo.mi";
 	static final String MIPAGE = "http://www.ebi.ac.uk/ontology-lookup/";
 	static final String MIETRY_PREFIX = "http://www.ebi.ac.uk/ontology-lookup/?termId=";
@@ -29,40 +28,40 @@ public class MiriamLinkTest {
 
 	@Test
 	public final void testGetServicesVersion() {
-		String version = link.getServicesVersion();
+		String version = MiriamLink.getServicesVersion();
 		assertNotNull(version);
 	}
 
 	@Test
 	public final void testGetDataTypeURI() {
-		assertEquals(MIURN, link.getDataTypeURI(MI));
-		assertEquals(MIURN, link.getDataTypeURI(MISYN));
-		assertEquals(MIURN, link.getDataTypeURI(MIURN));
+		assertEquals(MIURN, MiriamLink.getDataTypeURI(MI));
+		assertEquals(MIURN, MiriamLink.getDataTypeURI(MISYN));
+		assertEquals(MIURN, MiriamLink.getDataTypeURI(MIURN));
 	}
 
 	@Test
 	public final void testGetDataTypeURIs() {
-		String[] uris = link.getDataTypeURIs(MI);
+		String[] uris = MiriamLink.getDataTypeURIs(MI);
 		assertTrue(uris.length==1);
 		assertEquals(MIURN, uris[0]);
 	}
 
 	@Test
 	public final void testGetResourceLocation() {
-		assertEquals("UK", link.getResourceLocation(MIRESID));
+		assertEquals("UK", MiriamLink.getResourceLocation(MIRESID));
 	}
 
 	@Test
 	public final void testGetResourceInstitution() {
-		assertEquals("European Bioinformatics Institute", link.getResourceInstitution(MIRESID));
+		assertEquals("European Bioinformatics Institute", MiriamLink.getResourceInstitution(MIRESID));
 	}
 
 	@Test
 	public final void testGetURI() {
-		assertEquals("urn:miriam:obo.mi:MI%3A0000", link.getURI(MISYN, "MI:0000"));
+		assertEquals("urn:miriam:obo.mi:MI%3A0000", MiriamLink.getURI(MISYN, "MI:0000"));
 		
 		try{
-			link.getURI(MISYN, "MI_0000");
+			MiriamLink.getURI(MISYN, "MI_0000");
 			fail("must throw IllegalArgumentException (wrong ID format)");
 		} catch (IllegalArgumentException e) {
 		}
@@ -70,51 +69,51 @@ public class MiriamLinkTest {
 
 	@Test
 	public final void testGetDataTypeDef() {
-		String def = link.getDataTypeDef(MISYN);
+		String def = MiriamLink.getDataTypeDef(MISYN);
 		assertNotNull(def);
 		assertTrue(def.contains("MI is developed by"));
 	}
 
 	@Test
 	public final void testGetLocations() {
-		String[] locs = link.getLocations(MI, "MI:0000");
+		String[] locs = MiriamLink.getLocations(MI, "MI:0000");
 		assertTrue(locs.length>0);
 		assertEquals("http://www.ebi.ac.uk/ontology-lookup/?termId=MI%3A0000", locs[0]);
 	}
 
 	@Test
 	public final void testGetDataResources() {
-		String[] drs = link.getDataResources(MI);
+		String[] drs = MiriamLink.getDataResources(MI);
 		assertTrue(drs.length == 1);
 		assertEquals("http://www.ebi.ac.uk/ontology-lookup/", drs[0]);
 	}
 
 	@Test
 	public final void testIsDeprecated() {
-		assertFalse(link.isDeprecated("urn:miriam:hmdb"));
-		assertTrue(link.isDeprecated("http://www.hmdb.ca/"));
+		assertFalse(MiriamLink.isDeprecated("urn:miriam:hmdb"));
+		assertTrue(MiriamLink.isDeprecated("http://www.hmdb.ca/"));
 	}
 
 	@Test
 	public final void testGetDataTypePattern() {
-		assertEquals("^MI:\\d{4}$", link.getDataTypePattern(MI));
+		assertEquals("^MI:\\d{4}$", MiriamLink.getDataTypePattern(MI));
 	}
 
 	@Test
 	public final void testGetDataTypeSynonyms() {
-		String[] synons = link.getDataTypeSynonyms(MI);
+		String[] synons = MiriamLink.getDataTypeSynonyms(MI);
 		assertTrue(synons.length==1);
 		assertEquals(MISYN.toLowerCase(), synons[0].toLowerCase());
 	}
 
 	@Test
 	public final void testGetName() {
-		assertEquals(MI, link.getName(MIURN));
+		assertEquals(MI, MiriamLink.getName(MIURN));
 	}
 
 	
 	public final void testGetNames() {
-		String[] names = link.getNames(MIURN);
+		String[] names = MiriamLink.getNames(MIURN);
 		assertTrue(names.length==2);
 		String s = names[0] + names[1];
 		assertTrue(s.contains("MI"));
@@ -123,7 +122,7 @@ public class MiriamLinkTest {
 
 	@Test
 	public final void testGetDataTypesName() {
-		String[] dts = link.getDataTypesName();
+		String[] dts = MiriamLink.getDataTypesName();
 		List<String> names = Arrays.asList(dts);
 		assertFalse(names.contains("MI"));
 		assertTrue(names.contains(MI));
@@ -132,7 +131,7 @@ public class MiriamLinkTest {
 
 	@Test
 	public final void testGetDataTypesId() {
-		String[] dts = link.getDataTypesId();
+		String[] dts = MiriamLink.getDataTypesId();
 		List<String> names = Arrays.asList(dts);
 		assertTrue(names.contains(MIID));
 		assertTrue(names.contains("MIR:00000021"));
@@ -140,22 +139,22 @@ public class MiriamLinkTest {
 
 	@Test
 	public final void testCheckRegExp() {
-		assertTrue(link.checkRegExp("MI:0000", MI));
-		assertFalse(link.checkRegExp("0000", MI));
+		assertTrue(MiriamLink.checkRegExp("MI:0000", MI));
+		assertFalse(MiriamLink.checkRegExp("0000", MI));
 	}
 
 	@Test
 	public final void testGetOfficialDataTypeURIDatatype() {
-		Datatype dt = link.getDatatype(MI);
+		Datatype dt = MiriamLink.getDatatype(MI);
 		assertNotNull(dt);
 		assertEquals(MIID, dt.getId());
-		String urn = link.getOfficialDataTypeURI(dt);
+		String urn = MiriamLink.getOfficialDataTypeURI(dt);
 		assertEquals(MIURN, urn);
 	}
 
 	@Test
 	public final void testGetResourcesId() {
-		String[] rs = link.getResourcesId();
+		String[] rs = MiriamLink.getResourcesId();
 		List<String> names = Arrays.asList(rs);
 		assertTrue(names.contains(MIRESID));
 		assertTrue(names.contains("MIR:00100096"));
@@ -163,7 +162,7 @@ public class MiriamLinkTest {
 
 	@Test
 	public final void testGetResource() {
-		Resource resource = link.getResource("MIR:00100008");
+		Resource resource = MiriamLink.getResource("MIR:00100008");
 		assertNotNull(resource);
 		assertEquals("Canada", resource.getDataLocation());
 	}

@@ -28,12 +28,11 @@ public class XrefHelper {
     
     private Map<String, Pattern> dataPatterns;
     private Set<List<String>> synonyms;
-    private MiriamLink miriamLink;
     private BiopaxOntologyManager ontologyManager;
 	
     
     public XrefHelper(Set<List<String>> extraSynonyms, 
-    	BiopaxOntologyManager ontologyManager, MiriamLink miriamLink) 
+    	BiopaxOntologyManager ontologyManager) 
     		throws Exception 
     {   	
     	
@@ -46,20 +45,19 @@ public class XrefHelper {
 			: new HashSet<List<String>>();
 		
 		this.ontologyManager = ontologyManager;
-		this.miriamLink = miriamLink;
     }
 
     @PostConstruct
     void init() {
 		// adds names and assigns regexps from Miriam;
 		// also makes those names primary synonyms
-		for (String dt : miriamLink.getDataTypesName()) {
+		for (String dt : MiriamLink.getDataTypesName()) {
 			String db = dbName(dt);
-			String regexp = miriamLink.getDataTypePattern(dt);
+			String regexp = MiriamLink.getDataTypePattern(dt);
 			Pattern pattern = Pattern.compile(regexp);
 			List<String> synonyms = new ArrayList<String>();
 			synonyms.add(db);
-			String[] otherNames = miriamLink.getDataTypeSynonyms(dt);
+			String[] otherNames = MiriamLink.getDataTypeSynonyms(dt);
 			if (otherNames != null && otherNames.length>0) {
 				synonyms.addAll(Arrays.asList(otherNames));
 			}

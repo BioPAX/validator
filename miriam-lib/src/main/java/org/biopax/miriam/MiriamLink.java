@@ -25,44 +25,45 @@ import net.biomodels.miriam.Miriam.Datatype;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
-public class MiriamLink
+/**
+ * Singleton local Miriam resolver with all methods static
+ * 
+ * @author rodche
+ *
+ */
+public final class MiriamLink
 {
 	private static final Log log = LogFactory.getLog(MiriamLink.class);
 	private static final String[] ARRAY_OF_STRINGS = {}; // a template to convert a Collection<T> to String[]
 	
 	
 	/** default address to access to the services */
-	public static final String DEFAULT_ADDRESS = "http://www.ebi.ac.uk/miriam/main/XMLExport";
+	public static final String XML_LOCATION = "http://www.ebi.ac.uk/miriam/main/XMLExport";
 	/** package name for jaxb to use */
 	public static final String BINDING = "net.biomodels.miriam";
 	public static final String SCHEMA_LOCATION = "http://www.ebi.ac.uk/compneur-srv/miriam/static/main/xml/MiriamXML.xsd";
-
-	private String address;
-    
+   
     /** object of the generated from the Miriam schema type */
-    private Miriam miriam;
+    private static final Miriam miriam;
     
 	
 	/**
 	 * Default constructor: initialisation of some parameters
 	 */
-	public MiriamLink() {
-		this.address = DEFAULT_ADDRESS;
-		init();
+	protected MiriamLink() {
     }
 	
-	
-	void init()
+	static
 	{
 		if(log.isInfoEnabled()) {
-			log.info("Getting the latest Miriam XML...");
-			log.info("Address used: " + DEFAULT_ADDRESS);
+			log.info("Getting the latest Miriam XML from " 
+					+ XML_LOCATION);
 		}
+		
 		try
 	    {
 			String query = URLEncoder.encode("fileName=Miriam.xml", "UTF-8");
-			URL url = new URL(address);
+			URL url = new URL(XML_LOCATION);
 			URLConnection conn = url.openConnection();
 			conn.setDoOutput(true);
 			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
@@ -73,7 +74,7 @@ public class MiriamLink
             //SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             //Schema schema = schemaFactory.newSchema(new URL(SCHEMA_LOCATION));
             //unmarshaller.setSchema(schema);
-            this.miriam = (Miriam) unmarshaller.unmarshal(conn.getInputStream());
+            miriam = (Miriam) unmarshaller.unmarshal(conn.getInputStream());
 
             if (log.isDebugEnabled()) {
 	            log.debug("MIRIAM XML imported, version: "
@@ -92,7 +93,7 @@ public class MiriamLink
      * Retrieves the current version of MIRIAM Web Services.  
      * @return Current version of the Web Services
 	 */
-    public String getServicesVersion()
+    public static String getServicesVersion()
     {
         return miriam.getDate().toString() 
         	+ "; " +  miriam.getDataVersion().toString();
@@ -104,7 +105,7 @@ public class MiriamLink
      * @param name name, synonym, or deprecated URI (URN or URL) of a data type (examples: "UniProt")
      * @return unique URI of the data type
      */
-    public String getDataTypeURI(String name)
+    public static String getDataTypeURI(String name)
     {
     	Datatype datatype = getDatatype(name);
     	return getOfficialDataTypeURI(datatype); 
@@ -118,7 +119,7 @@ public class MiriamLink
      * @param name name (or synonym) or deprecated URI (URN or URL) of the data type (examples: "ChEBI", "UniProt")
      * @return all the URIs of a data type (including the deprecated ones)
      */
-    public String[] getDataTypeURIs(String name)
+    public static String[] getDataTypeURIs(String name)
     {
        	Set<String> alluris = new HashSet<String>();
     	Datatype datatype = getDatatype(name);
@@ -136,7 +137,7 @@ public class MiriamLink
 	 * @param id identifier of a resource (example: "MIR:00100009")
 	 * @return the location (the country) where the resource is managed
 	 */
-	public String getResourceLocation(String id)
+	public static String getResourceLocation(String id)
 	{
 		Resource resource = getResource(id);
     	return resource.getDataLocation();
@@ -148,7 +149,7 @@ public class MiriamLink
 	 * @param id identifier of a resource (example: "MIR:00100009")
 	 * @return the institution managing the resource
 	 */
-	public String getResourceInstitution(String id)
+	public static String getResourceInstitution(String id)
 	{
 		Resource resource = getResource(id);
     	return resource.getDataInstitution();
@@ -161,7 +162,7 @@ public class MiriamLink
      * @param id identifier of an enity within the data type (examples: "GO:0045202", "P62158")
      * @return unique MIRIAM URI of a given entity
      */
-    public String getURI(String name, String id)
+    public static String getURI(String name, String id)
     {
     	Datatype datatype = getDatatype(name);
     	String db = datatype.getName();
@@ -180,7 +181,7 @@ public class MiriamLink
 	 * @param nickname name or URI (URN or URL) of a data type
 	 * @return definition of the data type
 	 */
-    public String getDataTypeDef(String nickname)
+    public static String getDataTypeDef(String nickname)
     {
     	Datatype datatype = getDatatype(nickname);
     	return datatype.getDefinition();
@@ -193,7 +194,7 @@ public class MiriamLink
      * @param id identifier of an entity within the given data type (examples: "GO:0045202", "P62158")
      * @return physical locationS of web pageS providing knowledge about the given entity
      */
-    public String[] getLocations(String nickname, String id)
+    public static String[] getLocations(String nickname, String id)
     {
        	Set<String> locations = new HashSet<String>();
 		Datatype datatype = getDatatype(nickname);
@@ -214,7 +215,7 @@ public class MiriamLink
      * @param nickname name (can be a synonym) or URL or URN of a data type name (or synonym) or URI (URL or URN)
      * @return array of strings containing all the address of the main page of the resources of the data type
 	 */
-    public String[] getDataResources(String nickname)
+    public static String[] getDataResources(String nickname)
     {
        	Set<String> locations = new HashSet<String>();
     	Datatype datatype = getDatatype(nickname);
@@ -234,7 +235,7 @@ public class MiriamLink
 	 * @param uri (URN or URL) of a data type
 	 * @return answer ("true" or "false") to the question: is this URI deprecated?
 	 */
-    public boolean isDeprecated(String uri)
+    public static boolean isDeprecated(String uri)
     {
     	Datatype datatype = getDatatype(uri);
     	String urn = getOfficialDataTypeURI(datatype);
@@ -247,7 +248,7 @@ public class MiriamLink
      * @param nickname data type name (or synonym) or URI (URL or URN)
      * @return pattern of the data type
 	 */
-    public String getDataTypePattern(String nickname)
+    public static String getDataTypePattern(String nickname)
     {
     	Datatype datatype = getDatatype(nickname);
     	return datatype.getPattern();
@@ -259,7 +260,7 @@ public class MiriamLink
      * @param name name or synonym of a data type
      * @return all the synonym names of the data type
 	 */
-    public String[] getDataTypeSynonyms(String name)
+    public static String[] getDataTypeSynonyms(String name)
     {
     	Datatype datatype = getDatatype(name);
     	Synonyms synonyms = datatype.getSynonyms();
@@ -272,7 +273,7 @@ public class MiriamLink
 	 * @param uri URI (URL or URN), or nickname of a data type
 	 * @return the common name of the data type
 	 */
-    public String getName(String uri)
+    public static String getName(String uri)
     {
     	Datatype datatype = getDatatype(uri);
     	return datatype.getName();
@@ -284,7 +285,7 @@ public class MiriamLink
 	 * @param uri URI (URL or URN) of a data type
 	 * @return the common name of the data type and all the synonyms
 	 */
-    public String[] getNames(String uri)
+    public static String[] getNames(String uri)
     {
     	Set<String> names = new HashSet<String>();
     	Datatype datatype = getDatatype(uri);
@@ -299,7 +300,7 @@ public class MiriamLink
      * Retrieves the list of names of all the data types available.
      * @return list of names of all the data types
      */
-    public String[] getDataTypesName()
+    public static String[] getDataTypesName()
     {
         Set<String> dataTypeIds = new HashSet<String>();
         for(Datatype datatype : miriam.getDatatype()) {
@@ -313,7 +314,7 @@ public class MiriamLink
      * Retrieves the internal identifier (stable and perennial) of all the data types (for example: "MIR:00000005").
      * @return list of the identifier of all the data types
      */
-    public String[] getDataTypesId()
+    public static String[] getDataTypesId()
     {
         Set<String> dataTypeIds = new HashSet<String>();
         for(Datatype datatype : miriam.getDatatype()) {
@@ -329,7 +330,7 @@ public class MiriamLink
      * @return the official URI of a data type corresponding to the deprecated one
      * @deprecated use getDataTypeURI instead
      */
-    public String getOfficialDataTypeURI(String uri)
+    public static String getOfficialDataTypeURI(String uri)
     {
         return getDataTypeURI(uri);
     }
@@ -341,7 +342,7 @@ public class MiriamLink
      * @param datatype name, synonym or URI of a data type
      * @return "true" if the identifier follows the regular expression, "false" otherwise
      */
-    public boolean checkRegExp(String identifier, String datatype)
+    public static boolean checkRegExp(String identifier, String datatype)
     {
     	Datatype dt = getDatatype(datatype);
     	Pattern pattern = Pattern.compile(dt.getPattern());
@@ -354,7 +355,7 @@ public class MiriamLink
      * @param datatype net.biomodels.miriam.Miriam.Datatype
      * @return
      */
-    public String getOfficialDataTypeURI(Datatype datatype) {
+    public static String getOfficialDataTypeURI(Datatype datatype) {
     	for(Uris uris : datatype.getUris()) {
     		for(Uri uri : uris.getUri()) {
     			if(!isDeprecated(uri) && uri.getType() == UriType.URN) {
@@ -367,7 +368,7 @@ public class MiriamLink
     }
     
     
-    private boolean isDeprecated(Uri uri) {
+    private static boolean isDeprecated(Uri uri) {
 		if(uri.isDeprecated()!=null && uri.isDeprecated()) {
 			return true;
 		} else {
@@ -382,7 +383,7 @@ public class MiriamLink
      * @param datatype
      * @return
      */
-	public Datatype getDatatype(String datatype) {
+	public static Datatype getDatatype(String datatype) {
 		
 		// name or id (quick scan)?
 		for(Datatype dt : miriam.getDatatype()) {
@@ -423,7 +424,7 @@ public class MiriamLink
      * Retrieves the internal identifier (stable and perennial) of all the resources (for example: "MIR:00100008" (bind) ).
      * @return list of the identifier of all the data types
      */
-    public String[] getResourcesId()
+    public static String[] getResourcesId()
     {
         Set<String> ids = new HashSet<String>();
         for(Datatype datatype : miriam.getDatatype()) {
@@ -442,7 +443,7 @@ public class MiriamLink
      * Retrieves the resource by id (for example: "MIR:00100008" (bind) ).
      * @return list of the identifier of all the data types
      */
-    public Resource getResource(String id)
+    public static Resource getResource(String id)
     {
         for(Datatype datatype : miriam.getDatatype()) {
 			Resources resources = datatype.getResources();
@@ -458,13 +459,4 @@ public class MiriamLink
         throw new IllegalArgumentException("Resource not found : " + id);
     }
 
-    
-	public String getAddress() {
-		return address;
-	}
-
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
 }
