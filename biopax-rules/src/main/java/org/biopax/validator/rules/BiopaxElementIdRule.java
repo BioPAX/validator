@@ -1,9 +1,9 @@
 package org.biopax.validator.rules;
 
-import org.apache.axis.types.NCName;
+import java.net.URI;
+
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,10 +13,13 @@ public class BiopaxElementIdRule extends AbstractRule<BioPAXElement> {
 	}
 
 	public void check(BioPAXElement thing) {
-		if(thing.getRDFId() != null) {
-			String id = BiopaxValidatorUtils.getLocalId(thing);
-			if(!NCName.isValid(id))
-				error(thing, "invalid.rdf.id", "not a valid NCName: " + id);
+		String rdfid = thing.getRDFId();
+		if(rdfid != null) {
+			try {
+				URI.create(rdfid);
+			} catch (IllegalArgumentException e) {
+				error(thing, "invalid.rdf.id", "not a valid URI: " + rdfid);
+			}	
 		} else
 			error(thing, "invalid.rdf.id", "null value");
 	}

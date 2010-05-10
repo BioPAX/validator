@@ -13,6 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class BioSourceTaxonXrefCRRule extends Level3CardinalityAndRangeRule<BioSource> {
 	public BioSourceTaxonXrefCRRule() {
-		super(BioSource.class, "taxonXref", 0, 1, UnificationXref.class);
+		super(BioSource.class, "xref", 0, 1, UnificationXref.class);
 	}
 }
