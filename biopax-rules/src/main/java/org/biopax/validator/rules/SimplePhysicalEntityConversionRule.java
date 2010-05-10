@@ -34,7 +34,7 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
     public void check(SimplePhysicalEntity protein)
     {
        Set<Conversion> conversions = new HashSet<Conversion>(
-			new ClassFilterSet<Conversion>(protein.getParticipantsOf(), Conversion.class));
+			new ClassFilterSet<Conversion>(protein.getParticipantOf(), Conversion.class));
        
        for(Conversion conversion : conversions) {
     	   String side = 

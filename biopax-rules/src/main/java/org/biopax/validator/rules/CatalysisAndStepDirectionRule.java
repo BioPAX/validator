@@ -29,7 +29,7 @@ public class CatalysisAndStepDirectionRule extends AbstractRule<Catalysis> {
 		if(thing != null && 
 				thing.getCatalysisDirection() == CatalysisDirectionType.LEFT_TO_RIGHT) 
 		{
-			for(PathwayStep ps : thing.getStepInteractionsOf()) {
+			for(PathwayStep ps : thing.getStepProcessOf()) {
 				if (ps instanceof BiochemicalPathwayStep) {
 					StepDirection sdir = ((BiochemicalPathwayStep) ps).getStepDirection();
 					if(sdir != null && sdir != StepDirection.LEFT_TO_RIGHT) {

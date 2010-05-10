@@ -22,6 +22,7 @@
 	
 	<!-- allow ONLY listed db names for UnificationXrefs-->
 	<util:map id="dbAllow" key-type="java.lang.Class" value-type="java.lang.String">
+		<entry key="org.biopax.paxtools.model.level3.BioSource" value="taxonomy"/>
 	</util:map>
 	
 	<!-- disallow listed db names (and all synonyms) for for UnificationXrefs -->

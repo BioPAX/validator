@@ -10,7 +10,6 @@
   <owl:Ontology rdf:about="">
     <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl"/>
   </owl:Ontology>
-  <rdf:Property rdf:about="http://www.biopax.org/release/biopax-level3.owl#direction"/>
   <bp:Protein rdf:ID="Protein_5">
     <bp:dataSource>
       <bp:Provenance rdf:ID="Provenance_3">

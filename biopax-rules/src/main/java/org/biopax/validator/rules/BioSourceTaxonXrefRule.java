@@ -2,6 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.BioSource;
 import org.biopax.paxtools.model.level3.UnificationXref;
+import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.validator.utils.XrefHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +25,18 @@ public class BioSourceTaxonXrefRule extends AbstractRule<BioSource> {
 		return thing instanceof BioSource;
 	}  
     
-    public void check(BioSource bioSource) {
-    	UnificationXref x = bioSource.getTaxonXref();
-        if (x != null) {
-            String db = x.getDb();
-            if (db != null) {
-                if (!xrefHelper.isSynonyms(db, "taxonomy")) {
-                    error(bioSource, "not.taxon.db", db);
-                }
-            }
-        }
-    }
+	public void check(BioSource bioSource) {
+		for (Xref x : bioSource.getXref()) {
+			if (x instanceof UnificationXref) {
+				String db = x.getDb();
+				if (db != null) {
+					if (!xrefHelper.isSynonyms(db, "taxonomy")) {
+						error(bioSource, "not.taxon.db", db);
+					}
+				}
+			}
+		}
+	}
 
 	@Override
 	public void fix(BioSource t, Object... values) {

@@ -24,17 +24,13 @@ public final class PathwayStepProcessesArePathwayComponents extends AbstractRule
 	}
 
 	public void check(PathwayStep step) {
-		for(Pathway pathway : step.getPathwayOrdersOf()) {
-			Set<Process> pathwayComponents = pathway.getPathwayComponent();
-			for (Process stepProcess : step.getStepProcess()) {
-				//if (!stepProcess.equals(pathway)) {
-					if (!pathwayComponents.contains(stepProcess)) {
-						error(step, "component.not.found", stepProcess, pathway);
-					}
-				//}
+		Pathway pathway = step.getPathwayOrderOf();
+		Set<Process> pathwayComponents = pathway.getPathwayComponent();
+		for (Process stepProcess : step.getStepProcess()) {
+			if (!pathwayComponents.contains(stepProcess)) {
+				error(step, "component.not.found", stepProcess, pathway);
 			}
 		}
-
 	}
 
 	@Override

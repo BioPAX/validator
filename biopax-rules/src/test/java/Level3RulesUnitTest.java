@@ -373,7 +373,7 @@ public class Level3RulesUnitTest {
     	taxonXref.setDb("taxonomy");
     	taxonXref.setRDFId("Taxonomy_UnificationXref_9606");
     	taxonXref.setId("9606");
-    	bioSource.setTaxonXref(taxonXref);
+    	bioSource.addXref(taxonXref);
     	ProteinReference pr = level3.createProteinReference();
     	pr.setRDFId("ProteinReference1");
     	pr.setDisplayName("ProteinReference1");

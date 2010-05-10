@@ -163,6 +163,7 @@
 		<module>biopax-validator-command</module>
 		<module>obo-fetcher</module>
 		<module>miriam-lib</module>
+		<module>biopax-validator-test</module>
 	</modules>
 	<properties>
 		<spring.version>3.0.2.RELEASE</spring.version>
