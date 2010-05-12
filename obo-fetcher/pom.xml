@@ -33,6 +33,11 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>uk.ac.ebi</groupId>
+            <artifactId>ols</artifactId>
+            <version>1.14.1</version>
+        </dependency>
+        <dependency>
             <groupId>proteomics</groupId>
             <artifactId>proteomics-common</artifactId>
             <version>1.5</version>
@@ -47,29 +52,6 @@
             <groupId>opensymphony</groupId>
             <artifactId>oscache</artifactId>
             <version>2.3</version>
-        </dependency>
-        <dependency>
-        	<groupId>uk.ac.ebi</groupId>
-        	<artifactId>ols</artifactId>
-        	<version>1.14.1</version>
-        	<exclusions>
-        		<exclusion>
-        			<artifactId>axis</artifactId>
-        			<groupId>org.apache.axis</groupId>
-        		</exclusion>
-        		<exclusion>
-        			<artifactId>commons-discovery</artifactId>
-        			<groupId>commons-discovery</groupId>
-        		</exclusion>
-        		<exclusion>
-        			<artifactId>jaxrpc-api</artifactId>
-        			<groupId>javax.xml</groupId>
-        		</exclusion>
-        		<exclusion>
-        			<artifactId>wsdl4j</artifactId>
-        			<groupId>wsdl4j</groupId>
-        		</exclusion>
-        	</exclusions>
         </dependency>
     </dependencies>
   

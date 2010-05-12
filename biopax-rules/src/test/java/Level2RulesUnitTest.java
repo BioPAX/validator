@@ -17,7 +17,7 @@ public class Level2RulesUnitTest {
 	Level2Factory level2;
 	SimpleExporter exporter;
 	
-	final static String TEST_DATA_DIR = "target";
+	final static String TEST_DATA_DIR = Level2RulesUnitTest.class.getResource("").getPath();
 	
 	void writeExample(String file, Model model) {
     	try {

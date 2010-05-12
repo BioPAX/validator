@@ -25,7 +25,8 @@ public class EntityReferenceSamePhysicalEntitiesRule extends
 		for (SimplePhysicalEntity e1 : simplePhysEnts) {
 			for (SimplePhysicalEntity e2 : simplePhysEnts) {
 				try {
-					if (!e1.equals(e2) && e1.hasEquivalentFeatures(e2) 
+					if (	!e1.equals(e2) 
+							&& e1.hasEquivalentFeatures(e2) 
 							&& e1.hasEquivalentCellularLocation(e2)) {
 						error(eref, "same.state.entity", e1, e2);
 					}

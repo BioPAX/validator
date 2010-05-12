@@ -12,7 +12,7 @@
 	<name>biopax-validator-web Spring-WS Application</name>
 	<url>http://www.springframework.org/spring-ws</url>
 	<build>
-		<finalName>biopax-validator-web</finalName>
+		<finalName>biopax-validator</finalName>
 	</build>
 
 

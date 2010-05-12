@@ -177,6 +177,13 @@ public class BiopaxOntologyManager extends OntologyManagerImpl {
 	public Set<OntologyTermI> getTerms(CvTermRestriction restriction) {
 		Set<OntologyTermI> terms = new HashSet<OntologyTermI>();
 		Ontology ontologyAccess = getOntology(restriction.getOntologyId());
+		if(ontologyAccess == null) {
+			throw new IllegalArgumentException(
+					"Cannot get access to the ontology using ID: " 
+					+ restriction.getOntologyId() +
+					"; I know the following IDs: " 
+					+ getOntologyIDs().toString());
+		}
 		OntologyTermI term = ontologyAccess.getTermForAccession(restriction.getId());
 		if(term == null) {
 			log.error("Cannot Get " + restriction.getOntologyId()

@@ -30,7 +30,7 @@ import org.biopax.validator.utils.BiopaxValidatorUtils;
  * 
  * This one must use Load-Time Weaving (LTW)
  * (checkit's configured in the META-INF/aop.xml, and 
- * JVM is started with -javaagent:spring-agent.jar option)!
+ * JVM is started with -javaagent:spring-instrument.jar option)!
  *
  * @author rodche
  */

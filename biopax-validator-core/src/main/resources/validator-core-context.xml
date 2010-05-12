@@ -13,19 +13,7 @@
     <import resource="classpath:rules-context.xml"/>
     
     <context:property-placeholder location="classpath:validator.properties"/>
-    
-    
-	<bean id="log4jInitialization" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	  <property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
-	  <property name="targetMethod" value="initLogging" />
-	  <property name="arguments">
-		<list>
-		  <value>file:${BIOPAX_HOME}/log4j.properties</value>
-		</list>
-	  </property>
-	</bean>
 	
-    
     <bean id="validator" class="org.biopax.validator.impl.ValidatorImpl" />
     
     <bean id="messenger" class="org.biopax.validator.impl.SimplyThrowExceptionMessenger"/>

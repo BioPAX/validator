@@ -10,7 +10,6 @@ import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.Rule;
-import org.biopax.validator.impl.SimplyThrowExceptionMessenger;
 import org.biopax.validator.rules.*;
 import org.biopax.validator.utils.*;
 import org.junit.Test;
@@ -34,7 +33,8 @@ public class Level3RulesUnitTest {
 	static EditorMap editorMap = new SimpleEditorMap(BioPAXLevel.L3);
 	static SimpleExporter exporter = new SimpleExporter(BioPAXLevel.L3);
 	
-	final static String TEST_DATA_DIR = "target";
+	final static String TEST_DATA_DIR = Level3RulesUnitTest.class
+		.getResource("").getPath();
 	
 	void writeExample(String file, Model model) {
     	try {
@@ -465,4 +465,38 @@ public class Level3RulesUnitTest {
 		writeExample("testDegradationConversionDirectionRule.owl",m);		
 	}
     
+	/* Test EntityReferenceSamePhysicalEntitiesRule
+	 *
+<bp:Protein rdf:ID="pid_181">
+  <bp:entityReference rdf:resource="#pid_182"/>
+  <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Rac1</bp:name>
+  <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RAC1</bp:name>
+</bp:Protein>
+<bp:Protein rdf:ID="pid_305">
+  <bp:entityReference rdf:resource="#pid_182"/>
+  <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Rac1</bp:name>
+  <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RAC1</bp:name>
+  <bp:cellularLocation rdf:resource="#pid_192"/>
+</bp:Protein>
+	 *
+	 */
+	@Test
+	public void testEntityReferenceSamePhysicalEntitiesRule() {
+		Model model = BioPAXLevel.L3.getDefaultFactory().createModel();
+	   	ProteinReference pr = model.addNew(ProteinReference.class, "pid_182");
+    	pr.setDisplayName("ProteinReference");
+    	CellularLocationVocabulary cv = model.addNew(CellularLocationVocabulary.class, "pid_192");
+    	cv.addTerm("plasma membrane");
+		Protein p = model.addNew(Protein.class, "pid_181");
+		p.setEntityReference(pr);
+		p.addName("Rac1");
+		p = model.addNew(Protein.class, "pid_305");
+		p.setEntityReference(pr);
+		p.addName("Rac1");
+    	p.setCellularLocation(cv);
+		
+    	Rule<EntityReference> rule = new EntityReferenceSamePhysicalEntitiesRule();
+    	rule.check(pr);
+	}
+	
 }

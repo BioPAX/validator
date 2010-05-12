@@ -55,7 +55,6 @@ public class AOPAspectJLTWIntegrationTest {
     Level3FactoryImpl factory3 = (Level3FactoryImpl) BioPAXLevel.L3.getDefaultFactory();
     
     @Test
-    //@DirtiesContext //do not!
     public void testValidator() throws IOException {
     	Resource resource = context
     		.getResource("classpath:biopax3-short-metabolic-pathway.owl");

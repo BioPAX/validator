@@ -29,7 +29,7 @@
 								<value>file:${BIOPAX_HOME}/log4j.properties</value>
 							</property>
 						</systemProperties>
-						<argLine>-Xmx1024m -DBIOPAX_HOME=${BIOPAX_HOME}</argLine>
+						<argLine>-Xmx1536M -Xms128M</argLine>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -163,7 +163,7 @@
 		<module>biopax-validator-command</module>
 		<module>obo-fetcher</module>
 		<module>miriam-lib</module>
-		<module>biopax-validator-test</module>
+		<!--<module>biopax-validator-test</module>-->
 	</modules>
 	<properties>
 		<spring.version>3.0.2.RELEASE</spring.version>

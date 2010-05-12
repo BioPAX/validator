@@ -51,9 +51,7 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
     	if(ontologyManager != null) {
     		setValidTerms(ontologyManager.getValidTermNames(this));
     	} else {
-    		if(logger.isInfoEnabled()) {
-    			logger.info("rule created but  (ontologyManager=null)");
-    		}
+    		throw new IllegalStateException("ontologyManager is NULL!");
     	}
     };
     
@@ -96,7 +94,7 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> {
 	 * Gets the internal BiopaxOntologyManager instance
 	 * @return
 	 */
-	public BiopaxOntologyManager getOntologyManagerAdapter() {
+	public BiopaxOntologyManager getBiopaxOntologyManager() {
 		return ontologyManager;
 	}
 	

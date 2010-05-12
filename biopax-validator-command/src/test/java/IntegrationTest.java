@@ -42,7 +42,7 @@ public class IntegrationTest {
     
     Level3FactoryImpl factory3;
 	SimpleExporter exporter; // to write OWL examples of what rule checks
-	final static String OUTDIR = "target";
+	final static String OUTDIR = IntegrationTest.class.getResource("").getPath();
 	
     
     @Before
