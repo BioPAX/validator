@@ -24,7 +24,7 @@
               
    	<cvSource source="file" uri="http://psidev.sourceforge.net/mod/data/PSI-MOD.obo"
               format="OBO" name="Protein Modification Ontology" identifier="MOD"/>
-<!--  broken              
+<!--  bug: inconsistent file (CHEBI:648589 is referenced but not defined)            
     <cvSource source="file" uri="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/chemical/chebi.obo"
               format="OBO" name="ChEBI" identifier="ChEBI"/>  
               --> 

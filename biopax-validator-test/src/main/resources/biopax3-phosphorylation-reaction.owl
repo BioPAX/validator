@@ -47,14 +47,14 @@
       <bp:ProteinReference rdf:ID="CHK2">
         <bp:organism>
           <bp:BioSource rdf:ID="Homo_sapiens">
-            <bp:taxonXref>
+            <bp:xref>
               <bp:UnificationXref rdf:ID="UnificationXref_10">
                 <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
                 >taxonomy</bp:db>
                 <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
                 >9606</bp:id>
               </bp:UnificationXref>
-            </bp:taxonXref>
+            </bp:xref>
             <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
             >Homo sapiens</bp:standardName>
             <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
