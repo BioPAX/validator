@@ -12,7 +12,6 @@ import org.biopax.validator.Behavior;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class Validation implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 	
 	private final Set<ErrorType> error;
@@ -23,6 +22,10 @@ public class Validation implements Serializable {
 	// "forcedly" associated objects, i.e., parser, model(s), and dangling elements 
 	private final Set<Object> objects; 
 
+	// TODO implement the rest of the "FixIt" mode!
+	private boolean fixIt = false;
+	// TODO implement errors filter using the threshold
+	private Behavior threshold;
 	
 	// Default Constructor (this is mainly for OXM)
 	public Validation() {
@@ -30,6 +33,8 @@ public class Validation implements Serializable {
 		this.description = "unknown";
 		this.comment = new HashSet<String>();
 		this.objects = new HashSet<Object>();
+		this.fixIt = false;
+		this.threshold = Behavior.WARNING;
 	}
 
 	// Constructor that is used in the Validator
@@ -182,6 +187,23 @@ public class Validation implements Serializable {
 				return filterBy.isInstance(value);
 			}			
 		};
+	}
+
+	
+	public boolean isFixIt() {
+		return fixIt;
+	}
+
+	public void setFixIt(boolean fixIt) {
+		this.fixIt = fixIt;
+	}
+
+	public Behavior getThreshold() {
+		return threshold;
+	}
+
+	public void setThreshold(Behavior threshold) {
+		this.threshold = threshold;
 	}
 	
 } 

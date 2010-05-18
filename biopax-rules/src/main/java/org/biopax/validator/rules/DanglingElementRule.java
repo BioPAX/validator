@@ -42,7 +42,8 @@ public class DanglingElementRule extends AbstractRule<Model> {
 			@Override
 			protected void visit(Object value, BioPAXElement parent, Model model,
 					PropertyEditor editor) {
-				rootElements.remove(value); // found, i.e., is used
+				if(value instanceof BioPAXElement)
+					rootElements.remove(value); // found, i.e., it is used by another element.
 			}
 		};
 		

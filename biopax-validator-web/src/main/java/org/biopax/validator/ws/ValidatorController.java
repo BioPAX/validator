@@ -1,10 +1,10 @@
 package org.biopax.validator.ws;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.transform.dom.DOMSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,30 +16,25 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
-* TODO e.g., add user sessions, re-use the result if a browser
- * submits exactly the same data again or user simply wants a different view...
+ * TODO e.g., add user sessions, re-use the result if a browser
+ * TODO add more form parameters: threshold=error, warning, all; maxErrors= 
  * 
  * @author rodch
  *
  */
-
 @Controller
-@RequestMapping("/validator/*")
 public class ValidatorController {
 	final static Log log = LogFactory.getLog(ValidatorController.class);
 
-	private static final String HOME = "redirect:index.html";
-	
 	private Validator validator;
 	
 	public ValidatorController() {
@@ -49,11 +44,13 @@ public class ValidatorController {
 		this.validator = validator;
 	}	
       
-    @RequestMapping(value="checkUrl", method=RequestMethod.GET)
+    @RequestMapping(value="/checkUrl", method=RequestMethod.GET)
     public void checkUrl() {};
     
-    @RequestMapping(value="checkUrl", method=RequestMethod.POST)
-    public ModelAndView checkUrl(@RequestParam String url, @RequestParam String retDesired) throws IOException  {
+    @RequestMapping(value="/checkUrl", method=RequestMethod.POST)
+    public String checkUrl(@RequestParam String url, 
+    		@RequestParam(required=false) String retDesired,
+    		Model model) throws IOException  {
     	if(log.isInfoEnabled()) log.info("checkUrl : " + url);
     	ValidatorResponse validatorResponse = new ValidatorResponse();
     	Resource in = new UrlResource(url);
@@ -64,11 +61,17 @@ public class ValidatorController {
 		validator.validate(result);
     	validatorResponse.addValidationResult(result);
     	validator.getResults().remove(result);
-  		return getResponseView(retDesired, validatorResponse);
+		
+    	if("xml".equalsIgnoreCase(retDesired)) {
+			return "redirect:printXmlResult";
+		} else {
+			model.addAttribute("response", validatorResponse);
+			return "groupByCodeResponse";
+		}
     }
 	
 
-    @RequestMapping(value="checkFile", method=RequestMethod.GET)
+    @RequestMapping(value="/checkFile", method=RequestMethod.GET)
     public void checkFile() {	
     } // show form
    
@@ -76,10 +79,11 @@ public class ValidatorController {
     /*
 	 * validates several BioPAX files
 	 */
-    @RequestMapping(value="checkFile", method = RequestMethod.POST)
-	public ModelAndView checkFile(HttpServletRequest request)
-			throws IOException {
-				
+    @RequestMapping(value="/checkFile", method = RequestMethod.POST)
+	public String checkFile(HttpServletRequest request,
+			@RequestParam(value="retDesired", required=false) String retDesired,
+			Writer writer, Model model) throws IOException 
+	{			
 		ValidatorResponse validatorResponse = new ValidatorResponse();
 		if (request instanceof MultipartHttpServletRequest) {
 			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
@@ -108,24 +112,33 @@ public class ValidatorController {
 			
 		}
 		
-		// consider the report parameters
-		String retDesired = request.getParameter("retDesired");
-		ModelAndView mView = getResponseView(retDesired, validatorResponse);
-		return mView;
+		if("xml".equalsIgnoreCase(retDesired)) {
+			return "redirect:printXmlResult";
+		} else {
+			model.addAttribute("response", validatorResponse);
+			return "groupByCodeResponse";
+		}
+		
 	}
     
     
-    private ModelAndView getResponseView(String type, ValidatorResponse validatorResponse) {
-    	ModelAndView mView = new ModelAndView(HOME); // fall-back
-    	ModelMap model = new ModelMap();
-		if(type.equalsIgnoreCase("xml")) {
-			model.addAttribute("response", new DOMSource(BiopaxValidatorUtils.asDocument(validatorResponse)));
-			mView = new ModelAndView("xmlresponse", model);
-		} else if(type.equalsIgnoreCase("html")) {
-			model.addAttribute("response", validatorResponse);
-			mView = new ModelAndView("groupByCodeResponse", model);
-		}
-		return mView;
-    } 
+    @RequestMapping("/printXmlResult")
+    public void getResultsAsXml(Model model, Writer writer) throws IOException {
+    	Object attr =  model.asMap().get("response");
+    	if(attr != null) {
+    		ValidatorResponse response = (ValidatorResponse) attr;
+    		BiopaxValidatorUtils.write(response, writer, null);
+    	} else {
+    		writer.write("Empty Result or Error.");
+    	}
+    }
+     
+    
+    
+    @RequestMapping("/home")
+    public void homePage() {}
+ 
+    @RequestMapping("/ws")
+    public void wsDescriptionPage() {}
     
 }

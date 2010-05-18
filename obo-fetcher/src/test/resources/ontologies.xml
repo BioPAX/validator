@@ -9,7 +9,10 @@
 
     <cvSource source="file" uri="http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/mi/rel25/data/psi-mi25.obo"
               format="OBO" name="Molecular Interactions Ontology" identifier="MI"/>
-
+              
+  	<cvSource source="file" uri="http://psidev.sourceforge.net/mod/data/PSI-MOD.obo"
+              format="OBO" name="Protein Modification Ontology" identifier="MOD"/>
+<!-- 
     <cvSource source="file" uri="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/anatomy/cell_type/cell.obo"
               format="OBO" name="Cell Ontology" identifier="CL"/>
 
@@ -21,11 +24,12 @@
               
     <cvSource source="file" uri="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/genomic-proteomic/gene_ontology_edit.obo"
               format="OBO" name="Gene Ontology" identifier="GO"/>
-              
-   	<cvSource source="file" uri="http://psidev.sourceforge.net/mod/data/PSI-MOD.obo"
-              format="OBO" name="Protein Modification Ontology" identifier="MOD"/>
-<!--  bug: inconsistent file (CHEBI:648589 is referenced but not defined)            
+
+    <cvSource source="file" uri="ftp://ftp.ebi.ac.uk/pub/databases/chebi/ontology/chebi.obo"
+              format="OBO" name="ChEBI" identifier="ChEBI"/>
+-->
+	<!--  was bug: inconsistent file (CHEBI:648589 - referenced but not defined)            
     <cvSource source="file" uri="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/chemical/chebi.obo"
-              format="OBO" name="ChEBI" identifier="ChEBI"/>  
-              --> 
+              format="OBO" name="ChEBI" identifier="ChEBI"/>  --> 
+              
 </cvSourceList>

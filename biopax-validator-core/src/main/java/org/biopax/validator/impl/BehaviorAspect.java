@@ -50,15 +50,18 @@ public class BehaviorAspect extends AbstractAspect {
         }
     }
 
+    // TODO re-factoring: get object from args; find the corresponding Validation instance; check isFixIt...
     @Around("execution(public void org.biopax.validator.Rule*+.fix(..))")
     public void checkFixBehavior(ProceedingJoinPoint jp) throws Throwable {
     	Rule<?> r = (Rule<?>) jp.getTarget();
-        if (Behavior.FIXIT.equals(r.getBehavior())) {
+        /* temporary - ignore all fix(..) calls
+    	if (Behavior.FIXIT.equals(r.getBehavior())) {
         	if (logger.isTraceEnabled()) {
                 logger.trace(r.getName() + " is fixing something");
             }
            	jp.proceed();
         }
+        */
     }
     
 }

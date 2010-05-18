@@ -28,7 +28,7 @@ public class Level2AcyclicPathwayRule extends AbstractRule<pathway> {
 
 	public void check(final pathway thing) {
 		AbstractTraverser checker = new AbstractTraverser(editorMap2)
- {
+	{
 			@Override
 			protected void visit(Object value, BioPAXElement parent,
 					Model model, PropertyEditor editor) {

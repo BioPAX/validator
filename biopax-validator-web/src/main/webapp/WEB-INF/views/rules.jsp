@@ -1,5 +1,5 @@
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>   
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -11,7 +11,7 @@
 	<link rel="stylesheet" type="text/css" href="styles/style.css" media="screen" />
 	<link rel="shortcut icon" href="images/favicon.ico" />
 	<script type="text/javascript" src="scripts/rel.js"></script>
-	<title>Login Page</title>
+	<title>Validation Rules</title>
 </head>
 <body>
 
@@ -20,27 +20,29 @@
   <div id="content">
     <div id="left">
 
-<h2>Login</h2>
-<c:if test="${!empty param.login_error}">
-	<h3 style="color: red"> <spring:message code="login.invalid"/></h3>
-</c:if>
-<form action="<c:url value='/j_spring_security_check'/>" method="post">
-	<table>
-		<tr>
-			<td>Username:</td>
-			<td><input type="text" name="j_username"/></td>
-		</tr>
-		<tr>
-			<td>Password:</td>
-			<td><input type="password" name="j_password"/></td>
-		</tr>
-		<tr>
-			<td colspan='2'><input name="submit" type="submit" value="Login"/></td>
-		</tr>
-	</table>
-</form>
+
+
+<h2>Available BioPAX Rules</h2>
+<table border title="BioPAX Rules">
+    <tr>
+        <th>Name</th>
+        <th>Behavior</th>
+    </tr>
+<c:forEach var="rule" items="${rules}">
+    <tr title="Name&Behavior">
+        <c:url var="editUrl" value="/config/rule.html">
+            <c:param name="name" value="${rule.name}" />
+        </c:url>
+        <td  title="${rule.tip}">
+            <a href='<c:out value="${editUrl}"/>'>${rule.name}</a>
+        </td>
+        <td style="font-size: small; font-style: italic">${rule.behavior}</td>
+    </tr>
+</c:forEach>
+</table>
+
 	
-    </div>
+      </div>
     <div id="right">
       <jsp:include page="/templates/menu.jsp"/>
       <jsp:include page="/templates/box.jsp"/>

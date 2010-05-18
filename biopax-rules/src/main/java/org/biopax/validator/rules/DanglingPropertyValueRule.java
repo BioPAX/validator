@@ -27,7 +27,6 @@ public class DanglingPropertyValueRule extends AbstractRule<Model> {
 	}
 
 	public void check(Model model) {
-		
 		AbstractTraverser traverser = new AbstractTraverser(editorMap3) {
 			@Override
 			protected void visit(Object value, BioPAXElement parent, Model model,

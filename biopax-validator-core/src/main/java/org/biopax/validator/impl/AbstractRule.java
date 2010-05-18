@@ -39,6 +39,7 @@ public abstract class AbstractRule<T> implements Rule<T> {
     
     public AbstractRule() {
         logger = LogFactory.getLog(this.getClass()); // concrete class
+        postModelOnly = true;
     }
         
 

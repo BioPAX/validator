@@ -18,11 +18,18 @@ import org.springframework.stereotype.Component;
 public class ProteinModificationFeatureCvRule extends Level3CvTermsRule<ModificationFeature> {
 		
 	public ProteinModificationFeatureCvRule() {
+		/* terms deleted from PSI-MI
 		super(ModificationFeature.class, "modificationType", 
 				new CvTermRestriction("MI:0118","MI", true, 
 						UseChildTerms.ALL, false),
 				new CvTermRestriction("MI:0120","MI", true, 
 						UseChildTerms.ALL, false));
+		 */
+		//TODO discuss with community, which terms are allowed
+		super(ModificationFeature.class, "modificationType",
+				new CvTermRestriction("MOD:01156", "MOD", false, UseChildTerms.ALL, false), 
+				new CvTermRestriction("MOD:01157", "MOD", false, UseChildTerms.ALL, false)
+			);
 	}
 	
 	// This rule is for Protein's features only

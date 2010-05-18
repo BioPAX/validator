@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -11,7 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="styles/style.css" media="screen" />
 	<link rel="shortcut icon" href="images/favicon.ico" />
 	<script type="text/javascript" src="scripts/rel.js"></script>
-	<title>Settings</title>
+	<title>Validate from URL</title>
 </head>
 <body>
 
@@ -20,18 +19,27 @@
   <div id="content">
     <div id="left">
 
-		<h1>Settings</h1>
-		<div>
-			<security:authorize ifNotGranted="ROLE_ADMIN">Everyone can see but only Admin modify the following
-			</security:authorize>
-			<security:authorize ifAnyGranted="ROLE_ADMIN">All changes immediately apply for all users.
-			</security:authorize>
-		</div>
+
+<h1>Specify a BioPAX URL or PathwayCommons ID</h1>
+<form method="post">
+    <div class="form-row">
+        <input class="input" type="text" name="url"/>
+    </div>       
+    <div class="form-row">
 		<br/>
-		<div>
-			<a href="<c:url value="/config/rules.html"/>" >Validation Rules</a>
-		</div>
-    
+		<input type="radio" name="retDesired" value="html" checked="checked"/>
+		<label>get HTML</label>
+		<br/>
+		<input type="radio" name="retDesired" value="xml"/>
+		<label>get XML</label>
+		<br/>
+	</div>
+	<div class="form-buttons">
+        <div class="button"><input name="submit" type="submit" value="Validate" /></div>
+	</div>   
+</form>
+	
+	
     </div>
     <div id="right">
       <jsp:include page="/templates/menu.jsp"/>"
@@ -44,3 +52,4 @@
 
 </body>
 </html>
+
