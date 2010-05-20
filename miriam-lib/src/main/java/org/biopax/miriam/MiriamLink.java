@@ -256,19 +256,6 @@ public final class MiriamLink
     
     
     /**
-     * Retrieves all the synonym names of a data type (this list includes the original name).
-     * @param name name or synonym of a data type
-     * @return all the synonym names of the data type
-	 */
-    public static String[] getDataTypeSynonyms(String name)
-    {
-    	Datatype datatype = getDatatype(name);
-    	Synonyms synonyms = datatype.getSynonyms();
-    	return (synonyms != null) ? synonyms.getSynonym().toArray(ARRAY_OF_STRINGS) : ARRAY_OF_STRINGS;
-    }
-    
-    
-    /**
 	 * Retrieves the common name of a data type.
 	 * @param uri URI (URL or URN), or nickname of a data type
 	 * @return the common name of the data type
@@ -290,9 +277,11 @@ public final class MiriamLink
     	Set<String> names = new HashSet<String>();
     	Datatype datatype = getDatatype(uri);
     	names.add(datatype.getName());
-    	for(String name : datatype.getSynonyms().getSynonym()) {
+    	Synonyms synonyms = datatype.getSynonyms();
+    	if(synonyms != null)
+    	  for(String name : synonyms.getSynonym()) {
     		names.add(name);
-    	}
+    	  }
     	return names.toArray(ARRAY_OF_STRINGS);
     }
     
@@ -302,11 +291,11 @@ public final class MiriamLink
      */
     public static String[] getDataTypesName()
     {
-        Set<String> dataTypeIds = new HashSet<String>();
+        Set<String> dataTypeNames = new HashSet<String>();
         for(Datatype datatype : miriam.getDatatype()) {
-        	dataTypeIds.add(datatype.getName());
+        	dataTypeNames.add(datatype.getName());
         }
-        return dataTypeIds.toArray(ARRAY_OF_STRINGS);
+        return dataTypeNames.toArray(ARRAY_OF_STRINGS);
     }
     
     

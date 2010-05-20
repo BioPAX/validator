@@ -57,9 +57,9 @@ public class XrefHelper {
 			Pattern pattern = Pattern.compile(regexp);
 			List<String> synonyms = new ArrayList<String>();
 			synonyms.add(db);
-			String[] otherNames = MiriamLink.getDataTypeSynonyms(dt);
-			if (otherNames != null && otherNames.length>0) {
-				synonyms.addAll(Arrays.asList(otherNames));
+			String[] names = MiriamLink.getNames(dt);
+			if (names != null && names.length>0) {
+				synonyms.addAll(Arrays.asList(names));
 			}
 			addDb(true, synonyms);
 			// set patterns for all synonyms

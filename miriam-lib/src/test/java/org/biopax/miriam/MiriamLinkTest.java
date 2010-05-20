@@ -99,12 +99,6 @@ public class MiriamLinkTest {
 		assertEquals("^MI:\\d{4}$", MiriamLink.getDataTypePattern(MI));
 	}
 
-	@Test
-	public final void testGetDataTypeSynonyms() {
-		String[] synons = MiriamLink.getDataTypeSynonyms(MI);
-		assertTrue(synons.length==1);
-		assertEquals(MISYN.toLowerCase(), synons[0].toLowerCase());
-	}
 
 	@Test
 	public final void testGetName() {
