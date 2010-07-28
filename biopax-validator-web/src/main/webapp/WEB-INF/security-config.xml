@@ -12,8 +12,8 @@
 		<form-login login-page="/login.html" authentication-failure-url="/login.html?login_error=true" />
 		<intercept-url pattern="/denied.html" filters="none"/>
 		<intercept-url pattern="/login.html*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-		<intercept-url pattern="/config/rule.html" access="ROLE_ADMIN" />
-		<intercept-url pattern="/config/rules.html" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<intercept-url pattern="/rule.html" access="ROLE_ADMIN" />
+		<intercept-url pattern="/rules.html" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<intercept-url pattern="/admin.html" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
 		<intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
 		<logout/>

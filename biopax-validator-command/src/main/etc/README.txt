@@ -1,4 +1,4 @@
-/** BioPAX Validator, Version 2.0 
+/** BioPAX Validator, Version 2.0a
  **
  ** Copyright (c) 2009 University of Toronto (UofT)
  ** and Memorial Sloan-Kettering Cancer Center (MSKCC).
@@ -26,7 +26,7 @@
  ** or find it at http://www.fsf.org/ or http://www.gnu.org.
  **/
 
-TODO: PLEASE U P D A T E THIS TEXT (COPIED FROM PREVIOUS VERSION)!
+TODO: PLEASE UPDATE THIS TEXT (COPIED FROM PREVIOUS VERSION)!
 
 An open source validation framework for BioPAX (www.biopax.org).
 
@@ -46,7 +46,7 @@ DESIGN
 I. Framework
 
  1. Paxtools, the BioPAX API, is used as external library.
- 2. Spring Framework 2.5.6 - to report errors (AOP), wire different modules,
+ 2. Spring Framework (3.0) - to report errors (AOP), wire different modules,
     internationalize, and build web services (MVC).
  3. Java (5 or 6): VarArgs, generics, annotations, AOP load-time weaving (LTW),
  	@Resource and @PostConstruct annotations.

@@ -30,7 +30,6 @@
             <groupId>org.geneontology</groupId>
             <artifactId>oboedit</artifactId>
             <version>1.101</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi</groupId>
@@ -41,7 +40,6 @@
             <groupId>proteomics</groupId>
             <artifactId>proteomics-common</artifactId>
             <version>1.5</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>

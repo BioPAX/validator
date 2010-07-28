@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#">
+<owl:Ontology rdf:about="">
+ <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl#" />
+</owl:Ontology>
+
+<bp:InteractionVocabulary rdf:about="invalidCVTerm">
+ <bp:comment rdf:datatype = "xsd:string">Invalid term (very similar, however)</bp:comment>
+ <bp:term rdf:datatype = "xsd:string">phosphorylated</bp:term>
+</bp:InteractionVocabulary>
+
+<bp:InteractionVocabulary rdf:about="synonymCVTerm">
+ <bp:comment rdf:datatype = "xsd:string">Valid term</bp:comment>
+ <bp:term rdf:datatype = "xsd:string">phosphorylation</bp:term>
+</bp:InteractionVocabulary>
+
+<bp:InteractionVocabulary rdf:about="preferredCVTerm">
+ <bp:comment rdf:datatype = "xsd:string">Preferred term</bp:comment>
+ <bp:term rdf:datatype = "xsd:string">phosphorylation reaction</bp:term>
+</bp:InteractionVocabulary>
+
+<bp:InteractionVocabulary rdf:about="okCVTerm">
+ <bp:comment rdf:datatype = "xsd:string">Ok term: upper or lower case letters do not matter.</bp:comment>
+ <bp:term rdf:datatype = "xsd:string">Phosphorylation</bp:term>
+</bp:InteractionVocabulary>
+</rdf:RDF>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#">
+<owl:Ontology rdf:about="">
+ <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl#" />
+</owl:Ontology>
+
+<bp:Rna rdf:about="#Rna2">
+ <bp:displayName rdf:datatype = "xsd:string">rnaRight2</bp:displayName>
+ <bp:cellularLocation rdf:resource="#cr" />
+ <bp:entityReference rdf:resource="#rnaRef" />
+</bp:Rna>
+
+<bp:RnaReference rdf:about="#rnaRef">
+</bp:RnaReference>
+
+<bp:TransportWithBiochemicalReaction rdf:about="#transportWithBiochemicalReaction">
+ <bp:right rdf:resource="#Rna2" />
+ <bp:right rdf:resource="#modRna1" />
+ <bp:left rdf:resource="#modRna2" />
+ <bp:left rdf:resource="#Rna1" />
+ <bp:comment rdf:datatype = "xsd:string">This Transport contains one Rna that did not change its cellular location (error!) and another one that did not have any (which is now ok)</bp:comment>
+</bp:TransportWithBiochemicalReaction>
+
+<bp:CellularLocationVocabulary rdf:about="#cl">
+ <bp:term rdf:datatype = "xsd:string">nucleus</bp:term>
+</bp:CellularLocationVocabulary>
+
+<bp:CellularLocationVocabulary rdf:about="#cr">
+ <bp:term rdf:datatype = "xsd:string">cytoplasm</bp:term>
+</bp:CellularLocationVocabulary>
+
+<bp:Rna rdf:about="#modRna2">
+ <bp:displayName rdf:datatype = "xsd:string">rnaLeft2</bp:displayName>
+ <bp:feature rdf:resource="feature1" />
+ <bp:comment rdf:datatype = "xsd:string">modified</bp:comment>
+ <bp:entityReference rdf:resource="#rnaRef" />
+</bp:Rna>
+
+<bp:ModificationFeature rdf:about="feature1">
+</bp:ModificationFeature>
+
+<bp:Rna rdf:about="#modRna1">
+ <bp:displayName rdf:datatype = "xsd:string">rnaRight1</bp:displayName>
+ <bp:feature rdf:resource="feature1" />
+ <bp:comment rdf:datatype = "xsd:string">modified</bp:comment>
+ <bp:cellularLocation rdf:resource="#cl" />
+ <bp:entityReference rdf:resource="#rnaRef" />
+</bp:Rna>
+
+<bp:Rna rdf:about="#Rna1">
+ <bp:displayName rdf:datatype = "xsd:string">rnaLeft1</bp:displayName>
+ <bp:cellularLocation rdf:resource="#cl" />
+ <bp:entityReference rdf:resource="#rnaRef" />
+</bp:Rna>
+</rdf:RDF>

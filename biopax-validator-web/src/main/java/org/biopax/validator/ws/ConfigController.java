@@ -43,20 +43,20 @@ public class ConfigController {
         return Behavior.values();
     }
          
-	@RequestMapping(value="/config/rules", method=RequestMethod.GET)
+	@RequestMapping(value="/rules")
     public @ModelAttribute("rules") Collection<Rule<?>> rules() {
   		return validator.getRules();
     }
 	
 	@Secured("ROLE_ADMIN")
-    @RequestMapping(value="/config/rule", method=RequestMethod.POST)
+    @RequestMapping(value="/rule", method=RequestMethod.POST)
     public String rule(HttpServletRequest request) {
     	Rule r = validator.findRuleByName(request.getParameter("name"));
     	r.setBehavior(Behavior.valueOf(request.getParameter("behavior")));
     	return "redirect:rules";
     }    
 
-    @RequestMapping(value="/config/rule", method=RequestMethod.GET)
+    @RequestMapping(value="/rule", method=RequestMethod.GET)
     public @ModelAttribute("rule") Rule rule(@RequestParam(required=true) String name) {
     	Rule r = validator.findRuleByName(name);
         return r;

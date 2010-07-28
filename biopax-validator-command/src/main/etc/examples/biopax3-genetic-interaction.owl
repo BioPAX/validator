@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://www.biopax.org/examples/myExample#"
+    xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xml:base="http://www.biopax.org/examples/myExample">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl"/>
+  </owl:Ontology>
+  <bp:UnificationXref rdf:ID="UnificationXref_1">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >MI:0794</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >PSI-MI</bp:db>
+  </bp:UnificationXref>
+  <bp:Gene rdf:ID="Gene_3">
+    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >YOR326W</bp:standardName>
+    <bp:organism>
+      <bp:BioSource rdf:ID="BioSource_10">
+        <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >budding yeast</bp:displayName>
+        <bp:xref>
+          <bp:UnificationXref rdf:ID="UnificationXref_11">
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >4932</bp:id>
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >taxonomy</bp:db>
+          </bp:UnificationXref>
+        </bp:xref>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >S. cerevisiae</bp:standardName>
+      </bp:BioSource>
+    </bp:organism>
+    <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >MYO2</bp:displayName>
+    <bp:xref>
+      <bp:UnificationXref rdf:ID="UnificationXref_2">
+        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >854504</bp:id>
+        <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >Entrez Gene ID for Myo2</bp:comment>
+        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >Entrez Gene</bp:db>
+      </bp:UnificationXref>
+    </bp:xref>
+    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >MYOsin</bp:name>
+    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >CDC66</bp:name>
+  </bp:Gene>
+  <bp:Evidence rdf:ID="Evidence_4">
+    <bp:evidenceCode>
+      <bp:EvidenceCodeVocabulary rdf:ID="EvidenceCodeVocabulary_5">
+        <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >Synthetic Genetic Analysis</bp:comment>
+        <bp:xref>
+          <bp:UnificationXref rdf:ID="UnificationXref_7">
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >PSI-MI</bp:db>
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >MI:0441</bp:id>
+            <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >synthetic genetic analysis</bp:comment>
+          </bp:UnificationXref>
+        </bp:xref>
+        <bp:term rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >synthetic genetic analysis</bp:term>
+      </bp:EvidenceCodeVocabulary>
+    </bp:evidenceCode>
+  </bp:Evidence>
+  <bp:PublicationXref rdf:ID="Mlc1p_is_a_light_chain_for_the_unconventional_myosin_Myo2p_in_Saccharomyces_cerevisiae">
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >PubMed</bp:db>
+    <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Mlc1p is a light chain for the unconventional myosin Myo2p in Saccharomyces cerevisiae</bp:title>
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >9700160</bp:id>
+    <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >1998</bp:year>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Stevens RC, Davis TN. </bp:author>
+  </bp:PublicationXref>
+  <bp:InteractionVocabulary rdf:ID="InteractionVocabulary_12">
+    <bp:xref rdf:resource="#UnificationXref_1"/>
+    <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >synthetic genetic interaction defined by inequality</bp:comment>
+    <bp:term rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >synthetic genetic interaction defined by inequality</bp:term>
+  </bp:InteractionVocabulary>
+  <bp:Gene rdf:ID="Gene_1">
+    <bp:organism rdf:resource="#BioSource_10"/>
+    <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >MLC1</bp:displayName>
+    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Myosin Light Chain</bp:name>
+    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >YGL106W</bp:standardName>
+    <bp:xref>
+      <bp:UnificationXref rdf:ID="UnificationXref_3">
+        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >852772</bp:id>
+        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >Entrez Gene</bp:db>
+        <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >Entrez Gene ID for Mlc1</bp:comment>
+      </bp:UnificationXref>
+    </bp:xref>
+  </bp:Gene>
+  <bp:GeneticInteraction rdf:ID="GeneticInteraction_2">
+    <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >MYO2 - MLC1</bp:displayName>
+    <bp:interactionType rdf:resource="#InteractionVocabulary_12"/>
+    <bp:xref rdf:resource="#Mlc1p_is_a_light_chain_for_the_unconventional_myosin_Myo2p_in_Saccharomyces_cerevisiae"/>
+    <bp:evidence rdf:resource="#Evidence_4"/>
+    <bp:participant rdf:resource="#Gene_1"/>
+    <bp:participant rdf:resource="#Gene_3"/>
+  </bp:GeneticInteraction>
+</rdf:RDF>

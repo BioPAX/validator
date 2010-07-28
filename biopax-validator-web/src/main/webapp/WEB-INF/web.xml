@@ -7,7 +7,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 id="BiopaxValidator2" version="2.5">
   
   <!-- FilterChain proxy for security -->
-  <!-- 
   <filter>
       <filter-name>springSecurityFilterChain</filter-name>
       <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -21,7 +20,7 @@ id="BiopaxValidator2" version="2.5">
   <listener>
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
   </listener>
- -->
+
   
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -31,7 +30,7 @@ id="BiopaxValidator2" version="2.5">
     <param-name>contextConfigLocation</param-name>
     <param-value>
 			classpath:validator-aop-context.xml
-			<!-- /WEB-INF/security-config.xml -->
+			/WEB-INF/security-config.xml
 	</param-value>
   </context-param>
 

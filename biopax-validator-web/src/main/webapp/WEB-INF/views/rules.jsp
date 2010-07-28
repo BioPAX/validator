@@ -27,22 +27,24 @@
     <tr>
         <th>Name</th>
         <th>Behavior</th>
+        <th>Tip</th>
     </tr>
-<c:forEach var="rule" items="${rules}">
+  <c:forEach var="rule" items="${rules}">
     <tr title="Name&Behavior">
-        <c:url var="editUrl" value="/config/rule.html">
+        <c:url var="editUrl" value="/rule.html">
             <c:param name="name" value="${rule.name}" />
         </c:url>
-        <td  title="${rule.tip}">
-            <a href='<c:out value="${editUrl}"/>'>${rule.name}</a>
+        <td  title="${rule.tip}">${rule.name}</td>
+        <td style="font-size: small; font-style: italic">
+        	<a href='<c:out value="${editUrl}"/>'>${rule.behavior}</a>
         </td>
-        <td style="font-size: small; font-style: italic">${rule.behavior}</td>
+        <td style="font-size: small">${rule.tip}</td>
     </tr>
-</c:forEach>
+  </c:forEach>
 </table>
 
 	
-      </div>
+  </div>
     <div id="right">
       <jsp:include page="/templates/menu.jsp"/>
       <jsp:include page="/templates/box.jsp"/>

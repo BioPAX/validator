@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xmlns:xsd="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#">
+<owl:Ontology rdf:about="Controlled_vocabularies_test">
+ <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl#" />
+</owl:Ontology>
+
+<bp:InteractionVocabulary rdf:about="InteractionType_phosphorylation">
+ <bp:comment rdf:datatype = "xsd:string">This is the PSI-MI ID of the interaction type between the enzyme and the substrate</bp:comment>
+ <bp:xref rdf:resource="#MI_0217" />
+ <bp:term rdf:datatype = "xsd:string">Phosphorylation</bp:term>
+</bp:InteractionVocabulary>
+
+<bp:InteractionVocabulary rdf:about="InteractionType_phosphorylation_reaction">
+ <bp:comment rdf:datatype = "xsd:string">This is the PSI-MI ID of the interaction type between the enzyme and the substrate</bp:comment>
+ <bp:xref rdf:resource="#MI_0217" />
+ <bp:term rdf:datatype = "xsd:string">phosphorylation reaction</bp:term>
+</bp:InteractionVocabulary>
+
+<bp:InteractionVocabulary rdf:about="InteractionType_ubiquitination">
+ <bp:comment rdf:datatype = "xsd:string">This is the PSI-MI ID of the interaction type between the enzyme and the substrate</bp:comment>
+ <bp:xref rdf:resource="#MI_0220" />
+ <bp:term rdf:datatype = "xsd:string">Ubiquitination</bp:term>
+</bp:InteractionVocabulary>
+
+<bp:RelationshipXref rdf:ID="MI_0217">
+ <bp:id rdf:datatype = "xsd:string">MI:0217</bp:id>
+ <bp:comment rdf:datatype = "xsd:string">This is the cross-reference to PSI-MI controlled vocabulary</bp:comment>
+ <bp:db rdf:datatype = "xsd:string">PSI-MI</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:ID="MI_0220">
+ <bp:id rdf:datatype = "xsd:string">MI:0220</bp:id>
+ <bp:comment rdf:datatype = "xsd:string">This is the cross-reference to PSI-MI controlled vocabulary</bp:comment>
+ <bp:db rdf:datatype = "xsd:string">PSI-MI</bp:db>
+</bp:RelationshipXref>
+
+</rdf:RDF>
+

@@ -29,7 +29,7 @@
 		</div>
 		<br/>
 		<div>
-			<a href="<c:url value="/config/rules.html"/>" >Validation Rules</a>
+			<a href="<c:url value="/rules.html"/>" >Validation Rules</a>
 		</div>
     
     </div>
