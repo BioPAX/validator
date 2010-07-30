@@ -9,11 +9,13 @@
    
 	<import resource="classpath:validator-core-context.xml"/>
 
+    <context:annotation-config/>
+
     <!-- this is for DI to work with @Configurable objects created outside the Spring container (e.g. via LTW) -->
     <context:spring-configured/> 
     
     <aop:aspectj-autoproxy/> 
        
-    <context:load-time-weaver/>
+    <context:load-time-weaver aspectj-weaving="autodetect"/>
     
 </beans>

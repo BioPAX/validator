@@ -42,12 +42,12 @@
 	
     </div>
     <div id="right">
-      <jsp:include page="/templates/menu.jsp"/>"
-      <jsp:include page="/templates/box.jsp"/>"
+      <jsp:include page="/templates/menu.jsp"/>
+      <jsp:include page="/templates/box.jsp"/>
     </div>
     <div id="clear"></div>
   </div>
-  <jsp:include page="/templates/footer.jsp"/>"
+  <jsp:include page="/templates/footer.jsp"/>
 </div>
 
 </body>

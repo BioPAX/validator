@@ -112,21 +112,20 @@ public class ValidatorController {
 			
 		}
 		
+		model.addAttribute("response", validatorResponse);
 		if("xml".equalsIgnoreCase(retDesired)) {
-			return "redirect:printXmlResult";
+			return "redirect:xmlResult.html";
 		} else {
-			model.addAttribute("response", validatorResponse);
 			return "groupByCodeResponse";
 		}
 		
 	}
     
     
-    @RequestMapping("/printXmlResult")
+    @RequestMapping("/xmlResult")
     public void getResultsAsXml(Model model, Writer writer) throws IOException {
-    	Object attr =  model.asMap().get("response");
-    	if(attr != null) {
-    		ValidatorResponse response = (ValidatorResponse) attr;
+    	if(!model.containsAttribute("response")) {
+    		ValidatorResponse response = (ValidatorResponse) model.asMap().get("response");
     		BiopaxValidatorUtils.write(response, writer, null);
     	} else {
     		writer.write("Empty Result or Error.");

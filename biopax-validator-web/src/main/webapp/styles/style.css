@@ -172,7 +172,7 @@ blockquote{
 
 #left {
 	width: 390px;
-	float:left;
+	float:right;
 	display: block;
        margin-left: 20px;
 	display: inline;
@@ -181,14 +181,8 @@ blockquote{
 
 /**** Sidebar ***/
 
-#right{ list-style: none; margin: 2.0em 0; width: 27em; float: right;}
+#right{ list-style: none; margin: 2.0em 0; width: 27em; float: left;}
 
-/*#right {
-	width: 315px; 
-	float: right;
-	display:block;
-	margin-top: 10px;
-}*/
 #right .box {
 	width: 22em;/*280px*/
 	background: #F6F9FB;

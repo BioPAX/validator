@@ -11,8 +11,6 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
     
     <import resource="classpath:rules-context.xml"/>
-    
-    <context:property-placeholder location="classpath:validator.properties"/>
 	
     <bean id="validator" class="org.biopax.validator.impl.ValidatorImpl" />
     
@@ -29,7 +27,6 @@
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="basenames">
 			<list>
-				<value>validator</value>
 				<value>rule-descriptions</value>
 				<value>error-codes</value>
 				<value>profile-ideal</value>
@@ -41,7 +38,7 @@
 		<property name="messageSource" ref="messageSource" />
 		<property name="marshaller" ref="resultsMarshaller" />
 		<property name="locale" value="en" />
-		<property name="maxErrors" value="${max.errors}" />
+		<property name="maxErrors" value="50" />
 	</bean>
        
 	<!-- end of BiopaxValidatorUtils config. -->
@@ -55,8 +52,9 @@
 	</bean>
 
   	<bean id="ontologyManager" class="org.biopax.validator.utils.BiopaxOntologyManager">
-		 <constructor-arg value="classpath:ontologies.xml" />
-		 <constructor-arg value="${BIOPAX_HOME}/ontologies"/>
+		 <constructor-arg index="0" value="classpath:ontologies.xml" />
+		 <!-- <constructor-arg value="${BIOPAX_HOME}/ontologies"/>-->
+		 <constructor-arg index="1"><null/></constructor-arg>
 	</bean>
 	
 	<!-- a helper and a proxy to access MIRIAM and MI database citation and regexps 

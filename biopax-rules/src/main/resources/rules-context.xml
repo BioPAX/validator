@@ -8,6 +8,8 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
+	<context:annotation-config/>
+
 	<!-- additional rule-specific configuration -->
 
 	<!-- DataPropertyIllegalValueRule configuration -->

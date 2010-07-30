@@ -10,12 +10,7 @@
 	<meta name="keywords" content="BioPAX, Validation, Validator, Rule, OWL, Exchange" />
 	<link rel="stylesheet" type="text/css" href="styles/style.css" media="screen" />
 	<link rel="shortcut icon" href="images/favicon.ico" />
-	<script type="text/javascript" src="scripts/rel.js"></script>
-	<script src="<c:url value="/scripts/multifile_compressed.js" />"></script>
-	<script>
-	  var multi_selector = new MultiSelector( document.getElementById( 'files_list' ), 25);
-	  multi_selector.addElement( document.getElementById( 'file' ) );
-	</script>
+	<script type="text/javascript" src="scripts/rel.js"/>
 	<title>Check Files</title>
 </head>
 <body>
@@ -58,6 +53,12 @@
 
   <jsp:include page="/templates/footer.jsp"/>
 </div>
+
+<script type="text/javascript" src="scripts/multifile_compressed.js"></script>
+<script type="text/javascript">
+  var multi_selector = new MultiSelector( document.getElementById( 'files_list' ), 25);
+  multi_selector.addElement( document.getElementById( 'file' ) );
+</script>
 
 </body>
 </html>

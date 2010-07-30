@@ -10,16 +10,15 @@
 	<meta name="keywords" content="BioPAX, Validation, Validator, Rule, OWL, Exchange" />
 	<link rel="stylesheet" type="text/css" href="styles/style.css" media="screen" />
 	<link rel="shortcut icon" href="images/favicon.ico" />
-	<script type="text/javascript" src="scripts/rel.js"></script>
+	<script type="text/javascript" src="scripts/rel.js" />
 	<title>Settings</title>
 </head>
-<body>
 
+<body>
 <div id="wrap">
   <jsp:include page="/templates/header.jsp"/>
   <div id="content">
     <div id="left">
-
 		<h1>Settings</h1>
 		<div>
 			<security:authorize ifNotGranted="ROLE_ADMIN">Everyone can see but only Admin modify the following
@@ -29,17 +28,16 @@
 		</div>
 		<br/>
 		<div>
-			<a href="<c:url value="/rules.html"/>" >Validation Rules</a>
+			<a href='<c:url value="/rules.html"/>' >Validation Rules</a>
 		</div>
-    
     </div>
     <div id="right">
-      <jsp:include page="/templates/menu.jsp"/>"
-      <jsp:include page="/templates/box.jsp"/>"
+      <jsp:include page="/templates/menu.jsp"/>
+      <jsp:include page="/templates/box.jsp"/>
     </div>
     <div id="clear"></div>
   </div>
-  <jsp:include page="/templates/footer.jsp"/>"
+  <jsp:include page="/templates/footer.jsp"/>
 </div>
 
 </body>
