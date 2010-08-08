@@ -13,6 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class MFModificationTypeCRRule extends Level3CardinalityAndRangeRule<ModificationFeature> {
 	public MFModificationTypeCRRule() {
-		super(ModificationFeature.class, "modificationType", 1, 1, SequenceModificationVocabulary.class);
+		super(ModificationFeature.class, "modificationType", 0, 1, SequenceModificationVocabulary.class);
 	}
 }
