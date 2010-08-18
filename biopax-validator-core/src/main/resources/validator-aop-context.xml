@@ -7,15 +7,12 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
    
+    <context:annotation-config/>
+    <context:spring-configured/> 
+    <context:load-time-weaver aspectj-weaving="autodetect"/>
+    <!-- this is for DI to work with @Configurable objects created outside the Spring container (e.g. via LTW) -->
+    <aop:aspectj-autoproxy/> 
+   
 	<import resource="classpath:validator-core-context.xml"/>
 
-    <context:annotation-config/>
-
-    <!-- this is for DI to work with @Configurable objects created outside the Spring container (e.g. via LTW) -->
-    <context:spring-configured/> 
-    
-    <aop:aspectj-autoproxy/> 
-       
-    <context:load-time-weaver aspectj-weaving="autodetect"/>
-    
 </beans>

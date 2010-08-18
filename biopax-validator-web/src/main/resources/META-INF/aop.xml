@@ -5,14 +5,11 @@
         <!-- only weave classes within packages that match listed -->
         <include within="org.biopax.validator.impl.*" />
         <include within="org.biopax.paxtools..*" />
-        <!-- <include within="org.biopax.validator.rules.*" /> -->
     </weaver>
     <aspects>
         <!-- use only the following aspects for weaving -->
         <aspect name="org.biopax.validator.impl.BehaviorAspect" />
         <aspect name="org.biopax.validator.impl.ExceptionsAspect" />
         <aspect name="org.biopax.validator.impl.ControlAspect" />
-        <aspect name="org.springframework.beans.factory.aspectj.AnnotationBeanConfigurerAspect" />
-        <aspect name="org.springframework.transaction.aspectj.AnnotationTransactionAspect" />
     </aspects>
 </aspectj>

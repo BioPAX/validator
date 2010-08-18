@@ -23,6 +23,7 @@ import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -35,6 +36,7 @@ import org.springframework.beans.factory.annotation.Configurable;
  * @author rodche
  */
 @Configurable
+@Service
 public class ValidatorImpl implements Validator {	
 	private static final Log log = LogFactory.getLog(ValidatorImpl.class);
 	

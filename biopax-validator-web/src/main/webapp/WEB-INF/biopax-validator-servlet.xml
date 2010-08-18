@@ -11,6 +11,7 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<context:annotation-config/>
+	<context:spring-configured/>
 	<mvc:annotation-driven/>
 
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">

@@ -81,8 +81,51 @@ public class ValidatorController {
 	 */
     @RequestMapping(value="/checkFile", method = RequestMethod.POST)
 	public String checkFile(HttpServletRequest request,
-			@RequestParam(value="retDesired", required=false) String retDesired,
-			Writer writer, Model model) throws IOException 
+			@RequestParam(value="retDesired", required=false) String retDesired) 
+    	throws IOException 
+    {			
+		if("xml".equalsIgnoreCase(retDesired)) {
+			return "forward:xmlResult.html";
+		} else {
+			return "forward:htmlResult.html";
+		}
+		
+	}
+    
+    
+    @RequestMapping(value="/htmlResult", method = RequestMethod.POST)
+	public String checkFile(HttpServletRequest request, Model model) 
+    	throws IOException 
+	{			
+		ValidatorResponse validatorResponse = checkFile(request);
+		model.addAttribute("response", validatorResponse);
+		return "groupByCodeResponse";
+	}
+    
+    
+    @RequestMapping(value="/xmlResult", method = RequestMethod.POST)
+    public void getResultsAsXml(HttpServletRequest request, Writer writer) 
+    	throws IOException 
+    {
+    	ValidatorResponse response = checkFile(request);
+    	if(response != null) {
+    		BiopaxValidatorUtils.write(response, writer, null);
+    	} else {
+    		writer.write("Empty Result or Error.");
+    	}
+    }
+    
+    
+    @RequestMapping("/home")
+    public void homePage() {}
+
+    
+    @RequestMapping("/ws")
+    public void wsDescriptionPage() {}
+    
+    
+    
+	private ValidatorResponse checkFile(HttpServletRequest request) throws IOException 
 	{			
 		ValidatorResponse validatorResponse = new ValidatorResponse();
 		if (request instanceof MultipartHttpServletRequest) {
@@ -94,10 +137,10 @@ public class ValidatorController {
 				String filename = file.getOriginalFilename();
 				// a workaround (for some reason there is always a no-name-file;
 				// this might be a javascript isue)
-				if(file.getBytes().length==0 || filename==null || "".equals(filename)) {
+				if(file.getBytes().length==0 || filename==null || "".equals(filename)) 
+				{
 					continue;
 				}
-				
 				if(log.isInfoEnabled()) 
 					log.info("checkFile : " + filename);
 				
@@ -112,32 +155,6 @@ public class ValidatorController {
 			
 		}
 		
-		model.addAttribute("response", validatorResponse);
-		if("xml".equalsIgnoreCase(retDesired)) {
-			return "redirect:xmlResult.html";
-		} else {
-			return "groupByCodeResponse";
-		}
-		
+		return validatorResponse;
 	}
-    
-    
-    @RequestMapping("/xmlResult")
-    public void getResultsAsXml(Model model, Writer writer) throws IOException {
-    	if(!model.containsAttribute("response")) {
-    		ValidatorResponse response = (ValidatorResponse) model.asMap().get("response");
-    		BiopaxValidatorUtils.write(response, writer, null);
-    	} else {
-    		writer.write("Empty Result or Error.");
-    	}
-    }
-     
-    
-    
-    @RequestMapping("/home")
-    public void homePage() {}
- 
-    @RequestMapping("/ws")
-    public void wsDescriptionPage() {}
-    
 }

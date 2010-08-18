@@ -17,11 +17,11 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.Marshaller;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import org.w3c.dom.*;
@@ -35,7 +35,7 @@ import org.w3c.dom.*;
  *
  * @author rodche
  */
-@Configurable
+@Service
 public class BiopaxValidatorUtils {
     private static final Log logger  = LogFactory.getLog(BiopaxValidatorUtils.class);
     
@@ -309,7 +309,7 @@ public class BiopaxValidatorUtils {
 		try {
 			resultsMarshaller.marshal(obj, domResult);
 		} catch (Exception e) {
-			throw new RuntimeException("Cannot serialize object: " + obj.getClass().getSimpleName(), e);
+			throw new RuntimeException("Cannot serialize object: " + obj, e);
 		} 
 		if(logger.isDebugEnabled()) {
 			logger.debug(obj.getClass().getSimpleName()+ " is serialized: " + domResult.getNode().getNodeName());

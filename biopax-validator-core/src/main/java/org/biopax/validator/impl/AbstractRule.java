@@ -85,11 +85,9 @@ public abstract class AbstractRule<T> implements Rule<T> {
 					+ ".postmodelonly", null, "true", Locale.getDefault());
 			setPostModelOnly(Boolean.parseBoolean(pmo));
 		} else {
-			if(logger.isInfoEnabled()) {
-				logger.info("using no configuration" +
-						"(rule created outside the Validator context?)" +
-						"; messageSource=null.");
-			}
+			logger.warn("messageSource is null; " +
+				"using default configuration: behavior=error, no tip/description message" +
+				" (is rule created outside the Validator AOP context?)");
 		}
 	}
 
