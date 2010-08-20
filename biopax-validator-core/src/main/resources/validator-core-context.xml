@@ -27,7 +27,7 @@
 	</oxm:jaxb2-marshaller>
 
 	<bean id="rulesMessageSource"
-		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">
 			<list>
 				<value>rule-descriptions</value>

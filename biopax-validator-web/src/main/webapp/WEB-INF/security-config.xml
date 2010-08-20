@@ -8,7 +8,7 @@
     http://www.springframework.org/schema/security 
     http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
-	<http access-denied-page="/denied.html" auto-config='true'>
+	<http access-denied-page="/denied.html"> <!-- auto-config='true'-->
 		<form-login login-page="/login.html" authentication-failure-url="/login.html?login_error=true" />
 		<intercept-url pattern="/denied.html" filters="none"/>
 		<intercept-url pattern="/login.html*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
