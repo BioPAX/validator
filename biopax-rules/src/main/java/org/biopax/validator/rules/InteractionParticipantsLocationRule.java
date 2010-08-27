@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public final class InteractionParticipantsLocationRule extends
+public class InteractionParticipantsLocationRule extends
 		AbstractRule<Interaction> {
 
 	public void check(Interaction thing) {

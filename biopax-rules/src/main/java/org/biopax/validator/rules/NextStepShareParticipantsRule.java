@@ -2,13 +2,16 @@ package org.biopax.validator.rules;
 
 import java.util.*;
 
+import org.biopax.paxtools.model.level3.BiochemicalPathwayStep;
+import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.Entity;
+import org.biopax.paxtools.model.level3.Gene;
 import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PathwayStep;
+import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.Process;
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.utils.BiopaxValidatorException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,13 +25,17 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public final class NextStepShareParticipantsRule extends AbstractRule<PathwayStep>  {
-
+public class NextStepShareParticipantsRule extends AbstractRule<PathwayStep>  
+{
 	public boolean canCheck(Object thing) {
-		return thing instanceof PathwayStep;
+		return thing instanceof PathwayStep
+			&& !((PathwayStep) thing).getNextStepOf().isEmpty();
 	}
 
 	public void check(PathwayStep step) {
+		if(step.getNextStepOf().isEmpty())
+			return;
+		
 		// get all the participants
 		Collection<Entity> thisStepParticipants = getParticipants(step);
 		
@@ -48,28 +55,40 @@ public final class NextStepShareParticipantsRule extends AbstractRule<PathwaySte
 		//(which normally should never occur; another rule will check that.)
 		Collection<Process> processes = new HashSet<Process>();
 		Set<Entity> ret = new HashSet<Entity>();
+		if(step instanceof BiochemicalPathwayStep) {
+			Conversion c = ((BiochemicalPathwayStep) step).getStepConversion();
+			ret.addAll( getParticipants(c, processes) );
+		}
 		for(Process p : step.getStepProcess()) {
 			ret.addAll( getParticipants(p, processes) );
 		}
 		return ret;
 	}
 
-	Collection<Entity> getParticipants(Process process, Collection<Process> visited) {
+	Collection<Entity> getParticipants(Process process, Collection<Process> visited) 
+	{
+		Collection<Entity> ret = new HashSet<Entity>();
 		
+		// escape infinite loop
 		if(visited.contains(process)) {
-			throw new BiopaxValidatorException("Pathway Step Processes Form an Infinite Loop!");
-		}
+			//"Step Processes Form a Loop!"
+			return ret; // empty
+		} 
 		visited.add(process);
 		
 		if(process instanceof Interaction) {
-			return ((Interaction) process).getParticipant();
-			// some of participants can be also Processes, but deeper recursion isn't necessary here...
+			for(Entity pat : ((Interaction) process).getParticipant()) 
+			{
+				if(pat instanceof PhysicalEntity || pat instanceof Gene) 
+					ret.add(pat);
+			}
+		} else { // a pathway
+			for (Process p : ((Pathway) process).getPathwayComponent()) 
+			{
+				ret.addAll(getParticipants(p, visited));
+			}
 		}
 		
-		Collection<Entity> ret = new HashSet<Entity>();
-		for(Process p : ((Pathway) process).getPathwayComponent()) {
-			ret.addAll( getParticipants(p, visited) );
-		}
 		return ret;
 	}
 	

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public final class ComplexComponentsMultipleLocationRule extends
+public class ComplexComponentsMultipleLocationRule extends
 		AbstractRule<Complex> {
 
 	public void check(Complex thing) {

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public final class BiochemPathwayStepOneConversionRule extends AbstractRule<BiochemicalPathwayStep> {
+public class BiochemPathwayStepOneConversionRule extends AbstractRule<BiochemicalPathwayStep> {
 	
 	public boolean canCheck(Object thing) {
 		return thing instanceof BiochemicalPathwayStep;

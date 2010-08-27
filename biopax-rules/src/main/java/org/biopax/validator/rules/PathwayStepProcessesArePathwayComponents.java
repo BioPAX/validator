@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public final class PathwayStepProcessesArePathwayComponents extends AbstractRule<PathwayStep> {
+public class PathwayStepProcessesArePathwayComponents extends AbstractRule<PathwayStep> {
 	
 	public boolean canCheck(Object thing) {
 		return thing instanceof PathwayStep 

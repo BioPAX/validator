@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
  * @author rodche
  *
  */
-public final class MiriamLink
+public class MiriamLink
 {
 	private static final Log log = LogFactory.getLog(MiriamLink.class);
 	private static final String[] ARRAY_OF_STRINGS = {}; // a template to convert a Collection<T> to String[]
