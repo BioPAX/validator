@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="box" title="Useful Links">
-<h2 style="margin-top:17px">Related Links</h2>
+<h2 style="margin-top:17px">Links</h2>
  <ul>
 <li><a href="http://sf.net/apps/mediawiki/biopax/index.php?title=BioPAXValidator">Validator's Wiki Page</a></li>
 <li><a href="http://sf.net/apps/mediawiki/biopax/index.php?title=BioPAXRules">Rules's Wiki Page</a></li>

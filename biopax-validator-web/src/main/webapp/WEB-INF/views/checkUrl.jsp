@@ -20,7 +20,7 @@
     <div id="left">
 
 
-<h1>Specify a BioPAX resource URL</h1>
+<h1>Specify a BioPAX resource* URL</h1>
 <form method="post">
     <div class="form-row">
         <input class="input" type="text" name="url"/>

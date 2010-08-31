@@ -20,7 +20,7 @@
   <div id="content">
     <div id="left">
 
-<h2>Available BioPAX Rules</h2>
+<h2>Loaded BioPAX Rules</h2>
 <table border title="BioPAX Rules">
     <tr>
         <th>Name</th>

@@ -115,14 +115,14 @@ public class ValidatorController {
     	}
     }
     
-    
+ /*   
     @RequestMapping("/home")
     public void homePage() {}
 
     
     @RequestMapping("/ws")
     public void wsDescriptionPage() {}
-    
+*/    
     
     
 	private ValidatorResponse checkFile(HttpServletRequest request) throws IOException 

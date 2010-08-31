@@ -53,7 +53,7 @@ public class ConfigController {
     public String rule(HttpServletRequest request) {
     	Rule r = validator.findRuleByName(request.getParameter("name"));
     	r.setBehavior(Behavior.valueOf(request.getParameter("behavior")));
-    	return "redirect:rules";
+    	return "redirect:rules.html";
     }    
 
     @RequestMapping(value="/rule", method=RequestMethod.GET)
@@ -62,7 +62,8 @@ public class ConfigController {
         return r;
     } 
         
-    
+   /* 
     @RequestMapping("/admin")
     public void adminPage() {}
+    */
 }

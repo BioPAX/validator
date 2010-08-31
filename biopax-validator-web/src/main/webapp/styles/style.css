@@ -2,6 +2,8 @@
 /*	Created by Devit Schizoper 								*/
 /*	Created HomePages http://LoadFoo.starzonewebhost.com	*/
 /*	Created Day 01.12.2006 									*/
+/* Modified for BioPAX Validator in 2010 by Igor Rodchenkov */
+/* (and 'left' and 'right' switched)                        */ 
 /* ======================================================== */
 
 
@@ -10,7 +12,7 @@ body {
 	background: url(../images/top_bg.gif);
 	background-repeat: repeat-x;
 	font-family: Verdana, Arial, sans-serif;
-        font-size: 11px;
+    font-size: 11px;
 }
 
 p {
@@ -61,7 +63,7 @@ blockquote{
 #wrap {
        margin-left: auto;
        margin-right: auto;
-       width: 730px;
+       width: 90%; /*730px;*/
 }
 
 
@@ -105,7 +107,7 @@ blockquote{
 
 #menu {
 	display: block;
-	float:right;
+	float: right;
 }
 
 #menu ul {
@@ -171,20 +173,20 @@ blockquote{
 }
 
 #left {
-	width: 390px;
-	float:right;
-	display: block;
-       margin-left: 20px;
-	display: inline;
+	width: 79%;
+	float: right;
+	display: box;
+    margin-left: 20px;
 }
 
 
 /**** Sidebar ***/
 
-#right{ list-style: none; margin: 2.0em 0; width: 27em; float: left;}
+#right{ list-style: none; margin: 2.0em 0; width: 19%; float: left;}
+
 
 #right .box {
-	width: 22em;/*280px*/
+	width: 90%;
 	background: #F6F9FB;
 	border: 1px solid #E1E1E1;
 	padding:10px 10px 15px 10px;
@@ -217,7 +219,7 @@ blockquote{
 	margin-top:5px;
 }
 
-#nav{ list-style: none; margin: 2.0em 0; width: 27em; float: right;}
+#nav{ list-style: none; margin: 2.0em 0; width: 90%; float: left;}
 #nav li{ padding: 0; margin: 0; }
 #nav a{
 	display: block;
@@ -229,6 +231,7 @@ blockquote{
 	background-color: #F7F9FB;
 	font-weight: bold;
 	text-decoration: none;
+	font-size: larger;
 	}
 
 #nav a:hover{
@@ -254,7 +257,7 @@ blockquote{
 /**** Footers ***/
 
 #footer {
-        margin: 40px auto 0 auto;
+    margin: 40px auto 0 auto;
 	text-align: center;
 	border-top: dotted 1px gray;
 	padding: 20px 0 20px 0;

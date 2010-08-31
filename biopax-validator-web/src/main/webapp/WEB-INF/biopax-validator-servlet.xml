@@ -13,6 +13,7 @@
 	<context:annotation-config/>
 	<mvc:annotation-driven/>
 
+<!-- 
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
     	<property name="basenames">
     		<list>
@@ -22,6 +23,13 @@
 			</list>
     	</property>
 	</bean>
+-->
+
+	<mvc:view-controller path="/login.html"/>
+	<mvc:view-controller path="/denied.html"/>
+	<mvc:view-controller path="/admin.html"/>
+	<mvc:view-controller path="/home.html"/>
+	<mvc:view-controller path="/ws.html"/>
 
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">

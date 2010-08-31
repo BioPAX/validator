@@ -20,7 +20,7 @@
     <div id="left">
 
 
-<h2>Choose up to Ten BioPAX Files:</h2>
+<h2>Choose up to Ten BioPAX Files*:</h2>
 <form enctype="multipart/form-data" method="post">
 	<div class="form-row">
 		<input id="file" type="file" name="file_1" accept="application/rdf+xml"/>

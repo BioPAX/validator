@@ -22,9 +22,8 @@
 
 <h2>BioPAX Validator Webservice</h2>
 <div>
-To upload and check BioPAX files, use a multi-part HTTP POST request 
+To upload and check BioPAX files*, use a multi-part HTTP POST request 
 to <a href="<c:url value='/checkFile.html'/>">this page</a>.
-The server accepts up to 25 OWL files or 25Mb altogether (default settings).
 </div>
 <br/>
 <div>
