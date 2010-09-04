@@ -8,6 +8,31 @@
 	<version>2.0-SNAPSHOT</version>
 	<description>BioPAX Validator</description>
 
+	<licenses>
+		<license>
+			<name>LGPL 3.0 license</name>
+			<url>http://www.opensource.org/licenses/lgpl-3.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>SF</system>
+		<url>https://sourceforge.net/tracker/?group_id=85345</url>
+	</issueManagement>
+
+   <scm>
+        <connection>scm:hg:http://biopax.hg.sourceforge.net:8000/hgroot/biopax/validator</connection>
+        <developerConnection>scm:hg:ssh://${scm.username},biopax@biopax.hg.sourceforge.net/hgroot/biopax/validator</developerConnection>
+        <url>http://biopax.hg.sourceforge.net/hgweb/biopax/validator</url>
+    </scm>
+
+    <organization>
+        <name>BioPAX</name>
+        <url>http://www.biopax.org</url>
+    </organization>
+
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -39,12 +64,18 @@
 	<reporting>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jxr-maven-plugin</artifactId>
-			</plugin>      
+			</plugin>    
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.0.1</version>
+			</plugin>  
 		</plugins>
 	</reporting>
 
@@ -140,13 +171,6 @@
 			<version>1.2.13</version>
 			<scope>runtime</scope>
 		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>aopalliance</groupId>
-			<artifactId>aopalliance</artifactId>
-			<version>1.0</version>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-oxm</artifactId>

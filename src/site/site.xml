@@ -1,2 +1,15 @@
 <project name="BioPAX Validator">
+<body>
+
+<links>
+</links>
+
+<menu ref="reports"/>
+
+<menu name="Javadoc">
+      <item name="Main" href="apidocs/index.html"/>
+</menu>
+
+</body>
+
 </project>
