@@ -35,13 +35,13 @@ id="BiopaxValidator2" version="2.5">
   </context-param>
 
   <servlet>
-    <servlet-name>biopax-validator</servlet-name>
+    <servlet-name>validator2</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>biopax-validator</servlet-name>
+    <servlet-name>validator2</servlet-name>
     <url-pattern>*.html</url-pattern>
   </servlet-mapping>
     
