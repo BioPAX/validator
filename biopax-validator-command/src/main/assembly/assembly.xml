@@ -1,28 +1,44 @@
-<assembly>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+  
   <formats>    
     <format>zip</format>
   </formats>   
   
   <dependencySets>    
     <dependencySet>   
-      <outputDirectory>/lib</outputDirectory>
+      <outputDirectory>lib</outputDirectory>
       <includes>
         <include>*:*</include>
       </includes>
-      <!--
-      <excludes>
-        <exclude>org.eclipse:*</exclude>
-      </excludes>
-      -->
+      <unpack>false</unpack>
     </dependencySet>  
   </dependencySets>     
   
   <fileSets>       
     <fileSet>
       <directory>src/main/etc</directory>
+      <includes>
+	  	<include>*.properties</include>
+	  	<include>*.txt</include>
+	  </includes>
+      <fileMode>0644</fileMode>
+      <outputDirectory></outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/etc/bin</directory>
       <fileMode>0755</fileMode>
       <outputDirectory></outputDirectory>
     </fileSet>
+    <fileSet>
+      <directory>src/main/etc/examples</directory>
+      <includes>
+	  	<include>*.owl</include>
+	  	<include>*.txt</include>
+	  </includes>
+      <fileMode>0644</fileMode>
+      <outputDirectory>sampleData</outputDirectory>
+    </fileSet>
   </fileSets>
-   
 </assembly>

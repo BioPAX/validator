@@ -22,6 +22,7 @@
 							<manifest>
 								<mainClass>org.biopax.validator.Main</mainClass>
 								<addClasspath>true</addClasspath>
+								<classpathPrefix>lib/</classpathPrefix>
 							</manifest>
 						</archive>
 					</configuration>
@@ -29,6 +30,7 @@
 				<plugin>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<configuration>
+						<!-- 
 						<descriptorRefs>
 							<descriptorRef>jar-with-dependencies</descriptorRef>
 						</descriptorRefs>
@@ -38,6 +40,7 @@
 								<addClasspath>true</addClasspath>
 							</manifest>
 						</archive>
+						-->
 						<descriptors>
 							<descriptor>src/main/assembly/assembly.xml</descriptor>
 						</descriptors>

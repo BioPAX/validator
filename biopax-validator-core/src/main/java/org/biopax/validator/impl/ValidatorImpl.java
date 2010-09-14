@@ -139,8 +139,8 @@ public class ValidatorImpl implements Validator {
 		if (!getResults().contains(validation)) {
 			getResults().add(validation); // registered a new validation result
 		} else {
-			if(log.isInfoEnabled())
-				log.info(obj + " object is associated with existing result");
+			if(log.isDebugEnabled())
+				log.debug(obj + " object is associated with existing result");
 		}
 		validation.getObjects().add(obj);
 		

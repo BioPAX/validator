@@ -9,7 +9,7 @@
 </owl:Ontology>
 
 <bp:BioSource rdf:about="BioSource-Human">
- <bp:taxonXref rdf:resource="Taxonomy_UnificationXref_9606" />
+ <bp:xref rdf:resource="Taxonomy_UnificationXref_9606" />
  <bp:displayName rdf:datatype = "xsd:string">Homo sapiens</bp:displayName>
 </bp:BioSource>
 

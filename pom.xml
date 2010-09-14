@@ -21,7 +21,7 @@
 		<url>https://sourceforge.net/tracker/?group_id=85345</url>
 	</issueManagement>
 
-   <scm>
+    <scm>
         <connection>scm:hg:http://biopax.hg.sourceforge.net:8000/hgroot/biopax/validator</connection>
         <developerConnection>scm:hg:ssh://${scm.username},biopax@biopax.hg.sourceforge.net/hgroot/biopax/validator</developerConnection>
         <url>http://biopax.hg.sourceforge.net/hgweb/biopax/validator</url>
@@ -32,6 +32,20 @@
         <url>http://www.biopax.org</url>
     </organization>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring.version>3.0.3.RELEASE</spring.version>
+	</properties>
+	
+	<modules>
+		<module>biopax-validator-web</module>
+		<module>biopax-validator-core</module>
+		<module>biopax-rules</module>
+		<module>biopax-validator-command</module>
+		<module>obo-fetcher</module>
+		<module>miriam-lib</module>
+		<module>biopax-validator-test</module>
+	</modules>
 
 	<build>
 		<pluginManagement>
@@ -178,16 +192,5 @@
 		</dependency>
 
 	</dependencies>
-	<modules>
-		<module>biopax-validator-web</module>
-		<module>biopax-validator-core</module>
-		<module>biopax-rules</module>
-		<module>biopax-validator-command</module>
-		<module>obo-fetcher</module>
-		<module>miriam-lib</module>
-		<module>biopax-validator-test</module>
-	</modules>
-	<properties>
-		<spring.version>3.0.3.RELEASE</spring.version>
-	</properties>
+	
 </project>

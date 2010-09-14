@@ -1,6 +1,6 @@
 /** BioPAX Validator, Version 2.0a
  **
- ** Copyright (c) 2009 University of Toronto (UofT)
+ ** Copyright (c) 2010 University of Toronto (UofT)
  ** and Memorial Sloan-Kettering Cancer Center (MSKCC).
  **
  ** This is free software; you can redistribute it and/or modify it
@@ -75,9 +75,9 @@ II. Validation
 
 III. Errors, Logging, Behavior (actions to undertake)
  1. Logging 
- 	- commons-logging and log4j.xml
+ 	- commons-logging and log4j
  2. Errors 
-    - AOP, MessageSource (Spring), resource bundles and object-xml mapping (OXM) 
+    - Spring AOP, MessageSource, resource bundles, and OXM
     are used to collect errors, translate into messages, and create the validation report.
  4. Control of behavior 
     - action and messages are configured in messages.properties file
@@ -95,26 +95,6 @@ http://sourceforge.net/projects/biopax/files/
 
 Unpack; switch to the directory to continue.
 
-NOTE:
-BioPAX Validator is now shipped with a 'cache' directory
-where the rule-specific sets of controlled vocabulary terms are stored 
-(serialized). If the 'cache' (or any file from it) is deleted or cleaned 
-(this is also the way to update ;)), then the validator will be refreshing 
-the required terms from the Ontology Lookup Service (OLS) at startup. This
-MAY TAKE LONG LONG TIME (>15 min) to complete (blame the current API that 
-retrieves synonyms), and in case of deploying such a WAR without 'cache' 
-on a Tomcat App. server, it will probably fail to start due to timeout.
-
-So, if you want to update the ontology terms, consider first starting the 
-validator from console without any arguments. Exit once it's finished (pressing
-Enter several times). Next time it won't take long to run. 
-Update WAR ('ant war') and (re-)deploy ('cache' is included in the new web assembly)
-
-Optionally, 
-build Java documentation (/doc directory is created):
-
-$ant javadoc
-
 
 ******************************************************************************
  USING CONSOLE APPLICATION
@@ -124,11 +104,6 @@ Execute:
 $sh validate.sh
 (or "sh path1/validate.sh path2/input-dir path3/output.xml" 
 - or without args, from any directory,..)
-
-OR
-
-$ ant run
-(from the validator directory)
 
 At some point the program asks for user input; and one can use:
 path/dir - to check all the OWL files in the directory (is probably the best choice)
@@ -150,10 +125,10 @@ USING WEB APPLICATION
 PREREQUISITES:
 
 - Java 6
-- spring-agent.jar (from Spring 2.5.6; enables load-time weaving for AOP)
+- spring-instrument.jar (from Spring 2.5.6; enables load-time weaving for AOP)
 - Tomcat (6) must be started with the following option: 
 
--Xmx2048m -Xms256m -javaagent:/full-path-to/spring-agent.jar
+-Xmx2048m -Xms256m -javaagent:/full-path-to/spring-instrument.jar
 
 (one can set the JAVA_OPTS variable and/or modify the Tomcat's startup script)
 
@@ -189,14 +164,13 @@ it is usually uninstalled automatically by Tomcat.
 The most important thing is to make sure the validator 
 starts using Java 6 with, e.g., the following JVM options:
 
--javaagent:lib/spring-agent.jar -Xmx2048m -Xms256m
+-javaagent:lib/spring-instrument.jar -Xmx2048m -Xms256m
 
-(one may have to provide the full path to the spring-agent.jar)
+(one may have to provide the full path to the spring-instrument.jar)
 
 All the needed jars are in the /lib folder.
 
-Package net.biomolecules.miriam (and classes in it) is generated 
-from the src/resources/Miriam.xsd using 'ant bind' command.
+Package net.biomolecules.miriam (and classes in it) is xjc-generated.
 
 Debugging
 
