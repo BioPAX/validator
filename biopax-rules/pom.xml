@@ -9,7 +9,7 @@
 	<groupId>org.biopax.validator</groupId>
 	<artifactId>biopax-rules</artifactId>
 	<name>BioPAX Rules</name>
-	<description>BioPAX Rules and Best Practices</description>
+	<description>BioPAX Rules and Best Practices Implementation</description>
 	<dependencies>
 		<dependency>
 			<groupId>org.biopax.validator</groupId>

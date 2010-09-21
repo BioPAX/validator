@@ -9,7 +9,8 @@
 	<groupId>org.biopax.validator</groupId>
 	<artifactId>biopax-validator-web</artifactId>
 	<packaging>war</packaging>
-	<name>biopax-validator-web Spring-WS Application</name>
+	<name>BioPAX Validator Web Application</name>
+	<description>BioPAX Validator Web Application (UI and Web Service)</description>
 	<url>http://www.springframework.org/spring-ws</url>
 	<build>
 		<finalName>biopax-validator</finalName>

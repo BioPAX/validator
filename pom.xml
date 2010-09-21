@@ -4,9 +4,9 @@
 	<groupId>org.biopax.validator</groupId>
 	<artifactId>biopax-validator</artifactId>
 	<packaging>pom</packaging>
-	<name>BioPAX Validator</name>
+	<name>BioPAX Validator Parent Project</name>
 	<version>2.0-SNAPSHOT</version>
-	<description>BioPAX Validator</description>
+	<description>BioPAX Validator Multi-module (Parent) Project</description>
 
 	<licenses>
 		<license>
@@ -16,8 +16,9 @@
 		</license>
 	</licenses>
 
+	<url>http://biopax.sourceforge.net/validator</url>
 	<issueManagement>
-		<system>SF</system>
+		<system>Sourceforge.net Tracker</system>
 		<url>https://sourceforge.net/tracker/?group_id=85345</url>
 	</issueManagement>
 
@@ -32,8 +33,16 @@
         <url>http://www.biopax.org</url>
     </organization>
 
+    <mailingLists>
+     <mailingList>
+       <name>BioPAX Discussion Group</name>
+      <post>biopax-discuss@googlegroups.com</post>
+     </mailingList>
+    </mailingLists>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<spring.version>3.0.3.RELEASE</spring.version>
 	</properties>
 	
@@ -80,16 +89,18 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jxr-maven-plugin</artifactId>
-			</plugin>    
+				<version>2.0-beta-1</version>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>2.0.1</version>
-			</plugin>  
+			</plugin>
 		</plugins>
 	</reporting>
 
@@ -97,6 +108,8 @@
 		<profile>
 			<id>rodche</id>
 			<distributionManagement>
+				<!--  this is to deploy to the local repository, which then is
+				manually synchronized with the remote one -->
 				<snapshotRepository>
 					<id>biopax.snapshots</id>
 					<name>Local BioPAX Snapshots Repository</name>
@@ -190,7 +203,53 @@
 			<artifactId>spring-oxm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-
 	</dependencies>
+	
+	<developers>
+		<developer>
+			<id>rodche</id>
+			<name>Igor Rodchenkov</name>
+			<organization>University of Toronto</organization>
+			    <roles>
+                	<role>architect</role>
+                	<role>developer</role>
+            	</roles>
+		</developer>
+	</developers>
+
+	<contributors>
+		<contributor>
+			<name>Gary Bader</name>
+			<organization>University of Toronto</organization>
+			<roles>
+				<role>leader</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Emek Demir</name>
+			<organization>CBIO MSKCC</organization>
+			<roles>
+				<role>architect</role>
+			</roles>
+		</contributor>
+	</contributors>
+	
+	<distributionManagement>
+		<site>
+			<id>biopax.sf.net</id>
+			<name>BioPAX Sourceforge site</name>
+			<url>scp://shell.sourceforge.net/home/groups/b/bi/biopax/htdocs/validator</url>
+		</site>
+		<snapshotRepository>
+			<id>biopax.snapshots</id>
+			<name>BioPAX Snapshots Repository</name>
+			<url>scp://shell.sourceforge.net/home/groups/b/bi/biopax/htdocs/m2repo/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>biopax.releases</id>
+			<name>BioPAX Releases Repository</name>
+			<url>>scp://shell.sourceforge.net/home/groups/b/bi/biopax/htdocs/m2repo/releases</url>
+		</repository>
+	</distributionManagement>
 	
 </project>

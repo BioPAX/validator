@@ -10,9 +10,9 @@
   <version>2.0-SNAPSHOT</version>
   
    
-    <name>Cut from the PSI Tools's Ontology Manager</name>
+    <name>Ontologies Access</name>
 
-    <description>Provides OBO ontology access and handling.</description>
+    <description>Provides OBO ontology access and handling. This Is Derived from the PSIDEV's Ontology Manager Tool.</description>
 
     <dependencies>
         <dependency>

@@ -8,9 +8,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.biopax</groupId>
 	<artifactId>miriam-lib</artifactId>
-	<name>miriam-lib</name>
+	<name>MIRIAM Registry Access</name>
 	<version>1.1.1</version>
-	<description>org.biopax.miriam.MiriamLink re-implementation that loads and parses the whole Miriam.xml at startup instead of always calling the web service (slow)</description>
+	<description>This is a org.biopax.miriam.MiriamLink library re-implementation that loads the whole Miriam.xml at startup instead of constantly hiting their web service.</description>
 
 	<build>
 		<plugins>

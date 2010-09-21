@@ -10,7 +10,7 @@
 	<artifactId>biopax-validator-test</artifactId>
 	<name>BioPAX Validator Integration Tests</name>
 	<version>2.0-SNAPSHOT</version>
-	<description>Runs BioPAX Validator Integration Tests in the AspectJ LTW context</description>
+	<description>Runs BioPAX Validator Integration Tests within the AspectJ LTW context</description>
 
 	<build>
 		<plugins>

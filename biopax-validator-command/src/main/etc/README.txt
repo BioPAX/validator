@@ -26,8 +26,6 @@
  ** or find it at http://www.fsf.org/ or http://www.gnu.org.
  **/
 
-TODO: PLEASE UPDATE THIS TEXT (COPIED FROM PREVIOUS VERSION)!
-
 An open source validation framework for BioPAX (www.biopax.org).
 
 This is basically created with Java (5 or 6), Paxtools, Spring Framework (AOP,
@@ -45,10 +43,10 @@ DESIGN
 
 I. Framework
 
- 1. Paxtools, the BioPAX API, is used as external library.
+ 1. Uses Paxtools library, the BioPAX API.
  2. Spring Framework (3.0) - to report errors (AOP), wire different modules,
     internationalize, and build web services (MVC).
- 3. Java (5 or 6): VarArgs, generics, annotations, AOP load-time weaving (LTW),
+ 3. Java 6 (or 5): VarArgs, generics, annotations, AOP load-time weaving (LTW),
  	@Resource and @PostConstruct annotations.
  4. @AspectJ AOP, LTW are very powerful things that much simplify 
  	intercepting the exceptions in paxtools.jar and other external
@@ -59,23 +57,23 @@ II. Validation
  1. Rules are java classes implementing Rule<E> interface, basically,
     by extending AbstractRule<E> (there are more abstract classes to derive from).
 
-     Classes can use the build-in "Ontology Manager" (PSIDEV@EBI, thank you!)
+     Classes can use a modified "Ontology Manager" (PSIDEV@EBI, thank you!)
      and its configuration file (ontologies.xml) which allows to check 
      controlled vocabulary terms.
  
     Rules may call other rules, but usually it is not required, and they are quite simple.
     
  2. Post-model validation 
- 	- read a BioPAX file, build the model, and check all the rules.
+    - read a BioPAX file, build the model, and check all the rules.
      
  3. Fast (AOP) validation
     - catch/log all the "external" errors ()
     - catch/log syntax and BioPAX errors during the model is being read/built
-	- check before/after any BioPAX element is modified or added to the model.
+    - check before/after any BioPAX element is modified or added to the model.
 
 III. Errors, Logging, Behavior (actions to undertake)
  1. Logging 
- 	- commons-logging and log4j
+    - commons-logging and log4j
  2. Errors 
     - Spring AOP, MessageSource, resource bundles, and OXM
     are used to collect errors, translate into messages, and create the validation report.
@@ -89,21 +87,22 @@ III. Errors, Logging, Behavior (actions to undertake)
  INSTALL
 ******************************************************************************
 
-Download the latest BioPAX validator ZIP from: 
+Download the latest BioPAX validator ZIP distribution from 
 
 http://sourceforge.net/projects/biopax/files/
 
-Unpack; switch to the directory to continue.
+Unpack 
 
 
 ******************************************************************************
  USING CONSOLE APPLICATION
 ******************************************************************************
 Execute:
+(switching to the validator directory is not required)
 
-$sh validate.sh
-(or "sh path1/validate.sh path2/input-dir path3/output.xml" 
-- or without args, from any directory,..)
+$sh /path/validate.sh
+
+(e.g., "sh path1/validate.sh path2/input-dir path3/output.xml")
 
 At some point the program asks for user input; and one can use:
 path/dir - to check all the OWL files in the directory (is probably the best choice)
@@ -112,10 +111,8 @@ classpath:path/file.owl - to check a file that can be found in java classpath (c
 http://www.link.to/somer-biopax/ - to validate from a URL resource (remote file or service)
 list:input.txt - execute lines, each like the above, from the specified 'batch' file
 
-Validation messages will be written to the STDERR, unless user specified a file name.
-
-You may provide any URL instead of file:.. 
-(with little modification in the Main class it's possible to query for PC pathways)
+Validation messages will be printed to STDERR, unless user specified a (XML) file name.
+You may also provide a URL instead of input file.
 
 
 ******************************************************************************
@@ -125,26 +122,22 @@ USING WEB APPLICATION
 PREREQUISITES:
 
 - Java 6
-- spring-instrument.jar (from Spring 2.5.6; enables load-time weaving for AOP)
+- spring-instrument.jar (from Spring 3; enables load-time weaving for AOP)
 - Tomcat (6) must be started with the following option: 
 
 -Xmx2048m -Xms256m -javaagent:/full-path-to/spring-instrument.jar
 
 (one can set the JAVA_OPTS variable and/or modify the Tomcat's startup script)
 
-BUILD:
- 
-(Optionally) configure security: see WEB-INF/users.properties and WEB-INF/security-config.xml
-(secured access is used to control validation rules behavior at runtime)
-
-then execute
-
-$ant war
-
 
 DEPLOY
 
-Copy the generated biopax-validator.war to your Tomcat 'webapps' directory.
+Build from sources or download and rename the biopax-validator-2.0*.war to, e.g., biopax-validator.war, 
+and simply copy to your Tomcat 'webapps' directory.
+
+Note: Optionally, inside the WAR or in the 'webapps' directory (after deploying there), 
+one can modify security settings in WEB-INF/users.properties and WEB-INF/security-config.xml
+(secured access is used to change validation rules behavior at runtime);
 
 Once it gets auto-deployed (also check server logs),
 open http://localhost/biopax-validator with a browser. 
@@ -172,10 +165,7 @@ All the needed jars are in the /lib folder.
 
 Package net.biomolecules.miriam (and classes in it) is xjc-generated.
 
-Debugging
-
-There are several levels...
-
+Debugging tips:
 - to disable LTW AOP, set <context:load-time-weaver aspectj-weaving="off"/> 
   in the applicationContext.xml; or edit the META-INF/aop.xml
 - to "physically" exclude any rule from being checked - in java source file
@@ -183,18 +173,3 @@ There are several levels...
 - set "<ruleName>.behavior=ignore" in the messages.properties file
    (good to test AOP and configuration without doing real validation).
 - disable BehaviorAspect in order all rules to always check
-
-Control the logging via log4j.xml:
-
-    <logger name="org.biopax.validator" additivity="false">
-        <level value="trace"/>
-        <appender-ref ref="out"/>
-    </logger>
-
- - to see AspectJ info use:
-    <root>
-	  <priority value="info"/>
-	  <appender-ref ref="error"/>
-    </root>
-
-Cheers.
