@@ -147,9 +147,9 @@ public class Validation implements Serializable {
 	/**
 	 * Counts the number of errors/warnings.
 	 * 
-	 * @param forObject
-	 * @param reportedBy
-	 * @param code
+	 * @param forObject when 'null', counts all
+	 * @param reportedBy when 'null', counts all
+	 * @param code when 'null', counts all
 	 * @param ignoreWarnings
 	 * @return
 	 */

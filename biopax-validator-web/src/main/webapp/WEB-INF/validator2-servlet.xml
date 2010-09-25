@@ -25,6 +25,7 @@
 	</bean>
 -->
 
+	<mvc:view-controller path="/index.html"/>
 	<mvc:view-controller path="/login.html"/>
 	<mvc:view-controller path="/denied.html"/>
 	<mvc:view-controller path="/admin.html"/>
