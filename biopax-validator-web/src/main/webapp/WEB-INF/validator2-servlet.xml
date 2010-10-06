@@ -13,19 +13,6 @@
 	<context:annotation-config/>
 	<mvc:annotation-driven/>
 
-<!-- 
-    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-    	<property name="basenames">
-    		<list>
-				<value>rule-descriptions</value>
-				<value>error-codes</value>
-				<value>profile-ideal</value>
-			</list>
-    	</property>
-	</bean>
--->
-
-	<mvc:view-controller path="/index.html"/>
 	<mvc:view-controller path="/login.html"/>
 	<mvc:view-controller path="/denied.html"/>
 	<mvc:view-controller path="/admin.html"/>

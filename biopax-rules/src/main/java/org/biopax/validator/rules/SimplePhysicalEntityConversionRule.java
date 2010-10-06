@@ -6,6 +6,7 @@ import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Complex;
+import org.biopax.paxtools.model.level3.ComplexAssembly;
 import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.SmallMolecule;
@@ -37,6 +38,8 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
 			new ClassFilterSet<Conversion>(protein.getParticipantOf(), Conversion.class));
        
        for(Conversion conversion : conversions) {
+    	   if(conversion instanceof ComplexAssembly)
+    		   continue;
     	   String side = 
     		   (conversion.getLeft().contains(protein)) ? "right" : "left";
     	   if(!findProteinOnTheOtherSide(conversion, protein, side)) {

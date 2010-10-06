@@ -45,4 +45,8 @@ id="BiopaxValidator2" version="2.5">
     <url-pattern>*.html</url-pattern>
   </servlet-mapping>
     
+  <welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+  </welcome-file-list> 
+    
 </web-app>

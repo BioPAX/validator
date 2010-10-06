@@ -119,7 +119,7 @@ public class Validation implements Serializable {
 	public String getSummary() {
 		StringBuffer result = new StringBuffer();
 		if (error.size()>0) { 
-			result.append("errors of different kinds: ");
+			result.append("different types of problem: ");
 			result.append(error.size());
 		} else {
 			result.append("no errors");
