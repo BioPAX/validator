@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Checks:
- * EntityReference must have an xref.
+ * EntityReference must have a unification xref.
  * TODO do NOT add other logic here (better define in a separate rule)
  * 
  * @author rodche

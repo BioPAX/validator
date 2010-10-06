@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class DataPropertyIlliegalValueRule extends AbstractRule<Model> {
+public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
 	
 	@Resource
 	private EditorMap editorMap3;

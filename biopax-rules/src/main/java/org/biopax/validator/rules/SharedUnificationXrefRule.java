@@ -2,6 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,7 +23,8 @@ public class SharedUnificationXrefRule extends AbstractRule<UnificationXref> {
     
 	public void check(UnificationXref x) {
         if(x.getXrefOf().size()>1) {
-        	error(x, "shared.unification.xref", x.getXrefOf().toString());
+        	error(x, "shared.unification.xref", 
+        		BiopaxValidatorUtils.getIdListAsString(x.getXrefOf()));
         }
     }
 

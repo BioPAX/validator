@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Checks:
- * DnaRegionReference properties cardinality/range.
+ * DnaRegionReference absoluteRegion cardinality=0,1 (Functional), range = SequenceLocation.
  * @author rodche
  */
 @Component
