@@ -19,13 +19,13 @@ public class ErrorType implements Serializable {
 	 * and overriding the 'equals' method. 
 	 * 
 	 */
-	final Collection<ErrorCaseType> errorCase; 
-	String code = null;
-	String message = null;
-	Behavior type = Behavior.ERROR; // default
+	private final Set<ErrorCaseType> errorCase; 
+	private String code = null;
+	private String message = null;
+	private Behavior type = Behavior.ERROR; // default
 
 	public ErrorType() {
-		errorCase = new HashSet<ErrorCaseType>();
+		errorCase = new TreeSet<ErrorCaseType>();
 	}
 
 	public ErrorType(String code, Behavior type) {
@@ -35,9 +35,7 @@ public class ErrorType implements Serializable {
 	}
 	
 	public Collection<ErrorCaseType> getErrorCase() {
-		List<ErrorCaseType> list = new ArrayList<ErrorCaseType>(errorCase);
-		Collections.sort(list);
-		return list;
+		return errorCase;
 	}
 
 	public void setErrorCase(Collection<ErrorCaseType> errorCases) {

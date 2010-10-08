@@ -97,6 +97,7 @@ Unpack
 ******************************************************************************
  USING CONSOLE APPLICATION
 ******************************************************************************
+
 Execute:
 (switching to the validator directory is not required)
 
@@ -114,6 +115,10 @@ list:input.txt - execute lines, each like the above, from the specified 'batch' 
 Validation messages will be printed to STDERR, unless user specified a (XML) file name.
 You may also provide a URL instead of input file.
 
+Remark:
+smaller files validate quickly, however, actual time may vary for the same size data; 
+it takes longer for networks that contain loops (e.g., in nextStep->PathwayStep sequence);
+e.g., it took me several hours to validate ~50Mb BioPAX L3 file (Reactome's Canis familiaris);
 
 ******************************************************************************
 USING WEB APPLICATION

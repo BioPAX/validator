@@ -9,7 +9,7 @@ import org.biopax.paxtools.util.AbstractFilterSet;
 import org.biopax.validator.Behavior;
 
 
-@XmlRootElement
+@XmlRootElement(name="validationResult")
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class Validation implements Serializable {
 	private static final long serialVersionUID = 1L;
