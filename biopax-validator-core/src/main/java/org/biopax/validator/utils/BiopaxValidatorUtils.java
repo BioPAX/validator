@@ -21,6 +21,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.Marshaller;
+import org.springframework.oxm.Unmarshaller;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -41,13 +43,20 @@ public class BiopaxValidatorUtils {
     
     private Locale locale;
     private MessageSource messageSource; 
-    private static Marshaller resultsMarshaller;
+    private static Jaxb2Marshaller resultsMarshaller;
     private final Set<String> ignoredCodes;
     public static int maxErrors = Integer.MAX_VALUE;
     
    
+    static {
+    	resultsMarshaller = new Jaxb2Marshaller();
+    	((Jaxb2Marshaller)resultsMarshaller)
+    		.setClassesToBeBound(
+    			ValidatorResponse.class, Validation.class, 
+				ErrorCaseType.class, ErrorType.class);
+    }
+    
     public BiopaxValidatorUtils() {
-		
 		this.ignoredCodes = new HashSet<String>();
 		this.locale = Locale.getDefault();
 	}
@@ -60,18 +69,23 @@ public class BiopaxValidatorUtils {
 		return locale;
 	}
     
-    public void setMarshaller(Marshaller marshaller) {
-		resultsMarshaller = marshaller;
-	}
-    
 	/**
-	 * Gets the OXM resultsMarshaller (for validation results.)
+	 * Gets the results Marshaller (for validation results.)
 	 * @return
 	 */
-	public Marshaller getMarshaller() {
+	public static Marshaller getMarshaller() {
 		return resultsMarshaller;
 	}
     
+	/**
+	 * Gets the results Unmarshaller (for validation results.)
+	 * @return
+	 */
+	public static Unmarshaller getUnmarshaller() {
+		return resultsMarshaller;
+	}
+	
+	
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}

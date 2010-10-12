@@ -20,13 +20,6 @@
     <bean id="messenger" class="org.biopax.validator.impl.SimplyThrowExceptionMessenger"/>
     
 	<!-- BiopaxValidatorUtils configuration -->
-	
-    <oxm:jaxb2-marshaller id="resultsMarshaller" xmlns="http://www.biopax.org/validator">
-		<oxm:class-to-be-bound name="org.biopax.validator.result.Validation"/>
-		<oxm:class-to-be-bound name="org.biopax.validator.result.ValidatorResponse"/>
-		<oxm:class-to-be-bound name="org.biopax.validator.result.ErrorCaseType"/>
-		<oxm:class-to-be-bound name="org.biopax.validator.result.ErrorType"/>
-	</oxm:jaxb2-marshaller>
 
 	<bean id="rulesMessageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -41,7 +34,6 @@
 
 	<bean id="utils" class="org.biopax.validator.utils.BiopaxValidatorUtils">
 		<property name="messageSource" ref="rulesMessageSource" />
-		<property name="marshaller" ref="resultsMarshaller" />
 		<property name="locale" value="en" />
 		<property name="maxErrors" value="50" />
 	</bean>
