@@ -71,12 +71,14 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<configuration>
 						<testFailureIgnore>false</testFailureIgnore>
+						<!--
 						<systemProperties>
 							<property>
 								<name>log4j.configuration</name>
 								<value>file:${BIOPAX_HOME}/log4j.properties</value>
 							</property>
 						</systemProperties>
+						-->
 						<argLine>-Xmx1536M -Xms128M</argLine>
 					</configuration>
 				</plugin>

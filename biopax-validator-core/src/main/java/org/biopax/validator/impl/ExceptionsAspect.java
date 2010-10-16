@@ -271,7 +271,7 @@ public class ExceptionsAspect extends AbstractAspect {
 		}
 		if (bpe.getName().contains(name)) {
 			report(bpe, BiopaxValidatorUtils.getId(bpe), "duplicate.names",
-					"duplicateNamesAdvice", Behavior.ERROR, name);
+					"duplicateNamesAdvice", Behavior.WARNING, name);
 		}
 	}
 

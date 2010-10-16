@@ -80,6 +80,8 @@ public class ValidatorImpl implements Validator {
 				
 				for (Rule rule : rules) {
 					// rules can check the model or specific elements
+					if(log.isDebugEnabled())
+						log.debug("Current rule is: " + rule.getName());
 					if (rule.canCheck(model)) {
 						rule.check(model);
 					} else {
