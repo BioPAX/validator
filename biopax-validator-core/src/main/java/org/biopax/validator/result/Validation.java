@@ -23,9 +23,11 @@ public class Validation implements Serializable {
 	private final Set<Object> objects; 
 
 	// TODO implement the rest of the "FixIt" mode!
-	private boolean fixIt = false;
+	private boolean fix = false;
 	// TODO implement errors filter using the threshold
 	private Behavior threshold;
+	// TODO implement normalization on demand
+	private boolean normalize = false;
 	
 	// Default Constructor (this is mainly for OXM)
 	public Validation() {
@@ -33,7 +35,8 @@ public class Validation implements Serializable {
 		this.description = "unknown";
 		this.comment = new HashSet<String>();
 		this.objects = new HashSet<Object>();
-		this.fixIt = false;
+		this.fix = false;
+		this.normalize = false;
 		this.threshold = Behavior.WARNING;
 	}
 
@@ -189,21 +192,31 @@ public class Validation implements Serializable {
 		};
 	}
 
-	
-	public boolean isFixIt() {
-		return fixIt;
+	@XmlAttribute
+	public boolean isFix() {
+		return fix;
 	}
 
-	public void setFixIt(boolean fixIt) {
-		this.fixIt = fixIt;
+	public void setFix(boolean fix) {
+		this.fix = fix;
 	}
 
+	@XmlAttribute
 	public Behavior getThreshold() {
 		return threshold;
 	}
 
 	public void setThreshold(Behavior threshold) {
 		this.threshold = threshold;
+	}
+	
+	@XmlAttribute
+	public boolean isNormalize() {
+		return normalize;
+	}
+	
+	public void setNormalizeIt(boolean normalize) {
+		this.normalize = normalize;
 	}
 	
 } 

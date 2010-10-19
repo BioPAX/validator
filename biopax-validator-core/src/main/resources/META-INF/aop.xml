@@ -5,6 +5,7 @@
         <!-- only weave classes within packages that match listed -->
         <include within="org.biopax.validator.impl.*" />
         <include within="org.biopax.paxtools..*" />
+        <include within="org.biopax.validator.rules.*" />
     </weaver>
     <aspects>
         <!-- use only the following aspects for weaving -->

@@ -12,9 +12,7 @@ import org.biopax.paxtools.controller.PropertyFilter;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.BioSource;
-import org.biopax.paxtools.model.level3.ControlledVocabulary;
 import org.biopax.paxtools.model.level3.Pathway;
-import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.stereotype.Component;
@@ -26,8 +24,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class PathwayMultiOrganismRule extends AbstractRule<Pathway>
-{
+public class PathwayMultiOrganismRule extends AbstractRule<Pathway> {
 
 	@Resource
 	EditorMap editorMap3;
@@ -39,7 +36,7 @@ public class PathwayMultiOrganismRule extends AbstractRule<Pathway>
 		}
 	};
 	
-    public void check(final Pathway pathway)   {
+    public void check(final Pathway pathway) {
     	final Collection<BioPAXElement> organisms = new HashSet<BioPAXElement>();
     	final BioSource organism = pathway.getOrganism(); // not null - due to the canCheck method!
     	//but..
