@@ -26,7 +26,7 @@
 
     For more information: http://www.gnu.org/licenses/gpl.txt
 
-    version:  20090520
+    version:  20091020
     Author :  Camille Laibe
     E-Mail :  camille.laibe@ebi.ac.uk
     Address:  Computational Neurobiology,
@@ -79,7 +79,7 @@
     <xsd:attribute name="obsolete" type="TrueOrFalse" use="optional" />
   </xsd:complexType>
 
-  <!-- Definition of the type of a data entry -->
+  <!-- Definition of the type of an access URL (data entry) -->
   <xsd:simpleType name="dataEntry">
     <xsd:restriction base="xsd:string">
       <xsd:pattern value="\S*$id\S*" />
@@ -186,7 +186,20 @@
       <xsd:pattern value="false" />
     </xsd:restriction>
   </xsd:simpleType>
-
+  
+  <!-- Definition of the list of tags (with definition) -->
+  <xsd:complexType name="listOfTags">
+    <xsd:sequence>
+      <xsd:element name="tagDefinition" minOccurs="1" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="definition" type="xsd:string" minOccurs="1" maxOccurs="1" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
 
   <!-- Top level element of a MiriamXML document -->
   <xsd:element name="miriam">
@@ -211,6 +224,7 @@
             <xsd:attribute name="replacement" type="xsd:string" use="optional" />
           </xsd:complexType>
         </xsd:element>
+        <xsd:element name="listOfTags" type="listOfTags" minOccurs="0" maxOccurs="1" />
       </xsd:sequence>
       <xsd:attribute name="date" type="xsd:dateTime" use="required" />
       <xsd:attribute name="data-version" type="xsd:dateTime" use="required" />

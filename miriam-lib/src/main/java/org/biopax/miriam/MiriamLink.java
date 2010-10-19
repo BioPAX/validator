@@ -1,6 +1,5 @@
 package org.biopax.miriam;
 
-import java.io.*;
 import java.net.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +37,8 @@ public class MiriamLink
 	
 	
 	/** default address to access to the services */
-	public static final String XML_LOCATION = "http://www.ebi.ac.uk/miriam/main/XMLExport";
+	public static final String XML_LOCATION = "http://www.ebi.ac.uk/miriam/main/export/xml/";
+		//"http://www.ebi.ac.uk/miriam/main/XMLExport";
 	/** package name for jaxb to use */
 	public static final String BINDING = "net.biomodels.miriam";
 	public static final String SCHEMA_LOCATION = "http://www.ebi.ac.uk/compneur-srv/miriam/static/main/xml/MiriamXML.xsd";
@@ -62,19 +62,17 @@ public class MiriamLink
 		
 		try
 	    {
-			String query = URLEncoder.encode("fileName=Miriam.xml", "UTF-8");
 			URL url = new URL(XML_LOCATION);
-			URLConnection conn = url.openConnection();
-			conn.setDoOutput(true);
-			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-			wr.write(query);
-			wr.flush();
+			//URLConnection conn = url.openConnection();
+			//conn.setDoOutput(true);
+			//OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+			//String query = URLEncoder.encode("fileName=Miriam.xml", "UTF-8");
+			//wr.write(query);
+			//wr.flush();
             JAXBContext jc = JAXBContext.newInstance(BINDING);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
-            //SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            //Schema schema = schemaFactory.newSchema(new URL(SCHEMA_LOCATION));
-            //unmarshaller.setSchema(schema);
-            miriam = (Miriam) unmarshaller.unmarshal(conn.getInputStream());
+            //miriam = (Miriam) unmarshaller.unmarshal(conn.getInputStream());
+            miriam = (Miriam) unmarshaller.unmarshal(url.openStream());
 
             if (log.isDebugEnabled()) {
 	            log.debug("MIRIAM XML imported, version: "

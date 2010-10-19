@@ -1,4 +1,4 @@
-/** BioPAX Validator, Version 2.0a
+/** BioPAX Validator, Version 2.0a (SNAPSHOT)
  **
  ** Copyright (c) 2010 University of Toronto (UofT)
  ** and Memorial Sloan-Kettering Cancer Center (MSKCC).

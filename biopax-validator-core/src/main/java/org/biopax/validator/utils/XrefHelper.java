@@ -54,7 +54,16 @@ public class XrefHelper {
 		for (String dt : MiriamLink.getDataTypesName()) {
 			String db = dbName(dt);
 			String regexp = MiriamLink.getDataTypePattern(dt);
-			Pattern pattern = Pattern.compile(regexp);
+			
+			Pattern pattern = null;
+			try {
+				pattern= Pattern.compile(regexp);
+			} catch (PatternSyntaxException e) {
+				log.error(
+					"Pattern compilation failed for MIRIAM " +
+					"db=" + db + "; regexp=" + dt + "; " + e);
+			}
+			
 			List<String> synonyms = new ArrayList<String>();
 			synonyms.add(db);
 			String[] names = MiriamLink.getNames(dt);
