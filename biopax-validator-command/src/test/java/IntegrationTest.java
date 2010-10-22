@@ -161,6 +161,7 @@ public class IntegrationTest {
     	
     	// what a surprise, the following used to fail (before it's been fixed)
         SimpleReader r = new SimpleReader(BioPAXLevel.L3);
+        r.mergeDuplicates(true);
     	Model m = r.convertFromOWL(getClass().getResourceAsStream("InteractionVocabulary-Phosphorylation.xml"));
     	InteractionVocabulary vv = (InteractionVocabulary) m.getByID("Interaction_Phosphorylation");
         rule.check(vv);

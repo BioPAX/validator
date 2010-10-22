@@ -161,7 +161,7 @@ public class ValidatorImpl implements Validator {
 	public void importModel(Validation validation, InputStream inputStream) {
 		// add the parser
 		SimpleReader simpleReader = new SimpleReader();
-		//simpleReader.mergeDuplicates(true);
+		simpleReader.mergeDuplicates(true);
 		associate(inputStream, validation);
 		associate(simpleReader, validation);
 		// build the model and associate it with the key (for the post-validation, later in the 'validate' method):

@@ -29,6 +29,7 @@ public class LibsTest {
         System.out.println("with Level2 data");
         InputStream is = getClass().getResourceAsStream(L2_SHORT_MET_PATHWAY);
         SimpleReader io = new SimpleReader();
+        io.mergeDuplicates(true);
         Model model = io.convertFromOWL(is);
         assertNotNull(model);
         assertFalse(model.getObjects().isEmpty());
@@ -40,6 +41,7 @@ public class LibsTest {
         System.out.println("with Level3 data");
         InputStream is = getClass().getResourceAsStream(L3_SHORT_MET_PATHWAY);
         SimpleReader simpleReader = new SimpleReader();
+        simpleReader.mergeDuplicates(true);
         Model model = simpleReader.convertFromOWL(is);
         assertNotNull(model);
         assertFalse(model.getObjects().isEmpty());

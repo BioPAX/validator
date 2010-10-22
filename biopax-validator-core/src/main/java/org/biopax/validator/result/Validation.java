@@ -215,7 +215,7 @@ public class Validation implements Serializable {
 		return normalize;
 	}
 	
-	public void setNormalizeIt(boolean normalize) {
+	public void setNormalize(boolean normalize) {
 		this.normalize = normalize;
 	}
 	
