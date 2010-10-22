@@ -89,6 +89,14 @@ public class XrefHelper {
 			}
 			addDb(false, synonyms);
 		}	
+		
+		if(log.isDebugEnabled()) {
+			log.debug("Synonyms for EntrezGene: "
+				+ getSynonymsForDbName("EntrezGene").toString()
+				+ "; prefered name: " + getPrimaryDbName("EntrezGene"));	
+		}
+
+		assert(!getSynonymsForDbName("EntrezGene").isEmpty());		
     }
     
 	

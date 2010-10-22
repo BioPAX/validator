@@ -1,10 +1,13 @@
 package org.biopax.validator.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
@@ -71,6 +74,7 @@ public class ValidatorImpl implements Validator {
 			throw new BiopaxValidatorException("Failed! Did you import or add a model?");
 		}
 		
+		// usually, there is one model, but if they are many...
 		for (Model model : findModel(validation)) {
 			if (model != null) {
 				if (log.isDebugEnabled()) {
@@ -98,15 +102,43 @@ public class ValidatorImpl implements Validator {
 			}
 			
 			// add comments and stats
-			if(model != null && model.getLevel() == BioPAXLevel.L3) {
-				validation.addComment("number of interactions : " + model.getObjects(Interaction.class).size());
-				validation.addComment("number of physical entities : " + model.getObjects(PhysicalEntity.class).size());
-				validation.addComment("number of genes : " + model.getObjects(Gene.class).size());
-				validation.addComment("number of pathways : " + model.getObjects(Pathway.class).size());
-			} else {
-				validation.addComment("number of interactions : " + model.getObjects(interaction.class).size());
-				validation.addComment("number of participants : " + model.getObjects(physicalEntityParticipant.class).size());
-				validation.addComment("number of pathways : " + model.getObjects(pathway.class).size());
+			// TODO (rare) how to report when a validation has multiple models?..
+			if (model != null) {
+				if (model.getLevel() == BioPAXLevel.L3) {
+					validation.addComment("number of interactions : "
+							+ model.getObjects(Interaction.class).size());
+					validation.addComment("number of physical entities : "
+							+ model.getObjects(PhysicalEntity.class).size());
+					validation.addComment("number of genes : "
+							+ model.getObjects(Gene.class).size());
+					validation.addComment("number of pathways : "
+							+ model.getObjects(Pathway.class).size());
+				} else {
+					validation.addComment("number of interactions : "
+							+ model.getObjects(interaction.class).size());
+					validation.addComment("number of participants : "
+							+ model.getObjects(physicalEntityParticipant.class)
+									.size());
+					validation.addComment("number of pathways : "
+							+ model.getObjects(pathway.class).size());
+				}
+				
+				// TODO (rare) how to return fixed OWL when the validation has multiple models?..
+				if(validation.isFix()) {
+					SimpleExporter exporter = new SimpleExporter(model.getLevel());
+					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+					try {
+						exporter.convertToOWL(model, outputStream);
+						String owl = validation.getFixedOwl();
+						if(owl == null) 
+							owl = "";
+						owl += outputStream.toString("UTF-8");
+						validation.setFixedOwl(owl);
+					} catch (IOException e) {
+						throw new BiopaxValidatorException(
+							"Failed to export modified model!", e);
+					}
+				}
 			}
 		}
 
@@ -129,6 +161,7 @@ public class ValidatorImpl implements Validator {
 	public void importModel(Validation validation, InputStream inputStream) {
 		// add the parser
 		SimpleReader simpleReader = new SimpleReader();
+		//simpleReader.mergeDuplicates(true);
 		associate(inputStream, validation);
 		associate(simpleReader, validation);
 		// build the model and associate it with the key (for the post-validation, later in the 'validate' method):

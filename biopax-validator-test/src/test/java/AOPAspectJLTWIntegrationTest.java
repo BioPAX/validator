@@ -121,6 +121,8 @@ public class AOPAspectJLTWIntegrationTest {
        	model.add(x); // x has illegal 'db', but no error is being reported, because db==null
        	x.setDb("ILLEGALDB"); // now error should have been reported
        	
+       	x.setDb("ENTREZGENE"); // synonym, preferred name is "Entrez Gene", should not add errors...
+       	
        	// reset rule's default (to prevent effect on other tests)
        	rule.setPostModelOnly(true);   
        	validator.getResults().remove(validation);

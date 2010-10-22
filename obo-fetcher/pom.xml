@@ -21,8 +21,16 @@
             <version>2.0.0</version>
             <exclusions>
             	<exclusion>
-            		<artifactId>stax</artifactId>
+            		<groupId>javax.xml.bind</groupId>
+            		<artifactId>jaxb-api</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.sun.xml.bind</groupId>
+            		<artifactId>jaxb-impl</artifactId>
+            	</exclusion>
+            	<exclusion>
             		<groupId>stax</groupId>
+            		<artifactId>stax</artifactId>
             	</exclusion>
             </exclusions>
         </dependency>

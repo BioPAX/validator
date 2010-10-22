@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 /**
  * Checks:
  * evidence.evidenceCode has valid EvidenceCodeVocabulary term.
+ * 
+ * (MI does/will include ECO ontology...)
  *
  * @author rodche
  */

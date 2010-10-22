@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Checks:
- * ExperimentalForm properties cardinality/range.
+ * ExperimentalForm properties cardinality/range: 
+ * 	experimentalFormDescription must have at least one ExperimentalFormVocabulary value.
  * @author rodche
  */
 @Component

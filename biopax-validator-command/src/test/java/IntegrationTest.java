@@ -223,6 +223,20 @@ public class IntegrationTest {
 			//ok
 		}
     }
+    
+    /*
+     * Special case - check synonyms are there
+     */
+    @Test
+    public void testXrefRuleEntezGene() {
+        XrefRule instance =  (XrefRule) context.getBean("xrefRule");
+        instance.setBehavior(Behavior.ERROR);
+        UnificationXref x = factory3.createUnificationXref();
+        x.setDb("EntrezGene");
+        x.setId("0000000");
+        instance.check(x);
+    }
+    
    
     @Test
     public void testInteractionTypeRule() {
