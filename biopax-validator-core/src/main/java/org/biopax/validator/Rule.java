@@ -19,8 +19,9 @@ public interface Rule<T> {
      * Validates the object.
      * 
      * @param thing to validate
+	 * @param fix try to fix the error case if found
      */
-	void check(T thing);
+	void check(T thing, boolean fix);
 
     /**
      * Can check it?
@@ -74,19 +75,6 @@ public interface Rule<T> {
      * @return boolean
      */
     boolean isPostModelOnly();
-       
-    
-    /**
-     * Will try to correct a specific BioPAX error.
-     * 
-     * This method is not public, because it is fired 
-     * automatically as a result of the check method
-     * that depends on the current behavior setting.
-     * 
-     * @param t
-     * @param values
-     */
-    void fix(T t, Object... values);
 
     
 	/**

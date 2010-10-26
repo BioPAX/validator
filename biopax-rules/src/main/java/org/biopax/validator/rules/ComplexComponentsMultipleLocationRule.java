@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class ComplexComponentsMultipleLocationRule extends
 		AbstractRule<Complex> {
 
-	public void check(Complex thing) {
+	public void check(Complex thing, boolean fix) {
 		Set<PhysicalEntity> ents = thing.getComponent();
 		if (ents != null) {
 			Collection<String> diffLocs = new HashSet<String>();
@@ -48,9 +48,4 @@ public class ComplexComponentsMultipleLocationRule extends
 	public boolean canCheck(Object thing) {
 		return thing instanceof Complex;
 	}
-
-	@Override
-	public void fix(Complex t, Object... values) {
-	}
-
 }

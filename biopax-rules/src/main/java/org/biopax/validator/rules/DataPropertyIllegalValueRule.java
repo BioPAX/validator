@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
  *
  * @author rodche
  *
- * TODO re-write using EditorMap and no reflection directly.
- *
  */
 @Component
 public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
@@ -56,7 +54,7 @@ public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
 			&& !((Model)thing).getObjects().isEmpty();
 	}
 
-	public void check(Model model) {
+	public void check(Model model, final boolean fix) {
 		EditorMap editorMap = 
 			(model.getLevel() == BioPAXLevel.L3)
 				? editorMap3 : editorMap2;
@@ -67,7 +65,11 @@ public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
 					Model model, PropertyEditor editor) {
 				if (value != null && !(value instanceof BioPAXElement)) {
 					if (warnOnDataPropertyValues.contains(value.toString().trim().toUpperCase())) {
-						error(parent, "illegal.property.value", editor.getProperty(), value);
+						if(!fix) {
+							error(parent, "illegal.property.value", editor.getProperty(), value);
+						} else {
+							editor.removeValueFromBean(value, parent);
+						}
 					}
 				}
 			}

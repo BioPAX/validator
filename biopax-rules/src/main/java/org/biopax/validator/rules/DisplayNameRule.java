@@ -23,7 +23,7 @@ public class DisplayNameRule extends AbstractRule<Named> {
 		return (thing instanceof Named); 
 	}
     
-    public void check(Named named) {
+    public void check(Named named, boolean fix) {
     	String name = named.getDisplayName();
         if (name != null) {
         	Class<? extends BioPAXElement> cl = ((BioPAXElement)named).getModelInterface();
@@ -33,9 +33,5 @@ public class DisplayNameRule extends AbstractRule<Named> {
 				error(named, "too.long.name", name, name.length(), max);
         }
     }
-
-	@Override
-	public void fix(Named t, Object... values) {
-	}
 
 }

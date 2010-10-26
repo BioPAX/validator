@@ -21,7 +21,7 @@ public class XrefSynonymDbRule extends AbstractRule<Xref>{
 		return (thing instanceof Xref);
 	}
 	
-    public void check(Xref x) {
+    public void check(Xref x, boolean fix) {
         String db = x.getDb();
         if (db == null) {
         	// another rule will report this 
@@ -30,14 +30,13 @@ public class XrefSynonymDbRule extends AbstractRule<Xref>{
 
         String primary = xrefHelper.getPrimaryDbName(db);
 		if (primary != null && !primary.equals(xrefHelper.dbName(db))) {
-			error(x, "db.name.spelling", db, primary);
-			fix(x, primary);
+			if(fix) {
+				// TODO may be report the fact that it has been fixed?.. (requires much re-factoring...)
+				x.setDb((String) primary);
+			} else {
+				error(x, "db.name.spelling", db, primary);
+			}
 		}
 			
     }
-
-	@Override
-	public void fix(Xref t, Object... values) {
-		t.setDb((String) values[0]);
-	}
 }

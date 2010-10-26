@@ -21,8 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRule<BiochemicalPathwayStep> {
 
-	@Override
-	public void fix(BiochemicalPathwayStep t, Object... values) {
+	private void fix(BiochemicalPathwayStep t, Object... values) {
 		
 		if(values[0] instanceof Catalysis) {
 			((Catalysis)values[0]).setCatalysisDirection((CatalysisDirectionType) values[1]);
@@ -36,30 +35,37 @@ public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRul
 		return thing instanceof BiochemicalPathwayStep;
 	}
 
-	public void check(BiochemicalPathwayStep step) {
+	public void check(BiochemicalPathwayStep step, boolean fix) {
 		if(step != null && step.getStepDirection() != null) 
 		{
 			for(Process proc : step.getStepProcess() ) {
-				if(proc instanceof Catalysis) {
+				if(proc instanceof Catalysis) 
+				{
 					CatalysisDirectionType cdir = ((Catalysis) proc).getCatalysisDirection();
 					if(cdir != null && cdir != CatalysisDirectionType.LEFT_TO_RIGHT) {
-						error(step, "direction.conflict", 
+						if(!fix) {
+							error(step, "direction.conflict", 
 								"stepDirection=" + step.getStepDirection(), 
 								proc, "catalysisDirection=" + cdir 
 								+ ", must be LEFT_TO_RIGHT");
-						fix(step, proc, null);
+						} else {
+							fix(step, proc, null);
+						}
 					}
 				}
 			}
 			
 			Conversion con = step.getStepConversion();
-			if( con != null && con.getConversionDirection() 
-					!= ConversionDirectionType.REVERSIBLE) {
-				error(step, "direction.conflict", 
+			if( con != null && con.getConversionDirection() != ConversionDirectionType.REVERSIBLE) 
+			{
+				if(!fix) {
+					error(step, "direction.conflict", 
 						"stepDirection=" + step.getStepDirection(), 
 						con, "conversionDirection=" 
 						+ con.getConversionDirection() + ", must be REVERSIBLE");
-				fix(step, con, ConversionDirectionType.REVERSIBLE);
+				} else {
+					fix(step, con, ConversionDirectionType.REVERSIBLE);
+				}
 			}
 		}
 		

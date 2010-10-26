@@ -20,7 +20,7 @@ import java.util.Set;
 public class EntityReferenceSamePhysicalEntitiesRule extends
 		AbstractRule<EntityReference> {
 
-	public void check(EntityReference eref) {
+	public void check(EntityReference eref, boolean fix) {
 		Set<SimplePhysicalEntity> simplePhysEnts = eref.getEntityReferenceOf();
 		for (SimplePhysicalEntity e1 : simplePhysEnts) {
 			for (SimplePhysicalEntity e2 : simplePhysEnts) {
@@ -41,7 +41,4 @@ public class EntityReferenceSamePhysicalEntitiesRule extends
 		return thing instanceof EntityReference;
 	}
 
-	@Override
-	public void fix(EntityReference t, Object... values) {	
-	}
 }

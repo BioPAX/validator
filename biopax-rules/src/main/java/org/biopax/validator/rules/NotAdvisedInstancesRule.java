@@ -40,11 +40,8 @@ public class NotAdvisedInstancesRule extends AbstractRule<BioPAXElement> {
 		return notAllowed(thing);
 	}
 
-	public void check(BioPAXElement thing) {
+	public void check(BioPAXElement thing, boolean fix) {
 		error(thing, "not.specific.element", thing.getModelInterface().getSimpleName());
 	}
 
-	@Override
-	public void fix(BioPAXElement t, Object... values) {	
-	}
 }

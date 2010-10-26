@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 	
-	public void check(Model model) {
+	public void check(Model model, boolean fix) {
 		UtilityClass[] peers = 
 				model.getObjects(UtilityClass.class).toArray(new UtilityClass[]{});
 		

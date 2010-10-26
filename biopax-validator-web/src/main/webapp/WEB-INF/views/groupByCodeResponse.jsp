@@ -36,15 +36,23 @@
 	<c:forEach var="comment" items="${result.comment}">
 		<li>${comment}</li>
 	</c:forEach>
+	<li>auto-fix: ${result.fix}</li>
+	<li>normalize: ${result.normalize}</li>
+	<c:if test="${result.fix || result.normalize}">
+	  	<li><a href="javascript:switchit('result${rstatus.index}owl')">Generated OWL:</a></li>
+		<ul id="result${rstatus.index}owl" style="display: none">
+			<li><div>${result.fixedOwl}</div></li>
+		</ul>
+	</c:if>
 	<ul id="result${rstatus.index}" style="display: none">
-	<c:forEach var="errorType" items="${result.error}" varStatus="estatus">
+	  <c:forEach var="errorType" items="${result.error}" varStatus="estatus">
 		<li><a href="javascript:switchit('result${rstatus.index}type${estatus.index}')">${errorType.type}</a>&nbsp;(<em>${errorType.code}</em>):&nbsp;${errorType.message}</li>
 		<ul id="result${rstatus.index}type${estatus.index}" style="display: none">
 		<c:forEach var="errorCase" items="${errorType.errorCase}">
 			<li><b>${errorCase.object}</b>&nbsp;(rule: ${errorCase.reportedBy}):<div>${errorCase.message}</div></li>
 		</c:forEach>
 		</ul>
-	</c:forEach>
+	  </c:forEach>
 	</ul>
 	<br/>
 </c:forEach>

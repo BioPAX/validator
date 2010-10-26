@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class SameNameDiffKindPhysEntitiesRule extends
 		AbstractRule<Model> {
 
-	public void check(Model model) {
+	public void check(Model model, boolean fix) {
 			Set<SimplePhysicalEntity> peers = new HashSet<SimplePhysicalEntity>(
 				model.getObjects(SimplePhysicalEntity.class));
 			

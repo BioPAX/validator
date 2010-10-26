@@ -133,12 +133,12 @@ public class IntegrationTest {
  	   //XrefRule is trying to match 'GO:0005737'
  	   xref.setDb("GO");
  	   xref.setId("GO:0005737");
-	   r.check(xref);
+	   r.check(xref, false);
 
  	   // XrefRule is trying to match 'XP_001075834'
  	   xref.setDb("RefSeq");
  	   xref.setId("XP_001075834");
-	   r.check(xref);
+	   r.check(xref, false);
     }
     
     /*
@@ -157,14 +157,14 @@ public class IntegrationTest {
         v.addTerm("Phosphorylation");
         v.addComment("Ok term: upper or lower case letters do not matter.");
         v.setRDFId("okCVTerm");
-        rule.check(v);
+        rule.check(v, false);
     	
     	// what a surprise, the following used to fail (before it's been fixed)
         SimpleReader r = new SimpleReader(BioPAXLevel.L3);
         r.mergeDuplicates(true);
     	Model m = r.convertFromOWL(getClass().getResourceAsStream("InteractionVocabulary-Phosphorylation.xml"));
     	InteractionVocabulary vv = (InteractionVocabulary) m.getByID("Interaction_Phosphorylation");
-        rule.check(vv);
+        rule.check(vv, false);
     }
     
     
@@ -178,7 +178,7 @@ public class IntegrationTest {
         lcv.setRDFId("badTerm");    
         assertTrue(instance.canCheck(lcv));
         try {
-        	instance.check(lcv);
+        	instance.check(lcv, false);
         	fail("Expected BiopaxValidatorException!");
         } catch (BiopaxValidatorException e) {
 		}
@@ -191,7 +191,7 @@ public class IntegrationTest {
         instance.setBehavior(Behavior.ERROR);     
         CellularLocationVocabulary cl = factory3.createCellularLocationVocabulary();
         cl.addTerm("cytoplasm");
-        instance.check(cl);
+        instance.check(cl, false);
     }
 
 
@@ -202,7 +202,7 @@ public class IntegrationTest {
         UnificationXref x = factory3.createUnificationXref();
         x.setDb("ILLEGAL DB NAME");
         try {
-        	instance.check(x);
+        	instance.check(x, false);
         	fail("Must throw BiopaxValidatorException!");
         } catch (BiopaxValidatorException e) {
 			//ok
@@ -218,7 +218,7 @@ public class IntegrationTest {
         x.setDb("reactome");
         x.setId("0000000");
         try {
-        	instance.check(x);
+        	instance.check(x, false);
         	fail("Must throw BiopaxValidatorException!");
         } catch (BiopaxValidatorException e) {
 			//ok
@@ -235,7 +235,7 @@ public class IntegrationTest {
         UnificationXref x = factory3.createUnificationXref();
         x.setDb("EntrezGene");
         x.setId("0000000");
-        instance.check(x);
+        instance.check(x, false);
     }
     
    
@@ -251,21 +251,21 @@ public class IntegrationTest {
         iv.addComment("Preferred term");
         iv.setRDFId("preferredCVTerm");
         m.add(iv);
-        instance.check(iv);
+        instance.check(iv, false);
         
         iv = factory3.createInteractionVocabulary();
         iv.addTerm("phosphorylation");
         iv.addComment("Valid term");
         iv.setRDFId("synonymCVTerm");
         m.add(iv);
-        instance.check(iv);
+        instance.check(iv, false);
         
         iv = factory3.createInteractionVocabulary();
         iv.addTerm("Phosphorylation");
         iv.addComment("Ok term: upper or lower case letters do not matter.");
         iv.setRDFId("okCVTerm");
         m.add(iv);
-        instance.check(iv);
+        instance.check(iv, false);
         
         iv = factory3.createInteractionVocabulary();
         iv.addTerm("phosphorylated");
@@ -273,7 +273,7 @@ public class IntegrationTest {
         iv.setRDFId("invalidCVTerm");
         m.add(iv);
         try {
-        	instance.check(iv);
+        	instance.check(iv, false);
         	fail("Must be a BiopaxValidatorException!");
         } catch (BiopaxValidatorException e) {
 		}

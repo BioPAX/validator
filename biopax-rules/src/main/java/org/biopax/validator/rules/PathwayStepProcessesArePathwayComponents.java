@@ -29,7 +29,7 @@ public class PathwayStepProcessesArePathwayComponents extends AbstractRule<Pathw
 		 && ((PathwayStep)thing).getPathwayOrderOf() != null;
 	}
 
-	public void check(PathwayStep step) {
+	public void check(PathwayStep step, boolean fix) {
 		Pathway pathway = step.getPathwayOrderOf();
 		/* can be null, e.g., when the check is called 
 		 * during a new PathwayStep is added to the model 
@@ -43,10 +43,6 @@ public class PathwayStepProcessesArePathwayComponents extends AbstractRule<Pathw
 				}
 			}
 		}
-	}
-
-	@Override
-	public void fix(PathwayStep t, Object... values) {	
 	}
 		
 }

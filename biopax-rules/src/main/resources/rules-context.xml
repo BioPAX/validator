@@ -60,6 +60,7 @@
 			<value>ENTREZ GENE/LOCUSLINK</value>
 		</list>
 		<list>
+			<value>PUBCHEM-COMPOUND</value>
 			<value>NCBI PUBCHEM</value>
 			<value>PUBCHEM COMPOUND</value>
 			<value>PUBCHEM</value>
@@ -119,8 +120,11 @@
 			<value>TAXON</value>
 		</list>
 		<list>
+			<value>NUCLEOTIDE SEQUENCE DATABASE</value>
 			<value>NCBI GENBANK</value>
 			<value>GENBANK</value>
+			<value>DDBJ</value>
+			<value>EMBL-BANK</value>
 		</list>
 		<list>
 			<value>NCBI GI</value>
@@ -180,6 +184,11 @@
 		</list>
 		<list>
 			<value>UNIGENE</value>
+		</list>
+		<list>
+			<value>EVIDENCE CODE ONTOLOGY</value>
+			<value>ECO</value>
+			<value>EVIDENCE CODE</value>
 		</list>
 	</util:set>
 

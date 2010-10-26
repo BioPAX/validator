@@ -39,7 +39,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
     };
     
     
-	public void check(T thing) {
+	public void check(T thing, boolean fix) {
 		// a set of CVs for this rule to validate
 		Collection<ControlledVocabulary> vocabularies = new HashSet<ControlledVocabulary>();
 		// if the editor is null, we expect a ControlledVocabulary object!

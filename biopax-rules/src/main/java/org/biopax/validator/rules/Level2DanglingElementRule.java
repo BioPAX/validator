@@ -31,7 +31,7 @@ public class Level2DanglingElementRule extends AbstractRule<Model> {
 			&& ((Model)thing).getLevel() == BioPAXLevel.L2;
 	}
 
-	public void check(Model model) {
+	public void check(Model model, boolean fix) {
 		
 		// get all the root elements
 		final Collection<BioPAXElement> rootElements = 

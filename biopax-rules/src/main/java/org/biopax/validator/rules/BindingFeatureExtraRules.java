@@ -26,7 +26,7 @@ public class BindingFeatureExtraRules extends AbstractRule<Model> {
 			&& ((Model)thing).getLevel() == BioPAXLevel.L3;
 	}
 
-	public void check(Model model) {
+	public void check(Model model, boolean fix) {
 		Set<BindingFeature> bfs = new HashSet<BindingFeature>(
 				model.getObjects(BindingFeature.class));
 

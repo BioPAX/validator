@@ -25,21 +25,21 @@ public class BioSourceTaxonXrefRule extends AbstractRule<BioSource> {
 		return thing instanceof BioSource;
 	}  
     
-	public void check(BioSource bioSource) {
+	public void check(BioSource bioSource, boolean fix) {
 		for (Xref x : bioSource.getXref()) {
 			if (x instanceof UnificationXref) {
 				String db = x.getDb();
 				if (db != null) {
 					if (!xrefHelper.isSynonyms(db, "taxonomy")) {
-						error(bioSource, "not.taxon.db", db);
+						if(!fix) {
+							error(bioSource, "not.taxon.db", db);
+						} else {
+							x.setDb("Taxonomy");
+						}
 					}
 				}
 			}
 		}
-	}
-
-	@Override
-	public void fix(BioSource t, Object... values) {
 	}
 
 }

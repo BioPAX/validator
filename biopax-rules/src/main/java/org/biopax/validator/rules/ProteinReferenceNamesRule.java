@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProteinReferenceNamesRule extends AbstractRule<ProteinReference> {
 
-    public void check(ProteinReference pref) {
+    public void check(ProteinReference pref, boolean fix) {
 
 		if (pref.getName() == null && pref.getStandardName() == null 
 				&& pref.getDisplayName() == null) {
@@ -26,10 +26,6 @@ public class ProteinReferenceNamesRule extends AbstractRule<ProteinReference> {
 
 	public boolean canCheck(Object thing) {
 		return thing instanceof ProteinReference;
-	}
-
-	@Override
-	public void fix(ProteinReference t, Object... values) {	
 	}
 
 }

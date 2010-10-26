@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EntityReferenceXrefRule extends AbstractRule<EntityReference> {
 
-   public void check(EntityReference er) {
+   public void check(EntityReference er, boolean fix) {
         if (er.getXref() == null || (er.getXref()).isEmpty()) {
             error(null, "no.xrefs");
         } else {
@@ -37,10 +37,6 @@ public class EntityReferenceXrefRule extends AbstractRule<EntityReference> {
 
 	public boolean canCheck(Object thing) {
 		return thing instanceof EntityReference;
-	}
-
-	@Override
-	public void fix(EntityReference t, Object... values) {
 	}
 
 }

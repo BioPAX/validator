@@ -12,7 +12,7 @@ public class BiopaxElementIdRule extends AbstractRule<BioPAXElement> {
 		return thing instanceof BioPAXElement;
 	}
 
-	public void check(BioPAXElement thing) {
+	public void check(BioPAXElement thing, boolean fix) {
 		String rdfid = thing.getRDFId();
 		if(rdfid != null) {
 			try {

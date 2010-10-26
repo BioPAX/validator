@@ -17,15 +17,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class CatalysisAndStepDirectionRule extends AbstractRule<Catalysis> {
 
-	@Override
-	public void fix(Catalysis t, Object... values) {	
-	}
-
 	public boolean canCheck(Object thing) {
 		return thing instanceof Catalysis;
 	}
 
-	public void check(Catalysis thing) {
+	public void check(Catalysis thing, boolean fix) {
 		if(thing != null && 
 				thing.getCatalysisDirection() == CatalysisDirectionType.LEFT_TO_RIGHT) 
 		{

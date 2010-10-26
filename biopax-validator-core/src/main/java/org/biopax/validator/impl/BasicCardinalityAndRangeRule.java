@@ -47,7 +47,7 @@ public abstract class BasicCardinalityAndRangeRule<E extends BioPAXElement>
 		return domain.isInstance(thing);
 	}
 	
-	public void check(E thing) {
+	public void check(E thing, boolean fix) {
 		try {
 			Class<? extends BioPAXElement> face 
 				= ((BioPAXElement)thing).getModelInterface();

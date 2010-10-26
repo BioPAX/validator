@@ -19,23 +19,30 @@
   <div id="content">
     <div id="left">
 
-
-<h1>Specify a BioPAX resource* URL</h1>
+<h2>Check BioPAX (from URL)<b>*</b></h2>
+Enter a BioPAX OWL location using prefix: file://, http://, or ftp://
 <form method="post">
     <div class="form-row">
-        <input class="input" type="text" name="url"/>
+        <input class="input" type="text" name="url" size="100%"/>
     </div>       
     <div class="form-row">
 		<br/>
 		<input type="radio" name="retDesired" value="html" checked="checked"/>
-		<label>get HTML</label>
+		<label>get HTML (can be also read off-line)</label>
 		<br/>
 		<input type="radio" name="retDesired" value="xml"/>
-		<label>get XML</label>
+		<label>get XML (one can parse or <em>unmarshal</em> to objects)</label>
+		<p><b>New!</b> (experimental features) Note: it returns a modified BioPAX OWL that's not intended to be read by men :)</p>
+		<input type="checkbox" name="autofix" value="true"/>
+		<label>Enable auto-fix</label>
+		<br/>
+		<input type="checkbox" name="normalize" value="true"/>
+		<label>Normalize</label>
 		<br/>
 	</div>
+	<br/>
 	<div class="form-buttons">
-        <div class="button"><input name="submit" type="submit" value="Validate" /></div>
+        <div class="button"><input name="submit" type="submit" value="Submit" /></div>
 	</div>   
 </form>
 	

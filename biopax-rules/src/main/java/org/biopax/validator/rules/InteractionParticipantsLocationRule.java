@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class InteractionParticipantsLocationRule extends
 		AbstractRule<Interaction> {
 
-	public void check(Interaction thing) {
+	public void check(Interaction thing, boolean fix) {
 		Set<Entity> ents = thing.getParticipant();
 		if(ents != null) {
 		for (Entity e1 : ents) {
@@ -54,10 +54,6 @@ public class InteractionParticipantsLocationRule extends
 
 	public boolean canCheck(Object thing) {
 		return thing instanceof Interaction;
-	}
-
-	@Override
-	public void fix(Interaction t, Object... values) {		
 	}
 
 }

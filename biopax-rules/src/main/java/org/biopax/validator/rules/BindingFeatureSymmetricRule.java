@@ -13,25 +13,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class BindingFeatureSymmetricRule extends AbstractRule<BindingFeature> {
 
-	@Override
-	public void fix(BindingFeature t, Object... values) {	
-	}
-
-
 	public boolean canCheck(Object thing) {
-		// TODO Auto-generated method stub
-		return false;
+		return thing instanceof BindingFeature
+			&& ((BindingFeature)thing).getBindsTo() != null;
 	}
 
-	public void check(BindingFeature thing) {
+	public void check(BindingFeature thing, boolean fix) {
 		BindingFeature to = thing.getBindsTo();
-		if(to != null && 
-			(to.getBindsTo() == null || !to.getBindsTo().equals(thing)) ) 
-		{
-			error(thing, "symmetric.violated", "bindsTo", thing.getBindsTo());
+		if (to != null) {
+			if (to.getBindsTo() == null || !thing.equals(to.getBindsTo())) {
+				if(!fix) {
+					error(thing, "symmetric.violated", "bindsTo", thing
+						.getBindsTo());
+				} else {
+					to.setBindsTo(thing);
+				}
+			}
 		}
-		
 	}
-	
 	
 }

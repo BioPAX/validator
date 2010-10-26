@@ -21,15 +21,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ComplexTwoOrMoreParticipantsRule extends AbstractRule<Complex> {
 
-	@Override
-	public void fix(Complex t, Object... values) {
-	}
-
 	public boolean canCheck(Object thing) {
 		return thing instanceof Complex;
 	}
 
-	public void check(Complex thing) {
+	public void check(Complex thing, boolean fix) {
 		
 		Set<PhysicalEntity> components = thing.getComponent();	
 		

@@ -32,7 +32,7 @@ public class NextStepShareParticipantsRule extends AbstractRule<PathwayStep>
 			&& !((PathwayStep) thing).getNextStepOf().isEmpty();
 	}
 
-	public void check(PathwayStep step) {
+	public void check(PathwayStep step, boolean fix) {
 		if(step.getNextStepOf().isEmpty())
 			return;
 		
@@ -93,7 +93,7 @@ public class NextStepShareParticipantsRule extends AbstractRule<PathwayStep>
 	}
 	
 	
-	public void fix(PathwayStep t, Object... values) {
+	private void fix(PathwayStep t, Object... values) {
 		// is very difficult ;)
 	}
 

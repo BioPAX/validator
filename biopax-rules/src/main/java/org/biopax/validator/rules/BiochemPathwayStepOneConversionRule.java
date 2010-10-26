@@ -21,7 +21,7 @@ public class BiochemPathwayStepOneConversionRule extends AbstractRule<Biochemica
 		return thing instanceof BiochemicalPathwayStep;
 	}
 
-	public void check(BiochemicalPathwayStep step) {
+	public void check(BiochemicalPathwayStep step, boolean fix) {
 		if (step.getStepProcess() != null) {
 			for (Process process : step.getStepProcess()) {
 				if (process instanceof Conversion) {
@@ -29,11 +29,5 @@ public class BiochemPathwayStepOneConversionRule extends AbstractRule<Biochemica
 				}
 			}
 		}
-	}
-
-	@Override
-	public void fix(BiochemicalPathwayStep t, Object... values) {
-		// TODO Auto-generated method stub
-		
 	}	
 }

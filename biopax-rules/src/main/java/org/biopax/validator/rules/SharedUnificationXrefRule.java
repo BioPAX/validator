@@ -21,15 +21,11 @@ public class SharedUnificationXrefRule extends AbstractRule<UnificationXref> {
 		return thing instanceof UnificationXref;
 	}
     
-	public void check(UnificationXref x) {
+	public void check(UnificationXref x, boolean fix) {
         if(x.getXrefOf().size()>1) {
         	error(x, "shared.unification.xref", 
         		BiopaxValidatorUtils.getIdListAsString(x.getXrefOf()));
         }
     }
 
-	@Override
-	public void fix(UnificationXref t, Object... values) {
-		
-	}
 }

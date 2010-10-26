@@ -32,7 +32,7 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
 	@Resource
 	SimpleEditorMap editorMap3;
 	
-    public void check(SimplePhysicalEntity protein)
+    public void check(SimplePhysicalEntity protein, boolean fix)
     {
        Set<Conversion> conversions = new HashSet<Conversion>(
 			new ClassFilterSet<Conversion>(protein.getParticipantOf(), Conversion.class));
@@ -86,7 +86,4 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
          && !(thing instanceof SmallMolecule);
     }
 
-    @Override
-    public void fix(SimplePhysicalEntity t, Object... values) {	
-	}
 }

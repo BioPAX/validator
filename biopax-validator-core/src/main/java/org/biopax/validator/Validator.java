@@ -7,7 +7,6 @@ import java.util.Set;
 import org.biopax.paxtools.model.Model;
 import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.result.Validation;
-import org.biopax.validator.utils.BiopaxValidatorException;
 
 /**
  * BioPAX Validator interface

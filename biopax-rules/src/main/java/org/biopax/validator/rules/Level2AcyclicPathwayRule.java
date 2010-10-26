@@ -27,16 +27,12 @@ public class Level2AcyclicPathwayRule extends AbstractRule<pathway> {
 			return !"NEXT-STEP".equals(editor.getProperty());
 		}
 	};
-	
-	@Override
-	public void fix(pathway t, Object... values) {
-	}
 
 	public boolean canCheck(Object thing) {
 		return thing instanceof pathway;
 	}
 
-	public void check(final pathway thing) {
+	public void check(final pathway thing, boolean fix) {
 		AbstractTraverser checker = new AbstractTraverser(editorMap2, filter)
 	{
 			@Override

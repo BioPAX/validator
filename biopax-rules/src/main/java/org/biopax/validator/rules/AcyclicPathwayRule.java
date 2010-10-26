@@ -32,7 +32,7 @@ public class AcyclicPathwayRule extends AbstractRule<Pathway> {
 		return thing instanceof Pathway;
 	}
 
-	public void check(final Pathway thing) {
+	public void check(final Pathway thing, boolean fix) {
 		AbstractTraverser checker = new AbstractTraverser(editorMap3, filter)
 		{
 			@Override

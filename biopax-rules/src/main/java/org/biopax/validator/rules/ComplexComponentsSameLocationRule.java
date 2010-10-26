@@ -21,16 +21,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ComplexComponentsSameLocationRule extends AbstractRule<Complex> {
-	
-	@Override
-	public void fix(Complex t, Object... values) {
-	}
 
 	public boolean canCheck(Object thing) {
 		return thing instanceof Complex;
 	}
 
-	public void check(Complex thing) {
+	public void check(Complex thing, boolean fix) {
 		if(thing.getCellularLocation() != null) {
 			Set<PhysicalEntity> ents = thing.getComponent();
 			if (ents != null) {

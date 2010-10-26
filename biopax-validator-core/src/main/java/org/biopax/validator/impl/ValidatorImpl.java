@@ -23,6 +23,7 @@ import org.biopax.validator.Rule;
 import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.result.Validation;
 import org.biopax.validator.utils.BiopaxValidatorException;
+import org.biopax.validator.utils.Normalizer;
 import org.biopax.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -87,11 +88,11 @@ public class ValidatorImpl implements Validator {
 					if(log.isDebugEnabled())
 						log.debug("Current rule is: " + rule.getName());
 					if (rule.canCheck(model)) {
-						rule.check(model);
+						rule.check(model, false);
 					} else {
 						for (BioPAXElement el : model.getObjects()) {
 							if (rule.canCheck(el)) {
-								rule.check(el);
+								rule.check(el, validation.isFix());
 							}
 						}
 					}
@@ -101,9 +102,8 @@ public class ValidatorImpl implements Validator {
 				log.warn("Model is null (" + validation + ")");
 			}
 			
-			// add comments and stats
-			// TODO (rare) how to report when a validation has multiple models?..
-			if (model != null) {
+			if (model != null) {	
+				// add comments and some statistics
 				if (model.getLevel() == BioPAXLevel.L3) {
 					validation.addComment("number of interactions : "
 							+ model.getObjects(Interaction.class).size());
@@ -123,16 +123,32 @@ public class ValidatorImpl implements Validator {
 							+ model.getObjects(pathway.class).size());
 				}
 				
-				// TODO (rare) how to return fixed OWL when the validation has multiple models?..
-				if(validation.isFix()) {
-					SimpleExporter exporter = new SimpleExporter(model.getLevel());
-					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				
+				/* TODO think how to better return the fixed OWL when the validation has multiple models...
+				 * For now, it will simply append - 
+				 * <?xml?><rdf:RDF>..</rdf:RDF>
+				 * <?xml?><rdf:RDF>..</rdf:RDF> 
+				 * <?xml?> etc...
+				*/ 
+				if(validation.isFix() || validation.isNormalize()) {
 					try {
-						exporter.convertToOWL(model, outputStream);
+						String owlModel = null;
+						// normalize?
+						if(validation.isNormalize()) {
+							Normalizer normalizer = new Normalizer();
+							owlModel = normalizer.normalize(model);
+						} else {
+							// export the model to OWL
+							SimpleExporter exporter = new SimpleExporter(model.getLevel());
+							ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+							exporter.convertToOWL(model, outputStream);
+							owlModel = outputStream.toString("UTF-8");
+						}
+						// append to previous owl data (of other models, if any, for the same validation obj.)
 						String owl = validation.getFixedOwl();
 						if(owl == null) 
 							owl = "";
-						owl += outputStream.toString("UTF-8");
+						owl +=  owlModel + System.getProperty("line.separator");
 						validation.setFixedOwl(owl);
 					} catch (IOException e) {
 						throw new BiopaxValidatorException(

@@ -30,9 +30,10 @@ public class BehaviorAspect extends AbstractAspect {
     @Autowired
     private BiopaxValidatorUtils utils;
     
-    @Around("execution(public void org.biopax.validator.Rule*+.check(*)) && args(thing)")
-    public void checkBehavior(ProceedingJoinPoint jp, Object thing) throws Throwable {
-    	
+    @Around("execution(public void org.biopax.validator.Rule*+.check(..)) && args(thing, fix)")
+    public void checkBehavior(ProceedingJoinPoint jp, Object thing, boolean fix) 
+    	throws Throwable 
+    {	
     	if(thing==null) return;
     	
     	Rule<?> r = (Rule<?>) jp.getTarget();
@@ -48,20 +49,6 @@ public class BehaviorAspect extends AbstractAspect {
                 logger.trace("skipped");
             }
         }
-    }
-
-    // TODO re-factoring: get object from args; find the corresponding Validation instance; check isFixIt...
-    @Around("execution(public void org.biopax.validator.Rule*+.fix(..))")
-    public void checkFixBehavior(ProceedingJoinPoint jp) throws Throwable {
-    	Rule<?> r = (Rule<?>) jp.getTarget();
-        /* temporary - ignore all fix(..) calls
-    	if (Behavior.FIXIT.equals(r.getBehavior())) {
-        	if (logger.isTraceEnabled()) {
-                logger.trace(r.getName() + " is fixing something");
-            }
-           	jp.proceed();
-        }
-        */
     }
     
 }

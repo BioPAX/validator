@@ -22,7 +22,7 @@ public class XrefRule extends AbstractRule<Xref>{
 		return (thing instanceof Xref);
 	}
 	
-    public void check(Xref x) {
+    public void check(Xref x, boolean fix) {
         String db = x.getDb();
 		if (db != null) { 
 			// check db is valid
@@ -30,6 +30,10 @@ public class XrefRule extends AbstractRule<Xref>{
 			if (preferedDbName == null) {
 				error(x, "unknown.db", db);
 				return;
+			} 
+			else if(!db.equalsIgnoreCase(preferedDbName)
+				&& fix == true) {
+				x.setDb(preferedDbName);
 			}
 
 			String id = x.getId();
@@ -40,14 +44,35 @@ public class XrefRule extends AbstractRule<Xref>{
 								+ db + " (" + preferedDbName + ")");
 					}
 				} else if (!xrefHelper.checkIdFormat(preferedDbName, id)) {
-					error(x, "invalid.id.format", db, id, 
+					if(!fix) {
+						error(x, "invalid.id.format", db, id, 
 							xrefHelper.getRegexpString(preferedDbName));
+					} else {
+						// guess, it's like id_ver or id-ver
+						int i = id.lastIndexOf('-');
+						if(i<0) 
+							i = id.lastIndexOf('_');
+						if(i<0) 
+							i = id.lastIndexOf('.');
+						if(i > 0 && i < id.length()) {
+							x.setId(id.substring(0, i));
+							x.setIdVersion(id.substring(i+1));
+							if (logger.isDebugEnabled())
+								logger.debug(
+									"auto-fix: split id and idVersion for xref: " 
+									+ x + " " +  x.getRDFId());
+						}
+						
+						// several quick fixes
+						if(db.equalsIgnoreCase("CHEBI") 
+							&& !id.toUpperCase().startsWith("CHEBI")) {
+							x.setId("CHEBI:" + id);
+						}
+						
+					}
 				}
 			} 
 		} 
     }
 
-	@Override
-	public void fix(Xref t, Object... values) {
-	}
 }

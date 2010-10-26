@@ -26,7 +26,7 @@ public class DanglingPropertyValueRule extends AbstractRule<Model> {
 			&& ((Model)thing).getLevel() == BioPAXLevel.L3;
 	}
 
-	public void check(Model model) {
+	public void check(Model model, boolean fix) {
 		AbstractTraverser traverser = new AbstractTraverser(editorMap3) {
 			@Override
 			protected void visit(Object value, BioPAXElement parent, Model model,

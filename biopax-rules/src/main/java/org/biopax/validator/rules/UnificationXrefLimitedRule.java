@@ -51,7 +51,7 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
 		return thing instanceof UnificationXref;
 	}
     
-	public void check(UnificationXref x) {
+	public void check(UnificationXref x, boolean fix) {
 		
 		if (x.getDb() == null || helper.getPrimaryDbName(x.getDb())==null) {
 			// this rule does not care about invalid databases (names)
@@ -94,7 +94,4 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
 		return false;
 	}
 
-	@Override
-	public void fix(UnificationXref t, Object... values) {
-	}
 }

@@ -36,7 +36,7 @@ public class PathwayMultiOrganismRule extends AbstractRule<Pathway> {
 		}
 	};
 	
-    public void check(final Pathway pathway) {
+    public void check(final Pathway pathway, boolean fix) {
     	final Collection<BioPAXElement> organisms = new HashSet<BioPAXElement>();
     	final BioSource organism = pathway.getOrganism(); // not null - due to the canCheck method!
     	//but..
@@ -74,7 +74,4 @@ public class PathwayMultiOrganismRule extends AbstractRule<Pathway> {
         	&& ((Pathway)thing).getOrganism() != null;
     }
 
-    @Override
-    public void fix(Pathway t, Object... values) {
-	}
 }

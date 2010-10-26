@@ -18,8 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ControlTypeRule extends AbstractRule<Control> {
 
-	@Override
-	public void fix(Control t, Object... values) {
+	private void fix(Control t, Object... values) {
 		if(t instanceof Catalysis) {
 			((Catalysis)t).setControlType(ControlType.ACTIVATION);
 		} else if (t instanceof TemplateReactionRegulation){
@@ -43,27 +42,35 @@ public class ControlTypeRule extends AbstractRule<Control> {
 		return thing instanceof Control;
 	}
 
-	public void check(Control thing) {
+	public void check(Control thing, boolean fix) {
 		if(thing.getControlType() != null) 
 		{			
 			if(thing instanceof Catalysis) {
 				Catalysis cat = (Catalysis) thing;
 				if(cat.getControlType() != ControlType.ACTIVATION) {
-					error(thing, "range.violated", "controlType", 
+					if(!fix) {
+						error(thing, "range.violated", "controlType", 
 							cat.getControlType().name(), "",
 							ControlType.ACTIVATION.name()
 							+ " (or empty)");
-					fix(thing);
+					} else {
+						fix(thing);
+					}
 				}
 			} else if(thing instanceof TemplateReactionRegulation) {
 				TemplateReactionRegulation trr = (TemplateReactionRegulation) thing;
 				if(! (trr.getControlType() == ControlType.ACTIVATION
-						|| trr.getControlType() == ControlType.INHIBITION) ) {
-					error(thing, "range.violated", "controlType", 
-						trr.getControlType().name(), "",
-						ControlType.ACTIVATION.name() + " or " + ControlType.INHIBITION.name()
-						+ " (or empty)");
-					fix(thing);
+						|| trr.getControlType() == ControlType.INHIBITION) ) 
+				{
+					if(!fix) {
+						error(thing, "range.violated", "controlType", 
+							trr.getControlType().name(), "",
+							ControlType.ACTIVATION.name() + " or " 
+							+ ControlType.INHIBITION.name()
+							+ " (or empty)");
+					} else {
+						fix(thing);
+					}
 				}
 			}
 		}

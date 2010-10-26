@@ -20,7 +20,7 @@ import java.util.Set;
 public class SameLeftRightRule extends AbstractRule<Conversion>
 {
 
-    public void check(Conversion conversion)
+    public void check(Conversion conversion, boolean fix)
     {
        Set<PhysicalEntity> left = conversion.getLeft();
        Set<PhysicalEntity> right = conversion.getRight();
@@ -41,7 +41,4 @@ public class SameLeftRightRule extends AbstractRule<Conversion>
         return thing instanceof Conversion;
     }
 
-    @Override
-    public void fix(Conversion t, Object... values) {		
-	}
 }

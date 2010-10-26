@@ -13,24 +13,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class DegradationConversionDirectionRule extends AbstractRule<Degradation> {
 
-	@Override
-	public void fix(Degradation t, Object... values) {
-		t.setConversionDirection(ConversionDirectionType.LEFT_TO_RIGHT);
-	}
-
 	public boolean canCheck(Object thing) {
 		return thing instanceof Degradation;
 	}
 
-	public void check(Degradation thing) {
+	public void check(Degradation thing, boolean fix) {
 		if(thing.getConversionDirection() != null 
 			&& thing.getConversionDirection() != ConversionDirectionType.LEFT_TO_RIGHT) 
 		{	
-			error(thing, "range.violated", "conversionDirection", 
-				thing.getConversionDirection().name(), "",
-				ConversionDirectionType.LEFT_TO_RIGHT.name()
-				+ " (or empty)");
-			fix(thing);
+			if(!fix) {
+				error(thing, "range.violated", "conversionDirection", 
+						thing.getConversionDirection().name(), "",
+					ConversionDirectionType.LEFT_TO_RIGHT.name()
+					+ " (or empty)");
+			} else {
+				thing.setConversionDirection(ConversionDirectionType.LEFT_TO_RIGHT);
+			}
 		}
 		
 	}

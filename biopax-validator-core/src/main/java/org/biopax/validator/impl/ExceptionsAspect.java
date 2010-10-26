@@ -71,10 +71,8 @@ public class ExceptionsAspect extends AbstractAspect {
     		if (log.isTraceEnabled()) log.trace("RDFId is not set yet; skipping.");
     		return;
     	}
-    	
-    	Behavior errOrWarn = (rule.getBehavior() == Behavior.WARNING) 
-    		? Behavior.WARNING : Behavior.ERROR;   	
-		report(thing, thingId, code, nameRule, errOrWarn, args);
+    		
+		report(thing, thingId, code, nameRule, rule.getBehavior(), args);
 
 		try {
 			jp.proceed(); // in fact, dummy

@@ -41,13 +41,6 @@ public abstract class AbstractRule<T> implements Rule<T> {
         logger = LogFactory.getLog(this.getClass()); // concrete class
         postModelOnly = true;
     }
-        
-
-    /**
-     * TODO override, if required, in subclasses
-     */
-    public void fix(T t, Object... values) {
-    }
            
     /**
      * Rule setup.

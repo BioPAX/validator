@@ -24,7 +24,7 @@ import java.util.Set;
 public class BiochemReactParticipantsLocationRule extends AbstractRule<BiochemicalReaction>
 {
 
-    public void check(BiochemicalReaction react)
+    public void check(BiochemicalReaction react, boolean fix)
     {
        Set<PhysicalEntity> left = react.getLeft();
        Set<PhysicalEntity> right = react.getRight();
@@ -63,10 +63,4 @@ public class BiochemReactParticipantsLocationRule extends AbstractRule<Biochemic
     public boolean canCheck(Object thing) {
         return thing instanceof BiochemicalReaction;
     }
-
-    @Override
-    public void fix(BiochemicalReaction t, Object... values) {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -6,6 +6,7 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.validator.Validator;
@@ -50,21 +51,42 @@ public class ValidatorController {
     @RequestMapping(value="/checkUrl", method=RequestMethod.POST)
     public String checkUrl(@RequestParam String url, 
     		@RequestParam(required=false) String retDesired,
-    		Model model) throws IOException  {
+    		@RequestParam(required=false) Boolean autofix,
+    		@RequestParam(required=false) Boolean normalize,
+    		Model model, Writer writer) throws IOException  
+    {
     	if(log.isInfoEnabled()) log.info("checkUrl : " + url);
     	ValidatorResponse validatorResponse = new ValidatorResponse();
     	Resource in = new UrlResource(url);
 		String modelName = in.getDescription();
 		Validation result = new Validation();
 		result.setDescription(modelName);
+		//if ("xml".equalsIgnoreCase(retDesired)) {
+			if (autofix != null && autofix == true) {
+				result.setFix(true);
+			}
+			if (normalize != null && normalize == true) {
+				result.setNormalize(true);
+			}
+		//}
 		validator.importModel(result, in.getInputStream());
 		validator.validate(result);
     	validatorResponse.addValidationResult(result);
     	validator.getResults().remove(result);
 		
     	if("xml".equalsIgnoreCase(retDesired)) {
-			return "redirect:printXmlResult";
+    		if(result != null) {
+        		BiopaxValidatorUtils.write(result, writer, null);
+        	} else {
+        		writer.write("Empty Result or Error.");
+        	}
+    		return null;
 		} else {
+			// encode OWL/XML for displaying in HTML the page
+			String owl = result.getFixedOwl();
+			if(owl != null) {
+				result.setFixedOwl(StringEscapeUtils.escapeHtml(owl));
+			}
 			model.addAttribute("response", validatorResponse);
 			return "groupByCodeResponse";
 		}

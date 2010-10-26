@@ -16,7 +16,7 @@ import java.util.Set;
 public class ComplexAssemblyHasComplexParticipantRule extends AbstractRule<ComplexAssembly>
 {
 
-    public void check(ComplexAssembly complexAssembly)
+    public void check(ComplexAssembly complexAssembly, boolean fix)
     {
 		Set<Complex> complexes = 
 			new ClassFilterSet<Complex>(complexAssembly.getParticipant(), Complex.class);
@@ -31,7 +31,4 @@ public class ComplexAssemblyHasComplexParticipantRule extends AbstractRule<Compl
         return thing instanceof ComplexAssembly;
     }
 
-    @Override
-	public void fix(ComplexAssembly t, Object... values) {
-	}
 }

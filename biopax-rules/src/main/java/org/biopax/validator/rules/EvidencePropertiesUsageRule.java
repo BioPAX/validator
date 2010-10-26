@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EvidencePropertiesUsageRule extends AbstractRule<Evidence> {
 
-    public void check(Evidence ev) {
+    public void check(Evidence ev, boolean fix) {
 
 		// check it has AT LEAST one of the things
 		if ((ev.getEvidenceCode() == null || ev.getEvidenceCode().isEmpty())
@@ -64,10 +64,6 @@ public class EvidencePropertiesUsageRule extends AbstractRule<Evidence> {
 
 	public boolean canCheck(Object thing) {
 		return thing instanceof Evidence;
-	}
-
-	@Override
-	public void fix(Evidence t, Object... values) {	
 	}
 
 }

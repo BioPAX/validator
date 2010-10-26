@@ -115,7 +115,7 @@ public class ControlAspect extends AbstractAspect {
 		// check all rules that can do this element
 		for (Rule rule : validator.getRules()) {
 			if (!rule.isPostModelOnly() && rule.canCheck(value)) {
-				rule.check(value);
+				rule.check(value, false);
 			}
 		}
 		
