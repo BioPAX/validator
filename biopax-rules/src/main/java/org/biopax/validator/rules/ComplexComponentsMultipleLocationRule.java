@@ -40,7 +40,7 @@ public class ComplexComponentsMultipleLocationRule extends
 			
 			if(!diffLocs.isEmpty()) {
 				error(thing, "component.different.location", 
-						thing.getCellularLocation() + "", diffLocs);
+						false, thing.getCellularLocation() + "", diffLocs);
 			}
 		}
 	}

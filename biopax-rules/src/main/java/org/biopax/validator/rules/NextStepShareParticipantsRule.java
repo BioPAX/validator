@@ -45,7 +45,7 @@ public class NextStepShareParticipantsRule extends AbstractRule<PathwayStep>
 			// first set becomes the intersection of the two:
 			participants.retainAll(thisStepParticipants);
 			if (participants.isEmpty()) {
-				error(step, "empty.participants.intersection", prevStep);
+				error(step, "empty.participants.intersection", false, prevStep);
 			}
 		}
 	}

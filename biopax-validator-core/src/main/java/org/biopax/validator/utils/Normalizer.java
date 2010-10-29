@@ -45,6 +45,10 @@ import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.paxtools.util.ClassFilterSet;
+import org.biopax.validator.Behavior;
+import org.biopax.validator.result.ErrorCaseType;
+import org.biopax.validator.result.ErrorType;
+import org.biopax.validator.result.Validation;
 
 /**
  * BioPAX Normalizer.
@@ -63,15 +67,26 @@ public class Normalizer {
 	
 	private SimpleReader biopaxReader;
 	
+	private Validation validation;
 	
 	/**
 	 * Constructor
 	 */
 	public Normalizer() {
-		this.biopaxReader = new SimpleReader(); //may be to use 'biopaxReader' bean that uses (new BioPAXFactoryForPersistence(), BioPAXLevel.L3);
+		biopaxReader = new SimpleReader(); //may be to use 'biopaxReader' bean that uses (new BioPAXFactoryForPersistence(), BioPAXLevel.L3);
 		biopaxReader.mergeDuplicates(true);
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param validation existing validation errors there can be set fixed=true.
+	 */
+	public Normalizer(Validation validation) {
+		this();
+		this.validation = validation;
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see cpath.importer.Normalizer#normalize(String)
@@ -161,6 +176,14 @@ public class Normalizer {
 		for(Xref ref : xrefs) {
 			// get database official urn
 			String name = ref.getDb();
+			
+			// workaround a nullpoinerexception
+			if(name == null || "".equals(name)) {
+				log.error(ref.getModelInterface().getSimpleName() 
+						+ " " + ref + " - 'db' property is empty!");
+				continue;
+			}
+			
 			try {
 				String urn = MiriamLink.getDataTypeURI(name);
 				// update name to the primary one
@@ -236,6 +259,7 @@ public class Normalizer {
 					if (log.isInfoEnabled())
 						log.info(e + " displayName auto-fix: "
 								+ e.getDisplayName());
+					setFixed(BiopaxValidatorUtils.getId(e), "physicalEntityDisplayNameCRRule");
 				} else if (!e.getName().isEmpty()) {
 					String dsp = e.getName().iterator().next();
 					for (String name : e.getName()) {
@@ -245,6 +269,7 @@ public class Normalizer {
 					e.setDisplayName(dsp);
 					if (log.isInfoEnabled())
 						log.info(e + " displayName auto-fix: " + dsp);
+					setFixed(BiopaxValidatorUtils.getId(e), "physicalEntityDisplayNameCRRule");
 				}
 			}
 		}
@@ -252,12 +277,31 @@ public class Normalizer {
 		for(EntityReference er : model.getObjects(EntityReference.class)) {
 			for(SimplePhysicalEntity spe : er.getEntityReferenceOf()) {
 				if(spe.getDisplayName() == null || spe.getDisplayName().trim().length() == 0) {
-					spe.setDisplayName(er.getDisplayName());
+					if(er.getDisplayName() != null && er.getDisplayName().trim().length() > 0) {
+						spe.setDisplayName(er.getDisplayName());
+						setFixed(BiopaxValidatorUtils.getId(spe), "physicalEntityDisplayNameCRRule");
+					}
 				}
 			}
 		}
 	}
 
+
+	private void setFixed(String id, String rule) {
+		if(validation != null) {
+			ErrorCaseType ect = validation.findErrorCase(
+				new ErrorType("cardinality.violated", Behavior.WARNING), 
+				new ErrorCaseType(rule, id, null));
+			if(ect == null) {
+				ect = validation.findErrorCase(
+					new ErrorType("cardinality.violated", Behavior.ERROR), 
+					new ErrorCaseType(rule, id, null));
+			}
+			if(ect != null) {
+				ect.setFixed(true);
+			}
+		}
+	}
 
 	private String convertToOWL(Model model) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -280,18 +324,21 @@ public class Normalizer {
 	 */
 	private UtilityClass updateID(final Model model, final UtilityClass u, final String rdfid) 
 	{	
+		// is there an object with the same (new) id?
 		final UtilityClass v = (UtilityClass) model.getByID(rdfid);
 		if(v != null) {
+			// rather than update id, use the existing element instead -
 			if(log.isInfoEnabled())
 				log.info("Removing duplicate, updating links" +
 					" (object properties) using existing " 
 					 + rdfid + " element instead of " + u.getRDFId());
-			//assert(v.isEquivalent(u)); // TODO (whew) strictly speaking...
+			
+			// TODO assert(v.isEquivalent(u)); - strictly speaking
 			if(!v.isEquivalent(u)) {
-				log.warn(u + " (" + u.getRDFId() + ", " + u.getModelInterface().getSimpleName()
-					+ ") is to be replaced with but NOT semantically equivalent to " + 
+				log.error(u + " (" + u.getRDFId() + ", " + u.getModelInterface().getSimpleName()
+					+ ") is replaced with NOT semantically equivalent " + 
 					v + " (" + v.getRDFId() + ", " + v.getModelInterface().getSimpleName()
-					+ "). Ignoring...");
+					+ ")! Ignored...");
 			}
 			
 			AbstractTraverser traverser = new AbstractTraverser(biopaxReader.getEditorMap()) {

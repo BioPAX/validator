@@ -34,7 +34,7 @@ public class DanglingPropertyValueRule extends AbstractRule<Model> {
 				if(value instanceof BioPAXElement 
 						&& !model.contains((BioPAXElement)value)) {
 					error(value, "dangling.value", 
-						editor.getDomain().getSimpleName(), editor.getProperty());
+						false, editor.getDomain().getSimpleName(), editor.getProperty());
 				} 	
 			}
 		};

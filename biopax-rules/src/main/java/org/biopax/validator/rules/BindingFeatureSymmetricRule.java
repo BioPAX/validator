@@ -21,11 +21,11 @@ public class BindingFeatureSymmetricRule extends AbstractRule<BindingFeature> {
 	public void check(BindingFeature thing, boolean fix) {
 		BindingFeature to = thing.getBindsTo();
 		if (to != null) {
-			if (to.getBindsTo() == null || !thing.equals(to.getBindsTo())) {
-				if(!fix) {
-					error(thing, "symmetric.violated", "bindsTo", thing
-						.getBindsTo());
-				} else {
+			if (to.getBindsTo() == null || !thing.equals(to.getBindsTo())) 
+			{	
+				error(thing, "symmetric.violated", fix, "bindsTo", 
+						thing.getBindsTo());
+				if(fix) {
 					to.setBindsTo(thing);
 				}
 			}

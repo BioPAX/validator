@@ -43,7 +43,7 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
     	   String side = 
     		   (conversion.getLeft().contains(protein)) ? "right" : "left";
     	   if(!findProteinOnTheOtherSide(conversion, protein, side)) {
-    		   error(protein, "illegal.conversion", conversion, side);
+    		   error(protein, "illegal.conversion", false, conversion, side);
     	   }
        }
     }

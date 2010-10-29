@@ -20,6 +20,7 @@ import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.validator.Rule;
+import org.biopax.validator.result.ErrorCaseType;
 import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.result.Validation;
 import org.biopax.validator.utils.BiopaxValidatorException;
@@ -135,7 +136,7 @@ public class ValidatorImpl implements Validator {
 						String owlModel = null;
 						// normalize?
 						if(validation.isNormalize()) {
-							Normalizer normalizer = new Normalizer();
+							Normalizer normalizer = new Normalizer(validation);
 							owlModel = normalizer.normalize(model);
 						} else {
 							// export the model to OWL
@@ -225,8 +226,8 @@ public class ValidatorImpl implements Validator {
 		}
 
 		if (keys.isEmpty()) {
-			if (log.isWarnEnabled()) {
-				log.warn("findKey: no result keys found "
+			if (log.isDebugEnabled()) {
+				log.debug("findKey: no result keys found "
 						+ "for the object : " + o);
 			}
 		}
@@ -268,23 +269,38 @@ public class ValidatorImpl implements Validator {
 	}
 
     
-    public void report(Object obj, ErrorType error) 
+    public void report(Object obj, ErrorType errorWithSingleCase, boolean setFixed) 
     {	
-		Collection<Validation> keys = findValidation(obj);			
-		if(keys.isEmpty()) {
+		if(errorWithSingleCase.getErrorCase().isEmpty()) {
+			log.error("Attempted to registed an error " +
+				"without any error cases in it: " + errorWithSingleCase);
+			return;
+		}
+    	
+    	Collection<Validation> validations = findValidation(obj);			
+		if(validations.isEmpty()) {
 			// the object is not associated neither with parser nor model
-			log.warn("No active validations exist for the object " 
-					+ obj + "; user won't get this message: " + error);
+			if(log.isInfoEnabled())
+				log.info("No active validations exist for the object " 
+				+ obj + "; so end user won't receive this message: " 
+				+ errorWithSingleCase);
 		}
 		
 		// add to the corresponding validation result
-		for(Validation result: keys) { 
+		for(Validation v: validations) { 
 			if(log.isTraceEnabled()) {
-				log.trace("reports: " + error.toString() 
-						+ " "+ error.getErrorCase().toArray()[0] + 
-						" in: " + result.getDescription());
+				log.trace("Now reporting: " + errorWithSingleCase.toString() 
+						+ " "+ errorWithSingleCase.getErrorCase().toArray()[0] + 
+						" in: " + v.getDescription() + 
+						"; fixed=" + setFixed);
 			}
-			result.addError(error);
+			
+			// to make sure it's consistent with the setFixed parameter!
+			for(ErrorCaseType ect : errorWithSingleCase.getErrorCase()) {
+				ect.setFixed(setFixed); 
+			}
+			// add or update the error case(s)
+			v.addError(errorWithSingleCase);
 		}
 	}
 }

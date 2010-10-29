@@ -72,20 +72,20 @@ public abstract class BasicCardinalityAndRangeRule<E extends BioPAXElement>
 							&& size != maxCardinality) 
 						{
 							error(thing, "cardinality.violated", 
-									editor.getProperty(), maxCardinality);
+									false, editor.getProperty(), maxCardinality);
 						}
 					} else {
 						// min. cardinality check
 						if (minCardinality > 0 && size == 0) {
 							error(thing, "min.cardinality.violated", 
-									editor.getProperty(), minCardinality);
+									false, editor.getProperty(), minCardinality);
 						}
 						// max. cardinality check
 						if (maxCardinality > 0
 								&& maxCardinality < Integer.MAX_VALUE
 								&& size > maxCardinality) {
 							error(thing, "max.cardinality.violated", 
-									editor.getProperty(), maxCardinality);
+									false, editor.getProperty(), maxCardinality);
 						}
 					}
 					// check range
@@ -101,7 +101,7 @@ public abstract class BasicCardinalityAndRangeRule<E extends BioPAXElement>
 					String code = (minCardinality==maxCardinality) 
 						? "cardinality.violated" 
 						: "min.cardinality.violated" ;
-					error(thing, code, editor.getProperty(), minCardinality);
+					error(thing, code, false, editor.getProperty(), minCardinality);
 				}
 			}
 
@@ -121,9 +121,9 @@ public abstract class BasicCardinalityAndRangeRule<E extends BioPAXElement>
 			}
 		}
 		if(isViolated) {
-			error(thing, "range.violated", getProperty(), 
-					p, p.getClass().getSimpleName(), 
-					rangesAsString);
+			error(thing, "range.violated", false, 
+					getProperty(), p, 
+					p.getClass().getSimpleName(), rangesAsString);
 		}
 	}
 

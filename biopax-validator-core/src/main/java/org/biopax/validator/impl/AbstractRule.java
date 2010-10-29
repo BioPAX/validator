@@ -40,6 +40,7 @@ public abstract class AbstractRule<T> implements Rule<T> {
     public AbstractRule() {
         logger = LogFactory.getLog(this.getClass()); // concrete class
         postModelOnly = true;
+        behavior = Behavior.ERROR;
     }
            
     /**
@@ -120,14 +121,20 @@ public abstract class AbstractRule<T> implements Rule<T> {
     }
              
 
-    public void error(Object object, String code, Object... args) {
+    public void error(Object object, String code, boolean setFixed, Object... args) {
     	Messenger m = getMessenger();
     	if(m != null) {
-    		m.sendErrorCase(this, object, code, args); // to be processed...
+    		m.sendErrorCase(this, object, code, setFixed, args); // to be processed...
     	} else {
-    		logger.error(this.getName() + 
-    			": cannot register the validation error due to the messenger object is null");
-    		throw new BiopaxValidatorException(code, 
+    		String event = ((setFixed) ? "FIXED " : "") 
+    			+ this.getBehavior() + " " + code;
+    		
+    		if(logger.isWarnEnabled())
+    			logger.warn(this.getName() + 
+    			" won't register the event: '" + event + "' (Messenger is null)");
+    		
+    		if(!setFixed)
+    			throw new BiopaxValidatorException(event, 
     				BiopaxValidatorUtils.getId(object), args);
     	}
     }

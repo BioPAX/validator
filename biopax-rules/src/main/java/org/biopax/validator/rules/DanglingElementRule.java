@@ -55,7 +55,7 @@ public class DanglingElementRule extends AbstractRule<Model> {
 		// those left are in fact dangling!
 		for(BioPAXElement thing : rootElements) {
 			if(!(thing instanceof Pathway))
-				error(thing, "dangling.element");
+				error(thing, "dangling.element", false);
 		}
 		
 	}

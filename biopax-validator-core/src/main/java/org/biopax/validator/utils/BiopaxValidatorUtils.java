@@ -326,7 +326,8 @@ public class BiopaxValidatorUtils {
 			throw new RuntimeException("Cannot serialize object: " + obj, e);
 		} 
 		if(logger.isDebugEnabled()) {
-			logger.debug(obj.getClass().getSimpleName()+ " is serialized: " + domResult.getNode().getNodeName());
+			logger.debug(obj.getClass().getSimpleName() + 
+				" is serialized: " + domResult.getNode().getNodeName());
 		}
 		return domResult;
 	}

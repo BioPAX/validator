@@ -66,8 +66,8 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 			} else {
 				for(String name : cv.getTerm()) {
 					if(!getValidTerms().contains(name.toLowerCase())) {			
-						error(thing, "illegal.cv.term", name, BiopaxValidatorUtils.getLocalId(cv),
-							((editor!=null)? " at element's property: " + property : "") 
+						error(thing, "illegal.cv.term", false, name,
+							BiopaxValidatorUtils.getLocalId(cv), ((editor!=null)? " at element's property: " + property : "") 
 							+ " did not meet the following criteria: " 
 							+ restrictions.toString());
 					}

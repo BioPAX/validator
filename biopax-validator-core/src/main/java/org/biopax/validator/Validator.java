@@ -139,7 +139,8 @@ public interface Validator {
      * 
      * @param obj associated with a validation result objects (can be even InputStream, during import, but usually is a BioPAX element)
      * @param error
+     * @param setFixed if true, - find and set the attribute
      */
-	public void report(Object obj, ErrorType error);
+	public void report(Object obj, ErrorType error, boolean setFixed);
 	
 }

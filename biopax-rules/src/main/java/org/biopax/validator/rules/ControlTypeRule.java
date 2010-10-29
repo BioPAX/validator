@@ -48,12 +48,11 @@ public class ControlTypeRule extends AbstractRule<Control> {
 			if(thing instanceof Catalysis) {
 				Catalysis cat = (Catalysis) thing;
 				if(cat.getControlType() != ControlType.ACTIVATION) {
-					if(!fix) {
-						error(thing, "range.violated", "controlType", 
-							cat.getControlType().name(), "",
-							ControlType.ACTIVATION.name()
+					error(thing, "range.violated", fix, 
+							"controlType", cat.getControlType().name(),
+							"", ControlType.ACTIVATION.name()
 							+ " (or empty)");
-					} else {
+					if(fix) {
 						fix(thing);
 					}
 				}
@@ -62,13 +61,12 @@ public class ControlTypeRule extends AbstractRule<Control> {
 				if(! (trr.getControlType() == ControlType.ACTIVATION
 						|| trr.getControlType() == ControlType.INHIBITION) ) 
 				{
-					if(!fix) {
-						error(thing, "range.violated", "controlType", 
-							trr.getControlType().name(), "",
-							ControlType.ACTIVATION.name() + " or " 
+					error(thing, "range.violated", fix, 
+							"controlType", trr.getControlType().name(),
+							"", ControlType.ACTIVATION.name() + " or " 
 							+ ControlType.INHIBITION.name()
 							+ " (or empty)");
-					} else {
+					if(fix) {
 						fix(thing);
 					}
 				}

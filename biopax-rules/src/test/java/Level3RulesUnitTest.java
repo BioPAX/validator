@@ -314,34 +314,6 @@ public class Level3RulesUnitTest {
 			m.add(bpe);
 		}
 		
-		bpe = level3.createUnificationXref();
-		bpe.setRDFId("http://www.biopax.org/UnificationXref#Taxonomy:40674");
-		bpe.addComment("Invalid ID (contains a colon in the local part of id)");
-		try { 
-			rule.check(bpe, false); 
-			URI uri = URI.create(bpe.getRDFId());
-			System.out.println("ID supposed to cause test fail, but didn't: " 
-					+ uri.toString());
-			//fail("must throw BiopaxValidatorException");
-		} catch (BiopaxValidatorException e) 
-		{
-			m.add(bpe);
-		}
-		
-		bpe = level3.createUnificationXref();
-		bpe.setRDFId("123_Taxonomy");
-		bpe.addComment("Invalid ID (starts with a digit)");
-		try { 
-			rule.check(bpe, false); 
-			URI uri = URI.create(bpe.getRDFId());
-			System.out.println("ID supposed to cause test fail, but didn't: " 
-					+ uri.toString());
-			//fail("must throw BiopaxValidatorException");
-		} catch (BiopaxValidatorException e) 
-		{
-			m.add(bpe);
-		}
-		
 		writeExample("testBiopaxElementIdRule.owl", m);
 	}
 	
@@ -499,4 +471,57 @@ public class Level3RulesUnitTest {
     	rule.check(pr, false);
 	}
 	
+	@Test
+	public final void testClonedUtilityClassRule() {
+		Model model = BioPAXLevel.L3.getDefaultFactory().createModel();
+    	Xref ref = model.addNew(UnificationXref.class,"Xref1");
+    	ref.setDb("uniprotkb"); // normalizer should convert this to 'uniprot'
+    	ref.setId("P68250");
+    	ProteinReference pr = model.addNew(ProteinReference.class, "ProteinReference1");
+    	pr.setDisplayName("ProteinReference1");
+    	pr.addXref(ref);
+    	ref = model.addNew(RelationshipXref.class, "Xref2");
+    	ref.setDb("refseq");
+    	ref.setId("NP_001734");
+    	ref.setIdVersion("1");  // this xref won't be removed by norm. (version matters in xrefs comparing!)
+		pr.addXref(ref);
+	   	ref = model.addNew(UnificationXref.class, "Xref3");
+    	ref.setDb("uniprotkb");
+    	ref.setId("Q0VCL1"); 
+    	Xref uniprotX = ref;
+    	
+    	pr = model.addNew(ProteinReference.class, "ProteinReference2");
+    	pr.setDisplayName("ProteinReference2");
+    	pr.addXref(uniprotX);
+    	ref = model.addNew(RelationshipXref.class, "Xref4");
+    	ref.setDb("refseq");
+    	ref.setId("NP_001734");
+		pr.addXref(ref);
+		
+		// this ER is duplicate (same uniprot xref as ProteinReference2's) and must be removed by normalizer
+    	pr = model.addNew(ProteinReference.class, "ProteinReference3");
+    	pr.setDisplayName("ProteinReference3");
+    	pr.addXref(uniprotX);
+    	ref = model.addNew(RelationshipXref.class, "Xref5");
+    	ref.setDb("refseq");
+    	ref.setId("NP_001734");
+		pr.addXref(ref);
+		
+		Rule rule = new ClonedUtilityClassRule();
+		assertTrue(rule.canCheck(model));
+		
+		// check
+		try {
+			rule.check(model, false); 
+			fail("must throw BiopaxValidatorException");
+		} catch(BiopaxValidatorException e) {
+		}
+		// write the example
+		writeExample("testClonedUtilityClassRule.owl", model);	
+		
+		// now -fix!
+		rule.check(model, true); 
+		// write the example
+		writeExample("testClonedUtilityClassRuleFixed.owl", model);	
+	}
 }

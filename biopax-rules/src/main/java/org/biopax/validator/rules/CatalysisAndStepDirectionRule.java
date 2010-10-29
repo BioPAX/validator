@@ -30,8 +30,8 @@ public class CatalysisAndStepDirectionRule extends AbstractRule<Catalysis> {
 					StepDirection sdir = ((BiochemicalPathwayStep) ps).getStepDirection();
 					if(sdir != null && sdir != StepDirection.LEFT_TO_RIGHT) {
 						error(thing, "direction.conflict", 
-								"catalysisDirection=" + thing.getCatalysisDirection(), 
-								ps, "stepDirection=" + sdir);
+								false, 
+								"catalysisDirection=" + thing.getCatalysisDirection(), ps, "stepDirection=" + sdir);
 					}
 				} 
 			}

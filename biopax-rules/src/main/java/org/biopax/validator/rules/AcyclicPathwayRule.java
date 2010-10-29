@@ -45,7 +45,7 @@ public class AcyclicPathwayRule extends AbstractRule<Pathway> {
 						.equalsIgnoreCase(((Pathway) value).getRDFId()))
 					{
 						error(thing, "cyclic.inclusion",
-								getVisited().toString());
+								false, getVisited().toString());
 					} 
 					else {
 						if (log.isTraceEnabled())

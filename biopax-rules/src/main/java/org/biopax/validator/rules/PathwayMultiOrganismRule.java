@@ -64,8 +64,8 @@ public class PathwayMultiOrganismRule extends AbstractRule<Pathway> {
    		runner.traverse(pathway, null);
    		
 		if(organisms.size()>0) {
-			error(pathway, "multi.organism.pathway", organism,
-				BiopaxValidatorUtils.toString(organisms));
+			error(pathway, "multi.organism.pathway", false,
+				organism, BiopaxValidatorUtils.toString(organisms));
 		}
     }
 

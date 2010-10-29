@@ -21,8 +21,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRule<BiochemicalPathwayStep> {
 
-	private void fix(BiochemicalPathwayStep t, Object... values) {
-		
+	private void fix(BiochemicalPathwayStep t, Object... values) 
+	{	
 		if(values[0] instanceof Catalysis) {
 			((Catalysis)values[0]).setCatalysisDirection((CatalysisDirectionType) values[1]);
 		} else if (values[0] instanceof Conversion){
@@ -43,12 +43,10 @@ public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRul
 				{
 					CatalysisDirectionType cdir = ((Catalysis) proc).getCatalysisDirection();
 					if(cdir != null && cdir != CatalysisDirectionType.LEFT_TO_RIGHT) {
-						if(!fix) {
-							error(step, "direction.conflict", 
-								"stepDirection=" + step.getStepDirection(), 
-								proc, "catalysisDirection=" + cdir 
-								+ ", must be LEFT_TO_RIGHT");
-						} else {
+						error(step, "direction.conflict", fix, 
+							"stepDirection=" + step.getStepDirection(), proc, 
+							"catalysisDirection=" + cdir + ", must be LEFT_TO_RIGHT");
+						if(fix) {
 							fix(step, proc, null);
 						}
 					}
@@ -58,12 +56,10 @@ public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRul
 			Conversion con = step.getStepConversion();
 			if( con != null && con.getConversionDirection() != ConversionDirectionType.REVERSIBLE) 
 			{
-				if(!fix) {
-					error(step, "direction.conflict", 
-						"stepDirection=" + step.getStepDirection(), 
-						con, "conversionDirection=" 
+				error(step, "direction.conflict", fix, 
+					"stepDirection=" + step.getStepDirection(), con, "conversionDirection=" 
 						+ con.getConversionDirection() + ", must be REVERSIBLE");
-				} else {
+				if(fix) {
 					fix(step, con, ConversionDirectionType.REVERSIBLE);
 				}
 			}

@@ -9,6 +9,7 @@ import org.biopax.paxtools.util.AbstractFilterSet;
 import org.biopax.validator.Behavior;
 
 
+@XmlType//(namespace="http://biopax.org/validator/2.0/schema", name="ValidationResult")
 @XmlRootElement(name="validationResult")
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class Validation implements Serializable {
@@ -22,11 +23,10 @@ public class Validation implements Serializable {
 	// "forcedly" associated objects, i.e., parser, model(s), and dangling elements 
 	private final Set<Object> objects; 
 
-	// TODO implement the rest of the "FixIt" mode!
 	private boolean fix = false;
-	// TODO implement errors filter using the threshold
-	private Behavior threshold;
-	// TODO implement normalization on demand
+	
+	private Behavior threshold; // TODO implement errors filter!
+	
 	private boolean normalize = false;
 	
 	// Default Constructor (this is mainly for OXM)
@@ -79,16 +79,22 @@ public class Validation implements Serializable {
 	 * the new error cases will be copied to it;
 	 * otherwise, the new one is simply added to the set.
 	 * 
+	 * @see ErrorType#hashCode()
+	 * @see ErrorType#equals(Object)
+	 * 
 	 * @param e Error type
 	 */
 	public void addError(ErrorType e) {	
-		for(ErrorType et: error) {
-			if(et.equals(e)) {
-				et.addCases(e.getErrorCase());
-				return;
+		if (error.contains(e)) {
+			for (ErrorType et : error) {
+				if (et.equals(e)) {
+					et.addCases(e.getErrorCase());
+					return;
+				}
 			}
+		} else {
+			error.add(e);
 		}
-		error.add(e);
 	}
 	
 	public void removeError(ErrorType e) {
@@ -137,12 +143,55 @@ public class Validation implements Serializable {
 		+ getSummary() + ")";
 	}
 	
-	public ErrorType findError(String code, Behavior type) {
-		for(ErrorType et: getError()) {
-			if(et.getCode().equalsIgnoreCase(code)
-					&& et.getType() == type) {
-				return et;
+	/**
+	 * Searches for existing (registered) error type.
+	 * 
+	 * @param code
+	 * @param type
+	 * @return
+	 */
+	public ErrorType findErrorType(String code, Behavior type) {
+		return findErrorType(new ErrorType(code, type));
+	}
+	
+	/**
+	 * Finds the same error type among
+	 * existing (already happened to have error cases)
+	 * 
+	 * @see ErrorType#equals(Object)
+	 * @see ErrorType#hashCode()
+	 * 
+	 * @param errorType
+	 * @return
+	 */
+	public ErrorType findErrorType(ErrorType errorType) {
+		if(getError().contains(errorType)) {
+			for(ErrorType et: getError()) {
+				if(et.equals(errorType)) {
+					return et;
+				}
 			}
+		} 
+		return null;
+	}
+	
+	
+	/**
+	 * Finds the same error case in the registry.
+	 * 
+	 * @see ErrorType#equals(Object)
+	 * @see ErrorType#hashCode()
+	 * @see ErrorCaseType#equals(Object)
+	 * @see ErrorCaseType#hashCode()
+	 *  
+	 * @param errorType
+	 * @return
+	 */
+	public ErrorCaseType findErrorCase(ErrorType errorType, ErrorCaseType errCase) {
+		ErrorType etype = findErrorType(errorType);
+		if (etype != null) {
+			ErrorCaseType ecase = etype.findErrorCase(errCase);
+			
 		}
 		return null;
 	}
@@ -219,4 +268,8 @@ public class Validation implements Serializable {
 		this.normalize = normalize;
 	}
 	
+	@XmlAttribute
+	public int getTotalProblemsFound() {
+		return countErrors(null, null, null, false);
+	}
 } 

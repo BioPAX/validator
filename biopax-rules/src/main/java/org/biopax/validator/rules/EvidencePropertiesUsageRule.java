@@ -26,16 +26,16 @@ public class EvidencePropertiesUsageRule extends AbstractRule<Evidence> {
 				&& (ev.getExperimentalForm() == null || ev.getExperimentalForm().isEmpty())
 				&& (ev.getConfidence() == null || ev.getConfidence().isEmpty())) {
 			error(ev, "min.cardinality.violated",
-					"'evidenceCode' or 'confidence' or 'experimantalForm'", 1);
+					false, "'evidenceCode' or 'confidence' or 'experimantalForm'", 1);
 		} else {
 
 			// evidenceCode range
 			if (ev.getEvidenceCode() != null) {
 				for (Object cv : ev.getEvidenceCode()) {
 					if (!EvidenceCodeVocabulary.class.isInstance(cv)) {
-						error(ev, "range.violated", "evidenceCode", 
-								cv, cv.getClass().getSimpleName(),
-								"EvidenceCodeVocabulary");
+						error(ev, "range.violated", false, 
+								"evidenceCode", cv,
+								cv.getClass().getSimpleName(), "EvidenceCodeVocabulary");
 					}
 				}
 			}
@@ -44,8 +44,8 @@ public class EvidencePropertiesUsageRule extends AbstractRule<Evidence> {
 			if (ev.getExperimentalForm() != null) {
 				for (Object cv : ev.getExperimentalForm()) {
 					if (!ExperimentalForm.class.isInstance(cv)) {
-						error(ev, "range.violated", "experimentalForm", 
-								cv, cv.getClass().getSimpleName(), "ExperimentalForm");
+						error(ev, "range.violated", false, 
+								"experimentalForm", cv, cv.getClass().getSimpleName(), "ExperimentalForm");
 					}
 				}
 			}
@@ -54,8 +54,8 @@ public class EvidencePropertiesUsageRule extends AbstractRule<Evidence> {
 			if (ev.getConfidence() != null) {
 				for (Object cv : ev.getConfidence()) {
 					if (!Score.class.isInstance(cv)) {
-						error(ev, "range.violated", "confidence", 
-								cv, cv.getClass().getSimpleName(), "Score");
+						error(ev, "range.violated", false, 
+								"confidence", cv, cv.getClass().getSimpleName(), "Score");
 					}
 				}
 			}

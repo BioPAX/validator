@@ -31,9 +31,8 @@ public class BioSourceTaxonXrefRule extends AbstractRule<BioSource> {
 				String db = x.getDb();
 				if (db != null) {
 					if (!xrefHelper.isSynonyms(db, "taxonomy")) {
-						if(!fix) {
-							error(bioSource, "not.taxon.db", db);
-						} else {
+						error(bioSource, "not.taxon.db", fix, db);
+						if(fix) {
 							x.setDb("Taxonomy");
 						}
 					}

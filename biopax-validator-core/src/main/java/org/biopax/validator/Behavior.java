@@ -13,6 +13,6 @@ package org.biopax.validator;
 public enum Behavior 
 {
 	IGNORE,  // a rule does not check;
-	ERROR,   // reports as error;
-	WARNING; // reports as warning;
+	WARNING, // reports as warning;
+	ERROR;   // reports as error;
 }

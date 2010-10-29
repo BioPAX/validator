@@ -20,7 +20,7 @@ public class ProteinReferenceNamesRule extends AbstractRule<ProteinReference> {
 
 		if (pref.getName() == null && pref.getStandardName() == null 
 				&& pref.getDisplayName() == null) {
-			error(pref, "no.short.name");
+			error(pref, "no.short.name", false);
 		} 
 	}
 

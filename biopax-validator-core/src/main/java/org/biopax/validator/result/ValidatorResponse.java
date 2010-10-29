@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.*;
 import javax.xml.bind.annotation.*;
 
+@XmlType//(namespace="http://biopax.org/validator/2.0/schema")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ValidatorResponse implements Serializable {

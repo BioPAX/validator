@@ -46,7 +46,7 @@ public class Level2AcyclicPathwayRule extends AbstractRule<pathway> {
 							&& thing.getRDFId().equalsIgnoreCase(
 									((BioPAXElement) value).getRDFId())) {
 						error(thing, "cyclic.inclusion",
-								getVisited().toString());
+								false, getVisited().toString());
 						return;
 					}
 					traverse((BioPAXElement) value, model);

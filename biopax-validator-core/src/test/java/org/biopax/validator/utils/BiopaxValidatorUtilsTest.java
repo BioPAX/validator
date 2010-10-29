@@ -38,8 +38,6 @@ public class BiopaxValidatorUtilsTest {
 		String xml = writer.toString();
 		assertTrue(xml.length()>0);
 		
-		//System.out.println(xml);
-		
 		ValidatorResponse resp = (ValidatorResponse) BiopaxValidatorUtils.getUnmarshaller()
 			.unmarshal(new StreamSource(new StringReader(xml)));
 		assertTrue(resp.getValidationResult().size() == 1);
@@ -49,6 +47,8 @@ public class BiopaxValidatorUtilsTest {
 		String xml2 = writer.toString();
 		assertTrue(xml2.length()>0);
 		
+		//System.out.println(xml);
+		//System.out.println(xml2);
 		assertEquals(xml, xml2);		
 	}
 
@@ -98,7 +98,7 @@ public class BiopaxValidatorUtilsTest {
 			.unmarshal(new StreamSource(new StringReader(xml1)));
 		assertTrue(res1.getError().size() == 1);
 		Validation res2 = (Validation) BiopaxValidatorUtils.getUnmarshaller()
-		.unmarshal(new StreamSource(new StringReader(xml2)));
+			.unmarshal(new StreamSource(new StringReader(xml2)));
 		assertTrue(res2.getError().size() == 1);
 		ValidatorResponse resp2 = new ValidatorResponse();
 		resp2.addValidationResult(res1);

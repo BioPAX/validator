@@ -19,7 +19,7 @@ public class EntityReferenceXrefRule extends AbstractRule<EntityReference> {
 
    public void check(EntityReference er, boolean fix) {
         if (er.getXref() == null || (er.getXref()).isEmpty()) {
-            error(null, "no.xrefs");
+            error(null, "no.xrefs", false);
         } else {
             boolean present = false;
             for (Xref x : er.getXref()) {
@@ -29,7 +29,7 @@ public class EntityReferenceXrefRule extends AbstractRule<EntityReference> {
                 }
             }
             if (!present) {
-                error(er, "no.unification.xref");
+                error(er, "no.unification.xref", false);
             }
         }
 

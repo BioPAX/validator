@@ -39,7 +39,7 @@ public class PathwayStepProcessesArePathwayComponents extends AbstractRule<Pathw
 			Set<Process> pathwayComponents = pathway.getPathwayComponent();
 			for (Process stepProcess : step.getStepProcess()) {
 				if (!pathwayComponents.contains(stepProcess)) {
-					error(step, "component.not.found", stepProcess, pathway);
+					error(step, "component.not.found", false, stepProcess, pathway);
 				}
 			}
 		}

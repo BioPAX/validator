@@ -3,6 +3,7 @@ package org.biopax.validator.result;
 import java.io.Serializable;
 import javax.xml.bind.annotation.*;
 
+@XmlType//(namespace="http://biopax.org/validator/2.0/schema")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ErrorCaseType implements Serializable, Comparable<ErrorCaseType> {
 
@@ -13,6 +14,8 @@ public class ErrorCaseType implements Serializable, Comparable<ErrorCaseType> {
 	protected String object = "";
 	@XmlAttribute
 	protected String reportedBy = null;
+	@XmlAttribute
+	protected boolean fixed = false;
 	
 	public ErrorCaseType() {
 	}
@@ -21,6 +24,7 @@ public class ErrorCaseType implements Serializable, Comparable<ErrorCaseType> {
 		this.reportedBy = reportedBy;
 		this.object = object;
 		this.message = msg;
+		this.fixed = false;
 	}
 	
 	public String getMessage() {
@@ -47,6 +51,14 @@ public class ErrorCaseType implements Serializable, Comparable<ErrorCaseType> {
 		this.reportedBy = reportedBy;
 	}
 	
+	public boolean isFixed() {
+		return fixed;
+	}
+	
+	public void setFixed(boolean fixed) {
+		this.fixed = fixed;
+	}
+	
 	public String toString() {
 		StringBuffer result = new StringBuffer();
 		result.append("(obj: ");
@@ -69,13 +81,16 @@ public class ErrorCaseType implements Serializable, Comparable<ErrorCaseType> {
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof ErrorCaseType) {
-			return this.toString().equalsIgnoreCase(((ErrorCaseType)obj).toString());
+			//return this.toString().equalsIgnoreCase(((ErrorCaseType)obj).toString());
+			ErrorCaseType that = ((ErrorCaseType)obj);
+			return (object+reportedBy).equalsIgnoreCase(that.object+that.reportedBy);
 		}
 		return false;
 	}
 	
 	@Override
 	public int hashCode() {
-		return toString().hashCode();
+		//return toString().hashCode();
+		return (object+reportedBy).hashCode();
 	}
 }

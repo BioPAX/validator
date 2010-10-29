@@ -51,9 +51,9 @@ public class BiochemReactParticipantsLocationRule extends AbstractRule<Biochemic
             	if(sameComplex || sameSimplePhysicalEntity) {
                 	boolean sameLoc = lefty.hasEquivalentCellularLocation(righty);
                 	if(!sameLoc	&& !(react instanceof Transport)) {
-                		error(react, "participant.location.changed", lefty, righty); 
+                		error(react, "participant.location.changed", false, lefty, righty); 
                 	} else if(sameLoc && react instanceof Transport) {
-                		error(react, "transport.location.same", lefty, righty); 
+                		error(react, "transport.location.same", false, lefty, righty); 
                 	}
                 } 
             }

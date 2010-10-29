@@ -78,8 +78,10 @@ public interface Rule<T> {
 
     
 	/**
+     * "Sends" a message about a error/warning case has occurred or been fixed.
+     * 
      * Call this method from a validation rule implementation 
-     * every time when a new error case is found! 
+     * every time after a BioPAX problem is found or fixed! 
      * 
      * Although not required when using AspectJ LTW only, 
      * this, however, allows for Spring's proxy-based AOP aspects 
@@ -90,8 +92,9 @@ public interface Rule<T> {
      * (previously, Rule.check method called Rule.error method...)
      * 
      * @param object that is invalid or caused the error
-     * @param code error code, e.g., 'illegal.value'
-     * @param args extra parameters for the error message template
+	 * @param code error code, e.g., 'illegal.value'
+	 * @param setFixed 
+	 * @param args extra parameters for the error message template
      */
-    void error(Object object, String code, Object... args);
+    void error(Object object, String code, boolean setFixed, Object... args);
 }

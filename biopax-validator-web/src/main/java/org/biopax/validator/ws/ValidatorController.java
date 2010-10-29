@@ -1,7 +1,9 @@
 package org.biopax.validator.ws;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,50 +51,92 @@ public class ValidatorController {
     public void checkUrl() {};
     
     @RequestMapping(value="/checkUrl", method=RequestMethod.POST)
-    public String checkUrl(@RequestParam String url, 
+    public String checkUrl(
+    		HttpServletRequest request,
+    		@RequestParam(required=false) String url, 
     		@RequestParam(required=false) String retDesired,
     		@RequestParam(required=false) Boolean autofix,
     		@RequestParam(required=false) Boolean normalize,
     		Model model, Writer writer) throws IOException  
     {
-    	if(log.isInfoEnabled()) log.info("checkUrl : " + url);
+    	Resource in = null;
+    	String modelName = null;
+    	if(url != null && url.length()>0) {
+        	if(log.isInfoEnabled() && url != null) 
+        		log.info("url : " + url);
+        	try {
+        		in = new UrlResource(url);
+        	} catch (MalformedURLException e) {
+        		model.addAttribute("error", e.toString());
+        		return "checkUrl";
+			}
+        	modelName = in.getDescription();
+    	} else if (request instanceof MultipartHttpServletRequest) {
+			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+			Map files = multiRequest.getFileMap();
+			Assert.state(!files.isEmpty(), "No file!");
+			Object o = files.values().iterator().next();
+			MultipartFile file = (MultipartFile) o;
+			String filename = file.getOriginalFilename();
+			if(log.isInfoEnabled()) 
+				log.info("file : " + filename);
+			in = new ByteArrayResource(file.getBytes());
+			modelName = filename;
+		} else {
+			return errorResponse(model, 
+				"checkUrl", "No BioPAX input source provided!");
+		}
+			
     	ValidatorResponse validatorResponse = new ValidatorResponse();
-    	Resource in = new UrlResource(url);
-		String modelName = in.getDescription();
 		Validation result = new Validation();
 		result.setDescription(modelName);
-		//if ("xml".equalsIgnoreCase(retDesired)) {
-			if (autofix != null && autofix == true) {
-				result.setFix(true);
-			}
-			if (normalize != null && normalize == true) {
-				result.setNormalize(true);
-			}
-		//}
-		validator.importModel(result, in.getInputStream());
+		if (autofix != null && autofix == true) {
+			result.setFix(true);
+		}
+		if (normalize != null && normalize == true) {
+			result.setNormalize(true);
+		}
+		
+		InputStream input = null;
+		try {
+			input = in.getInputStream();
+		} catch (Exception e) {
+			return errorResponse(model, 
+				"checkUrl", "Bad BioPAX input source: " 
+					+ e.toString());
+		}
+		
+		validator.importModel(result, input);
 		validator.validate(result);
     	validatorResponse.addValidationResult(result);
     	validator.getResults().remove(result);
-		
+    	String owl = result.getFixedOwl();
+    	
     	if("xml".equalsIgnoreCase(retDesired)) {
-    		if(result != null) {
-        		BiopaxValidatorUtils.write(result, writer, null);
-        	} else {
-        		writer.write("Empty Result or Error.");
-        	}
-    		return null;
-		} else {
-			// encode OWL/XML for displaying in HTML the page
-			String owl = result.getFixedOwl();
+        	BiopaxValidatorUtils.write(result, writer, null);
+    	} else if("html".equalsIgnoreCase(retDesired)) {
 			if(owl != null) {
+				// encode OWL for displaying on the HTML page
 				result.setFixedOwl(StringEscapeUtils.escapeHtml(owl));
 			}
 			model.addAttribute("response", validatorResponse);
 			return "groupByCodeResponse";
+		} else { // owl only
+			if(owl != null)
+				writer.write(owl);
+			else
+				return errorResponse(model, "checkUrl", "No BioPAX data returned.");
 		}
+    	
+    	return null; // (writer used)
     }
 	
-
+    private String errorResponse(Model model, String viewName, String msg) {
+    	model.addAttribute("error", msg);
+		return viewName;
+    }
+    
+    
     @RequestMapping(value="/checkFile", method=RequestMethod.GET)
     public void checkFile() {	
     } // show form

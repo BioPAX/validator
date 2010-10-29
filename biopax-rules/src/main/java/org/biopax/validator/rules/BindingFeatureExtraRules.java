@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.collections15.set.CompositeSet;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.BindingFeature;
@@ -41,16 +42,15 @@ public class BindingFeatureExtraRules extends AbstractRule<Model> {
 			}
 		};
 		
-		Collection<Set<BindingFeature>> violations 
+		CompositeSet<BindingFeature> violations 
 			= groupping.groupByEquivalence(bfs.toArray(new BindingFeature[]{}),
 					BiopaxValidatorUtils.maxErrors);
 		
 		// report the error once for each cluster
-		for (Set<BindingFeature> s : violations) {
+		for (Collection<BindingFeature> s : violations.getCollections()) {
 			BindingFeature a = s.iterator().next();
-			error(a, "inverse.functional.violated", 
-					"bindsTo",	a.getBindsTo(), 
-						BiopaxValidatorUtils.getIdListAsString(s));
+			error(a, "inverse.functional.violated", false,	"bindsTo", 
+					a.getBindsTo(), BiopaxValidatorUtils.getIdListAsString(s));
 		}
 
 	}

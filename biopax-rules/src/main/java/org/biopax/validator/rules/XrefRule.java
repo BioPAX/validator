@@ -25,17 +25,15 @@ public class XrefRule extends AbstractRule<Xref>{
     public void check(Xref x, boolean fix) {
         String db = x.getDb();
 		if (db != null) { 
-			// check db is valid
+			// check db
 			String preferedDbName = xrefHelper.getPrimaryDbName(db);
+			
 			if (preferedDbName == null) {
-				error(x, "unknown.db", db);
+				error(x, "unknown.db", false, db);
 				return;
 			} 
-			else if(!db.equalsIgnoreCase(preferedDbName)
-				&& fix == true) {
-				x.setDb(preferedDbName);
-			}
 
+			// check id
 			String id = x.getId();
 			if (id != null) {
 				if (!xrefHelper.canCheckIdFormatIn(preferedDbName)) {
@@ -44,10 +42,11 @@ public class XrefRule extends AbstractRule<Xref>{
 								+ db + " (" + preferedDbName + ")");
 					}
 				} else if (!xrefHelper.checkIdFormat(preferedDbName, id)) {
-					if(!fix) {
-						error(x, "invalid.id.format", db, id, 
-							xrefHelper.getRegexpString(preferedDbName));
-					} else {
+					String regxp = xrefHelper.getRegexpString(preferedDbName);
+					// report error with fixed=false 
+					error(x, "invalid.id.format", false, db, id, regxp);
+					// now try to correct (only for some...)
+					if(fix) {
 						// guess, it's like id_ver or id-ver
 						int i = id.lastIndexOf('-');
 						if(i<0) 
@@ -61,14 +60,51 @@ public class XrefRule extends AbstractRule<Xref>{
 								logger.debug(
 									"auto-fix: split id and idVersion for xref: " 
 									+ x + " " +  x.getRDFId());
+							// update the error case, set fixed=true there
+							error(x, "invalid.id.format", true);
 						}
 						
-						// several quick fixes
+						// quick fixes
+						
+						/* trying to generalize the case 
+						 * when MI:, GO:, MOD: prefixes are missing..
+						 */
+						i = regxp.lastIndexOf(':');
+						if(i>0) {
+							String prefix = regxp.substring(0, i+1).toUpperCase();
+							if(preferedDbName.equalsIgnoreCase(xrefHelper.getPrimaryDbName(prefix))
+									&& !id.toUpperCase().startsWith(prefix)) 
+							{
+								x.setId(prefix + id);
+								error(x, "invalid.id.format", true);
+								if (logger.isDebugEnabled())
+									logger.debug(x.getModelInterface().getSimpleName() 
+										+ " " + x + " 'id' auto-fixed! (was: " + id + ")");
+							}
+						}
+						
+						/*
 						if(db.equalsIgnoreCase("CHEBI") 
-							&& !id.toUpperCase().startsWith("CHEBI")) {
+							&& !id.toUpperCase().startsWith("CHEBI")) 
+						{
 							x.setId("CHEBI:" + id);
+							error(x, "invalid.id.format", true);
+						}
+						//
+						if((xrefHelper.getPrimaryDbName("MI").equalsIgnoreCase(preferedDbName))
+								&& !id.toUpperCase().startsWith("MI")) 
+						{
+							x.setId("MI:" + id);
+							error(x, "invalid.id.format", true);
 						}
 						
+						if((xrefHelper.getPrimaryDbName("GO").equalsIgnoreCase(preferedDbName))
+								&& !id.toUpperCase().startsWith("GO")) 
+						{
+							x.setId("GO:" + id);
+							error(x, "invalid.id.format", true);
+						}
+						*/
 					}
 				}
 			} 

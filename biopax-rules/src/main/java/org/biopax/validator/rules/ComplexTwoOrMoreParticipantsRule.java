@@ -30,12 +30,12 @@ public class ComplexTwoOrMoreParticipantsRule extends AbstractRule<Complex> {
 		Set<PhysicalEntity> components = thing.getComponent();	
 		
 		if(components.isEmpty()) {
-			error(thing, "complex.incomplete", "no components");
+			error(thing, "complex.incomplete", false, "no components");
 		} else if(components.size()==1) {
 			PhysicalEntity pe = components.iterator().next();
 			Set<Stoichiometry> stoi = thing.getComponentStoichiometry();
 			if(stoi.isEmpty()) {
-				error(thing, "complex.incomplete", "no stoichiometry");
+				error(thing, "complex.incomplete", false, "no stoichiometry");
 			} else {
 				boolean ok = false;
 				for(Stoichiometry s : stoi) {
@@ -52,7 +52,7 @@ public class ComplexTwoOrMoreParticipantsRule extends AbstractRule<Complex> {
 					}
 				}
 				if(!ok) {
-					error(thing, "complex.incomplete", "stoichiometry < 2");
+					error(thing, "complex.incomplete", false, "stoichiometry < 2");
 				}
 				
 			}

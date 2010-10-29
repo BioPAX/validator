@@ -16,7 +16,7 @@ public class EmptyModelRule extends AbstractRule<Model> {
 
 	public void check(Model model, boolean fix) {
 		if(model.getObjects().isEmpty())
-			error(model, "empty.biopax.model", model.getLevel().toString());
+			error(model, "empty.biopax.model", false, model.getLevel().toString());
 	}
 
 }

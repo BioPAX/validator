@@ -25,7 +25,7 @@ public class BiochemPathwayStepOneConversionRule extends AbstractRule<Biochemica
 		if (step.getStepProcess() != null) {
 			for (Process process : step.getStepProcess()) {
 				if (process instanceof Conversion) {
-					error(step, "misplaced.step.conversion", process);
+					error(step, "misplaced.step.conversion", false, process);
 				}
 			}
 		}

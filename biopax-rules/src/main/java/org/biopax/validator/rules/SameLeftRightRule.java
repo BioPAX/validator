@@ -31,7 +31,7 @@ public class SameLeftRightRule extends AbstractRule<Conversion>
             	boolean isSame = false;           	
                	isSame = righty.isEquivalent(lefty);
             	if(isSame) {
-                   error(conversion, "same.state.participant", lefty, righty);
+                   error(conversion, "same.state.participant", false, lefty, righty);
                 }
             }
         }

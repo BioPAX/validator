@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.*;
 
 import org.biopax.validator.Behavior;
 
+@XmlType//(namespace="http://biopax.org/validator/2.0/schema")
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class ErrorType implements Serializable {
 
@@ -62,16 +63,51 @@ public class ErrorType implements Serializable {
 	}
 	
 	/**
-	 * Adds a new error case,
+	 * Adds (may be updates...) a error case;
+	 * only the error message that happened last 
+	 * (for the same object and rule) is kept
+	 * (e.g., in a series of unsuccessful attempts 
+	 * to set a biopax property, the last error message
+	 * will override previous ones...)
+	 * 
+	 * @see ErrorCaseType#equals(Object)
+	 * @see ErrorCaseType#hashCode()
 	 * 
 	 * @param newCase
 	 */
 	public void addErrorCase(ErrorCaseType newCase) {
-		errorCase.add(newCase);
+		// errorCase.add(newCase);
+		if (errorCase.contains(newCase)) //
+		{
+			for (ErrorCaseType ect : errorCase) {
+				if(ect.equals(newCase)) {
+					// - found by object and rule id;
+					// update the existing case
+					ect.setFixed(newCase.isFixed());
+					
+					if(!newCase.isFixed()) {
+						// new message (error re-occur)
+						ect.setMessage(newCase.getMessage());
+					} else {
+						// message ignored (previous error is being fixed)
+					}
+				}
+			}
+		} else {
+			errorCase.add(newCase);
+		}
 	}
 	
+	/**
+	 * Adds error cases
+	 * 
+	 * @param cases
+	 */
 	public void addCases(Collection<ErrorCaseType> cases) {
-		this.errorCase.addAll(cases);
+		//this.errorCase.addAll(cases);
+		for (ErrorCaseType errorCase : cases) {
+			addErrorCase(errorCase);
+		}
 	}
 	
 	
@@ -81,7 +117,7 @@ public class ErrorType implements Serializable {
 	
 	@Override
 	public String toString() {
-		StringBuffer result = new StringBuffer(); // (super.toString());
+		StringBuffer result = new StringBuffer();
 		result.append(type);
 		result.append(" ");
 		result.append(code);
@@ -116,6 +152,17 @@ public class ErrorType implements Serializable {
 	}
 	
 	/**
+	 * Total number of problems registered.
+	 * 
+	 * @return
+	 */
+	@XmlAttribute
+	public int getTotalErrorCases() {
+		return countErrors(null, null);
+	}
+	
+	
+	/**
 	 * Count current error cases.
 	 * 
 	 * @param forObject if 'null', count everything
@@ -129,12 +176,36 @@ public class ErrorType implements Serializable {
 			if(forObject != null && !forObject.equals(ec.getObject())) {
 				continue;
 			}
+			
 			if(reportedBy != null && !reportedBy.equals(ec.getReportedBy())) {
 				continue;
 			}
-			count++;
+			
+			if(!ec.isFixed())
+				count++;
 		}
 		
 		return count;
+	}
+	
+	/**
+	 * Returns the existing (happened) error case object by
+	 * ErrorCaseType (new, not yet reported, or a copy).
+	 * Note: 'equals' method is overridden in ErrorCaseType
+	 * 
+	 * @see ErrorCaseType#equals(Object) 
+	 * 
+	 * @param searchBy
+	 * @return
+	 */
+	public ErrorCaseType findErrorCase(final ErrorCaseType searchBy) {
+		if(getErrorCase().contains(searchBy)) {
+			for (ErrorCaseType ec : getErrorCase()) {
+				if (ec.equals(searchBy)) {
+					return ec;
+				}
+			}
+		}
+		return null;
 	}
 }

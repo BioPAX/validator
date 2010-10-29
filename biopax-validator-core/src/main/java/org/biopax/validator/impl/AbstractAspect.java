@@ -1,5 +1,6 @@
 package org.biopax.validator.impl;
 
+
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.logging.Log;
@@ -37,16 +38,23 @@ abstract class AbstractAspect {
      * Registers the error in the validator.
      * 
      * @param obj associated with a validation result objects (can be even InputStream, during import, but usually is a BioPAX element)
+     * @param objectName
+     * @param errorCode
+     * @param ruleName
+     * @param warnOrErr
+     * @param setFixed
+     * @param msgArgs
      * @param error
      */
     public void report(Object obj, String objectName, 
     		String errorCode, String ruleName, Behavior warnOrErr, 
-    		Object... msgArgs) 
+    		boolean setFixed, Object... msgArgs) 
     {	
     	ErrorType error = utils.createError(objectName, errorCode, ruleName, warnOrErr, msgArgs);
-    	validator.report(obj, error);
+    	validator.report(obj, error, setFixed);
 	}
-        
+    
+    
 	/**
 	 * Registers other (external) exceptions.
 	 * 
@@ -93,7 +101,7 @@ abstract class AbstractAspect {
 		if (utils != null) {
 			if(args.length>0) msg += "; " + BiopaxValidatorUtils.toString(args);
 			ErrorType error = utils.createError(id, "syntax.error", rule, Behavior.ERROR, msg);
-			validator.report(obj, error);
+			validator.report(obj, error, false);
 		}
 		
 		if(log.isTraceEnabled()) {

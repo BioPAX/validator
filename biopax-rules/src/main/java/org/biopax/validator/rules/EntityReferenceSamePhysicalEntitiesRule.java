@@ -28,7 +28,7 @@ public class EntityReferenceSamePhysicalEntitiesRule extends
 					if (	!e1.equals(e2) 
 							&& e1.hasEquivalentFeatures(e2) 
 							&& e1.hasEquivalentCellularLocation(e2)) {
-						error(eref, "same.state.entity", e1, e2);
+						error(eref, "same.state.entity", false, e1, e2);
 					}
 				} catch (Exception e) {
 					// no action required

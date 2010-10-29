@@ -39,7 +39,7 @@ public class ComplexComponentsSameLocationRule extends AbstractRule<Complex> {
 				
 				if(!comps.isEmpty()) {
 					error(thing, "component.no.location", 
-							thing.getCellularLocation().toString(), comps);
+							false, thing.getCellularLocation().toString(), comps);
 				}
 			}
 		}

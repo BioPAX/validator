@@ -133,7 +133,7 @@ public class AOPAspectJLTWIntegrationTest {
        	
        	assertFalse(errors.isEmpty());
        	
-       	assertNotNull(validation.findError("unknown.db", Behavior.ERROR));
+       	assertNotNull(validation.findErrorType("unknown.db", Behavior.ERROR));
        	
        	assertTrue(errors.size()==1);
     }
@@ -161,7 +161,7 @@ public class AOPAspectJLTWIntegrationTest {
     	Validation validation = new Validation();
     	validator.importModel(validation, getClass()
     			.getResourceAsStream("testDuplicateNamesImport.xml"));
-    	ErrorType error = validation.findError("duplicate.names", Behavior.ERROR);
+    	ErrorType error = validation.findErrorType("duplicate.names", Behavior.ERROR);
     	assertNotNull(error);
     }
 }

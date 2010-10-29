@@ -55,7 +55,7 @@ public class NotAllowedInstancesRule extends AbstractRule<BioPAXElement> {
 	}
 
 	public void check(BioPAXElement thing, boolean fix) {
-		error(thing, "not.allowed.element", thing.getModelInterface().getSimpleName());
+		error(thing, "not.allowed.element", false, thing.getModelInterface().getSimpleName());
 	}
     
 }

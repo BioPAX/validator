@@ -65,9 +65,8 @@ public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
 					Model model, PropertyEditor editor) {
 				if (value != null && !(value instanceof BioPAXElement)) {
 					if (warnOnDataPropertyValues.contains(value.toString().trim().toUpperCase())) {
-						if(!fix) {
-							error(parent, "illegal.property.value", editor.getProperty(), value);
-						} else {
+						error(parent, "illegal.property.value", fix, editor.getProperty(), value);
+						if(fix) {
 							editor.removeValueFromBean(value, parent);
 						}
 					}

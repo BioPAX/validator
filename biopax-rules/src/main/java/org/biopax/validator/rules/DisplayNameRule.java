@@ -30,7 +30,7 @@ public class DisplayNameRule extends AbstractRule<Named> {
         	Integer max = (maxDisplayNameLengths.containsKey(cl)) 
         		? maxDisplayNameLengths.get(cl)	: MAX_DISPLAYNAME_LEN;
         	if (name.length() > max)
-				error(named, "too.long.name", name, name.length(), max);
+				error(named, "too.long.name", false, name, name.length(), max);
         }
     }
 

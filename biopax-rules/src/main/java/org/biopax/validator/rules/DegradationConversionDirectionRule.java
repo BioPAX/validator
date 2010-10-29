@@ -21,12 +21,11 @@ public class DegradationConversionDirectionRule extends AbstractRule<Degradation
 		if(thing.getConversionDirection() != null 
 			&& thing.getConversionDirection() != ConversionDirectionType.LEFT_TO_RIGHT) 
 		{	
-			if(!fix) {
-				error(thing, "range.violated", "conversionDirection", 
-						thing.getConversionDirection().name(), "",
-					ConversionDirectionType.LEFT_TO_RIGHT.name()
+			error(thing, "range.violated", fix, 
+						"conversionDirection", thing.getConversionDirection().name(),
+					"", ConversionDirectionType.LEFT_TO_RIGHT.name()
 					+ " (or empty)");
-			} else {
+			if(fix) {
 				thing.setConversionDirection(ConversionDirectionType.LEFT_TO_RIGHT);
 			}
 		}

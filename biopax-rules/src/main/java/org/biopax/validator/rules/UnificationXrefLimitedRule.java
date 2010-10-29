@@ -67,7 +67,7 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
 					String dbAllowed = dbAllow.get(c).toLowerCase();
 					if (!matched(dbAllowed, synonyms)) {
 						error(x, "not.allowed.xref", 
-								x.getDb(), bpe, c.getSimpleName(), dbAllowed);
+								false, x.getDb(), bpe, c.getSimpleName(), dbAllowed);
 					}
 				}
 			}
@@ -76,8 +76,8 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
 				if (c.isInstance(bpe)) {
 					String dbDenied = dbDeny.get(c).toLowerCase();
 					if (matched(dbDenied, synonyms)) {
-						error(x, "denied.xref", x.getDb(), bpe, 
-							c.getSimpleName(), dbDenied);
+						error(x, "denied.xref", false, x.getDb(), 
+							bpe, c.getSimpleName(), dbDenied);
 					}
 				}
 			}

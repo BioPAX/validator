@@ -55,14 +55,15 @@ public class ExceptionsAspect extends AbstractAspect {
 	 * @throws Throwable
 	 */
     @Around("execution(void org.biopax.validator.Messenger*+.sendErrorCase(..)) " +
-    	"&& args(rule, thing, code, args)")
+    	"&& args(rule, thing, code, fixed, args)")
     public void adviseSendErrorCase(ProceedingJoinPoint jp, Rule rule, Object thing,
-    		String code, Object... args) throws Throwable 
+    		String code, boolean fixed, Object... args) throws Throwable 
     {    	    	
-    	String nameRule = rule.getName();
+    	String ruleName = rule.getName();
     	
     	if (log.isTraceEnabled()) 
-    		log.trace(nameRule + " found a problem : " + code);
+    		log.trace("advising sendErrorCase called by " + ruleName 
+    			+ " that found a problem : " + code);
     			
     	// get object's ID
     	String thingId = BiopaxValidatorUtils.getId(thing);
@@ -72,12 +73,12 @@ public class ExceptionsAspect extends AbstractAspect {
     		return;
     	}
     		
-		report(thing, thingId, code, nameRule, rule.getBehavior(), args);
-
+    	report(thing, thingId, code, ruleName, rule.getBehavior(), fixed, args);
+    		
 		try {
 			jp.proceed(); // in fact, dummy
 		} catch (BiopaxValidatorException e) {
-			// suppress the above processed exception
+			// just ignore the (above processed) exception
 		}
     }
 	
@@ -125,7 +126,7 @@ public class ExceptionsAspect extends AbstractAspect {
    				msg += "; " + ((BiopaxValidatorException)t).getMsgArgs().toString();
    			}
     		report(thing, thingId, t.getClass().getSimpleName(), 
-    				rule.getName(), Behavior.ERROR, msg);
+    				rule.getName(), Behavior.ERROR, false, msg);
     	}
   
     }
@@ -246,7 +247,7 @@ public class ExceptionsAspect extends AbstractAspect {
     		bpeId = reader.getXmlStreamInfo();
 		}
 		report(reader, bpeId, "unknown.biopax.class", 
-			"reader", Behavior.ERROR, reader.getXmlStreamInfo());	
+			"reader", Behavior.ERROR, false, reader.getXmlStreamInfo());	
 	}
     
 	/**
@@ -269,7 +270,7 @@ public class ExceptionsAspect extends AbstractAspect {
 		}
 		if (bpe.getName().contains(name)) {
 			report(bpe, BiopaxValidatorUtils.getId(bpe), "duplicate.names",
-					"duplicateNamesAdvice", Behavior.WARNING, name);
+					"duplicateNamesAdvice", Behavior.WARNING, false, name);
 		}
 	}
 

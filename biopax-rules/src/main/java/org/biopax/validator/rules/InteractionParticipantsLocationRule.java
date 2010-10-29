@@ -44,7 +44,7 @@ public class InteractionParticipantsLocationRule extends
 							}
 						}
 						// report error
-						error(thing, "multiple.location", e1, e2);
+						error(thing, "multiple.location", false, e1, e2);
 					  }
 					}
 				}

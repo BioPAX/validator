@@ -18,10 +18,10 @@ public class BiopaxElementIdRule extends AbstractRule<BioPAXElement> {
 			try {
 				URI.create(rdfid);
 			} catch (IllegalArgumentException e) {
-				error(thing, "invalid.rdf.id", "not a valid URI: " + rdfid);
+				error(thing, "invalid.rdf.id", false, "not a valid URI: " + rdfid);
 			}	
 		} else
-			error(thing, "invalid.rdf.id", "null value");
+			error(thing, "invalid.rdf.id", false, "null value");
 	}
 	
 }

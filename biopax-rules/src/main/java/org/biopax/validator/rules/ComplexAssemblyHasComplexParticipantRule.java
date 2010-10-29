@@ -22,7 +22,7 @@ public class ComplexAssemblyHasComplexParticipantRule extends AbstractRule<Compl
 			new ClassFilterSet<Complex>(complexAssembly.getParticipant(), Complex.class);
 		
 		if(complexes.isEmpty()) {
-			error(complexAssembly, "complex.not.present");
+			error(complexAssembly, "complex.not.present", false);
 		}
 	
     }

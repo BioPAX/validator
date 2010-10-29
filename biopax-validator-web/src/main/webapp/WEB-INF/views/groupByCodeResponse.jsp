@@ -32,12 +32,16 @@
 <h2>Validation Results</h2>
 <ul>
 <c:forEach var="result" items="${response.validationResult}" varStatus="rstatus">
-	<li style="text-decoration: underline">Resource:&nbsp;${result.description}&nbsp;<a href="javascript:switchit('result${rstatus.index}')">${result.summary}</a></li>
+	<li style="text-decoration: underline" title="Click to see more detail">
+		Resource:&nbsp;${result.description}&nbsp;
+		<a href="javascript:switchit('result${rstatus.index}')">${result.summary}</a>
+	</li>
 	<c:forEach var="comment" items="${result.comment}">
 		<li>${comment}</li>
 	</c:forEach>
-	<li>auto-fix: ${result.fix}</li>
-	<li>normalize: ${result.normalize}</li>
+	<li>Auto-Fix = ${result.fix}</li>
+	<li>Normalize = ${result.normalize}</li>
+	<li>Errors and warnings (not fixed): ${result.totalProblemsFound}</li>
 	<c:if test="${result.fix || result.normalize}">
 	  	<li><a href="javascript:switchit('result${rstatus.index}owl')">Generated OWL:</a></li>
 		<ul id="result${rstatus.index}owl" style="display: none">
@@ -46,10 +50,17 @@
 	</c:if>
 	<ul id="result${rstatus.index}" style="display: none">
 	  <c:forEach var="errorType" items="${result.error}" varStatus="estatus">
-		<li><a href="javascript:switchit('result${rstatus.index}type${estatus.index}')">${errorType.type}</a>&nbsp;(<em>${errorType.code}</em>):&nbsp;${errorType.message}</li>
+		<li title="Click for error cases">
+			<a href="javascript:switchit('result${rstatus.index}type${estatus.index}')">${errorType.type}</a>
+			&nbsp;${errorType.message}&nbsp;(<b>code: <em>${errorType.code}</em>; not fixed cases: <em>${errorType.totalErrorCases}</em></b>)
+		</li>
 		<ul id="result${rstatus.index}type${estatus.index}" style="display: none">
 		<c:forEach var="errorCase" items="${errorType.errorCase}">
-			<li><b>${errorCase.object}</b>&nbsp;(rule: ${errorCase.reportedBy}):<div>${errorCase.message}</div></li>
+			<li>
+				<c:if test="${errorCase.fixed}"><b>[FIXED!]</b>&nbsp;</c:if>
+				rdfid:<b>&nbsp;${errorCase.object}</b>
+				<div>${errorCase.message}</div>(found by: <em>${errorCase.reportedBy}</em>)
+			</li>
 		</c:forEach>
 		</ul>
 	  </c:forEach>
