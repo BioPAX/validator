@@ -126,15 +126,17 @@ public class Normalizer {
 				if (uref != null) 
 					normalizeID(model, bpe, uref.getDb(), uref.getId());
 				else 
-					log.error("Cannot normalize ControlledVocabulary: " +
-					"no unification xrefs found in " + bpe.getRDFId());
+					if(log.isInfoEnabled())
+						log.info("Cannot normalize ControlledVocabulary: " +
+							"no unification xrefs found in " + bpe.getRDFId());
 			} else if(bpe instanceof EntityReference) {
 				UnificationXref uref = getFirstUnificationXrefOfEr((EntityReference) bpe);
 				if (uref != null) 
 					normalizeID(model, bpe, uref.getDb(), uref.getId());
 				else 
-					log.error("Cannot normalize EntityReference: " +
-					"no unification xrefs found in " + bpe.getRDFId());
+					if(log.isInfoEnabled())
+						log.info("Cannot normalize EntityReference: " +
+							"no unification xrefs found in " + bpe.getRDFId());
 			} else if(bpe instanceof Provenance) {
 				Provenance pro = (Provenance) bpe;
 				String name = pro.getStandardName();
@@ -143,7 +145,8 @@ public class Normalizer {
 				if (name != null) 
 					normalizeID(model, pro, name, null);
 				else 
-					log.error("Cannot normalize Provenance: " +
+					if(log.isInfoEnabled())
+						log.info("Cannot normalize Provenance: " +
 					"no standard names found in " + bpe.getRDFId());
 			} 
 		}

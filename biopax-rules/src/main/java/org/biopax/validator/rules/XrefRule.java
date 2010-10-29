@@ -71,40 +71,21 @@ public class XrefRule extends AbstractRule<Xref>{
 						 */
 						i = regxp.lastIndexOf(':');
 						if(i>0) {
-							String prefix = regxp.substring(0, i+1).toUpperCase();
+							// guess, regexp looks like "^GO:%d{7}", and we want to get "GO:"
+							String prefix = regxp.substring(1, i).toUpperCase();
+							if (logger.isDebugEnabled())
+								logger.debug("Trying to fix id with missing prefix: " + prefix);
 							if(preferedDbName.equalsIgnoreCase(xrefHelper.getPrimaryDbName(prefix))
 									&& !id.toUpperCase().startsWith(prefix)) 
 							{
-								x.setId(prefix + id);
+								x.setId(prefix + ':' + id);
 								error(x, "invalid.id.format", true);
 								if (logger.isDebugEnabled())
 									logger.debug(x.getModelInterface().getSimpleName() 
 										+ " " + x + " 'id' auto-fixed! (was: " + id + ")");
 							}
 						}
-						
-						/*
-						if(db.equalsIgnoreCase("CHEBI") 
-							&& !id.toUpperCase().startsWith("CHEBI")) 
-						{
-							x.setId("CHEBI:" + id);
-							error(x, "invalid.id.format", true);
-						}
-						//
-						if((xrefHelper.getPrimaryDbName("MI").equalsIgnoreCase(preferedDbName))
-								&& !id.toUpperCase().startsWith("MI")) 
-						{
-							x.setId("MI:" + id);
-							error(x, "invalid.id.format", true);
-						}
-						
-						if((xrefHelper.getPrimaryDbName("GO").equalsIgnoreCase(preferedDbName))
-								&& !id.toUpperCase().startsWith("GO")) 
-						{
-							x.setId("GO:" + id);
-							error(x, "invalid.id.format", true);
-						}
-						*/
+
 					}
 				}
 			} 
