@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.core.annotation.Order;
 
+import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.io.simpleIO.SimpleReader.Triple;
 import org.biopax.paxtools.model.BioPAXElement;
@@ -188,18 +189,25 @@ public class ExceptionsAspect extends AbstractAspect {
     		" && args(triple,model)")
     public void adviseBindValue(ProceedingJoinPoint jp, Triple triple, Model model) {
     	SimpleReader reader = (SimpleReader) jp.getTarget();
-    	// try to find better object to report with
+    	// try to find the best object to report about...
     	Object o = reader;
+    	String loc = reader.getXmlStreamInfo();
     	BioPAXElement el = model.getByID(triple.domain);
     	if(el != null) {
     		o =  el;
+			PropertyEditor editor = reader.getEditorMap()
+				.getEditorForProperty(triple.property, el.getModelInterface());
+			if (editor == null) {
+				report(el, BiopaxValidatorUtils.getId(el), "unknown.biopax.property", 
+					"reader", Behavior.ERROR, false, triple.property);
+			}
     	} 
-    	
-        try {
-            jp.proceed();
-        } catch (Throwable t) {
-        	reportException(t, o); //, triple);
-        }
+    	    	
+		try {
+			jp.proceed();
+		} catch (Throwable t) {
+			reportException(t, o); // , triple);
+		}
     }
     
     @Around("execution(* org.biopax.paxtools.controller.PropertyEditor*+.checkRestrictions(..)) " +
@@ -240,14 +248,9 @@ public class ExceptionsAspect extends AbstractAspect {
     @Before("execution(* org.biopax.paxtools.io.simpleIO.SimpleReader.skip(..))")
 	public void adviseUnknownClass(JoinPoint jp) {
     	SimpleReader reader = (SimpleReader) jp.getTarget();
-    	String bpeId = null;
-    	try {
-    		bpeId = reader.getId();
-    	} catch (NullPointerException e) {
-    		bpeId = reader.getXmlStreamInfo();
-		}
-		report(reader, bpeId, "unknown.biopax.class", 
-			"reader", Behavior.ERROR, false, reader.getXmlStreamInfo());	
+    	String loc = reader.getXmlStreamInfo();
+		report(reader, loc, "unknown.biopax.class", 
+			"reader", Behavior.ERROR, false, loc);	
 	}
     
 	/**
@@ -273,5 +276,5 @@ public class ExceptionsAspect extends AbstractAspect {
 					"duplicateNamesAdvice", Behavior.WARNING, false, name);
 		}
 	}
-
+	
 }

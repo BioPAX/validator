@@ -43,7 +43,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  * @author rodche
  */
-@Ignore // TODO I suspect that AspectJ LTW (using spring-instrument.jar) does not work within maven env...
+//@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:validator-aop-context.xml"})
 public class AOPAspectJLTWIntegrationTest {
@@ -161,7 +161,17 @@ public class AOPAspectJLTWIntegrationTest {
     	Validation validation = new Validation();
     	validator.importModel(validation, getClass()
     			.getResourceAsStream("testDuplicateNamesImport.xml"));
-    	ErrorType error = validation.findErrorType("duplicate.names", Behavior.ERROR);
+    	ErrorType error = validation.findErrorType("duplicate.names", Behavior.WARNING);
+    	assertNotNull(error);
+    }
+    
+    
+    @Test
+    public void testSyntaxErrors() throws IOException {
+    	Validation validation = new Validation();
+    	validator.importModel(validation, getClass()
+    			.getResourceAsStream("testSyntaxErrors.xml"));    	
+    	ErrorType error = validation.findErrorType("unknown.biopax.property", Behavior.ERROR);
     	assertNotNull(error);
     }
 }
