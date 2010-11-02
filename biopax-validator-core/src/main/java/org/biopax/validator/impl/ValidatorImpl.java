@@ -7,6 +7,7 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biopax.paxtools.converter.OneTwoThree;
 import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.BioPAXElement;
@@ -78,10 +79,18 @@ public class ValidatorImpl implements Validator {
 		
 		// usually, there is one model, but if they are many...
 		for (Model model : findModel(validation)) {
-			if (model != null) {
+			
 				if (log.isDebugEnabled()) {
 					log.debug("validating model: " + model + " that has "
 							+ model.getObjects().size() + " objects");
+				}
+				
+				// if normalize==true, convert to the L3 first
+				if (model.getLevel() != BioPAXLevel.L3
+						&& validation.isNormalize()) {
+					if (log.isInfoEnabled())
+						log.info("Converting model to BioPAX Level3...");
+					model = (new OneTwoThree()).filter(model);
 				}
 				
 				for (Rule rule : rules) {
@@ -99,11 +108,6 @@ public class ValidatorImpl implements Validator {
 					}
 				}
 				
-			} else {
-				log.warn("Model is null (" + validation + ")");
-			}
-			
-			if (model != null) {	
 				// add comments and some statistics
 				if (model.getLevel() == BioPAXLevel.L3) {
 					validation.addComment("number of interactions : "
@@ -123,7 +127,6 @@ public class ValidatorImpl implements Validator {
 					validation.addComment("number of pathways : "
 							+ model.getObjects(pathway.class).size());
 				}
-				
 				
 				/* TODO think how to better return the fixed OWL when the validation has multiple models...
 				 * For now, it will simply append - 
@@ -157,7 +160,6 @@ public class ValidatorImpl implements Validator {
 					}
 				}
 			}
-		}
 
 	}
 	
@@ -289,15 +291,15 @@ public class ValidatorImpl implements Validator {
 		// add to the corresponding validation result
 		for(Validation v: validations) { 
 			if(log.isTraceEnabled()) {
-				log.trace("Now reporting: " + errorWithSingleCase.toString() 
+				log.trace("Reporting: " + errorWithSingleCase.toString() 
 						+ " "+ errorWithSingleCase.getErrorCase().toArray()[0] + 
 						" in: " + v.getDescription() + 
 						"; fixed=" + setFixed);
 			}
 			
-			// to make sure it's consistent with the setFixed parameter!
+			// to be consistent with the setFixed parameter!
 			for(ErrorCaseType ect : errorWithSingleCase.getErrorCase()) {
-				ect.setFixed(setFixed); 
+				ect.setFixed(setFixed && v.isFix()); 
 			}
 			// add or update the error case(s)
 			v.addError(errorWithSingleCase);

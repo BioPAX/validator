@@ -171,7 +171,17 @@ public class AOPAspectJLTWIntegrationTest {
     	Validation validation = new Validation();
     	validator.importModel(validation, getClass()
     			.getResourceAsStream("testSyntaxErrors.xml"));    	
-    	ErrorType error = validation.findErrorType("unknown.biopax.property", Behavior.ERROR);
+    	ErrorType error = validation.findErrorType("unknown.property", Behavior.ERROR);
     	assertNotNull(error);
+    }
+    
+    @Test
+    public void testClonedUtilityClass() throws IOException {
+    	Validation validation = new Validation();
+    	validator.importModel(validation, getClass()
+    			.getResourceAsStream("testEvidenceEquivalence.xml")); 
+    	validator.validate(validation);
+    	ErrorType error = validation.findErrorType("cloned.utility.class", Behavior.WARNING);
+    	assertNull(error);
     }
 }

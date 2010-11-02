@@ -49,8 +49,9 @@ public interface Rule<T> {
      * 
      * This is not only for logging, but also defines 
      * the action it takes when reports errors. 
-     * For instance, 'FAIL' could tell the exception to pop up, 
+     * For instance, 
      * 'ERROR' - log as 'error' and continue, 
+     * 'WARNING' - log as 'warning' and continue, 
      * 'IGNORE' - do not check or even mention it, etc.
      * 
      * @return current Behavior

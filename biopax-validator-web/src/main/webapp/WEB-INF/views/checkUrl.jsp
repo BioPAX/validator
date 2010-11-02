@@ -70,15 +70,9 @@
 		<br/>
 		<input type="checkbox" name="normalize" value="true"/>
 		<label>Normalize! (<b>experimental:</b> where it is possible and makes sense, replaces RDFIDs of entity references, CVs, bioSource 
-		with Miriam's standard URNs; also generates new IDs like <em>urn:biopax:*Xref:&lt;db&gt;_&lt;id&gt;_&lt;ver&gt;</em> for Xrefs; 
-		this eases BioPAX data integration, sharing, and application of semantic web technologies)</label>
-		<br/>
-		<br/>
-		<input type="checkbox" name="upgrade" value="true" disabled="disabled"/>
-		<label><em>Upgrade (to Level3) first! (<b>coming soon</b>; currently, with a few exceptions, only syntax errors are checked in L2 data)</em></label>
-		<br/>
-		<input type="checkbox" name="convert" value="true" disabled="disabled"/>
-		<label><em>PSI-MI to BioPAX (<b>may be useful...</b>)</em></label>
+		with Miriam's standard URNs; also generates new IDs like <em>urn:biopax:*Xref:&lt;db&gt;_&lt;id&gt;_&lt;ver&gt;</em> for Xrefs, 
+		this eases BioPAX data integration, sharing, and application of semantic web technologies; 
+		if required, data are auto-converted to BioPAX Level3 first.)</label>
 		<br/>
 	</div>
 		<div class="form-row" style="padding-top: 2em;">

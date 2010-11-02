@@ -198,8 +198,15 @@ public class ExceptionsAspect extends AbstractAspect {
 			PropertyEditor editor = reader.getEditorMap()
 				.getEditorForProperty(triple.property, el.getModelInterface());
 			if (editor == null) {
-				report(el, BiopaxValidatorUtils.getId(el), "unknown.biopax.property", 
-					"reader", Behavior.ERROR, false, triple.property);
+				// auto-fix (for some)
+				if(triple.property.equals("taxonXref")) {
+					report(el, BiopaxValidatorUtils.getId(el), "unknown.property", 
+							"reader", Behavior.ERROR, true, triple.property + " - replaced with 'xref'!");
+					triple.property = "xref";
+				} else {
+					report(el, BiopaxValidatorUtils.getId(el), "unknown.property", 
+							"reader", Behavior.ERROR, false, triple.property + " - skipped!");
+				}
 			}
     	} 
     	    	
@@ -249,7 +256,7 @@ public class ExceptionsAspect extends AbstractAspect {
 	public void adviseUnknownClass(JoinPoint jp) {
     	SimpleReader reader = (SimpleReader) jp.getTarget();
     	String loc = reader.getXmlStreamInfo();
-		report(reader, loc, "unknown.biopax.class", 
+		report(reader, loc, "unknown.class", 
 			"reader", Behavior.ERROR, false, loc);	
 	}
     
@@ -273,7 +280,7 @@ public class ExceptionsAspect extends AbstractAspect {
 		}
 		if (bpe.getName().contains(name)) {
 			report(bpe, BiopaxValidatorUtils.getId(bpe), "duplicate.names",
-					"duplicateNamesAdvice", Behavior.WARNING, false, name);
+					"duplicateNamesAdvice", Behavior.WARNING, true, name);
 		}
 	}
 	

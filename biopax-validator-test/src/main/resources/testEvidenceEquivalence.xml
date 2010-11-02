@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#">
+<owl:Ontology rdf:about="">
+ <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl#" />
+</owl:Ontology>
+
+<bp:UnificationXref rdf:about="ExpType_MI_0492">
+ <bp:db rdf:datatype = "xsd:string">MOLECULAR INTERACTIONS ONTOLOGY</bp:db>
+ <bp:id rdf:datatype = "xsd:string">MI:0492</bp:id>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="ExpType_MI_0493">
+ <bp:db rdf:datatype = "xsd:string">MOLECULAR INTERACTIONS ONTOLOGY</bp:db>
+ <bp:id rdf:datatype = "xsd:string">MI:0493</bp:id>
+</bp:UnificationXref>
+
+<bp:EvidenceCodeVocabulary rdf:about="EvidenceCodeVocab_1">
+ <bp:xref rdf:resource="ExpType_MI_0492" />
+ <bp:term rdf:datatype = "xsd:string">in vitro</bp:term>
+</bp:EvidenceCodeVocabulary>
+
+<bp:EvidenceCodeVocabulary rdf:about="EvidenceCodeVocab_2">
+ <bp:xref rdf:resource="ExpType_MI_0493" />
+ <bp:term rdf:datatype = "xsd:string">in vivo</bp:term>
+</bp:EvidenceCodeVocabulary>
+
+<bp:Evidence rdf:about="Evidence_InVivo">
+ <bp:evidenceCode rdf:resource="EvidenceCodeVocab_2" />
+</bp:Evidence>
+
+<bp:Evidence rdf:about="Evidence_InVitro">
+ <bp:evidenceCode rdf:resource="EvidenceCodeVocab_1" />
+</bp:Evidence>
+
+</rdf:RDF>

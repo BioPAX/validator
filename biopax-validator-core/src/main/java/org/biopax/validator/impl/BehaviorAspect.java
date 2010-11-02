@@ -42,7 +42,7 @@ public class BehaviorAspect extends AbstractAspect {
     				((BioPAXElement)thing).getRDFId() : thing.toString();
             logger.trace(r.getName() + " (" + r.getBehavior() + ") checks " + what);
         }
-        if (!Behavior.IGNORE.equals(r.getBehavior())) {
+        if (r.getBehavior() != Behavior.IGNORE) {
         	jp.proceed();
         } else {
             if (logger.isTraceEnabled()) {
