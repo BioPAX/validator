@@ -8,7 +8,6 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.validator.Validator;
@@ -110,20 +109,15 @@ public class ValidatorController {
 		validator.validate(result);
     	validatorResponse.addValidationResult(result);
     	validator.getResults().remove(result);
-    	String owl = result.getFixedOwl();
     	
     	if("xml".equalsIgnoreCase(retDesired)) {
         	BiopaxValidatorUtils.write(result, writer, null);
     	} else if("html".equalsIgnoreCase(retDesired)) {
-			if(owl != null) {
-				// encode OWL for displaying on the HTML page
-				result.setFixedOwl(StringEscapeUtils.escapeHtml(owl));
-			}
 			model.addAttribute("response", validatorResponse);
 			return "groupByCodeResponse";
 		} else { // owl only
-			if(owl != null)
-				writer.write(owl);
+			if(result.getOwl() != null)
+				writer.write(result.getOwl());
 			else
 				return errorResponse(model, "checkUrl", "No BioPAX data returned.");
 		}

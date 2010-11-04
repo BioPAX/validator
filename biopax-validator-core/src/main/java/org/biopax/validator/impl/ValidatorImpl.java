@@ -1,14 +1,11 @@
 package org.biopax.validator.impl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.paxtools.converter.OneTwoThree;
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
@@ -25,7 +22,6 @@ import org.biopax.validator.result.ErrorCaseType;
 import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.result.Validation;
 import org.biopax.validator.utils.BiopaxValidatorException;
-import org.biopax.validator.utils.Normalizer;
 import org.biopax.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -128,37 +124,6 @@ public class ValidatorImpl implements Validator {
 							+ model.getObjects(pathway.class).size());
 				}
 				
-				/* TODO think how to better return the fixed OWL when the validation has multiple models...
-				 * For now, it will simply append - 
-				 * <?xml?><rdf:RDF>..</rdf:RDF>
-				 * <?xml?><rdf:RDF>..</rdf:RDF> 
-				 * <?xml?> etc...
-				*/ 
-				if(validation.isFix() || validation.isNormalize()) {
-					try {
-						String owlModel = null;
-						// normalize?
-						if(validation.isNormalize()) {
-							Normalizer normalizer = new Normalizer(validation);
-							owlModel = normalizer.normalize(model);
-						} else {
-							// export the model to OWL
-							SimpleExporter exporter = new SimpleExporter(model.getLevel());
-							ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-							exporter.convertToOWL(model, outputStream);
-							owlModel = outputStream.toString("UTF-8");
-						}
-						// append to previous owl data (of other models, if any, for the same validation obj.)
-						String owl = validation.getFixedOwl();
-						if(owl == null) 
-							owl = "";
-						owl +=  owlModel + System.getProperty("line.separator");
-						validation.setFixedOwl(owl);
-					} catch (IOException e) {
-						throw new BiopaxValidatorException(
-							"Failed to export modified model!", e);
-					}
-				}
 			}
 
 	}

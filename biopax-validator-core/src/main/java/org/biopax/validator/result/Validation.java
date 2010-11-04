@@ -1,12 +1,19 @@
 package org.biopax.validator.result;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
 import javax.xml.bind.annotation.*;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.biopax.paxtools.io.simpleIO.SimpleExporter;
+import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.util.AbstractFilterSet;
 import org.biopax.validator.Behavior;
+import org.biopax.validator.utils.BiopaxValidatorException;
+import org.biopax.validator.utils.Normalizer;
 
 
 @XmlType//(namespace="http://biopax.org/validator/2.0/schema", name="ValidationResult")
@@ -16,7 +23,6 @@ public class Validation implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private final Set<ErrorType> error;
-	private String fixedOwl;
 	private String description;
 	private final Set<String> comment;
 	
@@ -63,14 +69,78 @@ public class Validation implements Serializable {
 		error.addAll(errors);
 	}
 	
-	public String getFixedOwl() {
+	
+	/**
+	 * Returns current BioPAX OWL
+	 * (if either 'fix' or 'normalize' are true)!
+	 * 
+	 * @return
+	 */
+	@XmlElement(required=false)
+	public String getOwl() {
+		String fixedOwl = "";
+
+		if (isFix() || isNormalize()) {
+			for (Model model : getObjects(Model.class)) {
+				/*
+				 * TODO think how to better return the fixed OWL when the
+				 * validation has multiple models... For now, it will simply
+				 * append - <?xml?><rdf:RDF>..</rdf:RDF>
+				 * <?xml?><rdf:RDF>..</rdf:RDF> <?xml?> etc...
+				 */
+				try {
+					String owlModel = null;
+					// normalize?
+					if (isNormalize()) {
+						Normalizer normalizer = new Normalizer(this);
+						owlModel = normalizer.normalize(model);
+					} else {
+						// export the model to OWL
+						SimpleExporter exporter = new SimpleExporter(model
+								.getLevel());
+						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+						exporter.convertToOWL(model, outputStream);
+						owlModel = outputStream.toString("UTF-8");
+					}
+					// append to previous owl data (of other models, if any, for
+					// the same validation obj.)
+					fixedOwl += (owlModel == null) ? "" 
+						: owlModel + System.getProperty("line.separator");
+				} catch (IOException e) {
+					throw new BiopaxValidatorException(
+							"Failed to export modified model!", e);
+				}
+			}
+		}
+
 		return fixedOwl;
 	}
 
-	public void setFixedOwl(String newFixedOwl) {
-		fixedOwl = newFixedOwl;
+	/**
+	 * Returns current BioPAX OWL in 
+	 * the HTML-escaped form (to show on pages).
+	 * 
+	 * @return
+	 */
+	@XmlTransient
+	public String getOwlHtmlEscaped() {
+		return StringEscapeUtils.escapeHtml(getOwl())
+		.replaceAll(System.getProperty("line.separator"), 
+				System.getProperty("line.separator")+"<br/>");
 	}
 
+	/**
+	 * Returns current BioPAX OWL in 
+	 * the XML-escaped form 
+	 * (to include inside another XML data).
+	 * 
+	 * @return
+	 */
+	@XmlTransient
+	public String getOwlXmlEscaped() {
+		return StringEscapeUtils.escapeXml(getOwl());
+	}
+	
 	/**
 	 * Adds the error (with cases) to the collection.
 	 * 
@@ -105,7 +175,7 @@ public class Validation implements Serializable {
 		this.description = description;
 	}
 	
-	@XmlAttribute
+	@XmlAttribute(required=false)
 	public String getDescription() {
 		return description;
 	}
@@ -250,7 +320,7 @@ public class Validation implements Serializable {
 		this.fix = fix;
 	}
 
-	@XmlAttribute
+	@XmlAttribute(required=false)
 	public Behavior getThreshold() {
 		return threshold;
 	}

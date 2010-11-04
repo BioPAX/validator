@@ -57,7 +57,7 @@ public class NormalizerTest {
 	}
 
 	@Test
-	public final void testNormalize() {
+	public final void testNormalize() throws UnsupportedEncodingException {
 		Model model = BioPAXLevel.L3.getDefaultFactory().createModel();
     	Xref ref = model.addNew(UnificationXref.class,
     			"http://www.pathwaycommons.org/import#Xref1");
@@ -134,7 +134,7 @@ public class NormalizerTest {
 		//System.out.println(xml);
 		
 		// check
-		model = simpleReader.convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
+		model = simpleReader.convertFromOWL(new ByteArrayInputStream(xml.getBytes("UTF-8")));
 		
 		// check Xref
 		BioPAXElement bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "UnificationXref:UniProt_P68250");

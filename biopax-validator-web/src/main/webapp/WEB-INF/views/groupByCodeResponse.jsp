@@ -1,6 +1,8 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page language="java" contentType="text/html; charset=UTF-8"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -43,16 +45,18 @@
 	<li>Normalize = ${result.normalize}</li>
 	<li>Errors and warnings (not fixed): ${result.totalProblemsFound}</li>
 	<c:if test="${result.fix || result.normalize}">
-	  	<li><a href="javascript:switchit('result${rstatus.index}owl')">Generated OWL:</a></li>
+	  	<li><a href="javascript:switchit('result${rstatus.index}owl')">Generated BioPAX OWL</a>&nbsp;
+	  	("escaped" for HTML; if you do plan to process the data, better go back and choose either "BioPAX only" or "XML" as return format.)</li>
 		<ul id="result${rstatus.index}owl" style="display: none">
-			<li><div>${result.fixedOwl}</div></li>
+			<li><div>${result.owlHtmlEscaped}</div></li>
 		</ul>
 	</c:if>
 	<ul id="result${rstatus.index}" style="display: none">
 	  <c:forEach var="errorType" items="${result.error}" varStatus="estatus">
 		<li title="Click for error cases">
 			<a href="javascript:switchit('result${rstatus.index}type${estatus.index}')">${errorType.type}</a>
-			&nbsp;${errorType.message}&nbsp;(<b>code: <em>${errorType.code}</em>; not fixed cases: <em>${errorType.totalErrorCases}</em></b>)
+			&nbsp;[<b>code: <em>${errorType.code}</em>; cases (left): <em>${errorType.totalErrorCases}</em></b>]
+			&nbsp;${errorType.message}
 		</li>
 		<ul id="result${rstatus.index}type${estatus.index}" style="display: none">
 		<c:forEach var="errorCase" items="${errorType.errorCase}">

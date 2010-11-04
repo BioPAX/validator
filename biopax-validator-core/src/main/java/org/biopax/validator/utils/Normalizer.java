@@ -94,7 +94,7 @@ public class Normalizer {
 	public String normalize(String biopaxOwlData) {
 		
 		if(biopaxOwlData == null || biopaxOwlData.length() == 0) 
-			throw new IllegalArgumentException("no data.");
+			throw new IllegalArgumentException("no data. " + extraInfo());
 		
 		// if required, upgrade to L3
 		biopaxOwlData = convertToLevel3(biopaxOwlData);
@@ -103,9 +103,17 @@ public class Normalizer {
 		biopaxOwlData = biopaxOwlData.replaceAll("taxonXref","xref");
 		
 		// build the model
-		Model model = biopaxReader.convertFromOWL(new ByteArrayInputStream(biopaxOwlData.getBytes()));
+		Model model = null;
+		try {
+			model = biopaxReader.convertFromOWL(
+				new ByteArrayInputStream(biopaxOwlData.getBytes("UTF-8")));
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("Failed! " + extraInfo(), e);
+		}
+		
 		if(model == null || model.getLevel() != BioPAXLevel.L3) {
-			throw new IllegalArgumentException("Data is not BioPAX L3!");
+			throw new IllegalArgumentException("Data is not BioPAX L3! " 
+					+ extraInfo());
 		}
 		
 		// clean/normalize xrefs first (they are used next)!
@@ -128,7 +136,8 @@ public class Normalizer {
 				else 
 					if(log.isInfoEnabled())
 						log.info("Cannot normalize ControlledVocabulary: " +
-							"no unification xrefs found in " + bpe.getRDFId());
+							"no unification xrefs found in " + bpe.getRDFId()
+							+ ". " + extraInfo());
 			} else if(bpe instanceof EntityReference) {
 				UnificationXref uref = getFirstUnificationXrefOfEr((EntityReference) bpe);
 				if (uref != null) 
@@ -136,7 +145,8 @@ public class Normalizer {
 				else 
 					if(log.isInfoEnabled())
 						log.info("Cannot normalize EntityReference: " +
-							"no unification xrefs found in " + bpe.getRDFId());
+							"no unification xrefs found in " + bpe.getRDFId()
+							+ ". " + extraInfo());
 			} else if(bpe instanceof Provenance) {
 				Provenance pro = (Provenance) bpe;
 				String name = pro.getStandardName();
@@ -147,7 +157,8 @@ public class Normalizer {
 				else 
 					if(log.isInfoEnabled())
 						log.info("Cannot normalize Provenance: " +
-					"no standard names found in " + bpe.getRDFId());
+								"no standard names found in " + bpe.getRDFId()
+								+ ". " + extraInfo());
 			} 
 		}
 		
@@ -183,7 +194,8 @@ public class Normalizer {
 			// workaround a nullpoinerexception
 			if(name == null || "".equals(name)) {
 				log.error(ref.getModelInterface().getSimpleName() 
-						+ " " + ref + " - 'db' property is empty!");
+					+ " " + ref + " - 'db' property is empty! "
+						+ extraInfo());
 				continue;
 			}
 			
@@ -193,20 +205,32 @@ public class Normalizer {
 				name = MiriamLink.getName(urn);
 				ref.setDb(name);
 			} catch (IllegalArgumentException e) {
-				log.error("Unknown or misspelled database name! Won't fix for now... " + e);
+				log.error("Unknown or misspelled database name! " +
+					e + ". " + extraInfo());
 			}
 			
 			// build new standard rdfid
-			String rdfid =  BIOPAX_URI_PREFIX + ref.getModelInterface().getSimpleName() 
-				+ ":" + URLEncoder.encode(name + "_" + ref.getId());
-			if(ref.getIdVersion() != null && !"".equals(ref.getIdVersion().trim()))
-				rdfid += "_" + ref.getIdVersion();
-			// replace xref or update ID
-			updateID(model, ref, rdfid);
+			String rdfid = null;
+			try {
+				rdfid = BIOPAX_URI_PREFIX + ref.getModelInterface().getSimpleName() 
+					+ ":" + URLEncoder.encode(name + "_" + ref.getId(), "UTF-8");
+				if(ref.getIdVersion() != null && !"".equals(ref.getIdVersion().trim()))
+					rdfid += "_" + ref.getIdVersion();
+				// replace xref or update ID
+				updateID(model, ref, rdfid);
+				
+			} catch (UnsupportedEncodingException e) {
+				log.error("Failed to create RDFID from xref: " +
+						ref + "! " + e + ". " + extraInfo());
+			}
 		}
 	}	
 	
 	
+	private String extraInfo() {
+		return (validation != null) ? validation.getDescription() : "";
+	}
+
 	/**
 	 * Sets Miriam standard URI (if possible) for a utility object 
 	 * (but not for *Xref!); also removes duplicates...
@@ -219,7 +243,8 @@ public class Normalizer {
 	private void normalizeID(Model model, UtilityClass bpe, String db, String id) 
 	{	
 		if(bpe instanceof Xref) {
-			log.error("normalizeID called for Xref (hey, this is a bug!)");
+			log.error("normalizeID called for Xref (hey, this is a bug!). "
+				+ extraInfo());
 			return;
 		}
 		
@@ -235,7 +260,7 @@ public class Normalizer {
 			log.error("Cannot get a Miriam standard ID for " + bpe 
 				+ " (" + bpe.getModelInterface().getSimpleName()
 				+ ") " + ", using " + db + ":" + id 
-				+ ". " + e);
+				+ ". " + e + ". " + extraInfo());
 			return;
 		}
 		
@@ -245,7 +270,7 @@ public class Normalizer {
 		} catch (Exception e) {
 			log.error("Failed to replace ID of " + bpe 
 				+ " (" + bpe.getModelInterface().getSimpleName()
-				+ ") with '" + urn + "'. " + e);
+				+ ") with '" + urn + "'. " + e + ". " + extraInfo());
 			return;
 		}
 	}
@@ -261,7 +286,7 @@ public class Normalizer {
 					e.setDisplayName(e.getStandardName());
 					if (log.isInfoEnabled())
 						log.info(e + " displayName auto-fix: "
-								+ e.getDisplayName());
+								+ e.getDisplayName() + ". " + extraInfo());
 					setFixed(BiopaxValidatorUtils.getId(e), "physicalEntityDisplayNameCRRule");
 				} else if (!e.getName().isEmpty()) {
 					String dsp = e.getName().iterator().next();
@@ -271,7 +296,8 @@ public class Normalizer {
 					}
 					e.setDisplayName(dsp);
 					if (log.isInfoEnabled())
-						log.info(e + " displayName auto-fix: " + dsp);
+						log.info(e + " displayName auto-fix: " + dsp
+							+ ". " + extraInfo());
 					setFixed(BiopaxValidatorUtils.getId(e), "physicalEntityDisplayNameCRRule");
 				}
 			}
@@ -311,7 +337,8 @@ public class Normalizer {
 		try {
 			(new SimpleExporter(model.getLevel())).convertToOWL(model, out);
 		} catch (IOException e) {
-			throw new RuntimeException("Conversion to OWL failed.", e);
+			throw new RuntimeException("Conversion to OWL failed. " 
+				+ extraInfo(), e);
 		}
 		return out.toString();
 	}
@@ -334,14 +361,15 @@ public class Normalizer {
 			if(log.isInfoEnabled())
 				log.info("Removing duplicate, updating links" +
 					" (object properties) using existing " 
-					 + rdfid + " element instead of " + u.getRDFId());
+					 + rdfid + " element instead of " + u.getRDFId()
+					 + ". " + extraInfo());
 			
 			// TODO assert(v.isEquivalent(u)); - strictly speaking
 			if(!v.isEquivalent(u)) {
 				log.error(u + " (" + u.getRDFId() + ", " + u.getModelInterface().getSimpleName()
 					+ ") is replaced with NOT semantically equivalent " + 
 					v + " (" + v.getRDFId() + ", " + v.getModelInterface().getSimpleName()
-					+ ")! Ignored...");
+					+ ")! Ignored... " + extraInfo());
 			}
 			
 			AbstractTraverser traverser = new AbstractTraverser(biopaxReader.getEditorMap()) {
@@ -406,9 +434,23 @@ public class Normalizer {
 	/*
 	 * Gets the first one, the set is not empty, or null.
 	 */
-	private UnificationXref getFirstUnificationXref(XReferrable xr) {
+	private UnificationXref getFirstUnificationXref(XReferrable xr) 
+	{
 		List<UnificationXref> urefs = getUnificationXrefsSorted(xr);
-		return (urefs.isEmpty()) ? null : urefs.get(0);
+		UnificationXref toReturn = null;
+		for(UnificationXref uref : urefs) 
+		{
+			if(uref.getDb() == null || uref.getId() == null) {
+				// report error, skip
+				log.error("UnificationXref's properties 'db' or 'id' " +
+					"cannot be null: " + uref + ", " + uref.getRDFId()
+					+ ". " + extraInfo());
+			} else {
+				toReturn = uref;
+				break;
+			}
+		}
+		return toReturn;
 	}
 
 	
@@ -416,16 +458,30 @@ public class Normalizer {
 	 * The first uniprot or enterz gene xref, if exists, will be returned;
 	 * otherwise, the first one of any kind is the answer.
 	 */
-	private UnificationXref getFirstUnificationXrefOfEr(EntityReference er) {
-		List<UnificationXref> urefs = getUnificationXrefsSorted(er);
-		for(UnificationXref uref : urefs) {
-			if(uref.getDb().toLowerCase().startsWith("uniprot") 
+	private UnificationXref getFirstUnificationXrefOfEr(EntityReference er) 
+	{
+		UnificationXref toReturn = null;
+		
+		for(UnificationXref uref : getUnificationXrefsSorted(er)) 
+		{
+			if(uref.getDb() == null || uref.getId() == null) {
+				// report error, skip
+				log.error("UnificationXref's properties 'db' or 'id' " +
+					"cannot be null: " + uref + ", " + uref.getRDFId()
+					+ ". " + extraInfo());
+			} 
+			else if(uref.getDb().toLowerCase().startsWith("uniprot") 
 				|| uref.getDb().toLowerCase().startsWith("entrez")) {
-				return uref;
+				toReturn = uref;
+				break;
+			} else if(toReturn == null) {
+				// if not already done, pick up the first one for now...
+				toReturn = uref; 
+				// - may be re-assigned later if there are uniprot/entrez ones
 			}
 		}
-		// otherwise, take the first one
-		return (urefs.isEmpty()) ? null : urefs.get(0);
+
+		return toReturn;
 	}
 
 
@@ -455,7 +511,7 @@ public class Normalizer {
 			Model model = reader.convertFromOWL(is);
 			if (model.getLevel() != BioPAXLevel.L3) {
 				if (log.isInfoEnabled())
-					log.info("Converting to BioPAX Level3...");
+					log.info("Converting to BioPAX Level3... " + extraInfo());
 				model = (new OneTwoThree()).filter(model);
 				if (model != null) {
 					SimpleExporter exporter = new SimpleExporter(model.getLevel());
@@ -467,7 +523,8 @@ public class Normalizer {
 			}
 		} catch(Exception e) {
 			throw new RuntimeException(
-					"Failed to reading data or convert to L3!", e);
+				"Failed to reading data or convert to L3! "
+					+ extraInfo(), e);
 		}
 
 		// outta here
