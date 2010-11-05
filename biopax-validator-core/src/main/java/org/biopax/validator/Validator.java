@@ -123,14 +123,6 @@ public interface Validator {
 	 */
 	void validate(Validation validation);
 
-	
-	/**
-	 * Get associated model(s)
-	 * 
-	 * @param key
-	 * @return
-	 */
-	public Collection<Model> findModel(Validation key);
 
 	
     /**

@@ -234,7 +234,7 @@ public class ExceptionsAspect extends AbstractAspect {
     	try {
     		jp.proceed();
     	} catch (Throwable ex) {
-    		reportException(ex, bean, "value: " + value);
+    		reportException(ex, bean, "method: "+ method + ", value: " + value);
     	}
 	}
     

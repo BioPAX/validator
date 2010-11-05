@@ -48,7 +48,7 @@
 	  	<li><a href="javascript:switchit('result${rstatus.index}owl')">Generated BioPAX OWL</a>&nbsp;
 	  	("escaped" for HTML; if you do plan to process the data, better go back and choose either "BioPAX only" or "XML" as return format.)</li>
 		<ul id="result${rstatus.index}owl" style="display: none">
-			<li><div>${result.owlHtmlEscaped}</div></li>
+			<li><div>${result.modelSerializedHtmlEscaped}</div></li>
 		</ul>
 	</c:if>
 	<ul id="result${rstatus.index}" style="display: none">

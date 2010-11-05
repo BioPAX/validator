@@ -38,6 +38,7 @@ import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.ObjectPropertyEditor;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.converter.OneTwoThree;
+import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.BioPAXElement;
@@ -63,7 +64,7 @@ public class Normalizer {
 	 * URI namespace prefix for the utility class IDs 
 	 * generated during data convertion, normalization, merge...
 	 */
-	public static final String BIOPAX_URI_PREFIX = "urn:biopax:normalizer:";
+	public static final String BIOPAX_URI_PREFIX = "urn:biopax:";
 	
 	private SimpleReader biopaxReader;
 	
@@ -73,7 +74,7 @@ public class Normalizer {
 	 * Constructor
 	 */
 	public Normalizer() {
-		biopaxReader = new SimpleReader(); //may be to use 'biopaxReader' bean that uses (new BioPAXFactoryForPersistence(), BioPAXLevel.L3);
+		biopaxReader = new SimpleReader(BioPAXLevel.L3);
 		biopaxReader.mergeDuplicates(true);
 	}
 
@@ -88,8 +89,15 @@ public class Normalizer {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see cpath.importer.Normalizer#normalize(String)
+	/**
+	 * Normalizes BioPAX OWL data and returns
+	 * the result as BioPAX OWL (string).
+	 * 
+	 * This public method is actually intended to use 
+	 * outside the BioPAX Validator framework.
+	 * 
+	 * @param biopaxOwlData
+	 * @return
 	 */
 	public String normalize(String biopaxOwlData) {
 		
@@ -112,76 +120,17 @@ public class Normalizer {
 		}
 		
 		if(model == null || model.getLevel() != BioPAXLevel.L3) {
-			throw new IllegalArgumentException("Data is not BioPAX L3! " 
+			throw new IllegalArgumentException("Failed to create Model! " 
 					+ extraInfo());
 		}
 		
-		// clean/normalize xrefs first (they are used next)!
-		normalizeXrefs(model);
-		
-		// fix displayName where possible
-		fixDisplayName(model);
-		
-		// copy
-		Set<? extends UtilityClass> objects = 
-			new HashSet<UtilityClass>(model.getObjects(UtilityClass.class));
-		// process the rest of utility classes (selectively though)
-		for(UtilityClass bpe : objects) 
-		{
-			if(bpe instanceof ControlledVocabulary || bpe instanceof BioSource) 
-			{
-				UnificationXref uref = getFirstUnificationXref((XReferrable) bpe);
-				if (uref != null) 
-					normalizeID(model, bpe, uref.getDb(), uref.getId());
-				else 
-					if(log.isInfoEnabled())
-						log.info("Cannot normalize ControlledVocabulary: " +
-							"no unification xrefs found in " + bpe.getRDFId()
-							+ ". " + extraInfo());
-			} else if(bpe instanceof EntityReference) {
-				UnificationXref uref = getFirstUnificationXrefOfEr((EntityReference) bpe);
-				if (uref != null) 
-					normalizeID(model, bpe, uref.getDb(), uref.getId());
-				else 
-					if(log.isInfoEnabled())
-						log.info("Cannot normalize EntityReference: " +
-							"no unification xrefs found in " + bpe.getRDFId()
-							+ ". " + extraInfo());
-			} else if(bpe instanceof Provenance) {
-				Provenance pro = (Provenance) bpe;
-				String name = pro.getStandardName();
-				if(name == null) 
-					name = pro.getDisplayName();
-				if (name != null) 
-					normalizeID(model, pro, name, null);
-				else 
-					if(log.isInfoEnabled())
-						log.info("Cannot normalize Provenance: " +
-								"no standard names found in " + bpe.getRDFId()
-								+ ". " + extraInfo());
-			} 
-		}
-		
-		
-		/* 
-		 * We could also "fix" organism property, where it's null,
-		 * a swell (e.g., using the value from the pathway);
-		 * also - check those values in protein references actually
-		 * correspond to what can be found in the UniProt by using
-		 * unification xrefs's 'id'... But this, fortunately, 
-		 * happens in the CPathMerger (a ProteinReference 
-		 * comes from the Warehouse with organism property already set!)
-		 */
+		normalize(model); // L3 only!
 		
 		// return as BioPAX OWL
-		String owl = convertToOWL(model);
-		return owl;
+		return convertToOWL(model);
 	}
 	
 
-	/* (non-Javadoc)
-	 * @see cpath.importer.Normalizer#normalizeXrefs(org.biopax.paxtools.model.Model)
-	 */
 	public void normalizeXrefs(Model model) {
 		// normalize xrefs first: set db name as in Miriam and rdfid as db_id
 		
@@ -364,21 +313,27 @@ public class Normalizer {
 					 + rdfid + " element instead of " + u.getRDFId()
 					 + ". " + extraInfo());
 			
-			// TODO assert(v.isEquivalent(u)); - strictly speaking
 			if(!v.isEquivalent(u)) {
-				log.error(u + " (" + u.getRDFId() + ", " + u.getModelInterface().getSimpleName()
-					+ ") is replaced with NOT semantically equivalent " + 
-					v + " (" + v.getRDFId() + ", " + v.getModelInterface().getSimpleName()
-					+ ")! Ignored... " + extraInfo());
+				String msg = "Replacing existing BioPAX element: " +
+				u + " (" + u.getRDFId() + ", " + u.getModelInterface().getSimpleName()
+				+ ") with DIFFERENT (type or semantics) one: " + 
+				v + " (" + v.getRDFId() + ", " + v.getModelInterface().getSimpleName()
+				+ ")!";
+				if(v.getModelInterface().equals(u.getModelInterface())) {
+					log.error(msg);
+				} else {
+					throw new BiopaxValidatorException(u, msg);
+				}
 			}
 			
-			AbstractTraverser traverser = new AbstractTraverser(biopaxReader.getEditorMap()) {
+			AbstractTraverser traverser = new AbstractTraverser(new SimpleEditorMap(BioPAXLevel.L3)) {
 				@Override
 				protected void visit(Object range, BioPAXElement domain, Model model,
 						PropertyEditor editor) {
 					if(editor instanceof ObjectPropertyEditor && u.equals(range)) {
 						// replace value
-						editor.removeValueFromBean(u, domain);
+						if(editor.isMultipleCardinality())
+							editor.removeValueFromBean(u, domain);
 						editor.setValueToBean(v, domain);
 						if(log.isDebugEnabled()) {
 							log.debug("Replaced " + u.getRDFId() + 
@@ -485,12 +440,84 @@ public class Normalizer {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see cpath.importer.Normalizer#normalize(org.biopax.paxtools.model.Model)
+	/**
+	 * BioPAX normalization 
+	 * (modifies the original Model!)
+	 * 
+	 * @param model
 	 */
-	public String normalize(Model model) {
-		String owl = convertToOWL(model);
-		return normalize(owl);
+	public void normalize(Model model) {
+		/* save curr. state;
+		 * disable error reporting: it generates artifact errors (via AOP)
+		 * during the normalization, because the model is being edited!
+		 */
+		Behavior threshold = null;
+		if(validation != null) {
+			threshold = validation.getThreshold();
+			validation.setThreshold(Behavior.IGNORE);
+		}
+		
+		// clean/normalize xrefs first (they are used next)!
+		normalizeXrefs(model);
+		
+		// fix displayName where possible
+		fixDisplayName(model);
+		
+		// copy
+		Set<? extends UtilityClass> objects = 
+			new HashSet<UtilityClass>(model.getObjects(UtilityClass.class));
+		// process the rest of utility classes (selectively though)
+		for(UtilityClass bpe : objects) 
+		{
+			if(bpe instanceof ControlledVocabulary || bpe instanceof BioSource) 
+			{
+				UnificationXref uref = getFirstUnificationXref((XReferrable) bpe);
+				if (uref != null) 
+					normalizeID(model, bpe, uref.getDb(), uref.getId());
+				else 
+					if(log.isInfoEnabled())
+						log.info("Cannot normalize ControlledVocabulary: " +
+							"no unification xrefs found in " + bpe.getRDFId()
+							+ ". " + extraInfo());
+			} else if(bpe instanceof EntityReference) {
+				UnificationXref uref = getFirstUnificationXrefOfEr((EntityReference) bpe);
+				if (uref != null) 
+					normalizeID(model, bpe, uref.getDb(), uref.getId());
+				else 
+					if(log.isInfoEnabled())
+						log.info("Cannot normalize EntityReference: " +
+							"no unification xrefs found in " + bpe.getRDFId()
+							+ ". " + extraInfo());
+			} else if(bpe instanceof Provenance) {
+				Provenance pro = (Provenance) bpe;
+				String name = pro.getStandardName();
+				if(name == null) 
+					name = pro.getDisplayName();
+				if (name != null) 
+					normalizeID(model, pro, name, null);
+				else 
+					if(log.isInfoEnabled())
+						log.info("Cannot normalize Provenance: " +
+								"no standard names found in " + bpe.getRDFId()
+								+ ". " + extraInfo());
+			} 
+		}
+		
+		
+		/* 
+		 * We could also "fix" organism property, where it's null,
+		 * a swell (e.g., using the value from the pathway);
+		 * also - check those values in protein references actually
+		 * correspond to what can be found in the UniProt by using
+		 * unification xrefs's 'id'... But this, fortunately, 
+		 * happens in the CPathMerger (a ProteinReference 
+		 * comes from the Warehouse with organism property already set!)
+		 */
+		
+		// restore state
+		if(validation != null) {
+			validation.setThreshold(threshold);
+		}
 	}
 
 	

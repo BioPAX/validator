@@ -22,6 +22,7 @@ import org.biopax.validator.result.ErrorCaseType;
 import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.result.Validation;
 import org.biopax.validator.utils.BiopaxValidatorException;
+import org.biopax.validator.utils.Normalizer;
 import org.biopax.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -45,18 +46,19 @@ public class ValidatorImpl implements Validator {
     @Autowired
 	private Set<Rule<?>> rules;  
     
-    
 	private final Set<Validation> results;
     
-    
+	
     public ValidatorImpl() {
 		results = new HashSet<Validation>();
 	}
     
+    
     public void setRules(Set<Rule<?>> rules) {
 		this.rules = rules;
 	}
-		
+
+    
     public Set<Rule<?>> getRules() {
 		return rules;
 	}
@@ -69,64 +71,66 @@ public class ValidatorImpl implements Validator {
     
 	@SuppressWarnings("unchecked")
 	public void validate(Validation validation) {
-		if (validation == null) {
-			throw new BiopaxValidatorException("Failed! Did you import or add a model?");
+		if (validation == null || validation.getModel() == null) {
+			throw new BiopaxValidatorException(
+					"Failed! Did you import a model?");
 		}
-		
-		// usually, there is one model, but if they are many...
-		for (Model model : findModel(validation)) {
-			
-				if (log.isDebugEnabled()) {
-					log.debug("validating model: " + model + " that has "
-							+ model.getObjects().size() + " objects");
-				}
-				
-				// if normalize==true, convert to the L3 first
-				if (model.getLevel() != BioPAXLevel.L3
-						&& validation.isNormalize()) {
-					if (log.isInfoEnabled())
-						log.info("Converting model to BioPAX Level3...");
-					model = (new OneTwoThree()).filter(model);
-				}
-				
-				for (Rule rule : rules) {
-					// rules can check the model or specific elements
-					if(log.isDebugEnabled())
-						log.debug("Current rule is: " + rule.getName());
-					if (rule.canCheck(model)) {
-						rule.check(model, false);
-					} else {
-						for (BioPAXElement el : model.getObjects()) {
-							if (rule.canCheck(el)) {
-								rule.check(el, validation.isFix());
-							}
-						}
+
+		Model model = validation.getModel();
+
+		if (log.isDebugEnabled()) {
+			log.debug("validating model: " + model + " that has "
+					+ model.getObjects().size() + " objects");
+		}
+
+		// if normalize==true, convert to the L3 first
+		if (model.getLevel() != BioPAXLevel.L3 && validation.isNormalize()) {
+			if (log.isInfoEnabled())
+				log.info("Converting model to BioPAX Level3...");
+			model = (new OneTwoThree()).filter(model);
+		}
+
+		for (Rule rule : rules) {
+			// rules can check the model or specific elements
+			if (log.isDebugEnabled())
+				log.debug("Current rule is: " + rule.getName());
+			if (rule.canCheck(model)) {
+				rule.check(model, false);
+			} else {
+				for (BioPAXElement el : model.getObjects()) {
+					if (rule.canCheck(el)) {
+						rule.check(el, validation.isFix());
 					}
 				}
-				
-				// add comments and some statistics
-				if (model.getLevel() == BioPAXLevel.L3) {
-					validation.addComment("number of interactions : "
-							+ model.getObjects(Interaction.class).size());
-					validation.addComment("number of physical entities : "
-							+ model.getObjects(PhysicalEntity.class).size());
-					validation.addComment("number of genes : "
-							+ model.getObjects(Gene.class).size());
-					validation.addComment("number of pathways : "
-							+ model.getObjects(Pathway.class).size());
-				} else {
-					validation.addComment("number of interactions : "
-							+ model.getObjects(interaction.class).size());
-					validation.addComment("number of participants : "
-							+ model.getObjects(physicalEntityParticipant.class)
-									.size());
-					validation.addComment("number of pathways : "
-							+ model.getObjects(pathway.class).size());
-				}
-				
 			}
+		}
+
+		// normalize?
+		if (validation.isNormalize()) {
+			(new Normalizer(validation)).normalize(model);
+		}
+
+		// add comments and some statistics
+		if (model.getLevel() == BioPAXLevel.L3) {
+			validation.addComment("number of interactions : "
+					+ model.getObjects(Interaction.class).size());
+			validation.addComment("number of physical entities : "
+					+ model.getObjects(PhysicalEntity.class).size());
+			validation.addComment("number of genes : "
+					+ model.getObjects(Gene.class).size());
+			validation.addComment("number of pathways : "
+					+ model.getObjects(Pathway.class).size());
+		} else {
+			validation.addComment("number of interactions : "
+					+ model.getObjects(interaction.class).size());
+			validation.addComment("number of participants : "
+					+ model.getObjects(physicalEntityParticipant.class).size());
+			validation.addComment("number of pathways : "
+					+ model.getObjects(pathway.class).size());
+		}
 
 	}
+
 	
 	public Rule<?> findRuleByName(String name) {
 		Rule<?> found = null;
@@ -148,9 +152,12 @@ public class ValidatorImpl implements Validator {
 		simpleReader.mergeDuplicates(true);
 		associate(inputStream, validation);
 		associate(simpleReader, validation);
-		// build the model and associate it with the key (for the post-validation, later in the 'validate' method):
-		Model model = simpleReader.convertFromOWL(inputStream); // during this here, many errors/warnings may be reported via AOP ;)
-		associate(model, validation);
+		/* 
+		 * build a model and associate it with the validation (for post-validation later on);
+		 * during this, many errors/warnings may be caught and reported via AOP ;))
+		 */
+		Model model = simpleReader.convertFromOWL(inputStream); 
+		validation.setModel(model);
 	}
 	
 	
@@ -179,9 +186,12 @@ public class ValidatorImpl implements Validator {
 		}
 		
 		for(Validation r: results) {
-			if (r.getObjects().contains(o)) {
+			if (r.getObjects().contains(o) || o.equals(r.getModel())) 
+			{
 				keys.add(r);
-			} else if (o instanceof BioPAXElement) {
+			} 
+			else if (o instanceof BioPAXElement) 
+			{
 				// associate using member models
 				BioPAXElement bpe = (BioPAXElement) o;
 				for (Model m : r.getObjects(Model.class)) {
@@ -227,20 +237,13 @@ public class ValidatorImpl implements Validator {
 			associate(child, key);
 		}
 	}
-			
-	
-	public Collection<Model> findModel(Validation key) {
-		Collection<Model> mms = new HashSet<Model>();
-		mms.addAll(key.getObjects(Model.class));
-		return mms;
-	}
 
-    
-    public void report(Object obj, ErrorType errorWithSingleCase, boolean setFixed) 
+    	
+    public void report(Object obj, ErrorType err, boolean setFixed) 
     {	
-		if(errorWithSingleCase.getErrorCase().isEmpty()) {
+		if(err.getErrorCase().isEmpty()) {
 			log.error("Attempted to registed an error " +
-				"without any error cases in it: " + errorWithSingleCase);
+				"without any error cases in it: " + err);
 			return;
 		}
     	
@@ -248,26 +251,27 @@ public class ValidatorImpl implements Validator {
 		if(validations.isEmpty()) {
 			// the object is not associated neither with parser nor model
 			if(log.isInfoEnabled())
-				log.info("No active validations exist for the object " 
-				+ obj + "; so end user won't receive this message: " 
-				+ errorWithSingleCase);
+				log.info("No validations are associated with the object: " 
+				+ obj + "; user won't receive this message: " 
+				+ err);
 		}
 		
 		// add to the corresponding validation result
 		for(Validation v: validations) { 
 			if(log.isTraceEnabled()) {
-				log.trace("Reporting: " + errorWithSingleCase.toString() 
-						+ " "+ errorWithSingleCase.getErrorCase().toArray()[0] + 
+				log.trace("Reporting: " + err.toString() 
+						+ " "+ err.getErrorCase().toArray()[0] + 
 						" in: " + v.getDescription() + 
 						"; fixed=" + setFixed);
 			}
 			
 			// to be consistent with the setFixed parameter!
-			for(ErrorCaseType ect : errorWithSingleCase.getErrorCase()) {
+			for(ErrorCaseType ect : err.getErrorCase()) {
 				ect.setFixed(setFixed && v.isFix()); 
 			}
+
 			// add or update the error case(s)
-			v.addError(errorWithSingleCase);
+			v.addError(err);
 		}
 	}
 }

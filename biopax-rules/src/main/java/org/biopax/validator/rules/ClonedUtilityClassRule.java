@@ -101,7 +101,8 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 						}
 						
 						// replace 'range' with 'master'
-						editor.removeValueFromBean(range, domain);
+						if(editor.isMultipleCardinality())
+							editor.removeValueFromBean(range, domain);
 						editor.setValueToBean(master, domain);
 						
 						if(log.isDebugEnabled()) {

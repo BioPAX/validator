@@ -67,7 +67,10 @@ public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
 					if (warnOnDataPropertyValues.contains(value.toString().trim().toUpperCase())) {
 						error(parent, "illegal.property.value", fix, editor.getProperty(), value);
 						if(fix) {
-							editor.removeValueFromBean(value, parent);
+							if(editor.isMultipleCardinality())
+								editor.removeValueFromBean(value, parent);
+							else
+								editor.setValueToBean(null, parent);
 						}
 					}
 				}

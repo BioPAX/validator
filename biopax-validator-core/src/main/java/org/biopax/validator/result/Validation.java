@@ -13,7 +13,6 @@ import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.util.AbstractFilterSet;
 import org.biopax.validator.Behavior;
 import org.biopax.validator.utils.BiopaxValidatorException;
-import org.biopax.validator.utils.Normalizer;
 
 
 @XmlType//(namespace="http://biopax.org/validator/2.0/schema", name="ValidationResult")
@@ -22,6 +21,7 @@ import org.biopax.validator.utils.Normalizer;
 public class Validation implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	private Model model;
 	private final Set<ErrorType> error;
 	private String description;
 	private final Set<String> comment;
@@ -53,6 +53,32 @@ public class Validation implements Serializable {
 	}	
 	
 	/**
+	 * Gets the current Model.
+	 * 
+	 * @return
+	 */
+	@XmlTransient
+	public Model getModel() {
+		return model;
+	}
+	
+	/**
+	 * Set Model (to check or report about)
+	 * 
+	 * Note: unsafe, so use with care! 
+	 * ('objects' may still contain elements from 
+	 * the old model, which is up to developer to clean them
+	 * or continue working with; different models can share the same 
+	 * objects, etc...)
+	 * 
+	 * @param model
+	 */
+	public void setModel(Model model) {
+		this.model = model;
+	}
+
+	
+	/**
 	 * List of error types; each item has unique code.
 	 * 
 	 * (Note: the property name is 'Error', and not 'Errors',
@@ -76,44 +102,25 @@ public class Validation implements Serializable {
 	 * 
 	 * @return
 	 */
-	@XmlElement(required=false)
-	public String getOwl() {
-		String fixedOwl = "";
+	@XmlElement(required = false)
+	public String getModelSerialized() {
+		String owlModel = "";
 
 		if (isFix() || isNormalize()) {
-			for (Model model : getObjects(Model.class)) {
-				/*
-				 * TODO think how to better return the fixed OWL when the
-				 * validation has multiple models... For now, it will simply
-				 * append - <?xml?><rdf:RDF>..</rdf:RDF>
-				 * <?xml?><rdf:RDF>..</rdf:RDF> <?xml?> etc...
-				 */
-				try {
-					String owlModel = null;
-					// normalize?
-					if (isNormalize()) {
-						Normalizer normalizer = new Normalizer(this);
-						owlModel = normalizer.normalize(model);
-					} else {
-						// export the model to OWL
-						SimpleExporter exporter = new SimpleExporter(model
-								.getLevel());
-						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-						exporter.convertToOWL(model, outputStream);
-						owlModel = outputStream.toString("UTF-8");
-					}
-					// append to previous owl data (of other models, if any, for
-					// the same validation obj.)
-					fixedOwl += (owlModel == null) ? "" 
-						: owlModel + System.getProperty("line.separator");
-				} catch (IOException e) {
-					throw new BiopaxValidatorException(
-							"Failed to export modified model!", e);
-				}
+			Model model = (Model) getModel();
+			try {
+				// export the model to OWL
+				SimpleExporter exporter = new SimpleExporter(model.getLevel());
+				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				exporter.convertToOWL(model, outputStream);
+				owlModel = outputStream.toString("UTF-8");
+			} catch (IOException e) {
+				throw new BiopaxValidatorException(
+						"Failed to export modified model!", e);
 			}
 		}
 
-		return fixedOwl;
+		return owlModel;
 	}
 
 	/**
@@ -123,8 +130,8 @@ public class Validation implements Serializable {
 	 * @return
 	 */
 	@XmlTransient
-	public String getOwlHtmlEscaped() {
-		return StringEscapeUtils.escapeHtml(getOwl())
+	public String getModelSerializedHtmlEscaped() {
+		return StringEscapeUtils.escapeHtml(getModelSerialized())
 		.replaceAll(System.getProperty("line.separator"), 
 				System.getProperty("line.separator")+"<br/>");
 	}
@@ -137,9 +144,10 @@ public class Validation implements Serializable {
 	 * @return
 	 */
 	@XmlTransient
-	public String getOwlXmlEscaped() {
-		return StringEscapeUtils.escapeXml(getOwl());
+	public String getModelSerializedXmlEscaped() {
+		return StringEscapeUtils.escapeXml(getModelSerialized());
 	}
+
 	
 	/**
 	 * Adds the error (with cases) to the collection.
@@ -149,21 +157,35 @@ public class Validation implements Serializable {
 	 * the new error cases will be copied to it;
 	 * otherwise, the new one is simply added to the set.
 	 * 
+	 * It also takes the 'error threshold' (level) into account!
+	 * 
+	 * @see #setThreshold(Behavior)
 	 * @see ErrorType#hashCode()
 	 * @see ErrorType#equals(Object)
 	 * 
 	 * @param e Error type
 	 */
 	public void addError(ErrorType e) {	
-		if (error.contains(e)) {
-			for (ErrorType et : error) {
-				if (et.equals(e)) {
-					et.addCases(e.getErrorCase());
-					return;
-				}
+		switch (threshold) {
+		case IGNORE:
+			break; // do nothing
+		case ERROR:
+			if(e.getType() == Behavior.WARNING) {
+				break; // do not add (only errors pass)
 			}
-		} else {
-			error.add(e);
+		default: // WARNING and ERROR==ERROR
+			// add error with all cases
+			if (error.contains(e)) {
+				for (ErrorType et : error) {
+					if (et.equals(e)) {
+						et.addCases(e.getErrorCase());
+						return;
+					}
+				}
+			} else {
+				error.add(e);
+			}
+			break;
 		}
 	}
 	
@@ -200,9 +222,7 @@ public class Validation implements Serializable {
 		if (error.size()>0) { 
 			result.append("different types of problem: ");
 			result.append(error.size());
-		} else {
-			result.append("no errors");
-		}	
+		}
 		return result.toString();
 	}
 	
@@ -261,7 +281,6 @@ public class Validation implements Serializable {
 		ErrorType etype = findErrorType(errorType);
 		if (etype != null) {
 			ErrorCaseType ecase = etype.findErrorCase(errCase);
-			
 		}
 		return null;
 	}

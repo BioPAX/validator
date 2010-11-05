@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biopax.validator.Behavior;
 import org.biopax.validator.Validator;
 import org.biopax.validator.result.Validation;
 import org.biopax.validator.result.ValidatorResponse;
@@ -56,6 +57,7 @@ public class ValidatorController {
     		@RequestParam(required=false) String retDesired,
     		@RequestParam(required=false) Boolean autofix,
     		@RequestParam(required=false) Boolean normalize,
+    		@RequestParam(required=false) Behavior filter,
     		Model model, Writer writer) throws IOException  
     {
     	Resource in = null;
@@ -95,20 +97,22 @@ public class ValidatorController {
 		if (normalize != null && normalize == true) {
 			result.setNormalize(true);
 		}
+		if (filter != null) {
+			result.setThreshold(filter);
+		}
 		
 		InputStream input = null;
 		try {
 			input = in.getInputStream();
+			validator.importModel(result, input);
+			validator.validate(result);
+	    	validatorResponse.addValidationResult(result);
+	    	validator.getResults().remove(result);
 		} catch (Exception e) {
 			return errorResponse(model, 
-				"checkUrl", "Bad BioPAX input source: " 
+				"checkUrl", "Error: " 
 					+ e.toString());
 		}
-		
-		validator.importModel(result, input);
-		validator.validate(result);
-    	validatorResponse.addValidationResult(result);
-    	validator.getResults().remove(result);
     	
     	if("xml".equalsIgnoreCase(retDesired)) {
         	BiopaxValidatorUtils.write(result, writer, null);
@@ -116,8 +120,8 @@ public class ValidatorController {
 			model.addAttribute("response", validatorResponse);
 			return "groupByCodeResponse";
 		} else { // owl only
-			if(result.getOwl() != null)
-				writer.write(result.getOwl());
+			if(result.getModelSerialized() != null)
+				writer.write(result.getModelSerialized());
 			else
 				return errorResponse(model, "checkUrl", "No BioPAX data returned.");
 		}

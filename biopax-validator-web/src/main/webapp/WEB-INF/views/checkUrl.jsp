@@ -69,11 +69,18 @@
 		<label>Auto-Fix! (<b>experimental:</b> some rules can, e.g., fix db/id, set 'displayName', remove duplicates, etc.)</label>
 		<br/>
 		<input type="checkbox" name="normalize" value="true"/>
-		<label>Normalize! (<b>experimental:</b> where it is possible and makes sense, replaces RDFIDs of entity references, CVs, bioSource 
-		with Miriam's standard URNs; also generates new IDs like <em>urn:biopax:*Xref:&lt;db&gt;_&lt;id&gt;_&lt;ver&gt;</em> for Xrefs, 
-		this eases BioPAX data integration, sharing, and application of semantic web technologies; 
-		if required, data are auto-converted to BioPAX Level3 first.)</label>
+		<label>Normalize! (<b>experimental:</b> where it is possible, - replaces identifiers of entity references, CVs, BioSource 
+		with Miriam's standard URNs; for xrefs, - generates new IDs like <em>urn:biopax:*Xref:&lt;db&gt;_&lt;id&gt;_&lt;ver&gt;</em> this makes BioPAX data integration and linking easier. 
+		if required, data are auto-converted to BioPAX Level3 first. It may remove some or add new BioPAX errors, especially if there were errors in the file.)</label>
 		<br/>
+		<div class="form-row" style="padding-top: 2em;">
+		<label>Filter (check/fix, but not necessarily mention it)</label><br/>
+		<select name="filter">
+			<option label="Show Warnings and Errors" value="WARNING" selected="selected"/>
+			<option label="Show Errors Only" value="ERROR"/>
+			<option label="Do not Show Me Problems :)" value="IGNORE"/>
+		</select>
+		</div>
 	</div>
 		<div class="form-row" style="padding-top: 2em;">
 		Report as:
