@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Set;
 
-import org.biopax.paxtools.model.Model;
 import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.result.Validation;
 
@@ -78,18 +77,6 @@ public interface Validator {
 	 * @param child value
 	 */
 	void indirectlyAssociate(Object parent, Object child);
-	
-
-	/**
-	 * Removes the object from the specified validation registry,
-	 * so it is not associated (explicitly) with the model 
-	 * and its validation result anymore (but may be still
-	 * indirectly associated via its membership in a registered model).
-	 * 
-	 * @param o element to "forget"
-	 * @param key validation object
-	 */
-	void free(Object o, Validation key);
 	
 	
 	/**

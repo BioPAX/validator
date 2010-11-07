@@ -168,7 +168,12 @@ public class ValidatorImpl implements Validator {
 			if(log.isDebugEnabled())
 				log.debug(obj + " object is associated with existing result");
 		}
-		validation.getObjects().add(obj);
+		
+		if(obj instanceof Model) {
+			validation.setModel((Model) obj);
+		} else {
+			validation.getObjects().add(obj);
+		}
 		
 		if(log.isDebugEnabled())
 			log.debug("this validator : " + this);
@@ -186,7 +191,8 @@ public class ValidatorImpl implements Validator {
 		}
 		
 		for(Validation r: results) {
-			if (r.getObjects().contains(o) || o.equals(r.getModel())) 
+			if (r.getObjects().contains(o) 
+				|| r.getModel().equals(o)) 
 			{
 				keys.add(r);
 			} 
@@ -194,10 +200,9 @@ public class ValidatorImpl implements Validator {
 			{
 				// associate using member models
 				BioPAXElement bpe = (BioPAXElement) o;
-				for (Model m : r.getObjects(Model.class)) {
-					if (m != null && m.contains(bpe)) {
-						keys.add(r);
-					}
+				Model m = r.getModel();
+				if (m != null && m.contains(bpe)) {
+					keys.add(r);
 				}
 			}
 		}
@@ -211,11 +216,7 @@ public class ValidatorImpl implements Validator {
 		
 		return keys;
 	}
-
-	public void free(Object o, Validation key) {
-		key.getObjects().remove(o);
-	}
-
+	
 	
 	public void freeObject(Object o) {
 		for(Validation r : results) {
@@ -230,7 +231,7 @@ public class ValidatorImpl implements Validator {
 		if (parent == null || child==null 
 				|| child.getClass().isPrimitive()
 				|| child instanceof String) {
-			return; // do not (this is ok)
+			return;
 		}
 
 		for (Validation key : findValidation(parent)) {

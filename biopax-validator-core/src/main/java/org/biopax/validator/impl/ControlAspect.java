@@ -89,6 +89,7 @@ public class ControlAspect extends AbstractAspect {
 	 */
 	@SuppressWarnings("unchecked")
 	private void checkElement(Object parent, Object value) {
+		// do only for a BioPAXElement; ignore other types of value -
 		if (! (value instanceof BioPAXElement) ) {
 			/* 
 			 * Skipping primitive types, Enum, and String values 
