@@ -76,6 +76,11 @@ public class ValidatorImpl implements Validator {
 					"Failed! Did you import a model?");
 		}
 
+		// register the validation (if not done already)
+		if (!getResults().contains(validation)) {
+			getResults().add(validation); 
+		}
+		
 		Model model = validation.getModel();
 
 		if (log.isDebugEnabled()) {
@@ -157,16 +162,13 @@ public class ValidatorImpl implements Validator {
 		 * during this, many errors/warnings may be caught and reported via AOP ;))
 		 */
 		Model model = simpleReader.convertFromOWL(inputStream); 
-		validation.setModel(model);
+		associate(model, validation);
 	}
 	
 	
 	public void associate(Object obj, Validation validation) {
 		if (!getResults().contains(validation)) {
 			getResults().add(validation); // registered a new validation result
-		} else {
-			if(log.isDebugEnabled())
-				log.debug(obj + " object is associated with existing result");
 		}
 		
 		if(obj instanceof Model) {
@@ -275,4 +277,5 @@ public class ValidatorImpl implements Validator {
 			v.addError(err);
 		}
 	}
+    
 }

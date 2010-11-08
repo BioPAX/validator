@@ -91,8 +91,9 @@ public interface Validator {
 	void freeObject(Object o);
 	
 	/**
-	 * Given the object, finds keys for 
-	 * the corresponding validation results.
+	 * Given the object, finds
+	 * the corresponding validations
+	 * (that it's been associated with).
 	 * 
 	 * @param obj a BioPAX element, Model, or even SimpleReader
 	 * @return
