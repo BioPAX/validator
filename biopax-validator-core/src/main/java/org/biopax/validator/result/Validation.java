@@ -22,6 +22,7 @@ public class Validation implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Model model;
+	private String modelSerialized;
 	private final Set<ErrorType> error;
 	private String description;
 	private final Set<String> comment;
@@ -103,24 +104,28 @@ public class Validation implements Serializable {
 	 * @return
 	 */
 	@XmlElement(required = false)
-	public String getModelSerialized() {
-		String owlModel = "";
-
-		if (isFix() || isNormalize()) {
-			Model model = (Model) getModel();
-			try {
-				// export the model to OWL
-				SimpleExporter exporter = new SimpleExporter(model.getLevel());
-				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				exporter.convertToOWL(model, outputStream);
-				owlModel = outputStream.toString("UTF-8");
-			} catch (IOException e) {
-				throw new BiopaxValidatorException(
-						"Failed to export modified model!", e);
+	public String getModelSerialized() 
+	{
+		Model model = getModel();
+		if(model != null) {
+			// update the OWL data
+			if (isFix() || isNormalize()) { // TODO may be to remove this condition...
+				try {
+					// export to OWL
+					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+					(new SimpleExporter(model.getLevel())).convertToOWL(model, outputStream);
+					this.modelSerialized = outputStream.toString("UTF-8");
+				} catch (IOException e) {
+					throw new BiopaxValidatorException(
+							"Failed to export modified model!", e);
+				}
 			}
 		}
-
-		return owlModel;
+		return modelSerialized;
+	}
+	
+	public void setModelSerialized(String modelSerialized) {
+		this.modelSerialized = modelSerialized;
 	}
 
 	/**
