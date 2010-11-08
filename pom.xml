@@ -80,7 +80,7 @@
 							</property>
 						</systemProperties>
 						-->
-						<argLine>-Xmx1536M -Xms128M</argLine>
+						<argLine>-Dfile.encoding=UTF-8 -Xmx1536M -Xms128M -ea</argLine>
 					</configuration>
 				</plugin>
 			</plugins>

@@ -1,4 +1,4 @@
-/** BioPAX Validator, Version 2.0a (SNAPSHOT)
+/** BioPAX Validator, Version 2.0A (SNAPSHOT)
  **
  ** Copyright (c) 2010 University of Toronto (UofT)
  ** and Memorial Sloan-Kettering Cancer Center (MSKCC).
@@ -101,24 +101,31 @@ Unpack
 Execute:
 (switching to the validator directory is not required)
 
-$sh /path/validate.sh
+$sh /path/validate.sh [args]
 
-(e.g., "sh path1/validate.sh path2/input-dir path3/output.xml")
+(It prints a brief help when there are no arguments provided; 
+e.g., run as "sh path1/validate.sh path2/input-dir path3/output.xml auto-fix normalize return-biopax")
 
-At some point the program asks for user input; and one can use:
+For the input, one can use:
 path/dir - to check all the OWL files in the directory (is probably the best choice)
 file:path/file.owl - to check a single file;
 classpath:path/file.owl - to check a file that can be found in java classpath (currently it's relative to the 'build' directory).
 http://www.link.to/somer-biopax/ - to validate from a URL resource (remote file or service)
 list:input.txt - execute lines, each like the above, from the specified 'batch' file
 
-Validation messages will be printed to STDERR, unless user specified a (XML) file name.
-You may also provide a URL instead of input file.
+Validation messages will be printed to STDERR, unless user specified the output file.
 
-Remark:
-smaller files validate quickly, however, actual time may vary for the same size data; 
+NOTEs:
+
+Smaller files validate quickly, however, actual time may vary for the same size data; 
 it takes longer for networks that contain loops (e.g., in nextStep->PathwayStep sequence);
 e.g., it took me several hours to validate ~50Mb BioPAX L3 file (Reactome's Canis familiaris);
+
+If you want to validate several files, it always much more efficient 
+to copy them all in a directory to use that directory as the first 
+parameter for the validate.sh. This is because Validator's initialization
+is very time/resources consuming task (mainly, due to OBO files parsing); 
+after it's done, next validations are performed much faster.
 
 ******************************************************************************
 USING WEB APPLICATION
@@ -130,7 +137,7 @@ PREREQUISITES:
 - spring-instrument.jar (from Spring 3; enables load-time weaving for AOP)
 - Tomcat (6) must be started with the following option: 
 
--Xmx2048m -Xms256m -javaagent:/full-path-to/spring-instrument.jar
+-Xmx2048m -Xms256m -Dfile.encoding=UTF-8 -javaagent:/full-path-to/spring-instrument.jar
 
 (one can set the JAVA_OPTS variable and/or modify the Tomcat's startup script)
 
@@ -162,7 +169,7 @@ it is usually uninstalled automatically by Tomcat.
 The most important thing is to make sure the validator 
 starts using Java 6 with, e.g., the following JVM options:
 
--javaagent:lib/spring-instrument.jar -Xmx2048m -Xms256m
+-javaagent:lib/spring-instrument.jar -Xmx2048m -Xms256m -Dfile.encoding=UTF-8
 
 (one may have to provide the full path to the spring-instrument.jar)
 

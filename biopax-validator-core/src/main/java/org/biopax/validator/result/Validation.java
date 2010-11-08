@@ -95,32 +95,37 @@ public class Validation implements Serializable {
 		error.clear();
 		error.addAll(errors);
 	}
+
+	
+	/**
+	 * This is to refresh 'modelSerialized' property: 
+	 * 	generates BioPAX OWL from current model.
+	 */
+	public void updateModelSerialized() {
+		Model model = getModel();
+		if (model != null) {
+			// update the OWL data
+			try {
+				// export to OWL
+				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				(new SimpleExporter(model.getLevel())).convertToOWL(model, outputStream);
+				this.modelSerialized = outputStream.toString("UTF-8");
+			} catch (IOException e) {
+				throw new BiopaxValidatorException(
+						"Failed to export modified model!", e);
+			}
+		}
+	}
 	
 	
 	/**
 	 * Returns current BioPAX OWL
-	 * (if either 'fix' or 'normalize' are true)!
 	 * 
 	 * @return
 	 */
 	@XmlElement(required = false)
 	public String getModelSerialized() 
 	{
-		Model model = getModel();
-		if(model != null) {
-			// update the OWL data
-			if (isFix() || isNormalize()) { // TODO may be to remove this condition...
-				try {
-					// export to OWL
-					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-					(new SimpleExporter(model.getLevel())).convertToOWL(model, outputStream);
-					this.modelSerialized = outputStream.toString("UTF-8");
-				} catch (IOException e) {
-					throw new BiopaxValidatorException(
-							"Failed to export modified model!", e);
-				}
-			}
-		}
 		return modelSerialized;
 	}
 	

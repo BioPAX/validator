@@ -28,81 +28,75 @@ import org.springframework.util.ResourceUtils;
 public class Main {
 	static final Log log = LogFactory.getLog(Main.class);
 	static ApplicationContext ctx;
+	static boolean autofix = false;
+	static boolean normalize = false;
+	static boolean ret_biopax = false;
 
 	public static void main(String[] args) throws Exception {				
+        if(args.length == 0) {
+        	String usage = 
+    			"\n BioPAX Validator 2.0A\n\n" +
+    		    "Parameters: <input> [<output>] [auto-fix] [normalize] [return-biopax]\n" + 
+    		    "(2..5 are optional and can be in any order)\n" +
+    		    "For Example:\n" +
+    		    "  list:batch_file_name \n" +
+    		    "  file:biopax.owl auto-fix normalize errors.xml\n" +
+    		    "  http://www.some.net/data.owl output.xml\n\n" +
+    		    "A Batch File Should List One Task Per Line: " +
+    		    "file:/path/to/file or URL (to BioPAX data)\n" +
+    		    "Use 'return-biopax' flag " +
+    		    "(only works together with the 'auto-fix' or 'normalize') " +
+    		    " to get the modified BioPAX OWL (no error messages are reported)";
+            System.out.println(usage);
+            System.exit(-1);
+        }
+        
+		String input = args[0];
+		String output = null;
+
+		if (args.length > 1) {
+			for (int i = 1; i < args.length; i++) {
+				if("auto-fix".equalsIgnoreCase(args[i])) {
+					autofix = true;
+				} else if("normalize".equalsIgnoreCase(args[i])) {
+					normalize = true;
+				} else if("return-biopax".equalsIgnoreCase(args[i])) {
+					ret_biopax = true;
+				} else {
+					output = args[i];
+				}
+			}
+		}
+
 		// this does 90% of the job ;)
 		ctx = new ClassPathXmlApplicationContext("validator-aop-context.xml");
 		// Rules are now loaded, and AOP is listening for BioPAX model method calls.
 		
         // get the beans to work with
         Validator validator = (Validator) ctx.getBean("validator");
-        
-        if(args.length < 1) {
-        	String usage = 
-    			"\n" +
-    			" Pathway Commons BioPAX Validator v1.0b, 07/2009\n\n" +
-    		    "It Takes One Argument or Two (the Second Is the Output File Name)\n\n" +
-    		    "For Example:\n" +
-    		    "  list:batch_file_name\n" +
-    		    "  file:biopax.owl\n" +
-    		    "  http://www.some.net/data.owl\n\n" +
-    		    "The Batch File Can List One Task Per Line: \n" +
-    		    "file:/path/to/file or URL (to BioPAX data)\n";
-        	
-        	System.out.println(usage);
-        	listAllRules(System.out, validator.getRules());
-        }
 		
-		boolean isQuit = false; // user interaction loop breaking condition
-		String input = null;
-		String output = null;
-		if(args.length > 0) {
-			isQuit = true; // quite the shell after job is done
-			input = args[0];
-		}
-		if(args.length > 1) {
-			output = args[1];
-		}
-		
-		Scanner sc = new Scanner(System.in);
-		PrintWriter writer = (output==null) ? new PrintWriter(System.out) : new PrintWriter(output);
-		
-        do {
-			if(!isQuit) {
-				input = null;
-				System.out.println("Please Specify a Directory, OWL File "
-								+ "(as 'file:filename.owl'), Batch ('list:filename.txt'), " +
-								"or URL");
-				System.out.println("INPUT: ");
-				input = sc.nextLine();
-				System.out.println("Where do you want to write the results? \n" +
-						"(Default Is Console Output)");
-				System.out.println("OUTPUT: ");
-				output = sc.nextLine();
-				if (output == null || "".equals(output.trim()) ) {
-		        	writer = new PrintWriter(System.out);
-				} else {
-					writer = new PrintWriter(output);
-				}
-			}
-	
-			if(input != null && !"".equals(input)) {
-				// go!
-				ValidatorResponse validatorResponse = runBatch(validator, getResourcesToValidate(input));
-				Source xsltSrc = new StreamSource(ctx.getResource("classpath:default-result.xsl").getInputStream());
+		// go!
+		if (input != null && !"".equals(input)) {
+			PrintWriter writer = (output == null) 
+				? new PrintWriter(System.out)
+					: new PrintWriter(output);
+			ValidatorResponse validatorResponse = runBatch(validator,
+					getResourcesToValidate(input));
+			if (!ret_biopax) {
+				Source xsltSrc = new StreamSource(ctx.getResource(
+						"classpath:default-result.xsl").getInputStream());
 				BiopaxValidatorUtils.write(validatorResponse, writer, xsltSrc);
-			}
-			if(!isQuit) {
-				System.out.println("\nAre You Going to Continue? (NO/yes) "); // default is to quit
-				if (!"yes".equalsIgnoreCase(sc.nextLine().trim())) {
-					isQuit = true;
+			} else if (autofix || normalize) {
+				for (Validation result : validatorResponse
+						.getValidationResult()) {
+					String owl = result.getModelSerialized();
+					writer.write(owl, 0, owl.length());
+					writer.write(System.getProperty ( "line.separator" ));
+					writer.flush();
 				}
-			}	
-			
-		} while (!isQuit);
-        
-        System.out.println("Thank you.");
-    }
+			}
+		}
+	}
 	
 	
 	protected static ValidatorResponse runBatch(Validator validator, 
@@ -112,6 +106,8 @@ public class Main {
         // Read from the batch and validate from file, id or url, line-by-line (stops on first empty line)
         for (Resource resource: resources) {
         	Validation result = new Validation();
+        	result.setFix(autofix);
+        	result.setNormalize(normalize);
         	String modelName = resource.getDescription();
         	if(log.isInfoEnabled())
         		log.info("BioPAX DATA IMPORT FROM: " + modelName);
@@ -119,6 +115,8 @@ public class Main {
 				result.setDescription(modelName);
 				validator.importModel(result, resource.getInputStream());
 				validator.validate(result);
+				if(autofix || normalize)
+					result.updateModelSerialized();
 			} catch (Exception e) {
 				log.error("failed", e);
 				if(log.isDebugEnabled()) {

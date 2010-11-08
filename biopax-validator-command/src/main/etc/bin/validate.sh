@@ -31,4 +31,4 @@ done
 #echo Using Classpath: $CLASSPATH
 
 # run validator
-$JAVA_HOME/bin/java -cp $CLASSPATH -javaagent:$PRGDIR/lib/spring-instrument-3.0.3.RELEASE.jar -Xmx1536m -Xms256m org.biopax.validator.Main $1 $2
+$JAVA_HOME/bin/java -cp $CLASSPATH -javaagent:$PRGDIR/lib/spring-instrument-3.0.3.RELEASE.jar -Xmx2048m -Xms256m -Dfile.encoding=UTF-8 org.biopax.validator.Main $1 $2 $3 $4 $5

@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * TODO e.g., add user sessions, re-use the result if a browser
- * TODO add more form parameters: threshold=error, warning, all; maxErrors= 
+ * TODO add more form parameters: maxErrors= 
  * 
  * @author rodch
  *
@@ -106,6 +106,9 @@ public class ValidatorController {
 			input = in.getInputStream();
 			validator.importModel(result, input);
 			validator.validate(result);
+			if(result.isFix() || result.isNormalize()) {
+				result.updateModelSerialized();
+			}
 	    	validatorResponse.addValidationResult(result);
 	    	validator.getResults().remove(result);
 		} catch (Exception e) {
