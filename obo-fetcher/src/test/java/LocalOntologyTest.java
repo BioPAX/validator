@@ -1,4 +1,5 @@
 import static org.junit.Assert.*;
+
 import org.junit.*;
 
 import psidev.ontology_manager.Ontology;
@@ -33,29 +34,28 @@ public class LocalOntologyTest {
 
 	static {
 		OntologyManagerContext.getInstance().setStoreOntologiesLocally(true);
-		final InputStream config = LocalOntologyTest.class
-				.getResourceAsStream("/ontologies.xml");
+		final InputStream config = LocalOntologyTest.class.getResourceAsStream("/ontologies.xml");
 		try {
 			manager = new OntologyManagerImpl(config);
 		} catch (OntologyLoaderException e) {
-			fail(e.toString());
+			throw new RuntimeException(e);
 		}
 	}
 
 	public LocalOntologyTest() {
-		mod = manager.getOntology("MOD");
-		mi = manager.getOntology("MI");
+		mod = manager.getOntology("PSI-MOD");
+		mi = manager.getOntology("PSI-MI");
 		so = manager.getOntology("SO");
 	}
 
 	@Test
 	public void ontologyLoading() {
 		Collection<String> ontologyIDs = manager.getOntologyIDs();
-		Assert.assertTrue(ontologyIDs.contains("MOD"));
+		Assert.assertTrue(ontologyIDs.contains("PSI-MOD"));
 		Assert.assertTrue(ontologyIDs.contains("SO"));
-		Assert.assertTrue(ontologyIDs.contains("MI"));
+		Assert.assertTrue(ontologyIDs.contains("PSI-MI"));
 
-		Ontology oa2 = manager.getOntology("MOD");
+		Ontology oa2 = manager.getOntology("PSI-MOD");
 		Assert.assertNotNull(oa2);
 		Assert.assertTrue(oa2 instanceof OntologyImpl);
 
@@ -63,7 +63,7 @@ public class LocalOntologyTest {
 		Assert.assertNotNull(oa2);
 		Assert.assertTrue(oa2 instanceof OntologyImpl);
 
-		oa2 = manager.getOntology("MI");
+		oa2 = manager.getOntology("PSI-MI");
 		Assert.assertNotNull(oa2);
 		Assert.assertTrue(oa2 instanceof OntologyImpl);
 	}
@@ -115,7 +115,6 @@ public class LocalOntologyTest {
 
 	@Test
 	public void getModTermSynonyms() throws OntologyLoaderException {
-		// GO:0055044 has 7 children (OLS 17 July 2008) = 7 valid terms
 		final Set<OntologyTermI> terms = mod.getValidTerms("MOD:00007", false,
 				true);
 		Assert.assertEquals(1, terms.size());
@@ -289,5 +288,24 @@ public class LocalOntologyTest {
 		OntologyTermI parent = so.getTermForAccession("SO:0000001");
 		Set<OntologyTermI> terms = so.getAllChildren(parent);
 		Assert.assertTrue(terms.size() > 10);
+	}
+	
+	
+	@Test
+	public final void testSearchTermByName() {
+		Set<OntologyTermI> term = manager.searchTermByName("O-phospho-L-serine");
+		assertFalse(term.isEmpty());
+	}
+
+
+	@Test
+	public final void testTermByAccession() {
+		OntologyTermI term = mod.getTermForAccession("MOD:00046");
+		assertNotNull(term);
+		assertEquals("PSI-MOD", term.getOntologyId());
+		// so far so good...
+		term = manager.findTermByAccession("MOD:00046");
+		assertNotNull(term);
+		assertEquals("PSI-MOD", term.getOntologyId());
 	}
 }

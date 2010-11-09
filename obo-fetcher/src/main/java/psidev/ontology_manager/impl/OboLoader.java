@@ -45,9 +45,11 @@ public class OboLoader extends AbstractLoader {
 
     protected void configure() {
         parser = new OBOFormatParser();
+        /*
         ONTOLOGY_DEFINITION = "PSI MI";
         FULL_NAME = "PSI Molecular Interactions";
         SHORT_NAME = "PSI-MI";
+        */
     }
 
     protected void parse( Object params ) {
@@ -77,6 +79,14 @@ public class OboLoader extends AbstractLoader {
         for ( Iterator iterator = ontBean.getTerms().iterator(); iterator.hasNext(); ) {
             TermBean term = ( TermBean ) iterator.next();
 
+            /*
+             * Quick workaround an issue that
+             * we want to ignore PSI-MOD included in PSI-MI
+             */
+            if("PSI-MOD".equals(term.getNamespace()) 
+            		&& ("PSI-MI".equals(ontologyID) || "MI".equals(ontologyID)))
+            	continue; // skip
+            
             // convert term into a OboTerm
             OntologyTermI ontologyTerm = new OntologyTermImpl(ontologyID, term.getIdentifier(), term.getName() );
             final Collection<TermSynonymBean> synonyms = (Collection<TermSynonymBean>) term.getSynonyms();
@@ -97,12 +107,38 @@ public class OboLoader extends AbstractLoader {
         for ( Iterator iterator = ontBean.getTerms().iterator(); iterator.hasNext(); ) {
             TermBean term = ( TermBean ) iterator.next();
 
+            /*
+             * Quick workaround an issue that
+             * we want to ignore PSI-MOD included in PSI-MI
+             */
+            if("PSI-MOD".equals(term.getNamespace()) 
+            		&& ("PSI-MI".equals(ontologyID) || "MI".equals(ontologyID)))
+            	continue; // skip
+            
             if ( term.getRelationships() != null ) {
                 for ( Iterator iterator1 = term.getRelationships().iterator(); iterator1.hasNext(); ) {
                     TermRelationship relation = ( TermRelationship ) iterator1.next();
-
-                    ontology.addLink( relation.getObjectTerm().getIdentifier(),
-                                      relation.getSubjectTerm().getIdentifier() );
+                    
+                    /* pne more workaround an issue that
+                     * we want to ignore PSI-MOD included in PSI-MI
+                     */
+                   /*
+                    String nso = relation.getObjectTerm().getNamespace();
+                    String nss = relation.getSubjectTerm().getNamespace();
+                    if(("PSI-MI".equals(ontologyID) || "MI".equals(ontologyID)))
+                    	if("PSI-MOD".equals(nso) || "PSI-MOD".equals(nss)
+                    		|| "MOD".equals(nso) || "MOD".equals(nss))
+                    		continue; // skip the external relation
+                    */
+                    // - better simply to check for NPE - 
+                    try {
+                    	ontology.addLink( relation.getObjectTerm().getIdentifier(),
+                    					  relation.getSubjectTerm().getIdentifier() );
+                    } catch (NullPointerException e) {
+                    	if(log.isWarnEnabled())
+                    		log.warn("Skipping terms relationship "  
+                    			+ relation + "; " + e);
+					}
                 }
             }
         }
@@ -207,13 +243,6 @@ public class OboLoader extends AbstractLoader {
             File registryFile = getRegistryFile();
 
             if ( null != registryFile ) {
-
-                // TODO replace Map by a properties file so it can be read/edited easily
-                // MI.file.path=
-                // MI.last.loaded=
-                // MI.refresh.after=
-                // TODO check on the length of the file and compare it to the length on the web site.
-                // MI.length=
 
                 // deserialise the Map
                 try {

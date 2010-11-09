@@ -8,10 +8,10 @@
               format="OBO" name="Sequence Ontology" identifier="SO"/>
 
     <cvSource source="file" uri="http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/mi/rel25/data/psi-mi25.obo"
-              format="OBO" name="Molecular Interactions Ontology" identifier="MI"/>
+              format="OBO" name="Molecular Interactions Ontology" identifier="PSI-MI"/>
               
   	<cvSource source="file" uri="http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mod/data/PSI-MOD.obo"
-              format="OBO" name="Protein Modification Ontology" identifier="MOD"/>
+              format="OBO" name="Protein Modification Ontology" identifier="PSI-MOD"/>
 <!-- 
     <cvSource source="file" uri="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/anatomy/cell_type/cell.obo"
               format="OBO" name="Cell Ontology" identifier="CL"/>

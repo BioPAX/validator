@@ -161,10 +161,14 @@ public class Normalizer {
 			// build new standard rdfid
 			String rdfid = null;
 			try {
-				rdfid = BIOPAX_URI_PREFIX + ref.getModelInterface().getSimpleName() 
-					+ ":" + URLEncoder.encode(name + "_" + ref.getId(), "UTF-8");
-				if(ref.getIdVersion() != null && !"".equals(ref.getIdVersion().trim()))
-					rdfid += "_" + ref.getIdVersion();
+				rdfid = BIOPAX_URI_PREFIX + ref.getModelInterface().getSimpleName() + ":";
+				String ending = 
+					(ref.getIdVersion() != null && !"".equals(ref.getIdVersion().trim()))
+						? "_" + ref.getIdVersion() // add the id version/variant
+						: ""; // no endings
+				// add the local (last) part of the URI encoded -
+				rdfid += URLEncoder.encode(name + "_" + ref.getId() + ending, "UTF-8");
+				
 				// replace xref or update ID
 				updateID(model, ref, rdfid);
 				
@@ -188,8 +192,9 @@ public class Normalizer {
 	 * @param bpe element to normalize
 	 * @param db official database name or synonym (that of bpe's unification xref)
 	 * @param id identifier (if null, new ID will be that of the Miriam Data Type; this is mainly for Provenance)
+	 * @param idExt TODO
 	 */
-	private void normalizeID(Model model, UtilityClass bpe, String db, String id) 
+	private void normalizeID(Model model, UtilityClass bpe, String db, String id, String idExt) 
 	{	
 		if(bpe instanceof Xref) {
 			log.error("normalizeID called for Xref (hey, this is a bug!). "
@@ -211,6 +216,15 @@ public class Normalizer {
 				+ ") " + ", using " + db + ":" + id 
 				+ ". " + e + ". " + extraInfo());
 			return;
+		}
+		
+		if(idExt != null && !"".equals(idExt.trim())) {
+			try {
+				urn += "_" + URLEncoder.encode(idExt, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				log.error("UTF-8 encoding failed for (idVersion): " +
+						idExt + "! " + e + ". " + extraInfo());
+			}
 		}
 		
 		// update element and model (if required)
@@ -473,7 +487,7 @@ public class Normalizer {
 			{
 				UnificationXref uref = getFirstUnificationXref((XReferrable) bpe);
 				if (uref != null) 
-					normalizeID(model, bpe, uref.getDb(), uref.getId());
+					normalizeID(model, bpe, uref.getDb(), uref.getId(), null);
 				else 
 					if(log.isInfoEnabled())
 						log.info("Cannot normalize ControlledVocabulary: " +
@@ -482,7 +496,7 @@ public class Normalizer {
 			} else if(bpe instanceof EntityReference) {
 				UnificationXref uref = getFirstUnificationXrefOfEr((EntityReference) bpe);
 				if (uref != null) 
-					normalizeID(model, bpe, uref.getDb(), uref.getId());
+					normalizeID(model, bpe, uref.getDb(), uref.getId(), null);
 				else 
 					if(log.isInfoEnabled())
 						log.info("Cannot normalize EntityReference: " +
@@ -494,7 +508,7 @@ public class Normalizer {
 				if(name == null) 
 					name = pro.getDisplayName();
 				if (name != null) 
-					normalizeID(model, pro, name, null);
+					normalizeID(model, pro, name, null, null);
 				else 
 					if(log.isInfoEnabled())
 						log.info("Cannot normalize Provenance: " +

@@ -199,7 +199,8 @@ public class OntologyManagerImpl implements OntologyManager {
     /* (non-Javadoc)
 	 * @see psidev.ontology_manager.impl.OntologyManager#fetchOntology(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.net.URI)
 	 */
-    public Ontology fetchOntology( String ontologyID, String name, String version, String format, URI uri ) throws OntologyLoaderException {
+    public Ontology fetchOntology( String ontologyID, String name, String version, String format, URI uri ) 
+    	throws OntologyLoaderException {
     	Ontology oa = null;
     	
         // first check the format

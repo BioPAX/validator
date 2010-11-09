@@ -97,9 +97,9 @@ public class OntologyImpl implements Ontology {
         String id = term.getTermAccession();
         if ( id2ontologyTerm.containsKey( id ) ) {
             OntologyTermI old = id2ontologyTerm.get( id );
-            if( log.isWarnEnabled() ) {
-                log.error( "WARNING: 2 Objects have the same ID (" + id + "), the old one is being replaced. old: " + old.getPreferredName() + " new: " + term.getPreferredName() );
-            }
+            log.error( "WARNING: 2 Objects have the same ID (" + id 
+            	+ "), the old one is being replaced. old: " 
+            	+ old.getPreferredName() + " new: " + term.getPreferredName() );
         }
 
         id2ontologyTerm.put( id, term );
@@ -113,32 +113,30 @@ public class OntologyImpl implements Ontology {
      * @param parentId The parent term.
      * @param childId  The child term.
      */
-    public void addLink( String parentId, String childId ) {
+	public void addLink(String parentId, String childId) {
 
-        OntologyTermI child = id2ontologyTerm.get( childId );
-        OntologyTermI parent = id2ontologyTerm.get( parentId );
+		OntologyTermI child = id2ontologyTerm.get(childId);
+		OntologyTermI parent = id2ontologyTerm.get(parentId);
 
-        if ( child == null ) {
-            throw new NullPointerException( "You must give a non null child" );
-        }
+		if (child == null || parent == null) {
+			throw new NullPointerException("You must give a non null " +
+				"child/parent for addLink method!");
+		} else {
 
-        if ( parent == null ) {
-            throw new NullPointerException( "You must give a non null parent" );
-        }
+			if (!children.containsKey(parent)) {
+				children.put(parent, new HashSet<OntologyTermI>());
+			}
 
-        if ( !children.containsKey( parent ) ) {
-            children.put( parent, new HashSet<OntologyTermI>() );
-        }
+			if (!parents.containsKey(child)) {
+				parents.put(child, new HashSet<OntologyTermI>());
+			}
 
-        if ( !parents.containsKey( child ) ) {
-            parents.put( child, new HashSet<OntologyTermI>() );
-        }
+			children.get(parent).add(child);
+			parents.get(child).add(parent);
 
-        children.get( parent ).add( child );
-        parents.get( child ).add( parent );
-
-        flushRootsCache();
-    }
+			flushRootsCache();
+		}
+	}
 
     /**
      * Remove the Root cache from memory.<br/> That method should be called every time the collection of OntologyTerm is
