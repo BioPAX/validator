@@ -330,13 +330,29 @@ public class Normalizer {
 			if(!v.isEquivalent(u)) {
 				String msg = "Replacing existing BioPAX element: " +
 				u + " (" + u.getRDFId() + ", " + u.getModelInterface().getSimpleName()
-				+ ") with DIFFERENT (type or semantics) one: " + 
+				+ ") with what MIGHT be a DIFFERENT (type/semantics) one: " + 
 				v + " (" + v.getRDFId() + ", " + v.getModelInterface().getSimpleName()
 				+ ")!";
+				// are they at least of the same type?
 				if(v.getModelInterface().equals(u.getModelInterface())) {
-					log.error(msg);
+					log.error(msg); // can live with it
+					/* TODO what about things like uniprot isoforms (e.g., Q9BVL2-2)?
+					 * For now, will merge them, copying names, xrefs, comments...
+					 */
+					if(v instanceof XReferrable 
+						&& u instanceof XReferrable) { // the second is for sure ;)
+						// copy at least something...
+						for(Xref x : ((XReferrable)u).getXref()) {
+							((XReferrable) v).addXref(x);
+						}
+						v.getComment().addAll(u.getComment());
+						if(v instanceof Named) {
+							((Named)v).getName()
+								.addAll(((Named)u).getName());
+						}
+					}
 				} else {
-					throw new BiopaxValidatorException(u, msg);
+					throw new BiopaxValidatorException(u, msg); // too bad!
 				}
 			}
 			
@@ -487,7 +503,7 @@ public class Normalizer {
 			{
 				UnificationXref uref = getFirstUnificationXref((XReferrable) bpe);
 				if (uref != null) 
-					normalizeID(model, bpe, uref.getDb(), uref.getId(), null);
+					normalizeID(model, bpe, uref.getDb(), uref.getId(), null); // no idVersion for CVs!
 				else 
 					if(log.isInfoEnabled())
 						log.info("Cannot normalize ControlledVocabulary: " +
@@ -496,7 +512,7 @@ public class Normalizer {
 			} else if(bpe instanceof EntityReference) {
 				UnificationXref uref = getFirstUnificationXrefOfEr((EntityReference) bpe);
 				if (uref != null) 
-					normalizeID(model, bpe, uref.getDb(), uref.getId(), null);
+					normalizeID(model, bpe, uref.getDb(), uref.getId(), null); // not using idVersion!..
 				else 
 					if(log.isInfoEnabled())
 						log.info("Cannot normalize EntityReference: " +
