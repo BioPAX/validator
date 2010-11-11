@@ -60,6 +60,8 @@ public class ExceptionsAspect extends AbstractAspect {
     public void adviseSendErrorCase(ProceedingJoinPoint jp, Rule rule, Object thing,
     		String code, boolean fixed, Object... args) throws Throwable 
     {    	    	
+    	assert(thing != null); // works when assertions are enabled (-ea JVM opt.)
+    	
     	String ruleName = rule.getName();
     	
     	if (log.isTraceEnabled()) 
@@ -69,8 +71,15 @@ public class ExceptionsAspect extends AbstractAspect {
     	// get object's ID
     	String thingId = BiopaxValidatorUtils.getId(thing);
     	
-    	if(thingId == null) {
-    		if (log.isTraceEnabled()) log.trace("RDFId is not set yet; skipping.");
+    	if(thing == null) {
+    		if (log.isWarnEnabled()) 
+    			log.warn("The 'thing' (the error is about) is NULL! Skipping.");
+    		return;
+    	}
+    	
+    	if(thing == null || thingId == null) {
+    		if (log.isTraceEnabled()) 
+    			log.trace("RDFId is not set yet; skipping.");
     		return;
     	}
     		

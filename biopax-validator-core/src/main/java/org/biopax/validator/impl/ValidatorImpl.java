@@ -71,6 +71,8 @@ public class ValidatorImpl implements Validator {
     
 	@SuppressWarnings("unchecked")
 	public void validate(Validation validation) {
+		assert(validation != null);
+		
 		if (validation == null || validation.getModel() == null) {
 			throw new BiopaxValidatorException(
 					"Failed! Did you import a model?");
@@ -167,8 +169,14 @@ public class ValidatorImpl implements Validator {
 	
 	
 	public void associate(Object obj, Validation validation) {
+		assert(validation != null);
+		
 		if (!getResults().contains(validation)) {
-			getResults().add(validation); // registered a new validation result
+			if(validation != null)
+				getResults().add(validation); // registered a new one
+			else if(log.isWarnEnabled())
+				log.warn("Object " + obj + 
+					" is being associated with NULL (Validation)!");
 		}
 		
 		if(obj instanceof Model) {
@@ -182,7 +190,8 @@ public class ValidatorImpl implements Validator {
 	}
 
 
-	public Collection<Validation> findValidation(Object o) {
+	public Collection<Validation> findValidation(Object o) 
+	{		
 		// add forcedly associated keys
 		Collection<Validation> keys = new HashSet<Validation>();	
 		
@@ -194,7 +203,7 @@ public class ValidatorImpl implements Validator {
 		
 		for(Validation r: results) {
 			if (r.getObjects().contains(o) 
-				|| r.getModel().equals(o)) 
+				|| o.equals(r.getModel())) 
 			{
 				keys.add(r);
 			} 
@@ -249,6 +258,12 @@ public class ValidatorImpl implements Validator {
 				"without any error cases in it: " + err);
 			return;
 		}
+		
+		if(obj == null) {
+			log.error("Attempted to registed an error " +
+					"with NULL object: " + err);
+			return;
+		}
     	
     	Collection<Validation> validations = findValidation(obj);			
 		if(validations.isEmpty()) {
@@ -261,6 +276,8 @@ public class ValidatorImpl implements Validator {
 		
 		// add to the corresponding validation result
 		for(Validation v: validations) { 
+			assert(v != null);
+			
 			if(log.isTraceEnabled()) {
 				log.trace("Reporting: " + err.toString() 
 						+ " "+ err.getErrorCase().toArray()[0] + 
