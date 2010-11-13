@@ -55,14 +55,14 @@
 	  <c:forEach var="errorType" items="${result.error}" varStatus="estatus">
 		<li title="Click for error cases">
 			<a href="javascript:switchit('result${rstatus.index}type${estatus.index}')">${errorType.type}</a>
-			&nbsp;[<b>code: <em>${errorType.code}</em>; cases (left): <em>${errorType.totalErrorCases}</em></b>]
+			&nbsp;[<b>code: <em>${errorType.code}</em>; cases left: <em>${errorType.totalErrorCases}</em></b>]
 			&nbsp;${errorType.message}
 		</li>
 		<ul id="result${rstatus.index}type${estatus.index}" style="display: none">
 		<c:forEach var="errorCase" items="${errorType.errorCase}">
 			<li>
 				<c:if test="${errorCase.fixed}"><b>[FIXED!]</b>&nbsp;</c:if>
-				rdfid:<b>&nbsp;${errorCase.object}</b>
+				object:<b>&nbsp;${errorCase.object}</b>
 				<div>${errorCase.message}</div>(found by: <em>${errorCase.reportedBy}</em>)
 			</li>
 		</c:forEach>

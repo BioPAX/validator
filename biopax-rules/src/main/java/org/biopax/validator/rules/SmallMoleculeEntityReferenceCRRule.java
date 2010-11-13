@@ -13,6 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class SmallMoleculeEntityReferenceCRRule extends Level3CardinalityAndRangeRule<SmallMolecule> {
 	public SmallMoleculeEntityReferenceCRRule() {
-		super(SmallMolecule.class, "entityReference", 1, 1, SmallMoleculeReference.class);
+		super(SmallMolecule.class, "entityReference", 0, 1, SmallMoleculeReference.class);
 	}
 }

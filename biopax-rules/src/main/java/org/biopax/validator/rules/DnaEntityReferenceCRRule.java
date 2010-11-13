@@ -13,6 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class DnaEntityReferenceCRRule extends Level3CardinalityAndRangeRule<Dna> {
 	public DnaEntityReferenceCRRule() {
-		super(Dna.class, "entityReference", 1, 1, DnaReference.class);
+		super(Dna.class, "entityReference", 0, 1, DnaReference.class);
 	}
 }

@@ -13,6 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class RnaRegionEntityReferenceCRRule extends Level3CardinalityAndRangeRule<RnaRegion> {
 	public RnaRegionEntityReferenceCRRule() {
-		super(RnaRegion.class, "entityReference", 1, 1, RnaRegionReference.class);
+		super(RnaRegion.class, "entityReference", 0, 1, RnaRegionReference.class);
 	}
 }

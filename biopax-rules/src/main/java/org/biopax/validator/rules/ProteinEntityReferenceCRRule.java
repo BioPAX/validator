@@ -13,6 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProteinEntityReferenceCRRule extends Level3CardinalityAndRangeRule<Protein> {
 	public ProteinEntityReferenceCRRule() {
-		super(Protein.class, "entityReference", 1, 1, ProteinReference.class);
+		super(Protein.class, "entityReference", 0, 1, ProteinReference.class);
 	}
 }
