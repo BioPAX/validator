@@ -121,6 +121,6 @@ public interface Validator {
      * @param error
      * @param setFixed if true, - find and set the attribute
      */
-	public void report(Object obj, ErrorType error, boolean setFixed);
+	void report(Object obj, ErrorType error, boolean setFixed);
 	
 }

@@ -8,9 +8,7 @@ import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
 /**
- * Checks:
- * EntityReference must have a unification xref.
- * TODO do NOT add other logic here (better define in a separate rule)
+ * Checks a non-generic EntityReference has a unification xref.
  * 
  * @author rodche
  */
@@ -18,8 +16,9 @@ import org.springframework.stereotype.Component;
 public class EntityReferenceXrefRule extends AbstractRule<EntityReference> {
 
    public void check(EntityReference er, boolean fix) {
-        if (er.getXref() == null || (er.getXref()).isEmpty()) {
-            error(null, "no.xrefs", false);
+	   if(er.getMemberEntityReference().isEmpty()) { // for non-generic ERs only
+        if (er.getXref().isEmpty()) {
+            error(er, "no.xrefs", false);
         } else {
             boolean present = false;
             for (Xref x : er.getXref()) {
@@ -32,7 +31,7 @@ public class EntityReferenceXrefRule extends AbstractRule<EntityReference> {
                 error(er, "no.unification.xref", false);
             }
         }
-
+	   }
     }
 
 	public boolean canCheck(Object thing) {
