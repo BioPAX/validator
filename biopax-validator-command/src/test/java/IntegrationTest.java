@@ -18,6 +18,7 @@ import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.Behavior;
 import org.biopax.validator.rules.CellularLocationCvRule;
 import org.biopax.validator.rules.InteractionTypeCvRule;
+import org.biopax.validator.rules.ProteinModificationFeatureCvRule;
 import org.biopax.validator.rules.XrefRule;
 import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.utils.XrefHelper;
@@ -280,6 +281,25 @@ public class IntegrationTest {
         
         writeExample("testInteractionTypeRule.owl", m);
     } 
+    
+    
+    @Test
+	public void testProteinModificationFeatureCvRule() {
+    	ProteinModificationFeatureCvRule rule = 
+    		(ProteinModificationFeatureCvRule) context.getBean("proteinModificationFeatureCvRule");
+    	//System.out.print("proteinModificationFeatureCvRule valid terms are: " 
+    	//		+ rule.getValidTerms().toString());
+    	assertTrue(rule.getValidTerms().contains("(2S,3R)-3-hydroxyaspartic acid".toLowerCase()));
+    	
+    	SequenceModificationVocabulary cv = factory3.reflectivelyCreate(SequenceModificationVocabulary.class);
+    	cv.setRDFId("MOD_00036");
+    	cv.addTerm("(2S,3R)-3-hydroxyaspartic acid");
+    	ModificationFeature mf = factory3.reflectivelyCreate(ModificationFeature.class);
+    	mf.setRDFId("MF_MOD_00036");
+    	mf.setModificationType(cv);
+   		rule.check(mf, false); // should not fail
+	}
+    
     
     private void writeExample(String file, Model model) {
     	try {

@@ -7,7 +7,7 @@ import java.util.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.validator.impl.AbstractCvRule;
+import org.biopax.validator.CvRule;
 import org.biopax.validator.impl.CvTermRestriction;
 import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
 import org.springframework.core.io.Resource;
@@ -31,7 +31,7 @@ import psidev.ontology_manager.impl.OntologyUtils;
  * @author rodche
  *
  */
-public class BiopaxOntologyManager extends OntologyManagerImpl {
+public class BiopaxOntologyManager extends OntologyManagerImpl implements CvValidator {
 	private final static Log log = LogFactory.getLog(BiopaxOntologyManager.class);
 	
 	/**
@@ -64,35 +64,23 @@ public class BiopaxOntologyManager extends OntologyManagerImpl {
 		}	
 	}
 
-	/**
-	 * Gets valid ontology term names
-	 * using the constraints from the rule bean.
-	 * 
-	 * @param cvRule
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.biopax.validator.utils.CvValidator#getValidTermNames(org.biopax.validator.CvRule)
 	 */
-	public Set<String> getValidTermNames(AbstractCvRule<?> cvRule) {
+	public Set<String> getValidTermNames(CvRule<?> cvRule) {
 		return getValidTermNamesLowerCase(cvRule.getRestrictions());
 	}
 	
-	/**
-	 * Gets valid ontology terms
-	 * using the constraints from the rule bean.
-	 * 
-	 * @param cvRule
-	 * @return a set of ontology terms (beans)
+	/* (non-Javadoc)
+	 * @see org.biopax.validator.utils.CvValidator#getValidTerms(org.biopax.validator.CvRule)
 	 */
-	public Set<OntologyTermI> getValidTerms(AbstractCvRule<?> cvRule) {
+	public Set<OntologyTermI> getValidTerms(CvRule<?> cvRule) {
 		return getValidTerms(cvRule.getRestrictions());
 	}
 	
 	
-	/**
-	 * Gets the set of terms (including synonyms) 
-	 * that satisfy all the restrictions.
-	 * 
-	 * @param restrictions - objects that specify required ontology terms
-	 * @return set of names (strings)
+	/* (non-Javadoc)
+	 * @see org.biopax.validator.utils.CvValidator#getValidTermNames(java.util.Collection)
 	 */
 	public Set<String> getValidTermNames(Collection<CvTermRestriction> restrictions) {
 		Set<String> names = new HashSet<String>();
@@ -102,14 +90,8 @@ public class BiopaxOntologyManager extends OntologyManagerImpl {
 	}
 		
 
-	/**
-	 * Similar to getValidTermNames method, 
-	 * but the term names in the result set are all in lower case.
-	 * 
-	 * @see #getValidTermNames(Collection)
-	 * 
-	 * @param restrictions
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.biopax.validator.utils.CvValidator#getValidTermNamesLowerCase(java.util.Collection)
 	 */
 	public Set<String> getValidTermNamesLowerCase(Collection<CvTermRestriction> restrictions) {
 		Set<String> names = new HashSet<String>();
@@ -120,13 +102,8 @@ public class BiopaxOntologyManager extends OntologyManagerImpl {
 	}
 	
 	
-	/**
-	 * Gets term names and synonyms using the 
-	 * restriction bean to filter the data.
-	 * (restriction's 'NOT' property is ignored here)
-	 * 
-	 * @param restriction
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.biopax.validator.utils.CvValidator#getTermNames(org.biopax.validator.impl.CvTermRestriction)
 	 */
 	public Set<String> getTermNames(CvTermRestriction restriction) {
 		Set<OntologyTermI> terms = getTerms(restriction);
@@ -137,13 +114,8 @@ public class BiopaxOntologyManager extends OntologyManagerImpl {
    
 	
 	
-	/**
-	 * Gets a restricted set of CVs 
-	 * (including for synonyms) that satisfy
-	 * all the restrictions in the set.
-	 * 
-	 * @param restrictions - set of beans that together define the required constraint
-	 * @return set of ontology terms
+	/* (non-Javadoc)
+	 * @see org.biopax.validator.utils.CvValidator#getValidTerms(java.util.Collection)
 	 */
 	public Set<OntologyTermI> getValidTerms(Collection<CvTermRestriction> restrictions) {
 		Set<OntologyTermI> terms = new HashSet<OntologyTermI>();
@@ -166,13 +138,8 @@ public class BiopaxOntologyManager extends OntologyManagerImpl {
 	}
 	
 	
-	/**
-	 * Gets CVs (including for synonyms) using the 
-	 * criteria defined by the bean
-	 * ('NOT' property, if set 'true', is ignored)
-	 * 
-	 * @param restriction
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.biopax.validator.utils.CvValidator#getTerms(org.biopax.validator.impl.CvTermRestriction)
 	 */
 	public Set<OntologyTermI> getTerms(CvTermRestriction restriction) {
 		Set<OntologyTermI> terms = new HashSet<OntologyTermI>();

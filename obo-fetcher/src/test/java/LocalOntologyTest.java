@@ -43,19 +43,19 @@ public class LocalOntologyTest {
 	}
 
 	public LocalOntologyTest() {
-		mod = manager.getOntology("PSI-MOD");
-		mi = manager.getOntology("PSI-MI");
+		mod = manager.getOntology("MOD");
+		mi = manager.getOntology("MI");
 		so = manager.getOntology("SO");
 	}
 
 	@Test
 	public void ontologyLoading() {
 		Collection<String> ontologyIDs = manager.getOntologyIDs();
-		Assert.assertTrue(ontologyIDs.contains("PSI-MOD"));
+		Assert.assertTrue(ontologyIDs.contains("MOD"));
 		Assert.assertTrue(ontologyIDs.contains("SO"));
-		Assert.assertTrue(ontologyIDs.contains("PSI-MI"));
+		Assert.assertTrue(ontologyIDs.contains("MI"));
 
-		Ontology oa2 = manager.getOntology("PSI-MOD");
+		Ontology oa2 = manager.getOntology("MOD");
 		Assert.assertNotNull(oa2);
 		Assert.assertTrue(oa2 instanceof OntologyImpl);
 
@@ -63,7 +63,7 @@ public class LocalOntologyTest {
 		Assert.assertNotNull(oa2);
 		Assert.assertTrue(oa2 instanceof OntologyImpl);
 
-		oa2 = manager.getOntology("PSI-MI");
+		oa2 = manager.getOntology("MI");
 		Assert.assertNotNull(oa2);
 		Assert.assertTrue(oa2 instanceof OntologyImpl);
 	}
@@ -302,10 +302,18 @@ public class LocalOntologyTest {
 	public final void testTermByAccession() {
 		OntologyTermI term = mod.getTermForAccession("MOD:00046");
 		assertNotNull(term);
-		assertEquals("PSI-MOD", term.getOntologyId());
+		assertEquals("MOD", term.getOntologyId());
 		// so far so good...
 		term = manager.findTermByAccession("MOD:00046");
 		assertNotNull(term);
-		assertEquals("PSI-MOD", term.getOntologyId());
+		assertEquals("MOD", term.getOntologyId());
+	}
+	
+	@Test
+	public void getModChildren01157() throws OntologyLoaderException {
+		Set<OntologyTermI> terms = mod.getValidTerms("MOD:01157", true, false);
+		Assert.assertFalse(terms.isEmpty());
+		Assert.assertTrue(OntologyUtils.getAccessions(terms).contains("MOD:00036"));
+		Assert.assertTrue(OntologyUtils.getTermNames(terms).contains("(2S,3R)-3-hydroxyaspartic acid"));
 	}
 }
