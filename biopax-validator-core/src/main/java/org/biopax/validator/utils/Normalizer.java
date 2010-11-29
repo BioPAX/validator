@@ -170,7 +170,8 @@ public class Normalizer {
 				rdfid += URLEncoder.encode(name + "_" + ref.getId() + ending, "UTF-8");
 				
 				// replace xref or update ID
-				updateID(model, ref, rdfid);
+				if(!rdfid.equals(ref.getRDFId()))
+					updateID(model, ref, rdfid);
 				
 			} catch (UnsupportedEncodingException e) {
 				log.error("Failed to create RDFID from xref: " +
@@ -228,13 +229,15 @@ public class Normalizer {
 		}
 		
 		// update element and model (if required)
-		try {
-			updateID(model, bpe, urn);
-		} catch (Exception e) {
-			log.error("Failed to replace ID of " + bpe 
-				+ " (" + bpe.getModelInterface().getSimpleName()
-				+ ") with '" + urn + "'. " + e + ". " + extraInfo());
-			return;
+		if (!urn.equals(bpe.getRDFId())) {
+			try {
+				updateID(model, bpe, urn);
+			} catch (Exception e) {
+				log.error("Failed to replace ID of " + bpe + " ("
+						+ bpe.getModelInterface().getSimpleName() + ") with '"
+						+ urn + "'. " + e + ". " + extraInfo());
+				return;
+			}
 		}
 	}
 	
