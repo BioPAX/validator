@@ -1,7 +1,6 @@
 import static org.junit.Assert.*;
 
 import java.io.*;
-import java.util.Set;
 
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.impl.level3.Level3FactoryImpl;
@@ -12,15 +11,10 @@ import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.Rule;
 import org.biopax.validator.rules.*;
 import org.biopax.validator.utils.*;
-import org.junit.Assert;
 import org.junit.Test;
 
 
 import org.biopax.paxtools.model.level3.Process;
-
-import psidev.ontology_manager.OntologyTermI;
-import psidev.ontology_manager.impl.OntologyLoaderException;
-import psidev.ontology_manager.impl.OntologyUtils;
 
 
 /**
@@ -528,6 +522,21 @@ public class Level3RulesUnitTest {
 		rule.check(model, true); 
 		// write the example
 		writeExample("testClonedUtilityClassRuleFixed.owl", model);	
+	}
+
+	
+	@Test
+	public void testDuplicateIdCaseInsensitiveRule() {
+		Rule<Model> rule = new DuplicateIdCaseInsensitiveRule();		
+		Model m = level3.createModel();
+		m.addNew(UnificationXref.class, "some_id");
+		m.addNew(RelationshipXref.class, "Some_ID");
+		try { 
+			rule.check(m, false); 
+			fail("must throw BiopaxValidatorException");
+		} catch (BiopaxValidatorException e) 
+		{
+		}
 	}
 
 }
