@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div id="top">
-<h2><a href="http://www.biopax.org">BioPAX</a> Validator (v2.0A-20101113)</h2>
+<h2><a href="http://www.biopax.org">BioPAX</a> Validator (v2.0A-Christmas2010)</h2>
 <div id="menu">
 <ul>
 <li><a href="<c:url value='/'/>" >Home</a></li>

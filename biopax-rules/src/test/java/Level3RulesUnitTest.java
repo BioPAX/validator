@@ -340,10 +340,8 @@ public class Level3RulesUnitTest {
     
     
     @Test
-    public void testProteinReferenceOrganismCRRule() throws IOException {
-    	ProteinReferenceOrganismCRRule rule = new ProteinReferenceOrganismCRRule();
-    	rule.setEditorMap(editorMap); // in real application it's set automatically at load time
-    	
+    public void testProteinReferenceOrganismRule() throws IOException {
+    	ProteinReferenceOrganismRule rule = new ProteinReferenceOrganismRule();
     	BioSource bioSource = level3.createBioSource();
     	bioSource.setRDFId("BioSource-Human");
     	bioSource.setDisplayName("Homo sapiens");
@@ -370,10 +368,9 @@ public class Level3RulesUnitTest {
 		}
     	
     	pr.setOrganism(bioSource);
-    	rule.check(pr, false);
-    	
-    	// thnx to the API, it's impossible to add more than one 'organism' value, so - no more tests are required
+    	rule.check(pr, false); // should pass now
     }
+    
 
 	@Test
 	public void testControlTypeRule() throws IOException
