@@ -21,11 +21,15 @@
 		<value>NIL</value>
 	</util:set>
 
-	<!-- XrefRule configuration -->
+	
+	<!-- UnificationXrefLimitedRule  settings. 
+		only if 'db' value is a valid database name/synonym, 
+		these extra rules apply: -->
 	
 	<!-- allow ONLY listed db names for UnificationXrefs-->
 	<util:map id="dbAllow" key-type="java.lang.Class" value-type="java.lang.String">
 		<entry key="org.biopax.paxtools.model.level3.BioSource" value="taxonomy"/>
+		<entry key="org.biopax.paxtools.model.level3.Provenance" value="miriam"/>
 	</util:map>
 	
 	<!-- disallow listed db names (and all synonyms) for for UnificationXrefs -->
@@ -42,6 +46,7 @@
 		<entry key="org.biopax.paxtools.model.level3.Interaction" value="PSI-MI"/>
 	</util:map>
 
+	<!-- XrefRule, XrefSynonymDbRule configuration -->
 	<!--
 		This is for certain database references do not apply to all the BioPAX
 		objects, so such constraits (not in OWL spec.) should be specified in
