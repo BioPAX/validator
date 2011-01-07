@@ -1,5 +1,7 @@
 package org.biopax.miriam;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,6 +9,7 @@ import java.util.regex.Pattern;
 
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 //import javax.xml.validation.Schema;
 //import javax.xml.validation.SchemaFactory;
@@ -63,27 +66,50 @@ public class MiriamLink
 		try
 	    {
 			URL url = new URL(XML_LOCATION);
-			//URLConnection conn = url.openConnection();
-			//conn.setDoOutput(true);
-			//OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-			//String query = URLEncoder.encode("fileName=Miriam.xml", "UTF-8");
-			//wr.write(query);
-			//wr.flush();
+			/*// service has changed, - no need to send query anymore!
+			  URLConnection conn = url.openConnection();
+			  conn.setDoOutput(true);
+			  OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+			  String query = URLEncoder.encode("fileName=Miriam.xml", "UTF-8");
+			  wr.write(query);
+			  wr.flush(); 
+			 */
             JAXBContext jc = JAXBContext.newInstance(BINDING);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
-            //miriam = (Miriam) unmarshaller.unmarshal(conn.getInputStream());
-            miriam = (Miriam) unmarshaller.unmarshal(url.openStream());
-
-            if (log.isDebugEnabled()) {
-	            log.debug("MIRIAM XML imported, version: "
+            
+            Miriam mir = null;
+            //mir = (Miriam) unmarshaller.unmarshal(conn.getInputStream());
+            try {
+            	mir = (Miriam) unmarshaller.unmarshal(url.openStream());
+            } catch (IOException e) {
+            	// fall-back (to using local Miriam.xml)
+            	if(log.isWarnEnabled())
+            		log.warn("Cannot connect to Miriam resource: " + e
+            			+ "; now trying to find/use Miriam.xml from classpath...");
+            	InputStream is = MiriamLink.class.getResourceAsStream("/Miriam.xml");
+            	if(is != null) {
+            		mir = (Miriam) unmarshaller.unmarshal(is);
+            	} else {
+            		throw new RuntimeException("Miriam.xml is neither available online " 
+            			+ " at " + XML_LOCATION +
+            			" nor it can be found in the root of classpath!");
+            	}
+			}
+            
+            miriam = mir;
+            
+            if (log.isInfoEnabled()) {
+	            log.info("MIRIAM XML imported, version: "
 	                + miriam.getDataVersion() + ", datatypes: "
 	                + miriam.getDatatype().size());
 	        }
 	    }
-	    catch (Exception e)
-	    {
+	    catch (JAXBException e) {
 	        throw new RuntimeException(e);
 	    }
+	    catch (MalformedURLException e) {
+	    	throw new RuntimeException(e);
+		}
 	}
 
 	
