@@ -137,7 +137,7 @@ public class NormalizerTest {
 		model = simpleReader.convertFromOWL(new ByteArrayInputStream(xml.getBytes("UTF-8")));
 		
 		// check Xref
-		BioPAXElement bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "UnificationXref:UniProt_P68250");
+		BioPAXElement bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "UnificationXref:UNIPROT_P68250");
 		assertTrue(bpe instanceof UnificationXref);
 		
 		// check PR
@@ -145,10 +145,10 @@ public class NormalizerTest {
 		assertTrue(bpe instanceof ProteinReference);
 		
 		//check xref's ID gets normalized
-		bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "RelationshipXref:RefSeq_NP_001734");
+		bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "RelationshipXref:REFSEQ_NP_001734");
 		assertEquals(1, ((Xref)bpe).getXrefOf().size());
 		// almost the same xref (was different idVersion)
-		bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "RelationshipXref:RefSeq_NP_001734_1");
+		bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "RelationshipXref:REFSEQ_NP_001734_1");
 		assertEquals(1, ((Xref)bpe).getXrefOf().size());
 		
     	//TODO test when uniprot's is not the first xref
@@ -158,7 +158,7 @@ public class NormalizerTest {
 		//test BioSource
 		bpe = model.getByID("urn:miriam:taxonomy:10090");
 		assertTrue(bpe instanceof BioSource);
-		bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "UnificationXref:Taxonomy_10090");
+		bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "UnificationXref:TAXONOMY_10090");
 		assertTrue(bpe instanceof UnificationXref);
 		
 		

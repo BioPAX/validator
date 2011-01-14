@@ -159,15 +159,18 @@ public class Normalizer {
 			}
 			
 			// build new standard rdfid
+			// note: due to 
 			String rdfid = null;
 			try {
-				rdfid = BIOPAX_URI_PREFIX + ref.getModelInterface().getSimpleName() + ":";
+				String prefix = BIOPAX_URI_PREFIX + ref.getModelInterface().getSimpleName() + ":";
+				
 				String ending = 
 					(ref.getIdVersion() != null && !"".equals(ref.getIdVersion().trim()))
 						? "_" + ref.getIdVersion() // add the id version/variant
 						: ""; // no endings
+				
 				// add the local (last) part of the URI encoded -
-				rdfid += URLEncoder.encode(name + "_" + ref.getId() + ending, "UTF-8");
+				rdfid = prefix + URLEncoder.encode(name + "_" + ref.getId() + ending, "UTF-8").toUpperCase();
 				
 				// replace xref or update ID
 				if(!rdfid.equals(ref.getRDFId()))
