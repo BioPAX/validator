@@ -11,12 +11,10 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.util.AbstractFilterSet;
-import org.biopax.validator.Behavior;
 import org.biopax.validator.utils.BiopaxValidatorException;
 
 
-@XmlType//(namespace="http://biopax.org/validator/2.0/schema", name="ValidationResult")
-@XmlRootElement(name="validationResult")
+@XmlType(name="Validation", namespace="http://biopax.org/validator/2.0/schema")
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class Validation implements Serializable {
 	private static final long serialVersionUID = 1L;

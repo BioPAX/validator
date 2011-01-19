@@ -2,13 +2,16 @@ package org.biopax.validator.utils;
 
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.level3.Named;
-import org.biopax.validator.Behavior;
 import org.biopax.validator.result.*;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
@@ -20,9 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.oxm.Marshaller;
-import org.springframework.oxm.Unmarshaller;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -43,17 +44,23 @@ public class BiopaxValidatorUtils {
     
     private Locale locale;
     private MessageSource messageSource; 
-    private static Jaxb2Marshaller resultsMarshaller;
+    //private static Jaxb2Marshaller resultsMarshaller;
+    private static JAXBContext jaxbContext;
     private final Set<String> ignoredCodes;
     public static int maxErrors = Integer.MAX_VALUE;
     
    
     static {
-    	resultsMarshaller = new Jaxb2Marshaller();
-    	((Jaxb2Marshaller)resultsMarshaller)
-    		.setClassesToBeBound(
-    			ValidatorResponse.class, Validation.class, 
-				ErrorCaseType.class, ErrorType.class);
+    	try {
+			jaxbContext = JAXBContext.newInstance(
+					ValidatorResponse.class,
+					Validation.class,
+					ErrorCaseType.class,
+					ErrorType.class);
+		} catch (JAXBException e) {
+			throw new RuntimeException("Failed to initialize the " +
+				"org.biopax.validator.result JAXB context!", e);
+		}
     }
     
     public BiopaxValidatorUtils() {
@@ -74,7 +81,12 @@ public class BiopaxValidatorUtils {
 	 * @return
 	 */
 	public static Marshaller getMarshaller() {
-		return resultsMarshaller;
+		//return resultsMarshaller;
+		try {
+			return jaxbContext.createMarshaller();
+		} catch (JAXBException e) {
+			throw new RuntimeException("Failed to create Marshaller", e);
+		}
 	}
     
 	/**
@@ -82,7 +94,12 @@ public class BiopaxValidatorUtils {
 	 * @return
 	 */
 	public static Unmarshaller getUnmarshaller() {
-		return resultsMarshaller;
+		//return resultsMarshaller;
+		try {
+			return jaxbContext.createUnmarshaller();
+		} catch (JAXBException e) {
+			throw new RuntimeException("Failed to create Unmarshaller", e);
+		}
 	}
 	
 	
@@ -269,8 +286,9 @@ public class BiopaxValidatorUtils {
 	 * @param writer
 	 */
 	public static void write(Validation validationResult, Writer writer, Source xslt) {
-		Element el = asElement(validationResult);
-		transformAndWrite(el, writer, xslt);
+		ValidatorResponse resp = new ValidatorResponse();
+		resp.addValidationResult(validationResult);
+		write(resp, writer, xslt);
 	}
 	
 	/**
@@ -321,7 +339,7 @@ public class BiopaxValidatorUtils {
 	protected static DOMResult marshal(Object obj) {
 		DOMResult domResult = new DOMResult();
 		try {
-			resultsMarshaller.marshal(obj, domResult);
+			getMarshaller().marshal(obj, domResult);
 		} catch (Exception e) {
 			throw new RuntimeException("Cannot serialize object: " + obj, e);
 		} 

@@ -3,7 +3,7 @@ package org.biopax.validator.result;
 import java.io.Serializable;
 import javax.xml.bind.annotation.*;
 
-@XmlType//(namespace="http://biopax.org/validator/2.0/schema")
+@XmlType(name="ErrorCaseType", namespace="http://biopax.org/validator/2.0/schema")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ErrorCaseType implements Serializable, Comparable<ErrorCaseType> {
 
@@ -81,7 +81,6 @@ public class ErrorCaseType implements Serializable, Comparable<ErrorCaseType> {
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof ErrorCaseType) {
-			//return this.toString().equalsIgnoreCase(((ErrorCaseType)obj).toString());
 			ErrorCaseType that = ((ErrorCaseType)obj);
 			return (object+reportedBy).equalsIgnoreCase(that.object+that.reportedBy);
 		}
@@ -90,7 +89,6 @@ public class ErrorCaseType implements Serializable, Comparable<ErrorCaseType> {
 	
 	@Override
 	public int hashCode() {
-		//return toString().hashCode();
 		return (object+reportedBy).hashCode();
 	}
 }

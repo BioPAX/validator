@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.biopax.paxtools.model.BioPAXElement;
-import org.biopax.validator.Behavior;
+import org.biopax.validator.result.Behavior;
 import org.biopax.validator.Rule;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,7 @@
 package org.biopax.validator;
 
+import org.biopax.validator.result.Behavior;
+
 
 /**
  * Validation rule interface.

@@ -7,7 +7,6 @@ import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.Stoichiometry;
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.utils.BiopaxValidatorException;
 import org.springframework.stereotype.Component;
 
 
@@ -25,36 +24,37 @@ public class ComplexTwoOrMoreParticipantsRule extends AbstractRule<Complex> {
 		return thing instanceof Complex;
 	}
 
-	public void check(Complex thing, boolean fix) {
-		
+	public void check(Complex thing, boolean fix) 
+	{	
 		Set<PhysicalEntity> components = thing.getComponent();	
 		
 		if(components.isEmpty()) {
 			error(thing, "complex.incomplete", false, "no components");
-		} else if(components.size()==1) {
+		} else if(components.size()==1) { 
+			// one component? - then stoi.coeff. must be > 1 (dimer, trimer,..)
 			PhysicalEntity pe = components.iterator().next();
 			Set<Stoichiometry> stoi = thing.getComponentStoichiometry();
+			String msg = "has one component";
 			if(stoi.isEmpty()) {
-				error(thing, "complex.incomplete", false, "no stoichiometry");
-			} else {
+				error(thing, "complex.incomplete", false, msg + ", but no stoichiometry defined.");
+			} else { 
+				if(stoi.size() > 1)
+					msg += ", but multiple stoichiometries...";
 				boolean ok = false;
 				for(Stoichiometry s : stoi) {
-					if(s.getPhysicalEntity().equals(pe)
+					if(pe.equals(s.getPhysicalEntity())
 							&& s.getStoichiometricCoefficient() > 1) {
 						ok = true;
 						break;
 					}
 					
-					if(!s.getPhysicalEntity().equals(pe)) {
-						throw new BiopaxValidatorException("Complex " +
-								"Stoichiometry contains a physical entity " +
-								"that is not in components.", thing, s, s.getPhysicalEntity());
+					if(!pe.equals(s.getPhysicalEntity()) && s.getPhysicalEntity() != null) {
+						error(thing, "complex.stoichiometry.notcomponent", false, s, s.getPhysicalEntity(), pe);
 					}
 				}
 				if(!ok) {
-					error(thing, "complex.incomplete", false, "stoichiometry < 2");
+					error(thing, "complex.incomplete", false, msg + "; which stoichiometry < 2.");
 				}
-				
 			}
 		}
 

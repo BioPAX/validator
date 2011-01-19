@@ -1,6 +1,6 @@
 package org.biopax.validator.impl;
 
-import org.biopax.validator.Behavior;
+import org.biopax.validator.result.Behavior;
 import org.biopax.validator.Messenger;
 import org.biopax.validator.Rule;
 import org.biopax.validator.utils.BiopaxValidatorException;
@@ -121,6 +121,14 @@ public abstract class AbstractRule<T> implements Rule<T> {
     }
              
 
+	/**
+	 * 
+	 * Implementation Note: A Rule can report the same error (code) 
+	 * with the same 'thing' (regardless of the message text)
+	 * only once; i.e., last reported overrides previous
+	 * (so, take care!)
+	 * 
+	 */
     public void error(Object object, String code, boolean setFixed, Object... args) {
     	Messenger m = getMessenger();
     	if(m != null) {

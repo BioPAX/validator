@@ -54,7 +54,9 @@
 <form method="post" enctype="multipart/form-data" onsubmit="return validate();">
     <div class="form-row" style="padding-top: 1em;">
     	<input type="radio" id="switch" name="switch" checked="checked" onchange="switchInput();" value="fdfdfdf"/>
-		<input id="file" type="file" name="file" accept="application/rdf+xml"/>
+    	<label>Choose up to 25 BioPAX files:</label>
+		<input id="file" type="file" name="file_0" accept="application/rdf+xml"/>
+		<div id="files_list" ></div>
 		<br/>
 		<input type="radio" id="switch" name="switch" onchange="switchInput();"/>
 		<label>Check a BioPAX OWL at the location:</label>
@@ -89,7 +91,7 @@
 		<label>HTML</label>
 		<br/>
 		<input type="radio" name="retDesired" value="xml"/>
-		<label>XML (<a href="http://biopax.hg.sf.net/hgweb/biopax/validator/file/default/biopax-validator-core/src/main/java/org/biopax/validator/result/">unmarshalable</a>)</label>
+		<label>XML (<a href="<c:url value='/ws.html'/>">unmarshalable</a>)</label>
 		<br/>
 		<input type="radio" name="retDesired" value="owl"/>
 		<label>Modified BioPAX (only)</label>
@@ -109,6 +111,12 @@
   </div>
   <jsp:include page="/templates/footer.jsp"/>
 </div>
+
+<script type="text/javascript" src="scripts/multifile_compressed.js"></script>
+<script type="text/javascript">
+  var multi_selector = new MultiSelector( document.getElementById( 'files_list' ), 25);
+  multi_selector.addElement( document.getElementById( 'file' ) );
+</script>
 
 </body>
 </html>

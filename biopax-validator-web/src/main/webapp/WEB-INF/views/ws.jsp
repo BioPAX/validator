@@ -21,26 +21,47 @@
 
 
 <h2>BioPAX Validator Webservice</h2>
-<div>
-To upload and check BioPAX files*, use a multi-part HTTP POST request 
-to <a href="<c:url value='/checkFile.html'/>">this page</a>.
-</div>
+
 <br/>
+
 <div>
-To validate either from a URL resource or using Pathway Commons ID, 
-set the parameter <em>&quot;url&quot;</em> and POST the query to 
-<a href="<c:url value='/checkUrl.html'/>">another page</a>
+
+<h3>Endpoints (RESTful)</h3>
+<ol>
+<li>Check (and, optionally, auto-fix and normalize) either BioPAX L3 files or a resource, 
+send a multipart/form-data HTTP POST request to <a href="<c:url value='/check.html'/>">this page</a>
+</li>
+</ol>
+
+<h3>Parameters:</h3>
+<ul>
+<li><em>file</em> (actually, parameter name does not matter here, - simply submit an array of files) OR <em>url</em> (value: URL string)</li>
+<li><em>retDesired</em> - output format: "html" (default), "xml", or "owl"</li>
+<li><em>autofix</em> - false/true; try to fix some errors automatically (a new experimental feature; default is "false")</li>
+<li><em>normalize</em> - false/true; return "normalized" BioPAX (a new experimental feature; default is "false")</li>
+<li><em>filter</em> - set errors level; values: "WARNING" (default, get errors and warnings), "ERROR", "IGNORE" (no problems at all ;))</li>
+</ul>
+
+<h3>Output Formats:</h3>
+<ul>
+<li>HTML - stand-alone HTML/JavaScript result page that can be also saved and viewed off-line</li>
+<li>XML - results follow the <a href="<c:url value='/schema.html'/>">schema (XSD)</a> 
+ There are different ways to convert the XML result to domain objects. JAXB works great (one can generate the classes from the schema; 
+copy/modify the classes used by the Validator (<a href="http://biopax.hg.sf.net/hgweb/biopax/validator/file/default/biopax-validator-core/src/main/java/org/biopax/validator/result/">sources here</a>);
+ or grab into your project the (latest snapshot) jar (<a href="http://biopax.sourceforge.net/m2repo/snapshots/org/biopax/validator/biopax-validator-core/2.0-SNAPSHOT/">from the BioPAX public repository</a>) 
+ or simply add that repository and the org.biopax.validator:biopax-validator-core:2.0-SNAPSHOT:jar dependency to your pom.xml (though, this will automatically bring more dependencies to your project, e.g., paxtools-core, spring framework, etc...)
+
+ </li>
+<li>OWL - BioPAX L3 (fixed/normalized)</li>
+</ul>
+
 </div>
+
 <br/>
+
 <div>
-Optionally, you may want to use the parameter <em>'retDesired'</em> (results format). Values are: "html" (default) or "xml".
-</div>
-<br/>
-<div>
-An example client application can be downloaded from <em>/paxtools</em> folder at: 
-<a href="http://sourceforge.net/projects/biopax/files/">BioPAX Project Files</a>
-(it connects to the http://www.biopax.org/biopax-validator/); 
-or - <a href="http://biopax.hg.sourceforge.net/hgweb/biopax/paxtools/file/default/validator-client">browse sources here</a>.
+As an example, there is a basic BioPAX validator client module (it connects to the http://www.biopax.org/biopax-validator/check.html), and the 
+<a href="http://biopax.hg.sf.net/hgweb/biopax/validator/file/default/biopax-validator-client">sources are here</a> (see test classes there as well:).
 </div>
 	
       </div>

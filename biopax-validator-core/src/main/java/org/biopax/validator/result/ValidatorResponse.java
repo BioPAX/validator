@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.*;
 import javax.xml.bind.annotation.*;
 
-@XmlType//(namespace="http://biopax.org/validator/2.0/schema")
-@XmlRootElement
+@XmlRootElement(namespace="http://biopax.org/validator/2.0/schema")
+@XmlType(name="ValidatorResponse", namespace="http://biopax.org/validator/2.0/schema")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ValidatorResponse implements Serializable {
 
@@ -17,11 +17,6 @@ public class ValidatorResponse implements Serializable {
 		validationResult = new ArrayList<Validation>();
 	}
 
-	/**
-	 * List of error types; each item has unique 
-	 * 
-	 * @return
-	 */
 	public List<Validation> getValidationResult() {
 		return validationResult;
 	}
@@ -39,11 +34,6 @@ public class ValidatorResponse implements Serializable {
 		return result.toString();
 	}
 	
-	/**
-	 * Add new Validation (result).
-	 * 
-	 * @param result
-	 */
 	public void addValidationResult (Validation result) {
 		this.validationResult.add(result);
 	}

@@ -1,8 +1,6 @@
 package org.biopax.validator.ws;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.util.*;
 
@@ -10,12 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.validator.Behavior;
+import org.biopax.validator.result.*;
 import org.biopax.validator.Validator;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.result.ValidatorResponse;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
@@ -29,9 +26,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * TODO e.g., add user sessions, re-use the result if a browser
- * TODO add more form parameters: maxErrors= 
  * 
- * @author rodch
+ * @author rodche
  *
  */
 @Controller
@@ -40,6 +36,10 @@ public class ValidatorController {
 
 	private Validator validator;
 	
+	private final static DefaultResourceLoader LOADER = new DefaultResourceLoader();
+	
+	private static final String NEWLINE = System.getProperty ( "line.separator" );
+	
 	public ValidatorController() {
 	}
 
@@ -47,11 +47,11 @@ public class ValidatorController {
 		this.validator = validator;
 	}	
       
-    @RequestMapping(value="/checkUrl", method=RequestMethod.GET)
-    public void checkUrl() {};
+    @RequestMapping(value="/check", method=RequestMethod.GET)
+    public void check() {}
     
-    @RequestMapping(value="/checkUrl", method=RequestMethod.POST)
-    public String checkUrl(
+    @RequestMapping(value="/check", method=RequestMethod.POST)
+    public String check(
     		HttpServletRequest request,
     		@RequestParam(required=false) String url, 
     		@RequestParam(required=false) String retDesired,
@@ -60,8 +60,11 @@ public class ValidatorController {
     		@RequestParam(required=false) Behavior filter,
     		Model model, Writer writer) throws IOException  
     {
-    	Resource in = null;
-    	String modelName = null;
+    	Resource in = null; // a resource to validate
+    	
+    	// create the response container
+    	ValidatorResponse validatorResponse = new ValidatorResponse();
+    	
     	if(url != null && url.length()>0) {
         	if(log.isInfoEnabled() && url != null) 
         		log.info("url : " + url);
@@ -69,136 +72,23 @@ public class ValidatorController {
         		in = new UrlResource(url);
         	} catch (MalformedURLException e) {
         		model.addAttribute("error", e.toString());
-        		return "checkUrl";
+        		return "check";
 			}
-        	modelName = in.getDescription();
+        	
+        	Validation v = newValidation(in.getDescription(), autofix, normalize, filter);
+        	
+    		try {
+    			doCheck(v, in);
+    	    	validatorResponse.addValidationResult(v);
+    		} catch (Exception e) {
+    			return errorResponse(model, 
+    				"check", "Error: " 
+    					+ e.toString());
+    		}
     	} else if (request instanceof MultipartHttpServletRequest) {
 			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
 			Map files = multiRequest.getFileMap();
 			Assert.state(!files.isEmpty(), "No file!");
-			Object o = files.values().iterator().next();
-			MultipartFile file = (MultipartFile) o;
-			String filename = file.getOriginalFilename();
-			if(log.isInfoEnabled()) 
-				log.info("file : " + filename);
-			in = new ByteArrayResource(file.getBytes());
-			modelName = filename;
-		} else {
-			return errorResponse(model, 
-				"checkUrl", "No BioPAX input source provided!");
-		}
-			
-    	ValidatorResponse validatorResponse = new ValidatorResponse();
-		Validation result = new Validation();
-		result.setDescription(modelName);
-		if (autofix != null && autofix == true) {
-			result.setFix(true);
-		}
-		if (normalize != null && normalize == true) {
-			result.setNormalize(true);
-		}
-		if (filter != null) {
-			result.setThreshold(filter);
-		}
-		
-		InputStream input = null;
-		try {
-			input = in.getInputStream();
-			validator.importModel(result, input);
-			validator.validate(result);
-			if(result.isFix() || result.isNormalize()) {
-				result.updateModelSerialized();
-			}
-	    	validatorResponse.addValidationResult(result);
-	    	validator.getResults().remove(result);
-		} catch (Exception e) {
-			return errorResponse(model, 
-				"checkUrl", "Error: " 
-					+ e.toString());
-		}
-    	
-    	if("xml".equalsIgnoreCase(retDesired)) {
-        	BiopaxValidatorUtils.write(result, writer, null);
-    	} else if("html".equalsIgnoreCase(retDesired)) {
-			model.addAttribute("response", validatorResponse);
-			return "groupByCodeResponse";
-		} else { // owl only
-			if(result.getModelSerialized() != null)
-				writer.write(result.getModelSerialized());
-			else
-				return errorResponse(model, "checkUrl", "No BioPAX data returned.");
-		}
-    	
-    	return null; // (writer used)
-    }
-	
-    private String errorResponse(Model model, String viewName, String msg) {
-    	model.addAttribute("error", msg);
-		return viewName;
-    }
-    
-    
-    @RequestMapping(value="/checkFile", method=RequestMethod.GET)
-    public void checkFile() {	
-    } // show form
-   
-
-    /*
-	 * validates several BioPAX files
-	 */
-    @RequestMapping(value="/checkFile", method = RequestMethod.POST)
-	public String checkFile(HttpServletRequest request,
-			@RequestParam(value="retDesired", required=false) String retDesired) 
-    	throws IOException 
-    {			
-		if("xml".equalsIgnoreCase(retDesired)) {
-			return "forward:xmlResult.html";
-		} else {
-			return "forward:htmlResult.html";
-		}
-		
-	}
-    
-    
-    @RequestMapping(value="/htmlResult", method = RequestMethod.POST)
-	public String checkFile(HttpServletRequest request, Model model) 
-    	throws IOException 
-	{			
-		ValidatorResponse validatorResponse = checkFile(request);
-		model.addAttribute("response", validatorResponse);
-		return "groupByCodeResponse";
-	}
-    
-    
-    @RequestMapping(value="/xmlResult", method = RequestMethod.POST)
-    public void getResultsAsXml(HttpServletRequest request, Writer writer) 
-    	throws IOException 
-    {
-    	ValidatorResponse response = checkFile(request);
-    	if(response != null) {
-    		BiopaxValidatorUtils.write(response, writer, null);
-    	} else {
-    		writer.write("Empty Result or Error.");
-    	}
-    }
-    
- /*   
-    @RequestMapping("/home")
-    public void homePage() {}
-
-    
-    @RequestMapping("/ws")
-    public void wsDescriptionPage() {}
-*/    
-    
-    
-	private ValidatorResponse checkFile(HttpServletRequest request) throws IOException 
-	{			
-		ValidatorResponse validatorResponse = new ValidatorResponse();
-		if (request instanceof MultipartHttpServletRequest) {
-			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-			Map files = multiRequest.getFileMap();
-			Assert.state(files.size() > 0, "No files were uploaded");
 			for (Object o : files.values()) {
 				MultipartFile file = (MultipartFile) o;
 				String filename = file.getOriginalFilename();
@@ -209,19 +99,94 @@ public class ValidatorController {
 					continue;
 				}
 				if(log.isInfoEnabled()) 
-					log.info("checkFile : " + filename);
+					log.info("check : " + filename);
 				
-				Resource in = new ByteArrayResource(file.getBytes());
-				Validation validation = new Validation();
-				validation.setDescription(filename);
-				validator.importModel(validation, in.getInputStream());
-				validator.validate(validation);
-				validatorResponse.addValidationResult(validation);
-				validator.getResults().remove(validation);
-			}
-			
+				in = new ByteArrayResource(file.getBytes());
+	    		try {
+	    			Validation v = newValidation(filename, autofix, normalize, filter);
+	    			doCheck(v, in);
+	    	    	validatorResponse.addValidationResult(v);
+	    		} catch (Exception e) {
+	    			return errorResponse(model, 
+	    				"check", "Error: " 
+	    					+ e.toString());
+	    		}
+			}			
+		} else {
+			return errorResponse(model, 
+				"check", "No BioPAX input source provided!");
 		}
 		
-		return validatorResponse;
+    	if("xml".equalsIgnoreCase(retDesired)) {
+        	BiopaxValidatorUtils.write(validatorResponse, writer, null);
+    	} else if("html".equalsIgnoreCase(retDesired)) {
+			model.addAttribute("response", validatorResponse);
+			return "groupByCodeResponse";
+		} else { // owl only
+			// write all the OWL results one after another TODO any better solution?
+			for(Validation result : validatorResponse.getValidationResult()) 
+			{
+				if(result.getModelSerialized() != null)
+					writer.write(result.getModelSerialized() + NEWLINE);
+				else
+					// empty result
+					writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+						"<rdf:RDF></rdf:RDF>" + NEWLINE);
+			}
+		}
+    	
+    	return null; // (Writer is used instead)
+    }
+	
+    
+    private void doCheck(Validation v, Resource in) throws IOException {
+		InputStream input = in.getInputStream();
+		validator.importModel(v, input);
+		validator.validate(v);
+		if(v.isFix() || v.isNormalize()) {
+			v.updateModelSerialized();
+		}
+    	validator.getResults().remove(v);
 	}
+
+    
+	private Validation newValidation(String name, Boolean autofix, 
+    		Boolean normalize, Behavior filterBy) 
+    {
+    	Validation v = new Validation(name);
+		
+    	if (autofix != null && autofix == true) {
+			v.setFix(true);
+		}
+		if (normalize != null && normalize == true) {
+			v.setNormalize(true);
+		}
+		if (filterBy != null) {
+			v.setThreshold(filterBy);
+		}
+		
+		return v;
+    }
+
+    
+    private String errorResponse(Model model, String viewName, String msg) {
+    	model.addAttribute("error", msg);
+		return viewName;
+    }
+
+    
+    @RequestMapping(value="/schema")
+    public void getSchema(Writer writer) throws IOException {
+    	if(log.isDebugEnabled())
+    		log.debug("XML Schema requested.");
+    	
+    	BufferedReader bis = new BufferedReader(new InputStreamReader(
+    		LOADER.getResource("classpath:validator-response-2.0.xsd")
+    			.getInputStream(), "UTF-8"));
+    	
+    	String line = null;
+    	while((line = bis.readLine()) != null) {
+    		writer.write(line + NEWLINE);
+    	}
+    } 
 }

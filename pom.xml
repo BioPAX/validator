@@ -55,6 +55,7 @@
 		<module>obo-fetcher</module>
 		<module>miriam-lib</module>
 		<module>biopax-validator-test</module>
+		<module>biopax-validator-client</module>
 	</modules>
 
 	<build>

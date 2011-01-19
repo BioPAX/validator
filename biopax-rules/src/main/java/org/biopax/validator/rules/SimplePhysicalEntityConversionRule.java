@@ -74,7 +74,7 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
     	};
     	
     	try {
-   		runner.traverse(conversion, null);
+    		runner.traverse(conversion, null);
     	} catch (RuntimeException e) {
 			return true;
 		}

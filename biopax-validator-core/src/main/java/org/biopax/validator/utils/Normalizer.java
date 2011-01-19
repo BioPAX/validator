@@ -46,10 +46,7 @@ import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.paxtools.util.ClassFilterSet;
-import org.biopax.validator.Behavior;
-import org.biopax.validator.result.ErrorCaseType;
-import org.biopax.validator.result.ErrorType;
-import org.biopax.validator.result.Validation;
+import org.biopax.validator.result.*;
 
 /**
  * BioPAX Normalizer.

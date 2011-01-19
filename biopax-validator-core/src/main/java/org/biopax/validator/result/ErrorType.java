@@ -5,12 +5,10 @@ import java.util.*;
 
 import javax.xml.bind.annotation.*;
 
-import org.biopax.validator.Behavior;
-
-@XmlType//(namespace="http://biopax.org/validator/2.0/schema")
+@XmlType(name="ErrorType", namespace="http://biopax.org/validator/2.0/schema")
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class ErrorType implements Serializable {
-
+	
 	private static final long serialVersionUID = 1L;
 	
 	/* 

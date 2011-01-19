@@ -7,11 +7,7 @@ import java.io.StringWriter;
 
 import javax.xml.transform.stream.StreamSource;
 
-import org.biopax.validator.Behavior;
-import org.biopax.validator.result.ErrorCaseType;
-import org.biopax.validator.result.ErrorType;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.result.ValidatorResponse;
+import org.biopax.validator.result.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -94,11 +90,18 @@ public class BiopaxValidatorUtilsTest {
 		
 		// unmarshall each (independent xml results), 
 		// then build a new response from them, and serialize
-		Validation res1 = (Validation) BiopaxValidatorUtils.getUnmarshaller()
+		ValidatorResponse res = (ValidatorResponse) BiopaxValidatorUtils.getUnmarshaller()
 			.unmarshal(new StreamSource(new StringReader(xml1)));
+		assertNotNull(res);
+		assertFalse(res.getValidationResult().isEmpty());
+		Validation res1 = res.getValidationResult().get(0);
 		assertTrue(res1.getError().size() == 1);
-		Validation res2 = (Validation) BiopaxValidatorUtils.getUnmarshaller()
+		
+		res = (ValidatorResponse) BiopaxValidatorUtils.getUnmarshaller()
 			.unmarshal(new StreamSource(new StringReader(xml2)));
+		assertNotNull(res);
+		assertFalse(res.getValidationResult().isEmpty());
+		Validation res2 = res.getValidationResult().get(0);
 		assertTrue(res2.getError().size() == 1);
 		ValidatorResponse resp2 = new ValidatorResponse();
 		resp2.addValidationResult(res1);

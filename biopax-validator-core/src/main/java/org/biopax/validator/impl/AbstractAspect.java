@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
-import org.biopax.validator.Behavior;
+import org.biopax.validator.result.Behavior;
 import org.biopax.validator.Validator;
 import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.utils.BiopaxValidatorException;

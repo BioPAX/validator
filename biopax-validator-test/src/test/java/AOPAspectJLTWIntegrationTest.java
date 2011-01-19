@@ -10,10 +10,8 @@ import org.biopax.paxtools.impl.level3.Level3FactoryImpl;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
-import org.biopax.validator.Behavior;
+import org.biopax.validator.result.*;
 import org.biopax.validator.Validator;
-import org.biopax.validator.result.ErrorType;
-import org.biopax.validator.result.Validation;
 import org.biopax.validator.rules.XrefRule;
 
 import org.springframework.beans.factory.annotation.Autowired;

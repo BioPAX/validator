@@ -18,7 +18,7 @@ import org.biopax.paxtools.io.simpleIO.SimpleReader.Triple;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Named;
-import org.biopax.validator.Behavior;
+import org.biopax.validator.result.Behavior;
 import org.biopax.validator.Rule;
 import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
@@ -37,7 +37,7 @@ import org.biopax.validator.utils.BiopaxValidatorUtils;
  */
 @Configurable
 @Aspect
-@Order(50) // 'adviseRuleExceptions' runs within the BehaviorAspect's 'checkBehavior'!
+@Order(50)
 public class ExceptionsAspect extends AbstractAspect {
 	private static final Log log = LogFactory.getLog(ExceptionsAspect.class);
 
@@ -55,9 +55,8 @@ public class ExceptionsAspect extends AbstractAspect {
 	 * @param args extra parameters of the error message
 	 * @throws Throwable
 	 */
-    @Around("execution(void org.biopax.validator.Messenger*+.sendErrorCase(..)) " +
-    	"&& args(rule, thing, code, fixed, args)")
-    public void adviseSendErrorCase(ProceedingJoinPoint jp, Rule rule, Object thing,
+    @Around("execution(void org.biopax.validator.Messenger*+.sendErrorCase(..)) && args(rule, thing, code, fixed, args)")
+    public void adviseSendErrorCase(ProceedingJoinPoint jp, Rule<?> rule, Object thing,
     		String code, boolean fixed, Object... args) throws Throwable 
     {    	    	
     	assert(thing != null); // works when assertions are enabled (-ea JVM opt.)
@@ -105,8 +104,8 @@ public class ExceptionsAspect extends AbstractAspect {
 	 * @param thing a BioPAX element
 	 * @throws Throwable
 	 */
-    @Around("execution(void org.biopax.validator.Rule*+.check(*)) && args(thing)")
-    public void adviseRuleExceptions(ProceedingJoinPoint jp, Object thing) {
+    @Around("execution(public void org.biopax.validator.Rule*+.check(..)) && args(thing, fix)")
+    public void adviseRuleExceptions(ProceedingJoinPoint jp, Object thing, boolean fix) {
     	// get the rule that checks now
     	Rule<?> rule = (Rule<?>) jp.getThis();
     	
