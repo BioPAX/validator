@@ -536,4 +536,136 @@ public class Level3RulesUnitTest {
 		}
 	}
 
+    @Test
+    public void testConversionStoichiometryCheckRule() {
+        Rule<Conversion> rule = new ConversionStoichiometryCheckRule();
+        Model m = level3.createModel();
+
+        Conversion c1 = m.addNew(Degradation.class, "degradation");
+        Conversion c2 = m.addNew(BiochemicalReaction.class, "biochem_reaction");
+
+        PhysicalEntity p1 = m.addNew(Protein.class, "protein1");
+        PhysicalEntity p2 = m.addNew(Protein.class, "protein2");
+        Complex complex = m.addNew(Complex.class, "complex");
+
+        Stoichiometry s1 = m.addNew(Stoichiometry.class, "stoi1");
+        Stoichiometry s2 = m.addNew(Stoichiometry.class, "stoi2");
+
+        s1.setPhysicalEntity(p1);
+        s1.setStoichiometricCoefficient(2.0f);
+
+        s2.setPhysicalEntity(p1);
+        s2.setStoichiometricCoefficient(1.0f);
+
+        complex.addComponent(p1);
+        complex.addComponentStoichiometry(s1);
+        complex.addComponent(p2);
+
+        c1.addLeft(p1);
+        c1.addLeft(p2);
+        c1.addRight(complex);
+        c1.addParticipantStoichiometry(s2);
+
+        c2.addLeft(p1);
+        c2.addLeft(p2);
+        c2.addRight(complex);
+        c2.addParticipantStoichiometry(s2);
+
+        assertFalse(rule.canCheck(c1));
+        assertTrue(rule.canCheck(c2));
+
+        try {
+			rule.check(c2, false);
+			fail("must throw BiopaxValidatorException");
+		} catch(BiopaxValidatorException e) {
+		}
+
+        writeExample("testConversionStoichiometryCheckRule.owl", m);
+    }
+
+    @Test
+    public void testConversionToComplexAssemblyRule() {
+        Rule<Conversion> rule = new ConversionToComplexAssemblyRule();
+        Model m = level3.createModel();
+
+        Conversion c1 = m.addNew(ComplexAssembly.class, "complex_assembly");
+        Conversion c2 = m.addNew(BiochemicalReaction.class, "biochem_reaction");
+
+        PhysicalEntity p1 = m.addNew(Protein.class, "protein1");
+        PhysicalEntity p2 = m.addNew(Protein.class, "protein2");
+        Complex complex = m.addNew(Complex.class, "complex");
+
+        complex.addComponent(p1);
+        complex.addComponent(p2);
+
+        c1.addLeft(p1);
+        c1.addLeft(p2);
+        c1.addRight(complex);
+
+        c2.addLeft(p1);
+        c2.addLeft(p2);
+        c2.addRight(complex);
+
+        assertFalse(rule.canCheck(c1));
+        assertTrue(rule.canCheck(c2));
+
+        try {
+			rule.check(c2, false);
+			fail("must throw BiopaxValidatorException");
+		} catch(BiopaxValidatorException e) {
+		}
+
+        writeExample("testConversionToComplexAssemblyRule.owl", m);
+    }
+
+    @Test
+    public void testPhysicalEntityAmbiguousFeatureRule() {
+        Rule<PhysicalEntity> rule = new PhysicalEntityAmbiguousFeatureRule();
+        Model m = level3.createModel();
+
+        Conversion c = m.addNew(Degradation.class, "degradation");
+
+        PhysicalEntity p1 = m.addNew(Protein.class, "protein1");
+        PhysicalEntity p2 = m.addNew(Protein.class, "protein2");
+        Complex complex = m.addNew(Complex.class, "complex");
+
+        complex.addComponent(p1);
+        complex.addComponent(p2);
+
+        c.addLeft(p1);
+
+        try {
+			rule.check(p1, false);
+			fail("must throw BiopaxValidatorException");
+		} catch(BiopaxValidatorException e) {
+		}
+
+        writeExample("testPhysicalEntityAmbiguousFeatureRule.owl", m);
+    }
+
+    @Test
+    public void testSimplePhysicalEntityFeaturesRule() {
+        Rule<SimplePhysicalEntity> rule = new SimplePhysicalEntityFeaturesRule();
+        Model m = level3.createModel();
+        SimplePhysicalEntity p = m.addNew(Protein.class, "protein1");
+        EntityReference pr = m.addNew(ProteinReference.class, "proteinreference1");
+        EntityFeature ef = m.addNew(ModificationFeature.class, "modfeature1");
+        EntityFeature ef2 = m.addNew(FragmentFeature.class, "modnotfeature1");
+
+        p.setEntityReference(pr);
+        p.addFeature(ef);
+        p.addNotFeature(ef2);
+
+        try {
+			rule.check(p, false);
+			fail("must throw BiopaxValidatorException");
+		} catch(BiopaxValidatorException e) {
+		}
+
+        writeExample("testSimplePhysicalEntityFeaturesRule.owl", m);
+
+        rule.check(p, true);
+        writeExample("testSimplePhysicalEntityFeaturesRuleFixed.owl", m);
+    }
+
 }
