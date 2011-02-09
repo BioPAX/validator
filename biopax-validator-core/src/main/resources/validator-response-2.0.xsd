@@ -16,6 +16,7 @@
     <xs:sequence>
       <xs:element name="errorCase" type="tns:ErrorCaseType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
+    <xs:attribute name="category" type="tns:Category"/>
     <xs:attribute name="code" type="xs:string"/>
     <xs:attribute name="message" type="xs:string"/>
     <xs:attribute name="totalErrorCases" type="xs:int" use="required"/>
@@ -47,6 +48,15 @@
       <xs:enumeration value="IGNORE"/>
       <xs:enumeration value="WARNING"/>
       <xs:enumeration value="ERROR"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Category">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SYNTAX"/>
+      <xs:enumeration value="SPECIFICATION"/>
+      <xs:enumeration value="RECOMMENDATION"/>
+      <xs:enumeration value="INFORMATION"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

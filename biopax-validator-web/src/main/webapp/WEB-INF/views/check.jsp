@@ -78,9 +78,9 @@
 		<div class="form-row" style="padding-top: 2em;">
 		<label>Filter (check/fix, but not necessarily mention it)</label><br/>
 		<select name="filter">
-			<option label="Show Warnings and Errors" value="WARNING" selected="selected"/>
-			<option label="Show Errors Only" value="ERROR"/>
-			<option label="Do not Show Me Problems :)" value="IGNORE"/>
+			<option label="Show Warnings and Errors" value="WARNING" selected="selected">Show Warnings and Errors</option>
+			<option label="Show Errors Only" value="ERROR">Show Errors Only</option>
+			<option label="Do not Show Me Problems :)" value="IGNORE">Do not Show Me Problems :)</option>
 		</select>
 		</div>
 	</div>

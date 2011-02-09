@@ -53,10 +53,10 @@
 	</c:if>
 	<ul id="result${rstatus.index}" style="display: none">
 	  <c:forEach var="errorType" items="${result.error}" varStatus="estatus">
-		<li title="Click for error cases">
-			<a href="javascript:switchit('result${rstatus.index}type${estatus.index}')">${errorType.type}</a>
-			&nbsp;[<b>code: <em>${errorType.code}</em>; cases left: <em>${errorType.totalErrorCases}</em></b>]
-			&nbsp;${errorType.message}
+		<li title="Click to see the error cases">
+			<a href="javascript:switchit('result${rstatus.index}type${estatus.index}')">
+			${errorType.type}: <em>${errorType.code}</em>,&nbsp;category: <em>${errorType.category}</em>,
+			&nbsp;cases (not fixed): <em>${errorType.totalErrorCases}</em></a><br/>${errorType.message}
 		</li>
 		<ul id="result${rstatus.index}type${estatus.index}" style="display: none">
 		<c:forEach var="errorCase" items="${errorType.errorCase}">

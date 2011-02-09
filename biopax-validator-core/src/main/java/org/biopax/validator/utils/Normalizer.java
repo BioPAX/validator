@@ -253,7 +253,8 @@ public class Normalizer {
 					if (log.isInfoEnabled())
 						log.info(e + " displayName auto-fix: "
 								+ e.getDisplayName() + ". " + extraInfo());
-					setFixed(BiopaxValidatorUtils.getId(e), "physicalEntityDisplayNameCRRule");
+					Validation.setFixed(validation, BiopaxValidatorUtils.getId(e), 
+						"physicalEntityDisplayNameCRRule", "cardinality.violated", null);
 				} else if (!e.getName().isEmpty()) {
 					String dsp = e.getName().iterator().next();
 					for (String name : e.getName()) {
@@ -264,7 +265,8 @@ public class Normalizer {
 					if (log.isInfoEnabled())
 						log.info(e + " displayName auto-fix: " + dsp
 							+ ". " + extraInfo());
-					setFixed(BiopaxValidatorUtils.getId(e), "physicalEntityDisplayNameCRRule");
+					Validation.setFixed(validation, BiopaxValidatorUtils.getId(e), 
+						"physicalEntityDisplayNameCRRule", "cardinality.violated", null);
 				}
 			}
 		}
@@ -274,29 +276,14 @@ public class Normalizer {
 				if(spe.getDisplayName() == null || spe.getDisplayName().trim().length() == 0) {
 					if(er.getDisplayName() != null && er.getDisplayName().trim().length() > 0) {
 						spe.setDisplayName(er.getDisplayName());
-						setFixed(BiopaxValidatorUtils.getId(spe), "physicalEntityDisplayNameCRRule");
+						Validation.setFixed(validation, BiopaxValidatorUtils.getId(spe), 
+							"physicalEntityDisplayNameCRRule", "cardinality.violated", null);
 					}
 				}
 			}
 		}
 	}
 
-
-	private void setFixed(String id, String rule) {
-		if(validation != null) {
-			ErrorCaseType ect = validation.findErrorCase(
-				new ErrorType("cardinality.violated", Behavior.WARNING), 
-				new ErrorCaseType(rule, id, null));
-			if(ect == null) {
-				ect = validation.findErrorCase(
-					new ErrorType("cardinality.violated", Behavior.ERROR), 
-					new ErrorCaseType(rule, id, null));
-			}
-			if(ect != null) {
-				ect.setFixed(true);
-			}
-		}
-	}
 
 	private String convertToOWL(Model model) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -496,6 +483,9 @@ public class Normalizer {
 		// fix displayName where possible
 		fixDisplayName(model);
 		
+		//for CVs: adding missing xrefs to CVs or, vice versa, infer terms from the existing uni.xrefs
+		fixCVs(model);
+		
 		// copy
 		Set<? extends UtilityClass> objects = 
 			new HashSet<UtilityClass>(model.getObjects(UtilityClass.class));
@@ -504,6 +494,8 @@ public class Normalizer {
 		{
 			if(bpe instanceof ControlledVocabulary || bpe instanceof BioSource) 
 			{
+				//note: it does not check/fix the CV term name if wrong or missing though...
+				
 				UnificationXref uref = getFirstUnificationXref((XReferrable) bpe);
 				if (uref != null) 
 					normalizeID(model, bpe, uref.getDb(), uref.getId(), null); // no idVersion for CVs!
@@ -554,6 +546,19 @@ public class Normalizer {
 	}
 
 	
+	/**
+	 * Adding missing xrefs to CVs or, vice versa, 
+	 * infer terms from the existing uni.xrefs
+	 * 
+	 * @param model
+	 */
+	private void fixCVs(Model model) {
+		// TODO add the implementation body...
+		
+		
+		
+	}
+
 	/**
 	 * Converts biopax l2 string to biopax l3 if it's required
 	 *

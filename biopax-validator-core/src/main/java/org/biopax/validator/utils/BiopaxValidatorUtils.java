@@ -371,6 +371,10 @@ public class BiopaxValidatorUtils {
 				errorCode, args, toString(msgArgs), locale).replaceAll("\r|\n+", " ");
 		error.addErrorCase(new ErrorCaseType(ruleName, objectName, msg));
 		
+		String category = messageSource.getMessage(errorCode + ".category", 
+			null, "INFORMATION", locale);
+		error.setCategory(Category.valueOf(category.toUpperCase()));
+		
 		return error;
     }
     

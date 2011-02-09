@@ -22,6 +22,7 @@ public class ErrorType implements Serializable {
 	private String code = null;
 	private String message = null;
 	private Behavior type = Behavior.ERROR; // default
+	private Category category = Category.INFORMATION; // default
 
 	public ErrorType() {
 		errorCase = new TreeSet<ErrorCaseType>();
@@ -31,6 +32,15 @@ public class ErrorType implements Serializable {
 		this();
 		this.code = code.toLowerCase();
 		this.type = type;
+	}
+	
+	@XmlAttribute
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 	
 	public Collection<ErrorCaseType> getErrorCase() {

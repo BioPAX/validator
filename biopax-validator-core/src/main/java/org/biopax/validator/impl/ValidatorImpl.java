@@ -98,13 +98,15 @@ public class ValidatorImpl implements Validator {
 		}
 
 		for (Rule rule : rules) {
-			// rules can check the model or specific elements
+			// rules can check/fix the model or specific elements
 			if (log.isDebugEnabled())
 				log.debug("Current rule is: " + rule.getName());
 			if (rule.canCheck(model)) {
 				rule.check(model, false);
 			} else {
-				for (BioPAXElement el : model.getObjects()) {
+				// copy the elements collection to avoid concurrent modification (rules can add/remove objects)!
+				Set<BioPAXElement> elements = new HashSet<BioPAXElement>(model.getObjects());
+				for (BioPAXElement el : elements) {
 					if (rule.canCheck(el)) {
 						rule.check(el, validation.isFix());
 					}
@@ -112,6 +114,9 @@ public class ValidatorImpl implements Validator {
 			}
 		}
 
+		//TODO if fix==true, scan (recursively) for new elements (rules can create) and add them to the model!
+		// TODO later
+		
 		// normalize?
 		if (validation.isNormalize()) {
 			(new Normalizer(validation)).normalize(model);

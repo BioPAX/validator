@@ -158,6 +158,11 @@ public class IntegrationTest {
         v.addTerm("Phosphorylation");
         v.addComment("Ok term: upper or lower case letters do not matter.");
         v.setRDFId("okCVTerm");
+        UnificationXref ux = factory3.reflectivelyCreate(UnificationXref.class);
+    	ux.setRDFId("UnificationXref_MI_0217");
+    	ux.setDb("MI");
+    	ux.setId("MI:0217");
+    	v.addXref(ux);
         rule.check(v, false);
     	
     	// what a surprise, the following used to fail (before it's been fixed)
@@ -192,6 +197,11 @@ public class IntegrationTest {
         instance.setBehavior(Behavior.ERROR);     
         CellularLocationVocabulary cl = factory3.createCellularLocationVocabulary();
         cl.addTerm("cytoplasm");
+        UnificationXref ux = factory3.reflectivelyCreate(UnificationXref.class);
+    	ux.setRDFId("UnificationXref_GO_0005737");
+    	ux.setDb("GO");
+    	ux.setId("GO:0005737");
+    	cl.addXref(ux);
         instance.check(cl, false);
     }
 
@@ -251,6 +261,14 @@ public class IntegrationTest {
         iv.addTerm("phosphorylation reaction");
         iv.addComment("Preferred term");
         iv.setRDFId("preferredCVTerm");
+        
+        UnificationXref ux = factory3.reflectivelyCreate(UnificationXref.class);
+    	ux.setRDFId("UnificationXref_MI_0217");
+    	ux.setDb("MI");
+    	ux.setId("MI:0217");
+    	iv.addXref(ux);
+    	
+        m.add(ux);
         m.add(iv);
         instance.check(iv, false);
         
@@ -259,6 +277,7 @@ public class IntegrationTest {
         iv.addComment("Valid term");
         iv.setRDFId("synonymCVTerm");
         m.add(iv);
+        iv.addXref(ux);
         instance.check(iv, false);
         
         iv = factory3.createInteractionVocabulary();
@@ -266,12 +285,22 @@ public class IntegrationTest {
         iv.addComment("Ok term: upper or lower case letters do not matter.");
         iv.setRDFId("okCVTerm");
         m.add(iv);
+        iv.addXref(ux);
         instance.check(iv, false);
         
         iv = factory3.createInteractionVocabulary();
-        iv.addTerm("phosphorylated");
+        iv.addTerm("phosphorylated residue");
         iv.addComment("Invalid term (very similar, however)");
         iv.setRDFId("invalidCVTerm");
+        ux = factory3.reflectivelyCreate(UnificationXref.class);
+    	ux.setRDFId("UnificationXref_MOD_00696");
+    	ux.setDb("MOD");
+    	ux.setId("MOD:00696"); 
+    	/* Note: in fact, both MOD:00696 and MI:0217 have synonym name "Phosphorylation"!
+    		TODO Validator (currently) checks names in the CV 'term' property only, but also should check what can be inferred from the xref.id!
+    	*/
+    	iv.addXref(ux);
+    	m.add(ux);
         m.add(iv);
         try {
         	instance.check(iv, false);
@@ -297,6 +326,13 @@ public class IntegrationTest {
     	ModificationFeature mf = factory3.reflectivelyCreate(ModificationFeature.class);
     	mf.setRDFId("MF_MOD_00036");
     	mf.setModificationType(cv);
+    	
+    	UnificationXref ux = factory3.reflectivelyCreate(UnificationXref.class);
+    	ux.setRDFId("UnificationXref_MOD_00036");
+    	ux.setDb("MOD");
+    	ux.setId("MOD:00036");
+    	cv.addXref(ux);
+    	
    		rule.check(mf, false); // should not fail
 	}
     

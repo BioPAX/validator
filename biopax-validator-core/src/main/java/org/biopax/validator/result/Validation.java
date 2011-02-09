@@ -12,6 +12,7 @@ import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.util.AbstractFilterSet;
 import org.biopax.validator.utils.BiopaxValidatorException;
+import org.biopax.validator.utils.Normalizer;
 
 
 @XmlType(name="Validation", namespace="http://biopax.org/validator/2.0/schema")
@@ -368,5 +369,51 @@ public class Validation implements Serializable {
 	@XmlAttribute
 	public int getTotalProblemsFound() {
 		return countErrors(null, null, null, false);
+	}
+	
+	/** 
+	 * Finds the previously reported
+	 * by the rule error case and marks it as fixed.
+	 * 
+	 * (This method can be used from the {@link Normalizer})
+	 * 
+	 * @param validation
+	 * @param objectId BioPAX element identifier (associated with the error)
+	 * @param rule a BioPAX Validator rule ID (that reports with the error code)
+	 * @param errCode specific error code
+	 * @param newMsg a message, if not null/empty, to replace the original one
+	 */
+	public static void setFixed(Validation validation, 
+		String objectId, String rule, String errCode, String newMsg) 
+	{
+		if(validation != null) {
+			ErrorCaseType ect = validation.findErrorCase(
+				new ErrorType(errCode, Behavior.WARNING), 
+				new ErrorCaseType(rule, objectId, null)); // msg is ignored when comparing errors
+			if(ect == null) {
+				ect = validation.findErrorCase(
+					new ErrorType(errCode, Behavior.ERROR), 
+					new ErrorCaseType(rule, objectId, null));
+			}
+			if(ect != null) {
+				ect.setFixed(true);
+				if(newMsg != null && !"".equals(newMsg.trim()))
+					ect.setMessage(newMsg);
+			}
+		}
+	}
+
+	
+	/**
+	 * @see #setFixed(Validation, String, String, String, String)
+	 * 
+	 * @param objectId
+	 * @param rule
+	 * @param errCode
+	 * @param newMsg
+	 */
+	public void setFixed(String objectId, String rule, String errCode, String newMsg) 
+	{
+		setFixed(this, objectId, rule, errCode, newMsg);
 	}
 } 
