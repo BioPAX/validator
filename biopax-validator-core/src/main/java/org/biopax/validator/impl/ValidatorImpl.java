@@ -5,7 +5,10 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biopax.paxtools.controller.AbstractTraverser;
+import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.converter.OneTwoThree;
+import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
@@ -114,8 +117,25 @@ public class ValidatorImpl implements Validator {
 			}
 		}
 
-		//TODO if fix==true, scan (recursively) for new elements (rules can create) and add them to the model!
-		// TODO later
+		//if fix==true, scan for the new elements that rules could have created and add them to the model!
+		if (validation.isFix()) {
+			AbstractTraverser traverser = new AbstractTraverser(
+					new SimpleEditorMap(model.getLevel())) {
+				@Override
+				protected void visit(Object range, BioPAXElement domain,
+						Model model, PropertyEditor editor) {
+					if (range instanceof BioPAXElement
+							&& !model.contains((BioPAXElement) range)) {
+						model.add((BioPAXElement) range);
+					}
+				}
+			};
+			Set<BioPAXElement> elements = new HashSet<BioPAXElement>(model
+					.getObjects());
+			for (BioPAXElement element : elements) {
+				traverser.traverse(element, model);
+			}
+		}
 		
 		// normalize?
 		if (validation.isNormalize()) {

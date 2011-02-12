@@ -254,7 +254,7 @@ public class Normalizer {
 						log.info(e + " displayName auto-fix: "
 								+ e.getDisplayName() + ". " + extraInfo());
 					Validation.setFixed(validation, BiopaxValidatorUtils.getId(e), 
-						"physicalEntityDisplayNameCRRule", "cardinality.violated", null);
+						"displayNameRule", "no.display.name", null);
 				} else if (!e.getName().isEmpty()) {
 					String dsp = e.getName().iterator().next();
 					for (String name : e.getName()) {
@@ -266,7 +266,7 @@ public class Normalizer {
 						log.info(e + " displayName auto-fix: " + dsp
 							+ ". " + extraInfo());
 					Validation.setFixed(validation, BiopaxValidatorUtils.getId(e), 
-						"physicalEntityDisplayNameCRRule", "cardinality.violated", null);
+						"displayNameRule", "no.display.name", null);
 				}
 			}
 		}
@@ -277,7 +277,7 @@ public class Normalizer {
 					if(er.getDisplayName() != null && er.getDisplayName().trim().length() > 0) {
 						spe.setDisplayName(er.getDisplayName());
 						Validation.setFixed(validation, BiopaxValidatorUtils.getId(spe), 
-							"physicalEntityDisplayNameCRRule", "cardinality.violated", null);
+							"displayNameRule", "no.display.name", null);
 					}
 				}
 			}
@@ -553,7 +553,7 @@ public class Normalizer {
 	 * @param model
 	 */
 	private void fixCVs(Model model) {
-		// TODO add the implementation body...
+		// TODO for each CV, add u.xrefs where absent but (only one) can be found by the term name; find the preferred term by xref.id where no terms,etc..
 		
 		
 		

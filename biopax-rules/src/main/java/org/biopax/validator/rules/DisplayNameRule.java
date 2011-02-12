@@ -23,15 +23,42 @@ public class DisplayNameRule extends AbstractRule<Named> {
 		return (thing instanceof Named); 
 	}
     
-    public void check(Named named, boolean fix) {
+    public void check(Named named, boolean fix) 
+    {
+    	boolean fixed = false;
+    	
+    	if (named.getDisplayName() == null) {
+    		if(fix) {
+    			// use the standardName if present
+				if (named.getStandardName() != null) {
+					named.setDisplayName(named.getStandardName());
+					fixed = true;
+				} // otherwise, use the shortest name, if anything...
+				else if (!named.getName().isEmpty()) {
+					String dsp = named.getName().iterator().next();
+					for (String name : named.getName()) {
+						if (name.length() < dsp.length())
+							dsp = name;
+					}
+					named.setDisplayName(dsp);
+					fixed = true;
+				}
+			}
+    		// report
+			error(named, "no.display.name", fixed & fix);
+		} 
+    	
+    	// check max. length
     	String name = named.getDisplayName();
-        if (name != null) {
+    	if (name != null) { // if existed or was added above
         	Class<? extends BioPAXElement> cl = ((BioPAXElement)named).getModelInterface();
         	Integer max = (maxDisplayNameLengths.containsKey(cl)) 
         		? maxDisplayNameLengths.get(cl)	: MAX_DISPLAYNAME_LEN;
         	if (name.length() > max)
-				error(named, "too.long.name", false, name, name.length(), max);
-        }
+				error(named, "too.long.display.name", false, name 
+					+ ((fixed) ? "(auto-created form other names!)" : "")
+					, name.length(), max);
+		}
     }
 
 }

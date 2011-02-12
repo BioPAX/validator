@@ -67,6 +67,10 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 		// shortcut
 		if(vocabularies.isEmpty()) return;
 		
+		// text to report in any CV error case
+		String cvRuleInfo = ((editor != null) ? " property: "
+				+ property : "") + " " + restrictions.toString();
+		
 		// check each CV terms against the restrictions
 		for (ControlledVocabulary cv : vocabularies) 
 		{
@@ -90,6 +94,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 					if(!getValidTerms().contains(name.toLowerCase())) {
 						// will report/delete/replace the invalid term below...
 						badTerms.add(name);
+						noXrefTerms.remove(name); // won't check for its having a valid xref...
 					} else { 
 						// term is valid; - check whether there is a unification xrefs about this term!
 						Set<OntologyTermI> ots = ((OntologyManager) ontologyManager).searchTermByName(name.toLowerCase());
@@ -100,25 +105,42 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 							String db = ((OntologyManager) ontologyManager).getOntology(ontId).getName();
 							String id = term.getTermAccession();
 							// search for the xref with the same xref.id
-							
 							for (UnificationXref x : new ClassFilterSet<UnificationXref>(
 									cv.getXref(), UnificationXref.class)) {
 								/// exclude names "matching" uni. xrefs from the noXrefTerms set
 								if(id.equalsIgnoreCase(x.getId())) 
 									noXrefTerms.remove(name);
 							}
-							// TODO fix by creating a new xref (can be tricky and fuzzy...)
+							// TODO fix by creating a new xref (can be tricky/fuzzy.., but possible in principle)
 						}
 					}
 				}
 				
-				//TODO should also check that terms that can be inferred from the xref.id are valid (report 'illegal.cv.xref')!
-				//TODO if fix==true, remove wrong xrefs before fixing the terms
+				//check that terms that can be inferred from the xref.id are valid (report 'illegal.cv.xref')!
+				final Set<UnificationXref> badXrefs = new HashSet<UnificationXref>(); // initially - none
+				for (UnificationXref x : new ClassFilterSet<UnificationXref>(
+						cv.getXref(), UnificationXref.class)) {
+					OntologyTermI ot = ((OntologyManager) ontologyManager).findTermByAccession(x.getId());
+					if(ot == null || !getValidTerms().contains(ot.getPreferredName().toLowerCase())) {
+						badXrefs.add(x);
+					}
+				}
 				
-					
-				// fix / report
-				String cvRuleInfo = ((editor != null) ? " property: "
-					+ property : "") + " " + restrictions.toString();
+				// fix / report wrong uni.xrefs (important: before fixing wrong terms!)
+				if(!badXrefs.isEmpty()) {
+					String bads = badXrefs.toString();
+					if(fix) {
+						cv.getXref().removeAll(badXrefs);
+						bads += " were removed!";
+						error(thing, "illegal.cv.xref", true, // fixed!
+								bads, cvRuleInfo);
+					} else {
+						error(thing, "illegal.cv.xref", false, // not fixed!
+								bads, cvRuleInfo);
+					}
+				}
+									
+				// fix / report wrong terms
 				if (!badTerms.isEmpty()) {	
 					String badTermInfo = badTerms.toString();
 					
@@ -126,7 +148,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 						cv.getTerm().removeAll(badTerms);
 						badTermInfo += " were removed";
 						
-						// try infer term names from the unification xrefs
+						// try infer term names from the (valid) unification xrefs!
 						Set<String> addTerms = createTermsFromUnificationXrefs(cv);
 						if (!addTerms.isEmpty()) {
 							cv.getTerm().addAll(addTerms);
@@ -148,9 +170,8 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 					error(thing, "no.xref.cv.terms", false, 
 						noXrefTerms.toString(), cvRuleInfo);
 				}
-				
-			} // end if
-		}	// next cv
+			} 
+		}
 	}
 		
 	

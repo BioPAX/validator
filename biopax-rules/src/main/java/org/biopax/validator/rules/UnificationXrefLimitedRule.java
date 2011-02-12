@@ -60,7 +60,7 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
 
 		Collection<String> synonyms = helper.getSynonymsForDbName(x.getDb());
 		
-		// check constrains for each element containing this unificatio xref 
+		// check constrains for each element containing this unification xref 
 		for (XReferrable bpe : x.getXrefOf()) {
 			for (Class<BioPAXElement> c : dbAllow.keySet()) {
 				if (c.isInstance(bpe)) {

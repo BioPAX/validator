@@ -30,9 +30,20 @@
 	<util:map id="dbAllow" key-type="java.lang.Class" value-type="java.lang.String">
 		<entry key="org.biopax.paxtools.model.level3.BioSource" value="taxonomy"/>
 		<entry key="org.biopax.paxtools.model.level3.Provenance" value="miriam"/>
+		<!-- "allow" only recommended xref.db for CVs (synonyms will be added automatically) -->
+		<entry key="org.biopax.paxtools.model.level3.CellVocabulary" value="cl"/>
+		<entry key="org.biopax.paxtools.model.level3.TissueVocabulary" value="bto"/>
+		<entry key="org.biopax.paxtools.model.level3.CellularLocationVocabulary" value="go"/>
+		<entry key="org.biopax.paxtools.model.level3.EvidenceCodeVocabulary" value="mi"/>
+		<entry key="org.biopax.paxtools.model.level3.ExperimentalFormVocabulary" value="mi"/>
+		<entry key="org.biopax.paxtools.model.level3.InteractionVocabulary" value="mi"/>
+		<entry key="org.biopax.paxtools.model.level3.SequenceModificationVocabulary" value="so:mod"/>
+		<entry key="org.biopax.paxtools.model.level3.PhenotypeVocabulary" value="pato"/>
+		<entry key="org.biopax.paxtools.model.level3.RelationshipTypeVocabulary" value="mi"/>
+		<entry key="org.biopax.paxtools.model.level3.SequenceRegionVocabulary" value="so"/>
 	</util:map>
 	
-	<!-- disallow listed db names (and all synonyms) for for UnificationXrefs -->
+	<!-- not recommended xref.db names (and all synonyms) for UnificationXrefs of -->
 	<util:map id="dbDeny" key-type="java.lang.Class" value-type="java.lang.String">
 		<entry key="org.biopax.paxtools.model.level3.Dna" value="uniprot:pubmed"/>
 		<entry key="org.biopax.paxtools.model.level3.Rna" value="uniprot"/>
@@ -46,14 +57,7 @@
 		<entry key="org.biopax.paxtools.model.level3.Interaction" value="PSI-MI"/>
 	</util:map>
 
-	<!-- XrefRule, XrefSynonymDbRule configuration -->
-	<!--
-		This is for certain database references do not apply to all the BioPAX
-		objects, so such constraits (not in OWL spec.) should be specified in
-		addition to the 'db' controlled vocabulary rule (which promotes the
-		use of Miriam as a primary source of db names and MI 'database
-		citation' as the second option)
-	-->
+	<!-- XrefRule, XrefSynonymDbRule additional (optional) configuration -->
 	<util:set id="extraDbSynonyms">
 		<list>
 			<value>ENTREZ GENE</value>
@@ -200,7 +204,7 @@
 
 	<!-- end of the XrefRule config. -->
      
-     <!-- default max. displayName length = 25 symbols -->
+     <!-- default max. displayName length = 25 symbols for all (Named interface) elements-->
 	<util:map id="maxDisplayNameLengths" key-type="java.lang.Class" value-type="java.lang.Integer">
 		<entry key="org.biopax.paxtools.model.level3.Provenance" value="50"/>
 	</util:map>
