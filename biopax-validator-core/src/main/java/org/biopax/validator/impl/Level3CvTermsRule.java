@@ -1,15 +1,19 @@
 package org.biopax.validator.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.biopax.paxtools.controller.EditorMap;
+import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.level3.Level3Element;
 import org.biopax.paxtools.model.level3.ControlledVocabulary;
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.util.ClassFilterSet;
+import org.biopax.validator.utils.Normalizer;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import psidev.ontology_manager.OntologyManager;
@@ -86,17 +90,24 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 				//TODO (advanced feature, can/must be a separate rule) check if multiple terms are, in fact, synonyms/equivalent...
 				
 				final Set<String> badTerms = new HashSet<String>(); // initially - none
-				final Set<String> noXrefTerms = new HashSet<String>(cv.getTerm()); // start with all...
+				final Set<String> noXrefTerms = new HashSet<String>(cv.getTerm()); // initially - all
 				
-				// check terms (names)
+				// first, check terms (names) are valid
 				for(String name : cv.getTerm()) 
 				{
 					if(!getValidTerms().contains(name.toLowerCase())) {
-						// will report/delete/replace the invalid term below...
+						// save to report/delete/replace the invalid term later
 						badTerms.add(name);
-						noXrefTerms.remove(name); // won't check for its having a valid xref...
-					} else { 
-						// term is valid; - check whether there is a unification xrefs about this term!
+						noXrefTerms.remove(name); // - exclude invalid terms from extra checks (below)
+					}
+				}
+				
+				// second, check valid terms have uni.xrefs
+				for(String name : cv.getTerm()) 
+				{
+					// only for valid terms
+					if(getValidTerms().contains(name.toLowerCase())) {
+						// check if there is the corresponding unification xref
 						Set<OntologyTermI> ots = ((OntologyManager) ontologyManager).searchTermByName(name.toLowerCase());
 						assert(!ots.isEmpty()); // shouldn't be, because the above getValidTerms() contains the name
 						for(OntologyTermI term : ots) {
@@ -107,16 +118,72 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 							// search for the xref with the same xref.id
 							for (UnificationXref x : new ClassFilterSet<UnificationXref>(
 									cv.getXref(), UnificationXref.class)) {
-								/// exclude names "matching" uni. xrefs from the noXrefTerms set
-								if(id.equalsIgnoreCase(x.getId())) 
+								/// exclude names "matching" uni.xrefs from the "no Xref" set
+								if(id.equalsIgnoreCase(x.getId()))  {
 									noXrefTerms.remove(name);
+								}
 							}
-							// TODO fix by creating a new xref (can be tricky/fuzzy.., but possible in principle)
 						}
 					}
 				}
 				
-				//check that terms that can be inferred from the xref.id are valid (report 'illegal.cv.xref')!
+				// note: at this point, 'noXrefTerms' (valid terms only) set is defined...
+				
+				if (!noXrefTerms.isEmpty()) {		
+					String noXrefTermsInfo = noXrefTerms.toString();
+					boolean fixed = false;
+					
+					if(fix) {
+					/*
+					 * However, it's not so trivial to fix by adding the xrefs because:
+					 * 1) - no reference to the parent Model here available
+					 *    (thus the validator must detect and add new objects automatically!)
+					 * 2) having the chance of creating several xrefs with the same RDFId requires 
+					 *    a special care or follow-up merging, as simply adding them to a model will 
+					 *    throw the "already have this element" exception!); and other rules 
+					 *    can also generate duplicates...
+					 * 3) risk that a rule generating/adding a new element may cause  
+					 *    other rules to interfere via AOP and prevent changes in quite 
+					 *    unpredictable manner (...bites its own tail)
+					 *    
+					 *    Well, let's try to fix anyway (and modifying ValidatorImpl as well)!
+					 */
+
+						for (String name : noXrefTerms) {
+							// search for the ontology term(s) by name
+							Set<OntologyTermI> ots = ((OntologyManager) ontologyManager)
+									.searchTermByName(name.toLowerCase());
+							for (OntologyTermI term : ots) {
+								String ontId = term.getOntologyId();
+								String db = ((OntologyManager) ontologyManager)
+										.getOntology(ontId).getName();
+								String id = term.getTermAccession();
+								// auto-create and add the xref to the cv
+								UnificationXref ux = BioPAXLevel.L3
+									.getDefaultFactory().reflectivelyCreate(UnificationXref.class);
+								try {
+									ux.setRDFId(Normalizer.BIOPAX_URI_PREFIX
+										+ "UnificationXref:" + URLEncoder.encode(db + "_" + id,
+										"UTF-8").toUpperCase());
+								} catch (UnsupportedEncodingException e) {
+									throw new RuntimeException(e);
+								}
+								ux.setDb(db);
+								ux.setId(id);
+								cv.addXref(ux);
+								fixed = true; // almost true ;-)
+							}
+						}
+					}
+					
+					// report					
+					error(thing, "no.xref.cv.terms", fixed, 
+						noXrefTermsInfo, cvRuleInfo);
+				}
+				
+				/* check if valid terms that can be inferred from the xref.id, 
+				 * and report 'illegal.cv.xref' otherwise!
+				 */
 				final Set<UnificationXref> badXrefs = new HashSet<UnificationXref>(); // initially - none
 				for (UnificationXref x : new ClassFilterSet<UnificationXref>(
 						cv.getXref(), UnificationXref.class)) {
@@ -126,7 +193,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 					}
 				}
 				
-				// fix / report wrong uni.xrefs (important: before fixing wrong terms!)
+				// fix / cleanup and report wrong uni.xrefs (important: before fixing wrong terms!)
 				if(!badXrefs.isEmpty()) {
 					String bads = badXrefs.toString();
 					if(fix) {
@@ -142,34 +209,28 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 									
 				// fix / report wrong terms
 				if (!badTerms.isEmpty()) {	
+					boolean fixed = false;
 					String badTermInfo = badTerms.toString();
-					
 					if (fix) {
-						cv.getTerm().removeAll(badTerms);
-						badTermInfo += " were removed";
-						
-						// try infer term names from the (valid) unification xrefs!
+						/* remove illegal terms only if addTerms (to add) is not empty,
+						 * otherwise - do not fix!
+						 */
+						// try infer term names from the valid unification xrefs
 						Set<String> addTerms = createTermsFromUnificationXrefs(cv);
 						if (!addTerms.isEmpty()) {
+							cv.getTerm().removeAll(badTerms);
+							badTermInfo += " were removed";
 							cv.getTerm().addAll(addTerms);
 							badTermInfo += "; terms added " +
 								"(inferred from the unification xref(s)): "
 									+ addTerms.toString();
+							fixed = true;
 						}
-						
-						error(thing, "illegal.cv.term", true, // fixed!
-								badTermInfo, cvRuleInfo);
-
-					} else { // report not fixed
-						error(thing, "illegal.cv.term", false, // not fixed
-								badTermInfo, cvRuleInfo);
 					}
+					// report
+					error(thing, "illegal.cv.term", fixed, badTermInfo, cvRuleInfo);
 				}
-				
-				if (!noXrefTerms.isEmpty()) {	
-					error(thing, "no.xref.cv.terms", false, 
-						noXrefTerms.toString(), cvRuleInfo);
-				}
+
 			} 
 		}
 	}

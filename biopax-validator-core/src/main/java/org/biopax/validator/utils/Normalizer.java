@@ -34,11 +34,8 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.miriam.MiriamLink;
-import org.biopax.paxtools.controller.AbstractTraverser;
-import org.biopax.paxtools.controller.ObjectPropertyEditor;
-import org.biopax.paxtools.controller.PropertyEditor;
+import org.biopax.paxtools.controller.SimpleMerger;
 import org.biopax.paxtools.converter.OneTwoThree;
-import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.BioPAXElement;
@@ -64,7 +61,7 @@ public class Normalizer {
 	public static final String BIOPAX_URI_PREFIX = "urn:biopax:";
 	
 	private SimpleReader biopaxReader;
-	
+	private SimpleMerger simpleMerger;
 	private Validation validation;
 	
 	/**
@@ -73,6 +70,7 @@ public class Normalizer {
 	public Normalizer() {
 		biopaxReader = new SimpleReader(BioPAXLevel.L3);
 		biopaxReader.mergeDuplicates(true);
+		simpleMerger = new SimpleMerger(biopaxReader.getEditorMap());
 	}
 
 	/**
@@ -129,15 +127,13 @@ public class Normalizer {
 	
 
 	public void normalizeXrefs(Model model) {
-		// normalize xrefs first: set db name as in Miriam and rdfid as db_id
-		
-		// make a copy (to safely remove duplicates)
+		// use a copy of the xrefs set (to avoid concurrent modif. exception)
 		Set<? extends Xref> xrefs = new HashSet<Xref>(model.getObjects(Xref.class));
 		for(Xref ref : xrefs) {
 			// get database official urn
 			String name = ref.getDb();
 			
-			// workaround a nullpoinerexception
+			// workaround a null poiner exception
 			if(name == null || "".equals(name)) {
 				log.error(ref.getModelInterface().getSimpleName() 
 					+ " " + ref + " - 'db' property is empty! "
@@ -155,36 +151,58 @@ public class Normalizer {
 					e + ". " + extraInfo());
 			}
 			
-			// build new standard rdfid
-			// note: due to 
-			String rdfid = null;
 			try {
+				// consistently build a new, standard id (URI)
 				String prefix = BIOPAX_URI_PREFIX + ref.getModelInterface().getSimpleName() + ":";
-				
 				String ending = 
 					(ref.getIdVersion() != null && !"".equals(ref.getIdVersion().trim()))
 						? "_" + ref.getIdVersion() // add the id version/variant
 						: ""; // no endings
-				
 				// add the local (last) part of the URI encoded -
-				rdfid = prefix + URLEncoder.encode(name + "_" + ref.getId() + ending, "UTF-8").toUpperCase();
+				String rdfid = prefix + URLEncoder.encode(name + "_" + ref.getId() + ending, "UTF-8").toUpperCase();
 				
-				// replace xref or update ID
-				if(!rdfid.equals(ref.getRDFId()))
-					updateID(model, ref, rdfid);
-				
+				// if different id, - begin updating
+				if(!rdfid.equals(ref.getRDFId())) {
+					updateOrRemove(model, ref, rdfid);
+				}
 			} catch (UnsupportedEncodingException e) {
 				log.error("Failed to create RDFID from xref: " +
 						ref + "! " + e + ". " + extraInfo());
 			}
+			
+			// finish updating ids -
+			// merge/unlink the duplicates ('xref' properties will be pointing to the unique ID existing Xref)
+			simpleMerger.merge(model); //just internal staff; no sources to merge!
 		}
 	}	
+
 	
+	/**
+	 * Replaces rdfid; removes the element from the model if (with new rdfid) it becomes duplicate
+	 * Note: model loses its integrity (object properties fix is required after this)
+	 * 
+	 */
+	private void updateOrRemove(Model model, BioPAXElement ref, String newRdfid) {
+		// model has Xref with the same (new) ID?
+		if(model.containsID(newRdfid)) {
+			// - remove this xref from the model (from internal "registry"); 
+			model.remove(ref);
+			// update rdfid (for the merger later pick up the existing xref instead of this one)
+			ref.setRDFId(newRdfid); //so it now has got the same ID as the other existing xref
+			// (it did not affect 'xref' object property values so far!)
+		} else {
+			// but model "knows" this xref under its "old" ID...
+			// replace ID
+			model.updateID(ref.getRDFId(), newRdfid);
+		}
+	}
+
 	
 	private String extraInfo() {
 		return (validation != null) ? validation.getDescription() : "";
 	}
 
+	
 	/**
 	 * Sets Miriam standard URI (if possible) for a utility object 
 	 * (but not for *Xref!); also removes duplicates...
@@ -193,12 +211,13 @@ public class Normalizer {
 	 * @param bpe element to normalize
 	 * @param db official database name or synonym (that of bpe's unification xref)
 	 * @param id identifier (if null, new ID will be that of the Miriam Data Type; this is mainly for Provenance)
-	 * @param idExt TODO
+	 * @param idExt id suffix
 	 */
 	private void normalizeID(Model model, UtilityClass bpe, String db, String id, String idExt) 
 	{	
 		if(bpe instanceof Xref) {
-			log.error("normalizeID called for Xref (hey, this is a bug!). "
+			log.error("normalizeID is not supposed to " +
+				"be called for Xrefs (hey, this is a bug!). "
 				+ extraInfo());
 			return;
 		}
@@ -228,10 +247,10 @@ public class Normalizer {
 			}
 		}
 		
-		// update element and model (if required)
+		// if different id, edit the element
 		if (!urn.equals(bpe.getRDFId())) {
 			try {
-				updateID(model, bpe, urn);
+				updateOrRemove(model, bpe, urn);
 			} catch (Exception e) {
 				log.error("Failed to replace ID of " + bpe + " ("
 						+ bpe.getModelInterface().getSimpleName() + ") with '"
@@ -294,95 +313,6 @@ public class Normalizer {
 				+ extraInfo(), e);
 		}
 		return out.toString();
-	}
-
-
-	/**
-	 * Updates ID and/or removes duplicate
-	 * 
-	 * @param model
-	 * @param ref
-	 * @param rdfid
-	 * @return
-	 */
-	private UtilityClass updateID(final Model model, final UtilityClass u, final String rdfid) 
-	{	
-		// is there an object with the same (new) id?
-		final UtilityClass v = (UtilityClass) model.getByID(rdfid);
-		if(v != null) {
-			// rather than update id, use the existing element instead -
-			if(log.isInfoEnabled())
-				log.info("Removing duplicate, updating links" +
-					" (object properties) using existing " 
-					 + rdfid + " element instead of " + u.getRDFId()
-					 + ". " + extraInfo());
-			
-			if(!v.isEquivalent(u)) {
-				String msg = "Replacing existing BioPAX element: " +
-				u + " (" + u.getRDFId() + ", " + u.getModelInterface().getSimpleName()
-				+ ") with what MIGHT be a DIFFERENT (type/semantics) one: " + 
-				v + " (" + v.getRDFId() + ", " + v.getModelInterface().getSimpleName()
-				+ ")!";
-				// are they at least of the same type?
-				if(v.getModelInterface().equals(u.getModelInterface())) {
-					log.error(msg); // can live with it
-					/* TODO what about things like uniprot isoforms (e.g., Q9BVL2-2)?
-					 * For now, will merge them, copying names, xrefs, comments...
-					 */
-					if(v instanceof XReferrable 
-						&& u instanceof XReferrable) { // the second is for sure ;)
-						// copy at least something...
-						for(Xref x : ((XReferrable)u).getXref()) {
-							((XReferrable) v).addXref(x);
-						}
-						v.getComment().addAll(u.getComment());
-						if(v instanceof Named) {
-							((Named)v).getName()
-								.addAll(((Named)u).getName());
-						}
-					}
-				} else {
-					throw new BiopaxValidatorException(u, msg); // too bad!
-				}
-			}
-			
-			AbstractTraverser traverser = new AbstractTraverser(new SimpleEditorMap(BioPAXLevel.L3)) {
-				@Override
-				protected void visit(Object range, BioPAXElement domain, Model model,
-						PropertyEditor editor) {
-					if(editor instanceof ObjectPropertyEditor && u.equals(range)) {
-						// replace value
-						if(editor.isMultipleCardinality())
-							editor.removeValueFromBean(u, domain);
-						editor.setValueToBean(v, domain);
-						if(log.isDebugEnabled()) {
-							log.debug("Replaced " + u.getRDFId() + 
-								" with " + v.getRDFId() +
-								"; " + editor.toString() + 
-								"; (domain) bean: " + domain);
-						}
-					}
-				}
-			};
-			
-			// look inside every object -
-			for(BioPAXElement element : model.getObjects()) {
-				traverser.traverse(element, model);
-			}
-			// remove now dangling object
-			model.remove(u);
-			
-			// smoke test...
-			if(u instanceof Xref)
-				assert(((Xref)u).getXrefOf().isEmpty());
-			else if(u instanceof EntityReference)
-				assert(((EntityReference)u).getEntityReferenceOf().isEmpty());
-			
-			return v;
-		} else {
-			model.updateID(u.getRDFId(), rdfid);
-			return u;
-		}
 	}
 
 
@@ -477,14 +407,15 @@ public class Normalizer {
 			validation.setThreshold(Behavior.IGNORE);
 		}
 		
-		// clean/normalize xrefs first (they are used next)!
+		// clean/normalize xrefs first (because they are to be used next)!
 		normalizeXrefs(model);
 		
 		// fix displayName where possible
 		fixDisplayName(model);
 		
-		//for CVs: adding missing xrefs to CVs or, vice versa, infer terms from the existing uni.xrefs
-		fixCVs(model);
+		//
+		// TODO add missing xrefs to CVs or/and infer terms from the existing uni.xrefs (shall we fix here or better - in the validation rule?
+		//fixCVs(model); // this would require OntologyManager instance (extra and big coupling...)
 		
 		// copy
 		Set<? extends UtilityClass> objects = 
@@ -528,6 +459,9 @@ public class Normalizer {
 			} 
 		}
 		
+		// finish updating ids -
+		// merge/unlink the duplicates ('xref' properties will be "fixed")
+		simpleMerger.merge(model); //internal staff; no sources to merge!
 		
 		/* 
 		 * We could also "fix" organism property, where it's null,
@@ -544,20 +478,7 @@ public class Normalizer {
 			validation.setThreshold(threshold);
 		}
 	}
-
 	
-	/**
-	 * Adding missing xrefs to CVs or, vice versa, 
-	 * infer terms from the existing uni.xrefs
-	 * 
-	 * @param model
-	 */
-	private void fixCVs(Model model) {
-		// TODO for each CV, add u.xrefs where absent but (only one) can be found by the term name; find the preferred term by xref.id where no terms,etc..
-		
-		
-		
-	}
 
 	/**
 	 * Converts biopax l2 string to biopax l3 if it's required

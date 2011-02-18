@@ -13,25 +13,46 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * UnificationXref applicability rule
+ * UnificationXref applicability rule 
+ * (BioPAX class - allowed/denied unification xref db names)
  *
  * @author rodche
  */
 @Component
 public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
 
-    private Map<Class<BioPAXElement>, String> dbAllow;
-    private Map<Class<BioPAXElement>, String> dbDeny;
+    private Map<Class<BioPAXElement>, Set<String>> allow;
+    private Map<Class<BioPAXElement>, Set<String>> deny;
     private XrefHelper helper;
        
     @Resource(name="dbAllow")
     public void setDbAllow(Map<Class<BioPAXElement>, String> dbAllow) {
-		this.dbAllow = dbAllow;
+		// init 'allow' map
+		this.allow = new HashMap<Class<BioPAXElement>, Set<String>>();
+		for (Class<BioPAXElement> clazz : dbAllow.keySet()) {
+			String[] a = dbAllow.get(clazz).toLowerCase().split(":");
+			final Set<String> allSynonyms = new HashSet<String>();
+			for(String db : a) {
+				Collection<String> synonymsOfDb = helper.getSynonymsForDbName(db);
+				allSynonyms.addAll(synonymsOfDb);
+			}
+			this.allow.put(clazz, allSynonyms);
+		}
 	}
     
     @Resource(name="dbDeny")
     public void setDbDeny(Map<Class<BioPAXElement>, String> dbDeny) {
-		this.dbDeny = dbDeny;
+		// init 'deny' map
+		this.deny = new HashMap<Class<BioPAXElement>, Set<String>>();
+		for (Class<BioPAXElement> clazz : dbDeny.keySet()) {
+			String[] a = dbDeny.get(clazz).toLowerCase().split(":");
+			final Set<String> allSynonyms = new HashSet<String>();
+			for(String db : a) {
+				Collection<String> synonymsOfDb = helper.getSynonymsForDbName(db);
+				allSynonyms.addAll(synonymsOfDb);
+			}
+			this.deny.put(clazz, allSynonyms);
+		}
 	}
     
     
@@ -53,45 +74,32 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
     
 	public void check(UnificationXref x, boolean fix) {
 		
-		if (x.getDb() == null || helper.getPrimaryDbName(x.getDb())==null) {
-			// this rule does not care about invalid databases (names)
+		if (x.getDb() == null 
+			|| helper.getPrimaryDbName(x.getDb())==null) 
+		{
+			// ignore for unknown databases (another rule checks)
 			return;
 		}
 
-		Collection<String> synonyms = helper.getSynonymsForDbName(x.getDb());
-		
 		// check constrains for each element containing this unification xref 
 		for (XReferrable bpe : x.getXrefOf()) {
-			for (Class<BioPAXElement> c : dbAllow.keySet()) {
+			for (Class<BioPAXElement> c : allow.keySet()) {
 				if (c.isInstance(bpe)) {
-					String dbAllowed = dbAllow.get(c).toLowerCase();
-					if (!matched(dbAllowed, synonyms)) {
-						error(x, "not.allowed.xref", 
-								false, x.getDb(), bpe, c.getSimpleName(), dbAllowed);
+					if (!allow.get(c).contains(x.getDb().toLowerCase())) {
+						error(x, "not.allowed.xref", false, x.getDb(), bpe, 
+							c.getSimpleName(), allow.get(c).toString());
 					}
 				}
 			}
-			
-			for (Class<BioPAXElement> c : dbDeny.keySet()) {
+			for (Class<BioPAXElement> c : deny.keySet()) {
 				if (c.isInstance(bpe)) {
-					String dbDenied = dbDeny.get(c).toLowerCase();
-					if (matched(dbDenied, synonyms)) {
-						error(x, "denied.xref", false, x.getDb(), 
-							bpe, c.getSimpleName(), dbDenied);
+					if (!deny.get(c).contains(x.getDb().toLowerCase())) {
+						error(x, "denied.xref", false, x.getDb(), bpe, 
+							c.getSimpleName(), deny.get(c).toString());
 					}
 				}
 			}
-
 		}
-	}
-	
-	boolean matched(String plainListOfNames, Collection<String> dbNames) {
-		for (String db : dbNames) {
-			if(plainListOfNames.contains(db.toLowerCase())) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }

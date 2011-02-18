@@ -52,7 +52,7 @@ public class XrefHelper {
 		// adds names and assigns regexps from Miriam;
 		// also makes those names primary synonyms
 		for (String dt : MiriamLink.getDataTypesName()) {
-			String db = dbName(dt);
+			String db = dbName(dt); // consistent using dbName(name) is crucial (removes the case sensitivity)
 			String regexp = MiriamLink.getDataTypePattern(dt);
 			
 			Pattern pattern = null;
@@ -68,7 +68,10 @@ public class XrefHelper {
 			synonyms.add(db);
 			String[] names = MiriamLink.getNames(dt);
 			if (names != null && names.length>0) {
-				synonyms.addAll(Arrays.asList(names));
+				for(String name : names) {
+					synonyms.add(dbName(name)); 
+					// consistent using dbName(name) is crucial (removes the case sensitivity)
+				}
 			}
 			addDb(true, synonyms);
 			// set patterns for all synonyms
@@ -85,7 +88,7 @@ public class XrefHelper {
 			List<String> synonyms = new ArrayList<String>();
 			synonyms.add(db);
 			for(String name : term.getNameSynonyms()) {
-				synonyms.add(dbName(name));
+				synonyms.add(dbName(name)); // consistent using dbName(name) is crucial (removes the case sensitivity)
 			}
 			addDb(false, synonyms);
 		}	

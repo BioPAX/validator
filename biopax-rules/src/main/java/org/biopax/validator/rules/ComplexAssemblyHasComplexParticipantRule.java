@@ -18,10 +18,16 @@ public class ComplexAssemblyHasComplexParticipantRule extends AbstractRule<Compl
 
     public void check(ComplexAssembly complexAssembly, boolean fix)
     {
-		Set<Complex> complexes = 
+		// check if there are any complexes on either side
+    	Set<Complex> complexes = 
 			new ClassFilterSet<Complex>(complexAssembly.getParticipant(), Complex.class);
-		
+    	
 		if(complexes.isEmpty()) {
+			
+			// TODO check may be a participant(s) acquire 
+			
+			
+			
 			error(complexAssembly, "complex.not.present", false);
 		}
 	

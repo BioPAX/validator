@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.PropertyEditor;
+import org.biopax.paxtools.controller.SimpleMerger;
 import org.biopax.paxtools.converter.OneTwoThree;
 import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
@@ -117,24 +118,42 @@ public class ValidatorImpl implements Validator {
 			}
 		}
 
-		//if fix==true, scan for the new elements that rules could have created and add them to the model!
+		// if fix==true, detect all the new elements that rules could have created!
+		/* 
+		 * take care of (might be) different elements, object property values (e.g. xrefs), 
+		 * that were created (by some of the rules) with exactly the same RDFID! 
+		 * - there were no exceptions so far, because we haven't tried to add them to the model yet!
+		 */
 		if (validation.isFix()) {
 			AbstractTraverser traverser = new AbstractTraverser(
 					new SimpleEditorMap(model.getLevel())) {
 				@Override
 				protected void visit(Object range, BioPAXElement domain,
 						Model model, PropertyEditor editor) {
+					// the value is not in the model already, nor - the same ID found there, then -
 					if (range instanceof BioPAXElement
-							&& !model.contains((BioPAXElement) range)) {
+							&& !model.contains((BioPAXElement) range) // also true when same ID, different Object!
+							&& !model.containsID(((BioPAXElement) range).getRDFId()) // 
+					) { 
+						// just add to the model (for now...)
 						model.add((BioPAXElement) range);
+					} else {
+						/* skip - the existing element will be used instead (see below), 
+						 * and all the (created by rules) new links (object properties) 
+						 * will be automatically set to the objects that model already has!
+						 */
 					}
 				}
 			};
-			Set<BioPAXElement> elements = new HashSet<BioPAXElement>(model
-					.getObjects());
+			
+			// find - recursively scan for the new elements (those added to existing elements during the validation)
+			Set<BioPAXElement> elements = new HashSet<BioPAXElement>(model.getObjects());
 			for (BioPAXElement element : elements) {
 				traverser.traverse(element, model);
 			}
+			// finally, updates object properties
+			SimpleMerger simpleMerger = new  SimpleMerger(new SimpleEditorMap(model.getLevel()));
+			simpleMerger.merge(model); // aha! (new staff)
 		}
 		
 		// normalize?

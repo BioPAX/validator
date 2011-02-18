@@ -55,7 +55,11 @@
     <div class="form-row" style="padding-top: 1em;">
     	<input type="radio" id="switch" name="switch" checked="checked" onchange="switchInput();" value="fdfdfdf"/>
     	<label>Choose up to 25 BioPAX files:</label>
-		<input id="file" type="file" name="file_0" accept="application/rdf+xml"/>
+		<input id="file" type="file" name="file_0" /> 
+		<!--we removed the accept="application/rdf+xml" attribute from this tag, because:  
+		 - most BioPAX files have '.owl' extension (rather than recommended .rdf, .xml), and there is no owl mime type
+		 - e.g., Google Chrome takes file extensions serious preventing files other than .xml from being selected in the file upload dialog
+		-->
 		<div id="files_list" ></div>
 		<br/>
 		<input type="radio" id="switch" name="switch" onchange="switchInput();"/>
