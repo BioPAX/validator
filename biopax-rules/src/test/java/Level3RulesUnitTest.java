@@ -62,6 +62,7 @@ public class Level3RulesUnitTest {
 			rule.check(step, false); 
 			fail("must throw BiopaxValidatorException");
 		} catch(BiopaxValidatorException e) {
+			//System.out.println("thrown: " + e);
 			Model m = level3.createModel();
 			m.add(conv);
 			m.add(step);

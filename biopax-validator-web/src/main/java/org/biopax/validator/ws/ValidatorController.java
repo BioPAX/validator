@@ -58,6 +58,7 @@ public class ValidatorController {
     		@RequestParam(required=false) Boolean autofix,
     		@RequestParam(required=false) Boolean normalize,
     		@RequestParam(required=false) Behavior filter,
+    		@RequestParam(required=false) Integer maxErrors,
     		Model model, Writer writer) throws IOException  
     {
     	Resource in = null; // a resource to validate
@@ -76,14 +77,18 @@ public class ValidatorController {
 			}
         	
         	Validation v = newValidation(in.getDescription(), autofix, normalize, filter);
+        	if(maxErrors != null) {
+        		v.setMaxErrors(maxErrors.intValue());
+        		log.info("Using max. errors limit=" + maxErrors 
+        			+ "; success= " + v.isMaxErrorsSet());
+        	}
         	
     		try {
     			doCheck(v, in);
     	    	validatorResponse.addValidationResult(v);
     		} catch (Exception e) {
     			return errorResponse(model, 
-    				"check", "Error: " 
-    					+ e.toString());
+    				"check", "Exception: " + e);
     		}
     	} else if (request instanceof MultipartHttpServletRequest) {
 			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
@@ -104,12 +109,16 @@ public class ValidatorController {
 				in = new ByteArrayResource(file.getBytes());
 	    		try {
 	    			Validation v = newValidation(filename, autofix, normalize, filter);
+	    			if(maxErrors != null) {
+	            		v.setMaxErrors(maxErrors.intValue());
+	            		log.info("Using max. errors limit=" + maxErrors 
+	            			+ "; success= " + v.isMaxErrorsSet());
+	            	}
 	    			doCheck(v, in);
 	    	    	validatorResponse.addValidationResult(v);
 	    		} catch (Exception e) {
 	    			return errorResponse(model, 
-	    				"check", "Error: " 
-	    					+ e.toString());
+	    				"check", "Exception: " + e);
 	    		}
 			}			
 		} else {

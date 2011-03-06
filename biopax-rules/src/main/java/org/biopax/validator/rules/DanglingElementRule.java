@@ -3,16 +3,15 @@ package org.biopax.validator.rules;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.annotation.Resource;
 
 import org.biopax.paxtools.controller.AbstractTraverser;
-import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,9 +20,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DanglingElementRule extends AbstractRule<Model> {
-	
-	@Resource
-	EditorMap editorMap3;
 	
 	public boolean canCheck(Object thing) {
 		return thing instanceof Model
@@ -37,7 +33,7 @@ public class DanglingElementRule extends AbstractRule<Model> {
 			new HashSet<BioPAXElement>(model.getObjects());
 		
 		// extends traverser ;)
-		AbstractTraverser checker = new AbstractTraverser(editorMap3) {
+		AbstractTraverser checker = new AbstractTraverser(BiopaxValidatorUtils.EDITOR_MAP_L3) {
 			
 			@Override
 			protected void visit(Object value, BioPAXElement parent, Model model,

@@ -2,35 +2,32 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.PropertyEditor;
-import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.ComplexAssembly;
 import org.biopax.paxtools.model.level3.Conversion;
+import org.biopax.paxtools.model.level3.Degradation;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.util.ClassFilterSet;
 import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Resource;
-
 /**
  * This rule checks that biopolymers on one side of the conversion 
- * are those modified/relocated on the other side, and not new ones.
+ * are those modified/relocated on the other side, and not new ones;
+ * (two exceptions: ComplexAssembly and Degradation)
  * 
  * User: rodche
  */
 @Component
 public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysicalEntity>
 {
-
-	@Resource
-	SimpleEditorMap editorMap3;
 	
     public void check(SimplePhysicalEntity protein, boolean fix)
     {
@@ -38,8 +35,10 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
 			new ClassFilterSet<Conversion>(protein.getParticipantOf(), Conversion.class));
        
        for(Conversion conversion : conversions) {
-    	   if(conversion instanceof ComplexAssembly)
+    	   if(conversion instanceof ComplexAssembly 
+    			   || conversion instanceof Degradation) {
     		   continue;
+    	   }
     	   String side = 
     		   (conversion.getLeft().contains(protein)) ? "right" : "left";
     	   if(!findProteinOnTheOtherSide(conversion, protein, side)) {
@@ -51,7 +50,8 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
     boolean findProteinOnTheOtherSide(final Conversion conversion, 
     		final SimplePhysicalEntity prot, final String side) 
     {
-    	AbstractTraverser runner = new AbstractTraverser(editorMap3) {
+    	AbstractTraverser runner = new AbstractTraverser(BiopaxValidatorUtils.EDITOR_MAP_L3) 
+    	{
     		@Override
 			protected void visit(Object value, BioPAXElement parent, 
 					Model model, PropertyEditor editor) {

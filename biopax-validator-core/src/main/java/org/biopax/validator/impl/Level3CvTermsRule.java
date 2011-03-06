@@ -5,19 +5,18 @@ import java.net.URLEncoder;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
-import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.level3.Level3Element;
 import org.biopax.paxtools.model.level3.ControlledVocabulary;
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.util.ClassFilterSet;
+import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.biopax.validator.utils.Normalizer;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import psidev.ontology_manager.OntologyManager;
-import psidev.ontology_manager.OntologyTermI;
+import psidev.ontology_manager.*;
+
 
 /**
  * An abstract class for CV terms checking (BioPAX Level3).
@@ -27,14 +26,11 @@ import psidev.ontology_manager.OntologyTermI;
 @Configurable
 public abstract class Level3CvTermsRule<T extends Level3Element> 
 	extends AbstractCvRule<T> {
-    
-    @Resource
-    private EditorMap editorMap3;
   
     /**
      * Constructor.
      * 
-     * TODO allow using properties path as the 'property' parameter, i.e., "modificationFeature/modificationType"
+     * TODO allow using properties path as the 'property' name parameter, i.e., "modificationFeature/modificationType"
      * 
      * @param domain
      * @param property
@@ -49,7 +45,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
     public void init() {
     	super.init();
 		this.editor = (property != null && !ControlledVocabulary.class.isAssignableFrom(domain)) 
-			? editorMap3.getEditorForProperty(property, this.domain)
+			? BiopaxValidatorUtils.EDITOR_MAP_L3.getEditorForProperty(property, this.domain)
 			: null;    	
     };
     
@@ -135,25 +131,39 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 					
 					if(fix) {
 					/*
-					 * However, it's not so trivial to fix by adding the xrefs because:
-					 * 1) - no reference to the parent Model here available
-					 *    (thus the validator must detect and add new objects automatically!)
+					 * However, it's not so trivial to fix by adding the xrefs, because:
+					 * 1) no reference to the parent Model here available
+					 *    (thus the validator must detect and add new objects automatically! [done!])
 					 * 2) having the chance of creating several xrefs with the same RDFId requires 
 					 *    a special care or follow-up merging, as simply adding them to a model will 
 					 *    throw the "already have this element" exception!); and other rules 
-					 *    can also generate duplicates...
+					 *    can also generate duplicates... [SimpleMerger now helps tackle this!]
 					 * 3) risk that a rule generating/adding a new element may cause  
 					 *    other rules to interfere via AOP and prevent changes in quite 
 					 *    unpredictable manner (...bites its own tail)
+					 * 4) multiple terms (accession numbers) can result from searching by (synonym) name
 					 *    
-					 *    Well, let's try to fix anyway (and modifying ValidatorImpl as well)!
+					 *    Well, let's try to fix, anyway (and modifying ValidatorImpl as well)!
+					 *    That's awesome!!!
 					 */
-
+						Set<OntologyTermI> validTermIs = ontologyManager.getValidTerms(this);
 						for (String name : noXrefTerms) {
-							// search for the ontology term(s) by name
+							//search for the ontology term(s) by name
 							Set<OntologyTermI> ots = ((OntologyManager) ontologyManager)
 									.searchTermByName(name.toLowerCase());
+							//get only top (parent) valid terms
+							Set<OntologyTermI> topvalids = new HashSet<OntologyTermI>();
 							for (OntologyTermI term : ots) {
+								// skip terms that are not applicable although having the same synonym name
+								if(validTermIs.contains(term)) {
+									Ontology ont = ((OntologyManager)ontologyManager).getOntology(term.getOntologyId());
+									//if term's parents does not contain any of these terms
+									if(Collections.disjoint(ots, ont.getAllParents(term))) {
+										topvalids.add(term);
+									}
+								}
+							}
+							for (OntologyTermI term : topvalids) {								
 								String ontId = term.getOntologyId();
 								String db = ((OntologyManager) ontologyManager)
 										.getOntology(ontId).getName();
@@ -171,7 +181,8 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 								ux.setDb(db);
 								ux.setId(id);
 								cv.addXref(ux);
-								fixed = true; // almost true ;-)
+								fixed = true; // 99% true ;-)
+								noXrefTermsInfo += "; " + id + " added!";
 							}
 						}
 					}

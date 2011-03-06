@@ -1,5 +1,6 @@
 package org.biopax.validator.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
@@ -105,10 +106,13 @@ public abstract class BasicCardinalityAndRangeRule<E extends BioPAXElement>
 				}
 			}
 
-		} catch (Exception e) {
+		} catch (IllegalAccessException e) {
 			throw new BiopaxValidatorException(e, getProperty(), 
 					domain.getSimpleName());
-		}
+		} catch (InvocationTargetException e) {
+			throw new BiopaxValidatorException(e, getProperty(), 
+					domain.getSimpleName());
+		} 
 	}
 
 	

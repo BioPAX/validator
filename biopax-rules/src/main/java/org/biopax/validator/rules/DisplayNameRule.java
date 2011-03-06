@@ -45,7 +45,7 @@ public class DisplayNameRule extends AbstractRule<Named> {
 				}
 			}
     		// report
-			error(named, "no.display.name", fixed & fix);
+			error(named, "no.display.name", fixed && fix);
 		} 
     	
     	// check max. length

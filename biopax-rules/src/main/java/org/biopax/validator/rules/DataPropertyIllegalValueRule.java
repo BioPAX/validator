@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
@@ -21,13 +22,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
-	
-	@Resource
-	private EditorMap editorMap3;
-	
-	@Resource 
-	private EditorMap editorMap2;
-	
 	/*
 	 * @Autowired, even with @Qualifier, won't work here, 
 	 * because we need to inject a particular bean (<util:set>) 
@@ -40,14 +34,6 @@ public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
 	{
 		this.warnOnDataPropertyValues = warnOnDataPropertyValues;
 	}
-
-	public void setEditorMap3(EditorMap editorMap3) {
-		this.editorMap3 = editorMap3;
-	}
-	
-	public void setEditorMap2(EditorMap editorMap2) {
-		this.editorMap2 = editorMap2;
-	}
 	
 	public boolean canCheck(Object thing) {
 		return thing instanceof Model 
@@ -57,7 +43,8 @@ public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
 	public void check(Model model, final boolean fix) {
 		EditorMap editorMap = 
 			(model.getLevel() == BioPAXLevel.L3)
-				? editorMap3 : editorMap2;
+				? BiopaxValidatorUtils.EDITOR_MAP_L3
+					: BiopaxValidatorUtils.EDITOR_MAP_L2;
 		
 		AbstractTraverser checker = new AbstractTraverser(editorMap) {
 			@Override

@@ -1,9 +1,6 @@
 package org.biopax.validator.rules;
 
-import javax.annotation.Resource;
-
 import org.biopax.paxtools.controller.AbstractTraverser;
-import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.controller.PropertyFilter;
 
@@ -13,13 +10,12 @@ import org.biopax.paxtools.model.level2.pathway;
 import org.biopax.paxtools.model.level2.pathwayStep;
 import org.biopax.paxtools.model.level2.process;
 import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Level2AcyclicPathwayRule extends AbstractRule<pathway> {
-	
-	@Resource
-	EditorMap editorMap2;
+public class Level2AcyclicPathwayRule extends AbstractRule<pathway> 
+{
 	
 	private final static PropertyFilter filter = new PropertyFilter() {
 		@Override
@@ -33,7 +29,8 @@ public class Level2AcyclicPathwayRule extends AbstractRule<pathway> {
 	}
 
 	public void check(final pathway thing, boolean fix) {
-		AbstractTraverser checker = new AbstractTraverser(editorMap2, filter)
+		AbstractTraverser checker = new AbstractTraverser(
+			BiopaxValidatorUtils.EDITOR_MAP_L2, filter)
 	{
 			@Override
 			protected void visit(Object value, BioPAXElement parent,

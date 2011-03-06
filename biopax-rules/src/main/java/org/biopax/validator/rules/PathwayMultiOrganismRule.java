@@ -3,10 +3,7 @@ package org.biopax.validator.rules;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.annotation.Resource;
-
 import org.biopax.paxtools.controller.AbstractTraverser;
-import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.controller.PropertyFilter;
 import org.biopax.paxtools.model.BioPAXElement;
@@ -24,11 +21,8 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class PathwayMultiOrganismRule extends AbstractRule<Pathway> {
-
-	@Resource
-	EditorMap editorMap3;
-	
+public class PathwayMultiOrganismRule extends AbstractRule<Pathway> 
+{	
 	private final static PropertyFilter filter = new PropertyFilter() {
 		@Override
 		public boolean filter(PropertyEditor editor) {
@@ -42,7 +36,9 @@ public class PathwayMultiOrganismRule extends AbstractRule<Pathway> {
     	//but..
     	if(organism==null) return; // we do not care
     	
-    	AbstractTraverser runner = new AbstractTraverser(editorMap3, filter) {
+    	AbstractTraverser runner = new AbstractTraverser(
+    			BiopaxValidatorUtils.EDITOR_MAP_L3, filter) 
+    	{
     		@Override
 			protected void visit(Object value, BioPAXElement parent, 
 					Model model, PropertyEditor editor) 

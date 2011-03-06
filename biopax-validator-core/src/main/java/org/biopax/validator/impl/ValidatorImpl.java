@@ -5,8 +5,6 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.paxtools.controller.AbstractTraverser;
-import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.controller.SimpleMerger;
 import org.biopax.paxtools.converter.OneTwoThree;
 import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
@@ -105,55 +103,40 @@ public class ValidatorImpl implements Validator {
 			// rules can check/fix the model or specific elements
 			if (log.isDebugEnabled())
 				log.debug("Current rule is: " + rule.getName());
+			
+			//stop if max.errors exceeded
+			if(validation.isMaxErrorsSet() 
+				&& validation.getNotFixedErrors() >= validation.getMaxErrors())
+			{
+				break;
+			}
 			if (rule.canCheck(model)) {
 				rule.check(model, false);
 			} else {
 				// copy the elements collection to avoid concurrent modification (rules can add/remove objects)!
 				Set<BioPAXElement> elements = new HashSet<BioPAXElement>(model.getObjects());
 				for (BioPAXElement el : elements) {
-					if (rule.canCheck(el)) {
+					//skip if cannot check 
+					if (rule.canCheck(el)) 
+					{
+						//break if max.errors exceeded
+						if(validation.isMaxErrorsSet() 
+								&& validation.getNotFixedErrors() >= validation.getMaxErrors())
+							break;
 						rule.check(el, validation.isFix());
 					}
 				}
 			}
 		}
 
-		// if fix==true, detect all the new elements that rules could have created!
 		/* 
-		 * take care of (might be) different elements, object property values (e.g. xrefs), 
-		 * that were created (by some of the rules) with exactly the same RDFID! 
-		 * - there were no exceptions so far, because we haven't tried to add them to the model yet!
+		 * if fix==true, detect all the new elements that rules could have created;
+		 * these new objects may be duplicates or dangling...
 		 */
 		if (validation.isFix()) {
-			AbstractTraverser traverser = new AbstractTraverser(
-					new SimpleEditorMap(model.getLevel())) {
-				@Override
-				protected void visit(Object range, BioPAXElement domain,
-						Model model, PropertyEditor editor) {
-					// the value is not in the model already, nor - the same ID found there, then -
-					if (range instanceof BioPAXElement
-							&& !model.contains((BioPAXElement) range) // also true when same ID, different Object!
-							&& !model.containsID(((BioPAXElement) range).getRDFId()) // 
-					) { 
-						// just add to the model (for now...)
-						model.add((BioPAXElement) range);
-					} else {
-						/* skip - the existing element will be used instead (see below), 
-						 * and all the (created by rules) new links (object properties) 
-						 * will be automatically set to the objects that model already has!
-						 */
-					}
-				}
-			};
-			
-			// find - recursively scan for the new elements (those added to existing elements during the validation)
-			Set<BioPAXElement> elements = new HashSet<BioPAXElement>(model.getObjects());
-			for (BioPAXElement element : elements) {
-				traverser.traverse(element, model);
-			}
-			// finally, updates object properties
+			// simple merger (since the recent update) now adds new elements and updates object properties
 			SimpleMerger simpleMerger = new  SimpleMerger(new SimpleEditorMap(model.getLevel()));
-			simpleMerger.merge(model); // aha! (new staff)
+			simpleMerger.merge(model);
 		}
 		
 		// normalize?
@@ -294,7 +277,11 @@ public class ValidatorImpl implements Validator {
 		}
 	}
 
-    	
+    /**
+     * When this method is normally called, 
+     * 'err' usually has only one error case. 
+     * 	
+     */
     public void report(Object obj, ErrorType err, boolean setFixed) 
     {	
 		if(err.getErrorCase().isEmpty()) {
@@ -308,7 +295,11 @@ public class ValidatorImpl implements Validator {
 					"with NULL object: " + err);
 			return;
 		}
-    	
+		
+		if(log.isDebugEnabled())
+			log.debug("Registering the error: " + err 
+				+ " for object: " + obj + " as: " + setFixed);
+		
     	Collection<Validation> validations = findValidation(obj);			
 		if(validations.isEmpty()) {
 			// the object is not associated neither with parser nor model
@@ -320,23 +311,30 @@ public class ValidatorImpl implements Validator {
 		
 		// add to the corresponding validation result
 		for(Validation v: validations) { 
-			assert(v != null);
+			assert v != null : "The list of avauilable validations contains NULL!";
 			
 			if(log.isTraceEnabled()) {
-				log.trace("Reporting: " + err.toString() 
-						+ " "+ err.getErrorCase().toArray()[0] + 
-						" in: " + v.getDescription() + 
-						"; fixed=" + setFixed);
+				log.trace("Failed: " + err.toString() 
+					+ " "+ err.getErrorCase().toArray()[0] + 
+					" in: " + v.getDescription() + 
+					"; fixed=" + setFixed);
 			}
 			
-			// to be consistent with the setFixed parameter!
+			if(v.isMaxErrorsSet() && v.getNotFixedErrors() >= v.getMaxErrors())
+			{
+				log.info("Won't save the case: max. errors " +
+					"limit exceeded for " + v.getDescription());
+				continue;
+			}
+			
+			// update 'fixed' flag
 			for(ErrorCaseType ect : err.getErrorCase()) {
-				ect.setFixed(setFixed && v.isFix()); 
+				ect.setFixed(setFixed); 
 			}
 
 			// add or update the error case(s)
 			v.addError(err);
-		}
+		}		
 	}
     
 }

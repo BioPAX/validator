@@ -28,23 +28,25 @@
 
 <h3>Endpoints (RESTful)</h3>
 <ol>
-<li>Check (and, optionally, auto-fix and normalize) either BioPAX L3 files or a resource, 
+<li>To check (and, optionally, auto-fix and normalize) either BioPAX L3 files or a resource, 
 send a multipart/form-data HTTP POST request to <a href="<c:url value='/check.html'/>">this page</a>
 </li>
 </ol>
 
 <h3>Parameters:</h3>
 <ul>
-<li><em>file</em> (actually, parameter name does not matter here, - simply submit an array of files) OR <em>url</em> (value: URL string)</li>
-<li><em>retDesired</em> - output format: "html" (default), "xml", or "owl"</li>
+<li><em>file</em> (actually, parameter name does not matter here, - simply submit an array of files) OR <em>url</em> (value: a URL to data in BioPAX format)</li>
+<li><em>retDesired</em> - output format; values: "html" (default), "xml", or "owl" (modified BioPAX only, no error messages)</li>
 <li><em>autofix</em> - false/true; try to fix some errors automatically (a new experimental feature; default is "false")</li>
 <li><em>normalize</em> - false/true; return "normalized" BioPAX (a new experimental feature; default is "false")</li>
-<li><em>filter</em> - set errors level; values: "WARNING" (default, get errors and warnings), "ERROR", "IGNORE" (no problems at all ;))</li>
+<li><em>filter</em> - set log level; values: "WARNING" (default, get both errors and warnings), "ERROR", and "IGNORE" (no problems at all ;))</li>
+<li><em>maxErrors</em> - set the max. number of ERROR type, not fixed cases to collect (some, but not all, warning and fixed cases will be also reported);
+<br/> value: a positive integer; "0" (default) means "unlimited", "1" - fail-fast mode, i.e., stop after the first serious issue, "10" - collect up to ten error cases, etc.</li>
 </ul>
 
 <h3>Output Formats:</h3>
 <ul>
-<li>HTML - stand-alone HTML/JavaScript result page that can be also saved and viewed off-line</li>
+<li>HTML - stand-alone HTML/JavaScript validation results page to save and view off-line</li>
 <li>XML - results follow the <a href="<c:url value='/schema.html'/>">schema (XSD)</a> 
  There are different ways to convert the XML result to domain objects. JAXB works great (one can generate the classes from the schema; 
 copy/modify the classes used by the Validator (<a href="http://biopax.hg.sf.net/hgweb/biopax/validator/file/default/biopax-validator-core/src/main/java/org/biopax/validator/result/">sources here</a>);
@@ -52,7 +54,7 @@ copy/modify the classes used by the Validator (<a href="http://biopax.hg.sf.net/
  or simply add that repository and the org.biopax.validator:biopax-validator-core:2.0-SNAPSHOT:jar dependency to your pom.xml (though, this will automatically bring more dependencies to your project, e.g., paxtools-core, spring framework, etc...)
 
  </li>
-<li>OWL - BioPAX L3 (fixed/normalized)</li>
+<li>OWL - modified BioPAX L3 data (fixed/normalized)</li>
 </ul>
 
 </div>

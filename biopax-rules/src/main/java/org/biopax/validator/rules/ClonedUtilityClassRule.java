@@ -6,7 +6,6 @@ import org.apache.commons.collections15.set.CompositeSet;
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.ObjectPropertyEditor;
 import org.biopax.paxtools.controller.PropertyEditor;
-import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
@@ -83,7 +82,7 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 			final Collection<UtilityClass> clones) {	
 		if(master != null) {
 			AbstractTraverser traverser = 
-				new AbstractTraverser(new SimpleEditorMap(model.getLevel())) 
+				new AbstractTraverser(BiopaxValidatorUtils.EDITOR_MAP_L3) 
 			{	
 				@Override
 				protected void visit(Object range, BioPAXElement domain, 

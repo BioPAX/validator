@@ -1,4 +1,4 @@
-/** BioPAX Validator, Version 2.0A (SNAPSHOT)
+/** BioPAX Validator, Version 2.0
  **
  ** Copyright (c) 2010 University of Toronto (UofT)
  ** and Memorial Sloan-Kettering Cancer Center (MSKCC).
@@ -55,32 +55,34 @@ I. Framework
 II. Validation
 
  1. Rules are java classes implementing Rule<E> interface, basically,
-    by extending AbstractRule<E> (there are more abstract classes to derive from).
+    by extending AbstractRule<E> or its abstract sub-class.
 
-     Classes can use a modified "Ontology Manager" (PSIDEV@EBI, thank you!)
+     Controlled vocabulary rule classes use modified "Ontology Manager" 
+     (derived from one of PSIDEV software modules, thank you!)
      and its configuration file (ontologies.xml) which allows to check 
      controlled vocabulary terms.
  
-    Rules may call other rules, but usually it is not required, and they are quite simple.
+    Rules may call other rules, but usually it is not required, 
+    and they are better keep simple and independent.
     
- 2. Post-model validation 
+ 2. Post-model validation mode
     - read a BioPAX file, build the model, and check all the rules.
      
- 3. Fast (AOP) validation
+ 3. Real-time (AOP) validation mode
     - catch/log all the "external" errors ()
     - catch/log syntax and BioPAX errors during the model is being read/built
     - check before/after any BioPAX element is modified or added to the model.
+ 4. Fail-fast mode (the number of not fixed errors per validation/report is limited)
 
 III. Errors, Logging, Behavior (actions to undertake)
  1. Logging 
     - commons-logging and log4j
  2. Errors 
-    - Spring AOP, MessageSource, resource bundles, and OXM
+    - Spring AOP, MessageSource, resource bundles, and OXM (JAXB)
     are used to collect errors, translate into messages, and create the validation report.
- 4. Control of behavior 
-    - action and messages are configured in messages.properties file
- 5. Some of errors can be ignored during the model import (e.g. cardinality constraints).
-
+ 3. Configuring
+    - behavior (i.e. level), mode, error categories and messages are configured in properties files
+ 4. Some of errors can be ignored during the model import (e.g. cardinality constraints).
 
 
 ******************************************************************************
@@ -122,7 +124,7 @@ it takes longer for networks that contain loops (e.g., in nextStep->PathwayStep 
 e.g., it took me several hours to validate ~50Mb BioPAX L3 file (Reactome's Canis familiaris);
 
 If you want to validate several files, it always much more efficient 
-to copy them all in a directory to use that directory as the first 
+to copy them all in a directory and use that directory as the first 
 parameter for the validate.sh. This is because Validator's initialization
 is very time/resources consuming task (mainly, due to OBO files parsing); 
 after it's done, next validations are performed much faster.
@@ -134,7 +136,7 @@ USING WEB APPLICATION
 PREREQUISITES:
 
 - Java 6
-- spring-instrument.jar (from Spring 3; enables load-time weaving for AOP)
+- spring-instrument.jar (from Spring 3; enables AspectJ load-time weaving)
 - Tomcat (6) must be started with the following option: 
 
 -Xmx2048m -Xms256m -Dfile.encoding=UTF-8 -javaagent:/full-path-to/spring-instrument.jar

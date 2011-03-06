@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.*;
 
 @XmlType(name="ErrorType", namespace="http://biopax.org/validator/2.0/schema")
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
-public class ErrorType implements Serializable {
+public class ErrorType implements Serializable, Comparable<ErrorType> {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -125,11 +125,8 @@ public class ErrorType implements Serializable {
 	
 	@Override
 	public String toString() {
-		StringBuffer result = new StringBuffer();
-		result.append(type);
-		result.append(" ");
-		result.append(code);
-		return result.toString();
+		return type + " " + code; 
+		//enough! (by design, to use in hashCode and equals)
 	}
 	
 	@Override
@@ -160,13 +157,24 @@ public class ErrorType implements Serializable {
 	}
 	
 	/**
-	 * Total number of problems registered.
+	 * Total number of cases registered, including fixed.
 	 * 
 	 * @return
 	 */
 	@XmlAttribute
-	public int getTotalErrorCases() {
-		return countErrors(null, null);
+	public int getTotalCases() {
+		return countErrors(null, null, false);
+	}
+	
+	
+	/**
+	 * Total number of cases not fixed yet.
+	 * 
+	 * @return
+	 */
+	@XmlAttribute
+	public int getNotFixedCases() {
+		return countErrors(null, null, true);
 	}
 	
 	
@@ -175,9 +183,10 @@ public class ErrorType implements Serializable {
 	 * 
 	 * @param forObject if 'null', count everything
 	 * @param reportedBy if 'null', everything's counted
+	 * @param ignoreFixed skip fixed if true
 	 * @return
 	 */
-	public int countErrors(String forObject, String reportedBy) {
+	public int countErrors(String forObject, String reportedBy, boolean ignoreFixed) {
 		int count = 0;
 		
 		for(ErrorCaseType ec: errorCase) {
@@ -189,8 +198,11 @@ public class ErrorType implements Serializable {
 				continue;
 			}
 			
-			if(!ec.isFixed())
-				count++;
+			if(ignoreFixed == true && ec.isFixed()) {
+				continue;
+			}
+			
+			count++;
 		}
 		
 		return count;
@@ -216,4 +228,6 @@ public class ErrorType implements Serializable {
 		}
 		return null;
 	}
+	
+	
 }

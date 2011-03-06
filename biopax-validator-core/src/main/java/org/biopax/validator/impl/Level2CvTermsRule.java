@@ -3,9 +3,7 @@ package org.biopax.validator.impl;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
-import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.model.level2.Level2Element;
 import org.biopax.paxtools.model.level2.openControlledVocabulary;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
@@ -22,9 +20,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Configurable
 public abstract class Level2CvTermsRule<T extends Level2Element> 
 	extends AbstractCvRule<T> {
-	
-    @Resource
-    private EditorMap editorMap2;
     
     public Level2CvTermsRule(Class<T> domain, String property,  CvTermRestriction... restrictions)
     {
@@ -35,7 +30,7 @@ public abstract class Level2CvTermsRule<T extends Level2Element>
     public void init() {
     	super.init();
 		this.editor = (property != null && !openControlledVocabulary.class.isAssignableFrom(domain)) 
-			? editorMap2.getEditorForProperty(property, this.domain)
+			? BiopaxValidatorUtils.EDITOR_MAP_L2.getEditorForProperty(property, this.domain)
 			: null;    	
     };
     

@@ -31,13 +31,14 @@ public class Main {
 	static boolean autofix = false;
 	static boolean normalize = false;
 	static boolean ret_biopax = false;
+	static int maxErrors = 0;
 
 	public static void main(String[] args) throws Exception {				
         if(args.length == 0) {
         	String usage = 
-    			"\n BioPAX Validator 2.0A\n\n" +
-    		    "Parameters: <input> [<output>] [auto-fix] [normalize] [return-biopax]\n" + 
-    		    "(2..5 are optional and can be in any order)\n" +
+    			"\n BioPAX Validator v2.0\n\n" +
+    		    "Parameters: <input> [--output=<file>] [--auto-fix] [--normalize] [--return-biopax] [--max-errors=<n>]\n" + 
+    		    "(the second and next arguments are optional and can go in any order)\n" +
     		    "For Example:\n" +
     		    "  list:batch_file_name \n" +
     		    "  file:biopax.owl auto-fix normalize errors.xml\n" +
@@ -56,14 +57,17 @@ public class Main {
 
 		if (args.length > 1) {
 			for (int i = 1; i < args.length; i++) {
-				if("auto-fix".equalsIgnoreCase(args[i])) {
+				if("--auto-fix".equalsIgnoreCase(args[i])) {
 					autofix = true;
-				} else if("normalize".equalsIgnoreCase(args[i])) {
+				} else if("--normalize".equalsIgnoreCase(args[i])) {
 					normalize = true;
-				} else if("return-biopax".equalsIgnoreCase(args[i])) {
+				} else if("--return-biopax".equalsIgnoreCase(args[i])) {
 					ret_biopax = true;
-				} else {
-					output = args[i];
+				} else if(args[i].startsWith("--max-errors=")) {
+					String n = args[i].substring(13);
+					maxErrors = Integer.parseInt(n);
+				} else if(args[i].startsWith("--output=")) {
+					output = args[i].substring(9);
 				}
 			}
 		}
@@ -108,11 +112,12 @@ public class Main {
         	Validation result = new Validation();
         	result.setFix(autofix);
         	result.setNormalize(normalize);
-        	String modelName = resource.getDescription();
+        	result.setMaxErrors(maxErrors);
+        	result.setDescription(resource.getDescription());
         	if(log.isInfoEnabled())
-        		log.info("BioPAX DATA IMPORT FROM: " + modelName);
+        		log.info("BioPAX DATA IMPORT FROM: " 
+        			+ result.getDescription());
 			try{
-				result.setDescription(modelName);
 				validator.importModel(result, resource.getInputStream());
 				validator.validate(result);
 				if(autofix || normalize)

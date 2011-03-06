@@ -1,6 +1,9 @@
 package org.biopax.validator.utils;
 
+import org.biopax.paxtools.controller.EditorMap;
+import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.model.BioPAXElement;
+import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.level3.Named;
 import org.biopax.validator.result.*;
 
@@ -49,14 +52,15 @@ public class BiopaxValidatorUtils {
     private final Set<String> ignoredCodes;
     public static int maxErrors = Integer.MAX_VALUE;
     
-   
+    public static final EditorMap EDITOR_MAP_L3 = new SimpleEditorMap(BioPAXLevel.L3);
+    public static final EditorMap EDITOR_MAP_L2 = new SimpleEditorMap(BioPAXLevel.L2);
+    
     static {
     	try {
 			jaxbContext = JAXBContext.newInstance(
-					ValidatorResponse.class,
-					Validation.class,
-					ErrorCaseType.class,
-					ErrorType.class);
+					ValidatorResponse.class, Validation.class,
+					ErrorCaseType.class, ErrorType.class,
+					Behavior.class, Category.class);
 		} catch (JAXBException e) {
 			throw new RuntimeException("Failed to initialize the " +
 				"org.biopax.validator.result JAXB context!", e);

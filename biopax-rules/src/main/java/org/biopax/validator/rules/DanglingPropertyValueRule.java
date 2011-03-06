@@ -1,14 +1,12 @@
 package org.biopax.validator.rules;
 
-import javax.annotation.Resource;
-
 import org.biopax.paxtools.controller.AbstractTraverser;
-import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,16 +16,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class DanglingPropertyValueRule extends AbstractRule<Model> {
 	
-	@Resource
-	EditorMap editorMap3;
-	
 	public boolean canCheck(Object thing) {
 		return thing instanceof Model 
 			&& ((Model)thing).getLevel() == BioPAXLevel.L3;
 	}
 
 	public void check(Model model, boolean fix) {
-		AbstractTraverser traverser = new AbstractTraverser(editorMap3) {
+		AbstractTraverser traverser = new AbstractTraverser(BiopaxValidatorUtils.EDITOR_MAP_L3) {
 			@Override
 			protected void visit(Object value, BioPAXElement parent, Model model,
 					PropertyEditor editor) {

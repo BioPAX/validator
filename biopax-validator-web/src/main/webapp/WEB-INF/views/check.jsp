@@ -72,7 +72,7 @@
 	<div class="form-row" style="padding-top: 2em;">
 		Options:<br/>
 		<input type="checkbox" name="autofix" value="true"/>
-		<label>Auto-Fix! (<b>experimental:</b> some rules can, e.g., fix db/id, set 'displayName', remove duplicates, etc.)</label>
+		<label>Auto-Fix! (<b>experimental:</b> some rules can do, e.g., fix xref db/id, controlled vocabularies, set 'displayName', remove duplicates, etc.)</label>
 		<br/>
 		<input type="checkbox" name="normalize" value="true"/>
 		<label>Normalize! (<b>experimental:</b> where it is possible, - replaces identifiers of entity references, CVs, BioSource 
@@ -80,13 +80,21 @@
 		if required, data are auto-converted to BioPAX Level3 first. It may remove some or add new BioPAX errors, especially if there were errors in the file.)</label>
 		<br/>
 		<div class="form-row" style="padding-top: 2em;">
-		<label>Filter (check/fix, but not necessarily mention it)</label><br/>
+		<label>Set the level (do the job, do not report everything)</label><br/>
 		<select name="filter">
 			<option label="Show Warnings and Errors" value="WARNING" selected="selected">Show Warnings and Errors</option>
 			<option label="Show Errors Only" value="ERROR">Show Errors Only</option>
 			<option label="Do not Show Me Problems :)" value="IGNORE">Do not Show Me Problems :)</option>
 		</select>
+		<br/>
+		<label>Set the limit (of type:ERROR, not fixed cases)</label><br/>
+		<select name="maxErrors">
+			<option label="Unlimited" selected="selected">0</option>
+			<option label="'Fail-fast' (after the first serious case)">1</option>
+			<option label="Do up to 10 error cases">10</option>
+		</select>
 		</div>
+		<br/>
 	</div>
 		<div class="form-row" style="padding-top: 2em;">
 		Report as:

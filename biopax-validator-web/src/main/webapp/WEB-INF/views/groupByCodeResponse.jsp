@@ -35,28 +35,51 @@
 <ul>
 <c:forEach var="result" items="${response.validationResult}" varStatus="rstatus">
 	<li style="text-decoration: underline" title="Click to see more detail">
-		Resource:&nbsp;${result.description}&nbsp;
-		<a href="javascript:switchit('result${rstatus.index}')">${result.summary}</a>
+		<a href="javascript:switchit('result${rstatus.index}')">Resource:&nbsp;${result.description};&nbsp;${result.summary}</a>
 	</li>
-	<c:forEach var="comment" items="${result.comment}">
-		<li>${comment}</li>
-	</c:forEach>
-	<li>Auto-Fix = ${result.fix}</li>
-	<li>Normalize = ${result.normalize}</li>
-	<li>Errors and warnings (not fixed): ${result.totalProblemsFound}</li>
+	<ul style="list-style: inside;">
+	<li>
+	  <c:forEach var="comment" items="${result.comment}">
+		${comment}&nbsp;
+	  </c:forEach>
+	</li>
+	<li>auto-fix: ${result.fix};&nbsp;normalize: ${result.normalize}</li>
+	<li>
+	  errors/warnings: ${result.totalProblemsFound};&nbsp;- not fixed: ${result.notFixedProblems};&nbsp; 
+	  <c:choose>
+		<c:when test="${result.maxErrors > 0}">
+			errors limit: ${result.maxErrors} (not fixed)
+		</c:when>
+		<c:otherwise>
+			errors not fixed: ${result.notFixedErrors}
+		</c:otherwise>
+	  </c:choose>
+	</li>
+	
 	<c:if test="${result.fix || result.normalize}">
-	  	<li><a href="javascript:switchit('result${rstatus.index}owl')">Generated BioPAX OWL</a>&nbsp;
-	  	("escaped" for HTML; if you do plan to process the data, better go back and choose either "BioPAX only" or "XML" as return format.)</li>
+	  	<li><a href="javascript:switchit('result${rstatus.index}owl')">Modified BioPAX</a>&nbsp;
+	  	("escaped" RDF in HTML; choose BioPAX or XML as return if you plan to process it)</li>
 		<ul id="result${rstatus.index}owl" style="display: none">
 			<li><div>${result.modelSerializedHtmlEscaped}</div></li>
 		</ul>
 	</c:if>
-	<ul id="result${rstatus.index}" style="display: none">
+	</ul>
+	
+	<ul id="result${rstatus.index}" style="display: none; list-style: decimal;">
 	  <c:forEach var="errorType" items="${result.error}" varStatus="estatus">
 		<li title="Click to see the error cases">
 			<a href="javascript:switchit('result${rstatus.index}type${estatus.index}')">
 			${errorType.type}: <em>${errorType.code}</em>,&nbsp;category: <em>${errorType.category}</em>,
-			&nbsp;cases (not fixed): <em>${errorType.totalErrorCases}</em></a><br/>${errorType.message}
+			&nbsp;cases: <em>${errorType.totalCases}</em>,&nbsp;
+			<c:choose>
+				<c:when test="${errorType.notFixedCases > 0}">
+				not fixed: <em>${errorType.notFixedCases}</em>
+				</c:when>
+				<c:otherwise>
+				all fixed!
+				</c:otherwise>
+	  		</c:choose>
+			</a><br/>${errorType.message}
 		</li>
 		<ul id="result${rstatus.index}type${estatus.index}" style="display: none">
 		<c:forEach var="errorCase" items="${errorType.errorCase}">

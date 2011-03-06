@@ -5,14 +5,15 @@ import java.util.Set;
 import org.biopax.paxtools.model.level3.Entity;
 import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
+import org.biopax.paxtools.model.level3.TemplateReaction;
 import org.biopax.paxtools.model.level3.Transport;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
 /**
- * Warning on participants of one interaction 
- * span multiple cellular compartments.
- * For Transport, however, it checks separately on the left and right sides.
+ * Warning on participants of one interaction span multiple cellular compartments.
+ * For Transport however, it checks separately on the left and right sides, 
+ * and also it does not check for TemplateReaction.
  * 
  * @author rodche
  */
@@ -21,6 +22,10 @@ public class InteractionParticipantsLocationRule extends
 		AbstractRule<Interaction> {
 
 	public void check(Interaction thing, boolean fix) {
+		// exclude template reactions (second time, - after canCheck ;))
+		if(thing instanceof TemplateReaction)
+			return;
+		
 		Set<Entity> ents = thing.getParticipant();
 		if(ents != null) {
 		for (Entity e1 : ents) {
@@ -32,7 +37,7 @@ public class InteractionParticipantsLocationRule extends
 					&& !((PhysicalEntity) e1).hasEquivalentCellularLocation((PhysicalEntity) e2)) 
 					{ 
 						if(thing instanceof Transport) 
-						{ // except for transport
+						{ // it's a bit different rule for the transport
 							Transport tr = (Transport) thing;
 							boolean onDifferentSides = 
 								(tr.getLeft().contains(e1) && !tr.getLeft().contains(e2))
@@ -53,7 +58,8 @@ public class InteractionParticipantsLocationRule extends
 	}
 
 	public boolean canCheck(Object thing) {
-		return thing instanceof Interaction;
+		return thing instanceof Interaction 
+			&& !(thing instanceof TemplateReaction);
 	}
 
 }

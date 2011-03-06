@@ -157,6 +157,7 @@ public class AOPAspectJLTWIntegrationTest {
     @Test
     public void testDuplicateNamesImport() throws IOException {
     	Validation validation = new Validation();
+    	validation.setFix(true);
     	validator.importModel(validation, getClass()
     			.getResourceAsStream("testDuplicateNamesImport.xml"));
     	ErrorType error = validation.findErrorType("duplicate.names", Behavior.WARNING);
@@ -167,6 +168,7 @@ public class AOPAspectJLTWIntegrationTest {
     @Test
     public void testSyntaxErrors() throws IOException {
     	Validation validation = new Validation();
+    	//validation.setFix(true);
     	validator.importModel(validation, getClass()
     			.getResourceAsStream("testSyntaxErrors.xml"));    	
     	ErrorType error = validation.findErrorType("unknown.property", Behavior.ERROR);

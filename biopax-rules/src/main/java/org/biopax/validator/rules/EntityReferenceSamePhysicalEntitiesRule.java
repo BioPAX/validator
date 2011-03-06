@@ -24,15 +24,14 @@ public class EntityReferenceSamePhysicalEntitiesRule extends
 		Set<SimplePhysicalEntity> simplePhysEnts = eref.getEntityReferenceOf();
 		for (SimplePhysicalEntity e1 : simplePhysEnts) {
 			for (SimplePhysicalEntity e2 : simplePhysEnts) {
-				try {
+				//try { // exceptions can be the result of a bug in equivalence method
 					if (	!e1.equals(e2) 
 							&& e1.hasEquivalentFeatures(e2) 
 							&& e1.hasEquivalentCellularLocation(e2)) {
 						error(eref, "same.state.entity", false, e1, e2);
 					}
-				} catch (Exception e) {
-					// no action required
-				}
+				//TODO } catch (RuntimeException e) {} 
+				// - commented out in hope to make 'failFast' mode work
 			}
 		}
 	}

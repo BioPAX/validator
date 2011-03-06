@@ -21,23 +21,22 @@
 
 <h2>Welcome!</h2>
 <div style="width: 90%">
-BioPAX has become an important standard for communicating the knowledge about biochemical processes. 
-But errors that arise from data transformation, OWL "Open World" semantics, 
-and the extensive use of external references can be a real obstacle and a pain. 
-To address this problem, the Validator has both syntactic and semantic rules 
-together with the cross-cutting error reporting framework, 
-and it also makes use of such magic components as: Paxtools (BioPAX API), Ontology Lookup Service 
-(helps with controlled vocabularies), and MIRIAM database (to check external references).
-</div>
-<div style="width: 90%">
-So, the BioPAX rules were derived both from the OWL 
-specification and the community best practices. 
-They are generic Java classes based on the Paxtools in-memory BioPAX model, 
-and more rules can be created and tuned into the application later. They can check across several BioPAX
-entities and can be nested or overlap in their subjects, which might take more care to implement. There are 
-both "fail-fast" and "post-model" validation modes. However, in most cases (e.g., when one checks an OWL file), 
-the former is not required, so the fail-fast mode will come to the scene in the future software that 
-will allow interactive model assembling and merging and use the BioPAX Validator API.
+BioPAX is an important standard for communicating the knowledge about biochemical processes.  
+In the course of data exchange, errors that occur in data modeling, 
+curation, or transformation can be big obstacle. The BioPAX Validator is being developed 
+to help improve the BioPAX data quality, which also makes pathway knowledge interpretation 
+and integration possible in a greater level of detail.
+It checks the BioPAX models for dozens of custom rules, some of which cannot be expressed 
+(reasonably, at the moment, or at all) in OWL or related rule definition languages.
+<p/>
+The validator runs syntactic and advanced semantic validation rules that came from the 
+BioPAX specification and community best practices, expressed in plain Java, and embraced by the 
+cross-cutting error reporting framework. The rules are, basically, generic Java classes 
+making use of Paxtools API. They can also check across several BioPAX entities, check entire model, 
+can be nested, or overlap in their subjects. A BioPAX element can be checked in "real-time" 
+(on property change) or "post-model" (after the model is complete) modes. 
+However, in most cases such as when one checks files, the former is not required; but 
+the "real-time" mode would come to play in an interactive BioPAX editor software that use this API.
 </div>
 &nbsp;
 <div>

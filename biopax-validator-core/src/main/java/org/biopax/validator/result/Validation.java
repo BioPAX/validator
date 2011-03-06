@@ -27,23 +27,24 @@ public class Validation implements Serializable {
 	private final Set<String> comment;
 	
 	// "forcedly" associated objects, i.e., parser, model(s), and dangling elements 
-	private final Set<Object> objects; 
-
+	private final Set<Object> objects;
+	
 	private boolean fix = false;
-	
-	private Behavior threshold; // TODO implement errors filter!
-	
+	private Behavior threshold;
 	private boolean normalize = false;
+	
+	private int maxErrors; // limits the num. of not fixed error cases (1 means "fal-fast" mode, i.e., stop after the first serious and not fixed error)
 	
 	// Default Constructor (this is mainly for OXM)
 	public Validation() {
-		this.error = new HashSet<ErrorType>();
+		this.error = new TreeSet<ErrorType>();
 		this.description = "unknown";
 		this.comment = new HashSet<String>();
 		this.objects = new HashSet<Object>();
 		this.fix = false;
 		this.normalize = false;
 		this.threshold = Behavior.WARNING;
+		this.maxErrors = Integer.MAX_VALUE;
 	}
 
 	// Constructor that is used in the Validator
@@ -296,15 +297,19 @@ public class Validation implements Serializable {
 	
 	/**
 	 * Counts the number of errors/warnings.
+	 * Extra parameters are used to exclude 
+	 * some of the cases.
 	 * 
 	 * @param forObject when 'null', counts all
 	 * @param reportedBy when 'null', counts all
 	 * @param code when 'null', counts all
-	 * @param ignoreWarnings
+	 * @param category when 'null', counts all
+	 * @param ignoreWarnings do not count WARNINGs
+	 * @param ignoreFixed do not count fixed
 	 * @return
 	 */
 	public int countErrors(String forObject, String reportedBy, 
-			String code, boolean ignoreWarnings) {
+			String code, Category category, boolean ignoreWarnings, boolean ignoreFixed) {
 		int count = 0;
 		
 		for(ErrorType et : getError()) {
@@ -318,7 +323,12 @@ public class Validation implements Serializable {
 				continue;
 			}
 			
-			count += et.countErrors(forObject, reportedBy);
+			// skip other categories?
+			if(category != null && !(category == et.getCategory())) {
+				continue;
+			}
+			
+			count += et.countErrors(forObject, reportedBy, ignoreFixed);
 		}
 		
 		return count;
@@ -366,9 +376,34 @@ public class Validation implements Serializable {
 		this.normalize = normalize;
 	}
 	
+	/**
+	 * Total error and warning cases (fixed or not)
+	 * 
+	 * @return
+	 */
 	@XmlAttribute
 	public int getTotalProblemsFound() {
-		return countErrors(null, null, null, false);
+		return countErrors(null, null, null, null, false, false);
+	}
+
+	/**
+	 * Total error and warning cases, not fixed.
+	 * 
+	 * @return
+	 */
+	@XmlAttribute
+	public int getNotFixedProblems() {
+		return countErrors(null, null, null, null, false, true);
+	}
+	
+	/** 
+	 * Total error cases, not fixed.
+	 * 
+	 * @return
+	 */
+	@XmlAttribute
+	public int getNotFixedErrors() {
+		return countErrors(null, null, null, null, true, true);
 	}
 	
 	/** 
@@ -387,12 +422,14 @@ public class Validation implements Serializable {
 		String objectId, String rule, String errCode, String newMsg) 
 	{
 		if(validation != null) {
+			Behavior type = Behavior.WARNING;
 			ErrorCaseType ect = validation.findErrorCase(
-				new ErrorType(errCode, Behavior.WARNING), 
+				new ErrorType(errCode, type), 
 				new ErrorCaseType(rule, objectId, null)); // msg is ignored when comparing errors
 			if(ect == null) {
+				type = Behavior.ERROR;
 				ect = validation.findErrorCase(
-					new ErrorType(errCode, Behavior.ERROR), 
+					new ErrorType(errCode, type), 
 					new ErrorCaseType(rule, objectId, null));
 			}
 			if(ect != null) {
@@ -415,5 +452,20 @@ public class Validation implements Serializable {
 	public void setFixed(String objectId, String rule, String errCode, String newMsg) 
 	{
 		setFixed(this, objectId, rule, errCode, newMsg);
+	}
+		
+	@XmlAttribute(required=false)
+	public int getMaxErrors() {
+		return (isMaxErrorsSet()) ? maxErrors : 0;
+	}
+
+	public void setMaxErrors(int maxErrors) {
+		this.maxErrors = maxErrors;
+	}
+	
+	@XmlTransient
+	public boolean isMaxErrorsSet() {
+		return this.maxErrors > 0 
+			&& this.maxErrors < Integer.MAX_VALUE;
 	}
 } 

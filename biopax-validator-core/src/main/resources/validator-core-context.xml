@@ -40,14 +40,6 @@
        
 	<!-- end of BiopaxValidatorUtils config. -->
 
-	<bean id="editorMap3" class="org.biopax.paxtools.io.simpleIO.SimpleEditorMap">
-		<constructor-arg type="org.biopax.paxtools.model.BioPAXLevel" value="L3"/>
-	</bean>
-
-	<bean id="editorMap2" class="org.biopax.paxtools.io.simpleIO.SimpleEditorMap">
-		<constructor-arg type="org.biopax.paxtools.model.BioPAXLevel" value="L2"/>
-	</bean>
-
   	<bean id="ontologyManager" class="org.biopax.validator.utils.BiopaxOntologyManager">
 		 <constructor-arg index="0" value="classpath:ontologies.xml" />
 		 <constructor-arg index="1"><null/></constructor-arg>

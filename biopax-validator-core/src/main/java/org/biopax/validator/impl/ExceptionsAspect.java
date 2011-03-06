@@ -1,6 +1,7 @@
 package org.biopax.validator.impl;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -120,24 +121,22 @@ public class ExceptionsAspect extends AbstractAspect {
     	}
     	
     	/*
-    	 * Rule may throw exceptions
+    	 * Rule may throw other exceptions
     	 * to be caught and reported 
     	 */
     	try {
-    		
     		jp.proceed(); // go ahead validating the 'thing'
-    		
     	} catch (Throwable t) {
    			log.fatal(rule.getName() + ".check(" + thingId 
     			+ ") threw the exception: " + t.toString(), t);
    			String msg = t.getMessage();
    			if(t instanceof BiopaxValidatorException) { 
-   				msg += "; " + ((BiopaxValidatorException)t).getMsgArgs().toString();
+   				msg += " " + 
+   				Arrays.toString(((BiopaxValidatorException)t).getMsgArgs());
    			}
     		report(thing, thingId, t.getClass().getSimpleName(), 
     				rule.getName(), Behavior.ERROR, false, msg);
     	}
-  
     }
     
     /**
@@ -194,7 +193,7 @@ public class ExceptionsAspect extends AbstractAspect {
     
     
     @Around("execution(private void org.biopax.paxtools.io.simpleIO.SimpleReader.bindValue(..))" +
-    		" && args(triple,model)")
+    		" && args(triple, model)")
     public void adviseBindValue(ProceedingJoinPoint jp, Triple triple, Model model) {
     	SimpleReader reader = (SimpleReader) jp.getTarget();
     	// try to find the best object to report about...
@@ -209,11 +208,11 @@ public class ExceptionsAspect extends AbstractAspect {
 				// auto-fix (for some)
 				if(triple.property.equals("taxonXref")) {
 					report(el, BiopaxValidatorUtils.getId(el), "unknown.property", 
-							"reader", Behavior.ERROR, true, triple.property + " - replaced with 'xref'!");
+							"reader", Behavior.ERROR, true, triple.property + " - replaced with 'xref'");
 					triple.property = "xref";
 				} else {
 					report(el, BiopaxValidatorUtils.getId(el), "unknown.property", 
-							"reader", Behavior.ERROR, false, triple.property + " - skipped!");
+							"reader", Behavior.ERROR, false, triple.property + " - skipped");
 				}
 			}
     	} 
