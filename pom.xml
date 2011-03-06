@@ -249,17 +249,17 @@
 		<site>
 			<id>biopax.sf.net</id>
 			<name>BioPAX Sourceforge site</name>
-			<url>scp://shell.sourceforge.net/home/groups/b/bi/biopax/htdocs/validator</url>
+			<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/validator</url>
 		</site>
 		<snapshotRepository>
 			<id>biopax.snapshots</id>
 			<name>BioPAX Snapshots Repository</name>
-			<url>scp://shell.sourceforge.net/home/groups/b/bi/biopax/htdocs/m2repo/snapshots</url>
+			<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/snapshots</url>
 		</snapshotRepository>
 		<repository>
 			<id>biopax.releases</id>
 			<name>BioPAX Releases Repository</name>
-			<url>>scp://shell.sourceforge.net/home/groups/b/bi/biopax/htdocs/m2repo/releases</url>
+			<url>>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/releases</url>
 		</repository>
 	</distributionManagement>
 	
