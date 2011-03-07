@@ -92,11 +92,12 @@ public class ValidatorImpl implements Validator {
 					+ model.getObjects().size() + " objects");
 		}
 
-		// if normalize==true, convert to the L3 first
+		// if normalize==true, convert to the L3 first (before rules check)
 		if (model.getLevel() != BioPAXLevel.L3 && validation.isNormalize()) {
 			if (log.isInfoEnabled())
 				log.info("Converting model to BioPAX Level3...");
 			model = (new OneTwoThree()).filter(model);
+			validation.setModel(model); // not sure if this is necessarily...
 		}
 
 		for (Rule rule : rules) {
