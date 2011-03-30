@@ -9,8 +9,8 @@
 </owl:Ontology>
 
 <bp:BiochemicalPathwayStep rdf:about="step1">
- <bp:stepProcess rdf:resource="interaction1" />
  <bp:comment rdf:datatype = "xsd:string">error: has not a Control type step process</bp:comment>
+ <bp:stepProcess rdf:resource="interaction1" />
 </bp:BiochemicalPathwayStep>
 
 <bp:BiochemicalReaction rdf:about="interaction1">

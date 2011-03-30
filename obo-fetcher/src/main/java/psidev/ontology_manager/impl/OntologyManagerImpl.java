@@ -2,38 +2,29 @@ package psidev.ontology_manager.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.Resource;
 
 import psidev.ontology_manager.Ontology;
 import psidev.ontology_manager.OntologyManager;
 import psidev.ontology_manager.OntologyTermI;
-import psidev.psi.tools.ontologyCfgReader.mapping.jaxb.CvSource;
-import psidev.psi.tools.ontologyCfgReader.mapping.jaxb.CvSourceList;
-import psidev.psi.tools.ontologyConfigReader.OntologyConfigReader;
-import psidev.psi.tools.ontologyConfigReader.OntologyConfigReaderException;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.net.*;
+import java.util.*;
 
 /**
  * Central access to configured Ontology.
  *
  * @author Florian Reisinger
  * @Samuel Kerrien (skerrien@ebi.ac.uk)
- * @author rodche (baderlab.org)
+ * @author rodche (baderlab.org) - re-factored for the BioPAX Validator
  * @since 2.0.0
  */
 public class OntologyManagerImpl implements OntologyManager {
 
     public static final Log log = LogFactory.getLog( OntologyManagerImpl.class );
-
+   
+    
     /**
      * The Map that holds the Ontologies.
      * The key is the ontology ID and the value is a ontology inplementing the Ontology interface.
@@ -45,36 +36,24 @@ public class OntologyManagerImpl implements OntologyManager {
      */
     public OntologyManagerImpl() {
         ontologies = new HashMap<String, Ontology>();
-        if ( log.isDebugEnabled() ) 
-        	log.info( "Created new unconfigured OntologyManagerImpl." );
     }
 
-    /**
-     * Creates a new OntologyManagerImpl managing the ontologies specified in the config file.
-     * This config file has to be defined as per the following XSD:
-     * <pre>http://www.psidev.info/files/validator/CvSourceList.xsd</pre>
+    /** 
+     * Creates a new OntologyManagerImpl managing the ontologies specified in the config map.
      *
-     * @param configFile configuration file for the manager.
+     * @param cfg configuration map for the manager (ID->resource location).
      * @throws OntologyLoaderException if the config file could not be parsed or the loading of a ontology failed.
      */
-	public OntologyManagerImpl(InputStream configFile)
+	public OntologyManagerImpl(Map<String, Resource> cfg)
 			throws OntologyLoaderException 
 	{
-		ontologies = new HashMap<String, Ontology>();
-		loadOntologies(configFile);
+		this();
+		loadOntologies(cfg);
 		if (log.isDebugEnabled())
 			log.debug("Successfully created and configured new OntologyManagerImpl.");
 	}
 
-    ////////////////////
-    // public methods
 
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.OntologyManager#putOntology(java.lang.String, psidev.ontology_manager.interfaces.Ontology)
-	 */
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.impl.OntologyManager#putOntology(java.lang.String, psidev.ontology_manager.interfaces.Ontology)
-	 */
     public Ontology putOntology( String ontologyID, Ontology ontology ) {
         if ( ontologies.containsKey( ontologyID ) ) {
             if ( log.isWarnEnabled() )log.warn( "Ontology with the ID '" + ontologyID + "' already exists. Overwriting!" );
@@ -82,128 +61,59 @@ public class OntologyManagerImpl implements OntologyManager {
         return ontologies.put( ontologyID, ontology );
     }
 
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.OntologyManager#getOntologyIDs()
-	 */
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.impl.OntologyManager#getOntologyIDs()
-	 */
+
     public Set<String> getOntologyIDs() {
         return ontologies.keySet();
     }
 
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.OntologyManager#getOntologyAccess(java.lang.String)
-	 */
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.impl.OntologyManager#getOntologyAccess(java.lang.String)
-	 */
+
     public Ontology getOntology( String ontologyID ) {
         return ontologies.get( ontologyID );
     }
 
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.OntologyManager#setOntologyDirectory(java.io.File)
-	 */
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.impl.OntologyManager#setOntologyDirectory(java.io.File)
-	 */
+
     public void setOntologyDirectory( File ontologyDirectory ) {
         OntologyManagerContext.getInstance().setOntologyDirectory( ontologyDirectory );
     }
 
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.OntologyManager#containsOntology(java.lang.String)
-	 */
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.impl.OntologyManager#containsOntology(java.lang.String)
-	 */
+
     public boolean containsOntology( String ontologyID ) {
         return ontologies.containsKey( ontologyID );
     }
 
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.OntologyManager#loadOntologies(java.io.InputStream)
-	 */
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.impl.OntologyManager#loadOntologies(java.io.InputStream)
-	 */
-    public void loadOntologies( InputStream configFile ) throws OntologyLoaderException {
-
-        OntologyConfigReader ocr = new OntologyConfigReader();
-        final CvSourceList cvSourceList;
-        try {
-            cvSourceList = ocr.read( configFile );
-        } catch ( OntologyConfigReaderException e ) {
-            throw new OntologyLoaderException( "Error while reading ontology config file", e );
-        }
-
-        if ( cvSourceList != null ) {
-            for ( CvSource cvSource : cvSourceList.getCvSource() ) {
-
-                String sourceUri = cvSource.getUri();
-                final String id = cvSource.getIdentifier();
-                final String name = cvSource.getName();
-                final String version = cvSource.getVersion();
-                final String format = cvSource.getFormat();
-                final String loaderClass = cvSource.getSource();
-
-                URI uri;
+    
+    public void loadOntologies( Map<String, Resource> configMap ) 
+    	throws OntologyLoaderException 
+    {
+        if ( configMap != null && !configMap.isEmpty()) {
+            for ( String ontId : configMap.keySet() ) 
+            {
                 try {
+                	Resource source = configMap.get(ontId);
+                	URI uri = source.getURI();
 
-                    if ( sourceUri != null && sourceUri.toLowerCase().startsWith( CLASSPATH_PREFIX ) ) {
-                        sourceUri = sourceUri.substring( CLASSPATH_PREFIX.length() );
-                        if ( log.isDebugEnabled() ) {
-                            log.debug( "Loading ontology from classpath: " + sourceUri );
-                        }
-                        final URL url = OntologyManagerImpl.class.getClassLoader().getResource( sourceUri );
-                        if ( url == null ) {
-                            throw new OntologyLoaderException( "Unable to load from classpath: " + sourceUri );
-                        }
-                        uri = url.toURI();
-                        if ( log.isDebugEnabled() ) {
-                            log.debug( "URI=" + uri.toASCIIString() );
-                        }
+                	if ( log.isInfoEnabled() ) {
+                		log.info( "Loading ontology: ID= " + 
+                			ontId + ", uri=" + uri);
+                	}
 
-                    } else {
-                        uri = new URI( sourceUri );
-                    }
-
-                } catch ( URISyntaxException e ) {
-                    throw new IllegalArgumentException( "The specified uri '" + sourceUri + "' " +
-                                                        "for ontology '" + id + "' has an invalid syntax.", e );
-                }
-
-                if ( log.isInfoEnabled() ) {
-                    log.info( "Loading ontology: name=" + name + ", ID= " + id + ", format=" + format
-                              + ", version=" + version + ", uri=" + uri + " using source: " + loaderClass );
-                }
-
-
-                try {
-                    
-                    Ontology oa = fetchOntology( id, name, version, format, uri );
-                    putOntology(id, oa);
-                    
+                    Ontology oa = fetchOntology( ontId, "OBO", uri );
+                    putOntology(ontId, oa);
                 } catch ( Exception e ) {
-                    throw new OntologyLoaderException( "Failed loading ontology source: " + loaderClass, e );
+                    throw new OntologyLoaderException( "Failed loading ontology source.", e );
                 }
             }
+        } else {
+        	throw new OntologyLoaderException("Ontology configuration map is missing or empty (map)!");
         }
     }
     
 
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.OntologyManager#fetchOntology(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.net.URI)
-	 */
-    /* (non-Javadoc)
-	 * @see psidev.ontology_manager.impl.OntologyManager#fetchOntology(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.net.URI)
-	 */
-    public Ontology fetchOntology( String ontologyID, String name, String version, String format, URI uri ) 
+    protected Ontology fetchOntology( String ontologyID, String format, URI uri ) 
     	throws OntologyLoaderException {
     	Ontology oa = null;
     	
-        // first check the format
+        // check the format
         if ( "OBO".equals( format ) ) {
             if ( uri == null ) {
                 throw new IllegalArgumentException( "The given CvSource doesn't have a URL" );
@@ -218,11 +128,11 @@ public class OntologyManagerImpl implements OntologyManager {
                 // parse the URL and load the ontology
                 OboLoader loader = new OboLoader( );
                 try {
-                    if ( log.isDebugEnabled() ) {
+                    if ( log.isDebugEnabled() )
                         log.debug( "Parsing URL: " + url );
-                    }
+                    
                     oa = loader.parseOboFile( url, ontologyID );
-                    oa.setName(name);
+                    oa.setName(ontologyID);
                 } catch ( OntologyLoaderException e ) {
                     throw new OntologyLoaderException( "OboFile parser failed with Exception: ", e );
                 }
@@ -233,7 +143,7 @@ public class OntologyManagerImpl implements OntologyManager {
 
         if ( log.isInfoEnabled() ) {
             log.info( "Successfully created OntologyImpl from values: ontology="
-                      + ontologyID + " name=" + name + " version=" + version + " format=" + format + " location=" + uri );
+                      + ontologyID + " format=" + format + " location=" + uri );
         }
         
         return oa;
@@ -273,4 +183,5 @@ public class OntologyManagerImpl implements OntologyManager {
 		
 		return term;
 	}
+
 }

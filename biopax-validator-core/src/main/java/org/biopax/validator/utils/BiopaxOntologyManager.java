@@ -41,7 +41,8 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	 * @throws IOException 
 	 * @throws OntologyLoaderException 
 	 */
-	public BiopaxOntologyManager(Resource ontologiesConfigXml, String ontDir)
+	public BiopaxOntologyManager(Map<String, Resource> ontologiesConfig, String ontDir, 
+			boolean isReuseAndStoreOntologiesLocally)
 	{
 		if(ontDir != null) {
 			File dir = new File(ontDir);
@@ -53,15 +54,13 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 			OntologyManagerContext.getInstance().setOntologyDirectory(dir);
 		}
 		
-		OntologyManagerContext.getInstance().setStoreOntologiesLocally(true); // to work fast!
+		OntologyManagerContext.getInstance().setStoreOntologiesLocally(isReuseAndStoreOntologiesLocally);
 		
 		try {
-			loadOntologies(ontologiesConfigXml.getInputStream());
+			loadOntologies(ontologiesConfig);
 		} catch (OntologyLoaderException e) {
 			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}	
+		}
 	}
 
 	/* (non-Javadoc)

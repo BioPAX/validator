@@ -5,9 +5,7 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.paxtools.controller.SimpleMerger;
 import org.biopax.paxtools.converter.OneTwoThree;
-import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
@@ -132,12 +130,10 @@ public class ValidatorImpl implements Validator {
 
 		/* 
 		 * if fix==true, detect all the new elements that rules could have created;
-		 * these new objects may be duplicates or dangling...
+		 * ("merge" to itself)
 		 */
 		if (validation.isFix()) {
-			// simple merger (since the recent update) now adds new elements and updates object properties
-			SimpleMerger simpleMerger = new  SimpleMerger(new SimpleEditorMap(model.getLevel()));
-			simpleMerger.merge(model);
+			model.merge(model);
 		}
 		
 		// normalize?

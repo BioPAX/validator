@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#">
+<owl:Ontology rdf:about="">
+ <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl#" />
+</owl:Ontology>
+
+<bp:Complex rdf:about="complex">
+ <bp:component rdf:resource="protein1" />
+ <bp:component rdf:resource="protein2" />
+ <bp:componentStoichiometry rdf:resource="stoi1" />
+</bp:Complex>
+
+<bp:Degradation rdf:about="degradation">
+ <bp:left rdf:resource="protein1" />
+ <bp:left rdf:resource="protein2" />
+ <bp:participantStoichiometry rdf:resource="stoi2" />
+ <bp:right rdf:resource="complex" />
+</bp:Degradation>
+
+<bp:Protein rdf:about="protein1">
+</bp:Protein>
+
+<bp:Protein rdf:about="protein2">
+</bp:Protein>
+
+<bp:Stoichiometry rdf:about="stoi1">
+ <bp:stoichiometricCoefficient rdf:datatype = "xsd:float">2.0</bp:stoichiometricCoefficient>
+ <bp:physicalEntity rdf:resource="protein1" />
+</bp:Stoichiometry>
+
+<bp:Stoichiometry rdf:about="stoi2">
+ <bp:stoichiometricCoefficient rdf:datatype = "xsd:float">1.0</bp:stoichiometricCoefficient>
+ <bp:physicalEntity rdf:resource="protein1" />
+</bp:Stoichiometry>
+
+<bp:BiochemicalReaction rdf:about="biochem_reaction">
+ <bp:left rdf:resource="protein1" />
+ <bp:left rdf:resource="protein2" />
+ <bp:participantStoichiometry rdf:resource="stoi2" />
+ <bp:right rdf:resource="complex" />
+</bp:BiochemicalReaction>
+</rdf:RDF>

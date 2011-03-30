@@ -1,7 +1,7 @@
 package org.biopax.validator.utils;
 
 import org.biopax.paxtools.controller.EditorMap;
-import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.level3.Named;

@@ -9,8 +9,8 @@
 </owl:Ontology>
 
 <bp:Rna rdf:about="#Rna2">
- <bp:displayName rdf:datatype = "xsd:string">rnaRight2</bp:displayName>
  <bp:cellularLocation rdf:resource="#cr" />
+ <bp:displayName rdf:datatype = "xsd:string">rnaRight2</bp:displayName>
  <bp:entityReference rdf:resource="#rnaRef" />
 </bp:Rna>
 
@@ -18,11 +18,11 @@
 </bp:RnaReference>
 
 <bp:TransportWithBiochemicalReaction rdf:about="#transportWithBiochemicalReaction">
- <bp:right rdf:resource="#Rna2" />
- <bp:right rdf:resource="#modRna1" />
  <bp:left rdf:resource="#modRna2" />
  <bp:left rdf:resource="#Rna1" />
  <bp:comment rdf:datatype = "xsd:string">This Transport contains one Rna that did not change its cellular location (error!) and another one that did not have any (which is now ok)</bp:comment>
+ <bp:right rdf:resource="#Rna2" />
+ <bp:right rdf:resource="#modRna1" />
 </bp:TransportWithBiochemicalReaction>
 
 <bp:CellularLocationVocabulary rdf:about="#cl">
@@ -34,9 +34,9 @@
 </bp:CellularLocationVocabulary>
 
 <bp:Rna rdf:about="#modRna2">
+ <bp:comment rdf:datatype = "xsd:string">modified</bp:comment>
  <bp:displayName rdf:datatype = "xsd:string">rnaLeft2</bp:displayName>
  <bp:feature rdf:resource="feature1" />
- <bp:comment rdf:datatype = "xsd:string">modified</bp:comment>
  <bp:entityReference rdf:resource="#rnaRef" />
 </bp:Rna>
 
@@ -44,16 +44,16 @@
 </bp:ModificationFeature>
 
 <bp:Rna rdf:about="#modRna1">
+ <bp:cellularLocation rdf:resource="#cl" />
+ <bp:comment rdf:datatype = "xsd:string">modified</bp:comment>
  <bp:displayName rdf:datatype = "xsd:string">rnaRight1</bp:displayName>
  <bp:feature rdf:resource="feature1" />
- <bp:comment rdf:datatype = "xsd:string">modified</bp:comment>
- <bp:cellularLocation rdf:resource="#cl" />
  <bp:entityReference rdf:resource="#rnaRef" />
 </bp:Rna>
 
 <bp:Rna rdf:about="#Rna1">
- <bp:displayName rdf:datatype = "xsd:string">rnaLeft1</bp:displayName>
  <bp:cellularLocation rdf:resource="#cl" />
+ <bp:displayName rdf:datatype = "xsd:string">rnaLeft1</bp:displayName>
  <bp:entityReference rdf:resource="#rnaRef" />
 </bp:Rna>
 </rdf:RDF>

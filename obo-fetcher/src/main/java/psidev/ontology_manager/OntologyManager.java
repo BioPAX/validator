@@ -1,16 +1,14 @@
 package psidev.ontology_manager;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
+import java.util.Map;
 import java.util.Set;
+
+import org.springframework.core.io.Resource;
 
 import psidev.ontology_manager.impl.OntologyLoaderException;
 
 public interface OntologyManager {
-
-	public static final String CLASSPATH_PREFIX = "classpath:";
-	
 
 	Ontology putOntology(String ontologyID,
 			Ontology ontology);
@@ -28,12 +26,7 @@ public interface OntologyManager {
 	boolean containsOntology(String ontologyID);
 
 
-	void loadOntologies(InputStream configFile)
-			throws OntologyLoaderException;
-
-
-	Ontology fetchOntology(String ontologyID,
-			String name, String version, String format, URI uri)
+	void loadOntologies(Map<String, Resource> cfg)
 			throws OntologyLoaderException;
 
 	/**
@@ -46,7 +39,5 @@ public interface OntologyManager {
 	 */
 	Set<OntologyTermI> searchTermByName(String name);
 	
-	
 	OntologyTermI findTermByAccession(String acc);
-	
 }

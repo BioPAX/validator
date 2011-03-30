@@ -63,26 +63,24 @@ public class LibsTest {
     
     @Test
     public void testIsEquivalentUnificationXref() {
-    	Level3Factory factory3 = new Level3FactoryImpl();
-    	UnificationXref x1 = factory3.createUnificationXref();
-    	x1.setRDFId("x1");
+    	BioPAXFactory factory3 = new Level3FactoryImpl();
+    	UnificationXref x1 = factory3.create(UnificationXref.class, "x1");
     	x1.addComment("x1");
     	x1.setDb("db");
     	x1.setId("id");
-    	UnificationXref x2 = factory3.createUnificationXref();
-    	x2.setRDFId("x2");
+    	UnificationXref x2 = factory3.create(UnificationXref.class, "x2");
     	x2.addComment("x2");
     	x2.setDb("db");
     	x2.setId("id");
     	
     	assertTrue(x1.isEquivalent(x2));
     	
-    	x2.setRDFId("x1");
+    	UnificationXref x3 = factory3.create(UnificationXref.class, "x1");
+    	x2.addComment("x3");
     	x2.setDb(null);
     	x2.setId("doesn't matter");
     	
-    	assertTrue(x1.isEquivalent(x2));
-    	
+    	assertTrue(x1.isEquivalent(x3)); // because of the same ID!
     }
 
 }

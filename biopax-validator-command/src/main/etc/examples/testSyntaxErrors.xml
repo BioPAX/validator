@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#">
+<owl:Ontology rdf:about="">
+ <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl#" />
+</owl:Ontology>
+
+<bp:BioSource rdf:about="biosource_10090">
+ <bp:comment>test: using wrong property name 'taxonXref' (should be 'xref')</bp:comment>
+ <bp:standardName rdf:datatype = "xsd:string">Mus musculus</bp:standardName>
+ <bp:taxonXref rdf:resource="Taxonomy_UnificationXref_10090" />
+ <bp:displayName rdf:datatype = "xsd:string">Mouse</bp:displayName>
+</bp:BioSource>
+
+<bp:UnificationXref rdf:about="Taxonomy_UnificationXref_10090">
+ <bp:db rdf:datatype = "xsd:string">TAXONOMY</bp:db>
+ <bp:id rdf:datatype = "xsd:string">10090</bp:id>
+</bp:UnificationXref>
+
+</rdf:RDF>

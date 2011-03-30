@@ -67,14 +67,14 @@ public class AOPAspectJLTWIntegrationTest {
 
     @Test
     public void testRange1() {
-        Evidence ev = (Evidence) factory3.createEvidence();
-        EvidenceCodeVocabulary ec = factory3.createEvidenceCodeVocabulary();
+        Evidence ev = (Evidence) factory3.create(Evidence.class, "1");
+        EvidenceCodeVocabulary ec = factory3.create(EvidenceCodeVocabulary.class, "2");
         ev.addEvidenceCode(ec);
         /**
          * TODO check correct types are actually in such Set,
          * because the following works but shouldn't!
          */
-        ControlledVocabulary cv = (CellVocabulary) factory3.createCellVocabulary();
+        ControlledVocabulary cv = (CellVocabulary) factory3.create(CellVocabulary.class, "3");
         Set<ControlledVocabulary> set = new HashSet<ControlledVocabulary>(); // not Set<EvidenceCodeVocabulary>
         set.add(ec);
         set.add(cv);
@@ -91,18 +91,16 @@ public class AOPAspectJLTWIntegrationTest {
      * 
      */
     @Test
-    //@DirtiesContext
     public void testXrefRuleAOP() {
         XrefRule rule =  (XrefRule) context.getBean("xrefRule");
         rule.setPostModelOnly(false); // enable it in the ControlAspect (AOP)
         
-        UnificationXref x = factory3.createUnificationXref();
+        UnificationXref x = factory3.create(UnificationXref.class, "Illegal-Xref-Db");
     	// One cannot add an element to the model without setting the ID first,
         // and AOP validation also ignores any issues with such 'raw' elements.
     	// In fact, with and without rdf:ID - are two different objects, e.g., 
         // in terms of a Collection<BioPAXElement> 'contains' method...
     	// (this is because BioPAXElement's hashCode and equals have custom implementation in the paxtools-core...)
-    	x.setRDFId("Illegal-Xref-Db");
     	
         // adding a wrong String value here is checked, 
     	// but the validator won't report any error at this moment,

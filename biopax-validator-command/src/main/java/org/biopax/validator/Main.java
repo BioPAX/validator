@@ -36,7 +36,7 @@ public class Main {
 	public static void main(String[] args) throws Exception {				
         if(args.length == 0) {
         	String usage = 
-    			"\n BioPAX Validator v2.0\n\n" +
+    			"\n BioPAX Validator v2.0.0\n\n" +
     		    "Parameters: <input> [--output=<file>] [--auto-fix] [--normalize] [--return-biopax] [--max-errors=<n>]\n" + 
     		    "(the second and next arguments are optional and can go in any order)\n" +
     		    "For Example:\n" +

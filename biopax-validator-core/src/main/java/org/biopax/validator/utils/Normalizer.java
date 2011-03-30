@@ -34,19 +34,19 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.miriam.MiriamLink;
-import org.biopax.paxtools.controller.SimpleMerger;
+import org.biopax.paxtools.controller.*;
 import org.biopax.paxtools.converter.OneTwoThree;
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
-import org.biopax.paxtools.model.BioPAXElement;
-import org.biopax.paxtools.model.BioPAXLevel;
-import org.biopax.paxtools.model.Model;
+import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.paxtools.util.ClassFilterSet;
 import org.biopax.validator.result.*;
 
 /**
- * BioPAX Normalizer.
+ * BioPAX (Level 3) Normalizer, an advanced BioPAX utility 
+ * to help pathway data integrating and linking.
  * 
  * @author rodch
  *
@@ -61,8 +61,8 @@ public class Normalizer {
 	public static final String BIOPAX_URI_PREFIX = "urn:biopax:";
 	
 	private SimpleReader biopaxReader;
-	private SimpleMerger simpleMerger;
 	private Validation validation;
+	private ShallowCopy copier;
 	
 	/**
 	 * Constructor
@@ -70,7 +70,7 @@ public class Normalizer {
 	public Normalizer() {
 		biopaxReader = new SimpleReader(BioPAXLevel.L3);
 		biopaxReader.mergeDuplicates(true);
-		simpleMerger = new SimpleMerger(biopaxReader.getEditorMap());
+		copier = new ShallowCopy(BioPAXLevel.L3);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class Normalizer {
 		// if required, upgrade to L3
 		biopaxOwlData = convertToLevel3(biopaxOwlData);
 		
-		// fix BioPAX L3 pre-release property name 'taxonXref' (BioSource)
+		// quick-fix for older BioPAX L3 version (v0.9x) property 'taxonXref' (range: BioSource)
 		biopaxOwlData = biopaxOwlData.replaceAll("taxonXref","xref");
 		
 		// build the model
@@ -126,14 +126,14 @@ public class Normalizer {
 	}
 	
 
-	public void normalizeXrefs(Model model) {
+	private void normalizeXrefs(Model model) {
 		// use a copy of the xrefs set (to avoid concurrent modif. exception)
 		Set<? extends Xref> xrefs = new HashSet<Xref>(model.getObjects(Xref.class));
 		for(Xref ref : xrefs) {
 			// get database official urn
 			String name = ref.getDb();
 			
-			// workaround a null poiner exception
+			// workaround a null pointer exception
 			if(name == null || "".equals(name)) {
 				log.error(ref.getModelInterface().getSimpleName() 
 					+ " " + ref + " - 'db' property is empty! "
@@ -142,9 +142,8 @@ public class Normalizer {
 			}
 			
 			try {
-				String urn = MiriamLink.getDataTypeURI(name);
 				// update name to the primary one
-				name = MiriamLink.getName(urn);
+				name = MiriamLink.getName(name);
 				ref.setDb(name);
 			} catch (IllegalArgumentException e) {
 				log.error("Unknown or misspelled database name! " +
@@ -169,31 +168,25 @@ public class Normalizer {
 				log.error("Failed to create RDFID from xref: " +
 						ref + "! " + e + ". " + extraInfo());
 			}
-			
-			// finish updating ids -
-			// merge/unlink the duplicates ('xref' properties will be pointing to the unique ID existing Xref)
-			simpleMerger.merge(model); //just internal staff; no sources to merge!
 		}
 	}	
 
 	
-	/**
+	/*
 	 * Replaces rdfid; removes the element from the model if (with new rdfid) it becomes duplicate
 	 * Note: model loses its integrity (object properties fix is required after this)
-	 * 
 	 */
-	private void updateOrRemove(Model model, BioPAXElement ref, String newRdfid) {
-		// model has Xref with the same (new) ID?
+	private void updateOrRemove(Model model, BioPAXElement bpe, String newRdfid) {
+		// model has another object with the same (new) ID?
+		
 		if(model.containsID(newRdfid)) {
-			// - remove this xref from the model (from internal "registry"); 
-			model.remove(ref);
-			// update rdfid (for the merger later pick up the existing xref instead of this one)
-			ref.setRDFId(newRdfid); //so it now has got the same ID as the other existing xref
-			// (it did not affect 'xref' object property values so far!)
+			// replace with the existing element (new id)
+			BioPAXElement copy = copier.copy(model.getByID(newRdfid), newRdfid);
+			model.replace(bpe, copy);
 		} else {
-			// but model "knows" this xref under its "old" ID...
-			// replace ID
-			model.updateID(ref.getRDFId(), newRdfid);
+			// replace with its own copy that has new id
+			BioPAXElement copy = copier.copy(bpe, newRdfid);
+			model.replace(bpe, copy);
 		}
 	}
 
@@ -208,7 +201,7 @@ public class Normalizer {
 	 * (but not for *Xref!); also removes duplicates...
 	 * 
 	 * @param model the BioPAX model
-	 * @param bpe element to normalize
+	 * @param bpe a utility class element, except for xref, to normalize
 	 * @param db official database name or synonym (that of bpe's unification xref)
 	 * @param id identifier (if null, new ID will be that of the Miriam Data Type; this is mainly for Provenance)
 	 * @param idExt id suffix
@@ -407,16 +400,12 @@ public class Normalizer {
 			validation.setThreshold(Behavior.IGNORE);
 		}
 		
-		// clean/normalize xrefs first (because they are to be used next)!
+		// clean/normalize xrefs first, because they gets used next!
 		normalizeXrefs(model);
 		
 		// fix displayName where possible
 		fixDisplayName(model);
-		
-		//
-		// TODO add missing xrefs to CVs or/and infer terms from the existing uni.xrefs (shall we fix here or better - in the validation rule?
-		//fixCVs(model); // this would require OntologyManager instance (extra and big coupling...)
-		
+				
 		// copy
 		Set<? extends UtilityClass> objects = 
 			new HashSet<UtilityClass>(model.getObjects(UtilityClass.class));
@@ -445,23 +434,15 @@ public class Normalizer {
 							"no unification xrefs found in " + bpe.getRDFId()
 							+ ". " + extraInfo());
 			} else if(bpe instanceof Provenance) {
-				Provenance pro = (Provenance) bpe;
-				String name = pro.getStandardName();
-				if(name == null) 
-					name = pro.getDisplayName();
-				if (name != null) 
-					normalizeID(model, pro, name, null, null);
-				else 
-					if(log.isInfoEnabled())
-						log.info("Cannot normalize Provenance: " +
-								"no standard names found in " + bpe.getRDFId()
-								+ ". " + extraInfo());
-			} 
+				normalizeProvenance((Provenance) bpe, model);
+			}
 		}
 		
-		// finish updating ids -
-		// merge/unlink the duplicates ('xref' properties will be "fixed")
-		simpleMerger.merge(model); //internal staff; no sources to merge!
+		// update properties/find children (self-merge)
+		model.merge(model);
+		
+		// auto-set dataSource property for all entities (top-down)
+		inferPropertyFromParent(model, "dataSource", Entity.class);
 		
 		/* 
 		 * We could also "fix" organism property, where it's null,
@@ -473,13 +454,74 @@ public class Normalizer {
 		 * comes from the Warehouse with organism property already set!)
 		 */
 		
-		// restore state
+		// restore validation state, if any -
 		if(validation != null) {
 			validation.setThreshold(threshold);
 		}
 	}
-	
 
+	
+	private void normalizeProvenance(Provenance pro, Model model) {
+		autoName(pro); // throws IAE (from MiriamLink)
+		// normalize rdfid
+		normalizeID(model, pro, pro.getStandardName(), null, null);
+	}
+
+	
+	/**
+	 * Auto-generates standard and other names for the datasource
+	 * from either its ID (if URN) or one of its existing names (preferably - standard name)
+	 * 
+	 * @param pro
+	 */
+	public static void autoName(Provenance pro) {
+		if(!pro.getRDFId().startsWith("urn:miriam:") && pro.getName().isEmpty()) {
+			if(log.isInfoEnabled())
+				log.info("Cannot generate names from ID/name of Provenance: " + pro.getRDFId());
+			
+		}
+		else { // i.e., 'name' is not empty or ID is the URN
+			SortedSet<String> names = new TreeSet<String>();
+			
+			String key = null;
+			if(pro.getRDFId().startsWith("urn:miriam:")) {
+				key = pro.getRDFId();
+			} else if (pro.getStandardName() != null) {
+				key = pro.getStandardName();
+			} else {
+				key = pro.getDisplayName(); // can be null
+			}
+			
+			if (key != null) {
+				try {
+					names.addAll(Arrays.asList(MiriamLink.getNames(key)));
+					pro.setStandardName(MiriamLink.getName(key));
+				} catch (IllegalArgumentException e) {
+					// ignore (then, names is still empty...)
+				}
+			} 
+			
+			// anyway, the above may fail (no match in Miriam)
+			if(names.isEmpty()) {
+				// finally, trying to find all valid names for each existing one
+				
+					for (String name : pro.getName()) {
+						try {
+							names.addAll(Arrays.asList(MiriamLink.getNames(name)));
+						} catch (IllegalArgumentException e) {
+							// ignore
+						}
+					}
+					// pick up the first name, get the standard name
+					pro.setStandardName(MiriamLink.getName(names.iterator().next()));
+			}
+			
+			// and add all the synonyms if any
+			for(String name : names)
+				pro.addName(name);
+		}
+	}
+	
 	/**
 	 * Converts biopax l2 string to biopax l3 if it's required
 	 *
@@ -515,5 +557,68 @@ public class Normalizer {
 
 		// outta here
 		return toReturn;
+	}
+	
+	
+	/**
+	 * This method recursively copies parent object's property values 
+	 * down to all the children objects that have the same property. 
+	 * If the property is multiple cardinality property, it will add
+	 * new values, otherwise - will set but won't overwrite existing 
+	 * (not null) values.
+	 * 
+	 * @param model
+	 * @param property property name
+	 * @param type a class of elements which property is to infer
+	 */
+	public static <T extends BioPAXElement> void inferPropertyFromParent(
+		Model model, String property, Class<T> type) 
+	{	
+		// ready,..
+		final EditorMap editorMap = new SimpleEditorMap(model.getLevel());
+		final PropertyEditor propertyEditor = editorMap.getEditorForProperty(property, type);
+		if(propertyEditor == null) 
+			throw new IllegalArgumentException("No such property (editor): " 
+				+ type.getSimpleName() + "." + property);
+		// - set,..
+		final boolean isMul = propertyEditor.isMultipleCardinality();
+		/* 
+		 * Will ignore 'nextStep' property, because it can eventually lead 
+		 * outside the current pathway, and normally it (and pathwayOrder)
+		 * is not necessary for (step) processes to be reached (because they must be 
+		 * listed in the pathwayComponent property as well).
+		 */
+		PropertyFilter nextStepFilter = new PropertyFilter() {
+			@Override
+			public boolean filter(PropertyEditor editor) {
+				return !editor.getProperty().equals("nextStep");
+			}
+		};
+		Fetcher fetcher = new Fetcher(editorMap, nextStepFilter);
+		
+		// - go!
+		for(T bpe : model.getObjects(type)) {
+			Object val = propertyEditor.getValueFromBean(bpe);
+			if((isMul && ((Set)val).isEmpty()) || propertyEditor.isUnknown(val))
+				continue; // parent does not have any value for this property
+			
+			Model m = model.getLevel().getDefaultFactory().createModel();
+			fetcher.fetch(bpe, m);
+			m.remove(bpe); // remove itself
+			for(T child : m.getObjects(type)) {
+				Object existing = propertyEditor.getValueFromBean(child);
+				// set/add only if 
+				if(isMul || propertyEditor.isUnknown(existing)) {
+					if(!isMul)
+						propertyEditor.setValueToBean(val, child);
+					else {
+						for(Object v : (Set)val) {
+							if(!((Set)existing).contains(v))
+								propertyEditor.setValueToBean(v, child);
+						}
+					}
+				}
+			}
+		}
 	}
 }

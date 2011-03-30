@@ -55,14 +55,11 @@ public class IntegrationTest {
     @Test
     public void testRange1() {
         System.out.println("test Range (1)");
-        Evidence ev = (Evidence) factory3.createEvidence();
-        EvidenceCodeVocabulary ec = factory3.createEvidenceCodeVocabulary();
+        Evidence ev = (Evidence) factory3.create(Evidence.class, "1");
+        EvidenceCodeVocabulary ec = factory3.create(EvidenceCodeVocabulary.class, "2");
         ev.addEvidenceCode(ec);
-        /**
-         * TODO check correct types are actually in such Set,
-         * because the following works but shouldn't!
-         */
-        ControlledVocabulary cv = (CellVocabulary) factory3.createCellVocabulary();
+
+        ControlledVocabulary cv = (CellVocabulary) factory3.create(CellVocabulary.class, "3");
         Set<ControlledVocabulary> set = new HashSet<ControlledVocabulary>(); // not Set<EvidenceCodeVocabulary>
         set.add(ec);
         set.add(cv);
@@ -128,7 +125,7 @@ public class IntegrationTest {
     
     @Test
     public void testXrefIdTemplateMatch() {
- 	   Xref xref = factory3.createUnificationXref();
+ 	   Xref xref = factory3.create(UnificationXref.class, "1");
  	   XrefRule r = (XrefRule) context.getBean("xrefRule");
  	   
  	   //XrefRule is trying to match 'GO:0005737'
@@ -154,12 +151,10 @@ public class IntegrationTest {
     	
     	assertFalse(rule.getValidTerms().isEmpty());
     	
-        InteractionVocabulary v = factory3.createInteractionVocabulary();
+        InteractionVocabulary v = factory3.create(InteractionVocabulary.class, "okCVTerm");
         v.addTerm("Phosphorylation");
         v.addComment("Ok term: upper or lower case letters do not matter.");
-        v.setRDFId("okCVTerm");
-        UnificationXref ux = factory3.reflectivelyCreate(UnificationXref.class);
-    	ux.setRDFId("UnificationXref_MI_0217");
+        UnificationXref ux = factory3.create(UnificationXref.class, "UnificationXref_MI_0217");
     	ux.setDb("MI");
     	ux.setId("MI:0217");
     	v.addXref(ux);
@@ -179,9 +174,8 @@ public class IntegrationTest {
         CellularLocationCvRule instance =  
                 (CellularLocationCvRule) context.getBean("cellularLocationCvRule");
         instance.setBehavior(Behavior.ERROR);  
-        CellularLocationVocabulary lcv = factory3.createCellularLocationVocabulary();
-        lcv.addTerm("LOCATION?");
-        lcv.setRDFId("badTerm");    
+        CellularLocationVocabulary lcv = factory3.create(CellularLocationVocabulary.class, "badTerm");
+        lcv.addTerm("LOCATION?");    
         assertTrue(instance.canCheck(lcv));
         try {
         	instance.check(lcv, false);
@@ -195,10 +189,9 @@ public class IntegrationTest {
         CellularLocationCvRule instance =  
                 (CellularLocationCvRule) context.getBean("cellularLocationCvRule");
         instance.setBehavior(Behavior.ERROR);     
-        CellularLocationVocabulary cl = factory3.createCellularLocationVocabulary();
+        CellularLocationVocabulary cl = factory3.create(CellularLocationVocabulary.class, "cytoplasm");
         cl.addTerm("cytoplasm");
-        UnificationXref ux = factory3.reflectivelyCreate(UnificationXref.class);
-    	ux.setRDFId("UnificationXref_GO_0005737");
+        UnificationXref ux = factory3.create(UnificationXref.class, "UnificationXref_GO_0005737");
     	ux.setDb("GO");
     	ux.setId("GO:0005737");
     	cl.addXref(ux);
@@ -210,7 +203,7 @@ public class IntegrationTest {
     public void testXrefRuleWrong() {
         XrefRule instance =  (XrefRule) context.getBean("xrefRule");
         instance.setBehavior(Behavior.ERROR);
-        UnificationXref x = factory3.createUnificationXref();
+        UnificationXref x = factory3.create(UnificationXref.class, "1");
         x.setDb("ILLEGAL DB NAME");
         try {
         	instance.check(x, false);
@@ -225,7 +218,7 @@ public class IntegrationTest {
     public void testXrefRule() {
         XrefRule instance =  (XrefRule) context.getBean("xrefRule");
         instance.setBehavior(Behavior.ERROR);
-        UnificationXref x = factory3.createUnificationXref();
+        UnificationXref x = factory3.create(UnificationXref.class, "1");
         x.setDb("reactome");
         x.setId("0000000");
         try {
@@ -243,7 +236,7 @@ public class IntegrationTest {
     public void testXrefRuleEntezGene() {
         XrefRule instance =  (XrefRule) context.getBean("xrefRule");
         instance.setBehavior(Behavior.ERROR);
-        UnificationXref x = factory3.createUnificationXref();
+        UnificationXref x = factory3.create(UnificationXref.class, "1");
         x.setDb("EntrezGene");
         x.setId("0000000");
         instance.check(x, false);
@@ -257,13 +250,11 @@ public class IntegrationTest {
         
         Model m = factory3.createModel();
         
-        InteractionVocabulary iv = factory3.createInteractionVocabulary();
+        InteractionVocabulary iv = factory3.create(InteractionVocabulary.class, "preferredCVTerm");
         iv.addTerm("phosphorylation reaction");
         iv.addComment("Preferred term");
-        iv.setRDFId("preferredCVTerm");
         
-        UnificationXref ux = factory3.reflectivelyCreate(UnificationXref.class);
-    	ux.setRDFId("UnificationXref_MI_0217");
+        UnificationXref ux = factory3.create(UnificationXref.class, "UnificationXref_MI_0217");
     	ux.setDb("MI");
     	ux.setId("MI:0217");
     	iv.addXref(ux);
@@ -272,28 +263,24 @@ public class IntegrationTest {
         m.add(iv);
         instance.check(iv, false);
         
-        iv = factory3.createInteractionVocabulary();
+        iv = factory3.create(InteractionVocabulary.class, "synonymCVTerm");
         iv.addTerm("phosphorylation");
         iv.addComment("Valid term");
-        iv.setRDFId("synonymCVTerm");
         m.add(iv);
         iv.addXref(ux);
         instance.check(iv, false);
         
-        iv = factory3.createInteractionVocabulary();
+        iv = factory3.create(InteractionVocabulary.class, "okCVTerm");
         iv.addTerm("Phosphorylation");
         iv.addComment("Ok term: upper or lower case letters do not matter.");
-        iv.setRDFId("okCVTerm");
         m.add(iv);
         iv.addXref(ux);
         instance.check(iv, false);
         
-        iv = factory3.createInteractionVocabulary();
+        iv = factory3.create(InteractionVocabulary.class, "invalidCVTerm");
         iv.addTerm("phosphorylated residue");
         iv.addComment("Invalid term (very similar, however)");
-        iv.setRDFId("invalidCVTerm");
-        ux = factory3.reflectivelyCreate(UnificationXref.class);
-    	ux.setRDFId("UnificationXref_MOD_00696");
+        ux = factory3.create(UnificationXref.class, "UnificationXref_MOD_00696");
     	ux.setDb("MOD");
     	ux.setId("MOD:00696"); 
     	/* Note: in fact, both MOD:00696 and MI:0217 have synonym name "Phosphorylation"!
@@ -320,15 +307,12 @@ public class IntegrationTest {
     	//		+ rule.getValidTerms().toString());
     	assertTrue(rule.getValidTerms().contains("(2S,3R)-3-hydroxyaspartic acid".toLowerCase()));
     	
-    	SequenceModificationVocabulary cv = factory3.reflectivelyCreate(SequenceModificationVocabulary.class);
-    	cv.setRDFId("MOD_00036");
+    	SequenceModificationVocabulary cv = factory3.create(SequenceModificationVocabulary.class, "MOD_00036");
     	cv.addTerm("(2S,3R)-3-hydroxyaspartic acid");
-    	ModificationFeature mf = factory3.reflectivelyCreate(ModificationFeature.class);
-    	mf.setRDFId("MF_MOD_00036");
+    	ModificationFeature mf = factory3.create(ModificationFeature.class, "MF_MOD_00036");
     	mf.setModificationType(cv);
     	
-    	UnificationXref ux = factory3.reflectivelyCreate(UnificationXref.class);
-    	ux.setRDFId("UnificationXref_MOD_00036");
+    	UnificationXref ux = factory3.create(UnificationXref.class, "UnificationXref_MOD_00036");
     	ux.setDb("MOD");
     	ux.setId("MOD:00036");
     	cv.addXref(ux);

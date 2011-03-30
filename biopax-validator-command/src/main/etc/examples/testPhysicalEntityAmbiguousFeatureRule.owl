@@ -8,11 +8,18 @@
  <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl#" />
 </owl:Ontology>
 
-<bp:UnificationXref rdf:about="Taxonomy UnificationXref_40674">
- <bp:comment rdf:datatype = "xsd:string">Invalid ID (has a space)</bp:comment>
-</bp:UnificationXref>
+<bp:Complex rdf:about="complex">
+ <bp:component rdf:resource="protein1" />
+ <bp:component rdf:resource="protein2" />
+</bp:Complex>
 
-<bp:UnificationXref rdf:about="http://www.biopax.org/UnificationXref#Taxonomy_40674">
- <bp:comment rdf:datatype = "xsd:string">This is a valid ID</bp:comment>
-</bp:UnificationXref>
+<bp:Degradation rdf:about="degradation">
+ <bp:left rdf:resource="protein1" />
+</bp:Degradation>
+
+<bp:Protein rdf:about="protein1">
+</bp:Protein>
+
+<bp:Protein rdf:about="protein2">
+</bp:Protein>
 </rdf:RDF>

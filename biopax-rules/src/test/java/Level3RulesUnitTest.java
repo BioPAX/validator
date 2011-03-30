@@ -4,7 +4,7 @@ import java.io.*;
 
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.impl.level3.Level3FactoryImpl;
-import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
@@ -24,11 +24,11 @@ import org.biopax.paxtools.model.level3.Process;
  * TODO Test all the L3 rules and generate OWL examples (for invalid cases).
  * TODO Also test valid use cases (look for 'false positives').
  * 
- * @author rodch
+ * @author rodche
  */
 public class Level3RulesUnitTest {
 
-	static Level3Factory level3 = new Level3FactoryImpl(); // to create BioPAX objects
+	static BioPAXFactory level3 = new Level3FactoryImpl(); // to create BioPAX objects
 	static EditorMap editorMap = new SimpleEditorMap(BioPAXLevel.L3);
 	static SimpleExporter exporter = new SimpleExporter(BioPAXLevel.L3);
 	
@@ -50,11 +50,8 @@ public class Level3RulesUnitTest {
 		throws IOException
 	{
 		Rule rule = new BiochemicalPathwayStepProcessOnlyControlCRRule();	
-		
-		BiochemicalPathwayStep step = level3.createBiochemicalPathwayStep();
-		step.setRDFId("step1");
-		Conversion conv = level3.createBiochemicalReaction();
-		conv.setRDFId("interaction1");
+		BiochemicalPathwayStep step = level3.create(BiochemicalPathwayStep.class, "step1");
+		Conversion conv = level3.create(BiochemicalReaction.class, "interaction1");
 		conv.addComment("a conversion reaction (not Control)");
 		step.addStepProcess((Process) conv);
 		step.addComment("error: has not a Control type step process");
@@ -75,10 +72,11 @@ public class Level3RulesUnitTest {
 	@Test
 	public void testCanCheckBiochemPathwayStepOneConversionRule() {
 		Rule rule = new BiochemPathwayStepOneConversionRule();		
-		BiochemicalPathwayStep bpstep = level3.createBiochemicalPathwayStep();
-		BioPAXElement bpstepElement = level3.createBiochemicalPathwayStep();
-		PathwayStep pstep = level3.createPathwayStep();
-		BioPAXElement bpe = level3.createConversion(); // in real data, a subclass of Conversion should be used! 
+		BiochemicalPathwayStep bpstep = level3.create(BiochemicalPathwayStep.class, "1");
+		BioPAXElement bpstepElement = level3.create(BiochemicalPathwayStep.class, "2");
+		PathwayStep pstep = level3.create(PathwayStep.class, "3");
+		// in real data, a subclass of Conversion should be used! 
+		BioPAXElement bpe = level3.create(Conversion.class, "4"); 
 		assertFalse(rule.canCheck(null));
 		assertFalse(rule.canCheck(new Object()));
 		assertFalse(rule.canCheck(pstep));
@@ -91,19 +89,16 @@ public class Level3RulesUnitTest {
 	@Test
 	public void testBiochemPathwayStepOneConversionRule() throws IOException {
 		Rule rule = new BiochemPathwayStepOneConversionRule();	
-		BiochemicalPathwayStep step = level3.createBiochemicalPathwayStep();
-		step.setRDFId("step1");
+		BiochemicalPathwayStep step = level3.create(BiochemicalPathwayStep.class, "step1");
 		step.addComment("error: conversion cannot be a step process (only stepConversion)");
 		
 		//ok
-		Conversion conv = level3.createBiochemicalReaction();
-		conv.setRDFId("conversion1");
+		Conversion conv = level3.create(BiochemicalReaction.class, "conversion1");
 		step.setStepConversion(conv);
 		rule.check(step, false); // shouldn't throw a BiopaxValidatorException
 		
 		//ok
-		Catalysis catalysis = level3.createCatalysis();
-		catalysis.setRDFId("catalysis1");
+		Catalysis catalysis = level3.create(Catalysis.class, "catalysis1");
 		catalysis.addComment("valid step process value");
 		step.addStepProcess((Process)catalysis); //org.biopax.paxtools.model.level3.Process !!! :)
 		rule.check(step, false);
@@ -128,25 +123,22 @@ public class Level3RulesUnitTest {
 	@Test
 	public void testBiochemReactParticipantsLocationRule() throws IOException {
 		Rule rule = new BiochemReactParticipantsLocationRule();
-		BiochemicalReaction reaction = level3.createBiochemicalReaction();	
-		reaction.setRDFId("#BiochemicalReaction");
-		Dna left = level3.createDna(); left.setRDFId("#dna");
-		Dna right = level3.createDna(); right.setRDFId("#modifiedDna");
-		EntityFeature feature = level3.createFragmentFeature();
-		feature.setRDFId("feature1");
+		BiochemicalReaction reaction = level3.create(BiochemicalReaction.class, "#BiochemicalReaction");	
+		Dna left = level3.create(Dna.class, "#dna");
+		Dna right = level3.create(Dna.class, "#modifiedDna");
+		EntityFeature feature = level3.create(FragmentFeature.class, "feature1");
 		right.addFeature(feature);
 		right.addComment("modified dna");
 		
-		DnaReference dnaReference = level3.createDnaReference();
-		dnaReference.setRDFId("#dnaref");
+		DnaReference dnaReference = level3.create(DnaReference.class, "#dnaref");
 		// set the same type (entity reference)
 		left.setEntityReference(dnaReference);
 		right.setEntityReference(dnaReference);
 
-		CellularLocationVocabulary cl = level3.createCellularLocationVocabulary();
-		CellularLocationVocabulary cr = level3.createCellularLocationVocabulary();
-		cl.setRDFId("#cl"); cl.addTerm("cytoplasm");
-		cr.setRDFId("#cr"); cr.addTerm("membrane");
+		CellularLocationVocabulary cl = level3.create(CellularLocationVocabulary.class, "#cl");
+		CellularLocationVocabulary cr = level3.create(CellularLocationVocabulary.class, "#cr");
+		cl.addTerm("cytoplasm");
+		cr.addTerm("membrane");
 		left.addName("dnaLeft");
 		right.addName("dnaRight");
 		reaction.addLeft(left);
@@ -158,10 +150,8 @@ public class Level3RulesUnitTest {
 		rule.check(reaction, false);
 		
 		// test complex (rule cannot use entityReference to match "the same" entity)
-		PhysicalEntity leftc = level3.createComplex(); 
-		leftc.setRDFId("#complex");
-		PhysicalEntity rightc = level3.createComplex(); 
-		rightc.setRDFId("#modifiedCmplex");
+		PhysicalEntity leftc = level3.create(Complex.class, "#complex");
+		PhysicalEntity rightc = level3.create(Complex.class, "#modifiedCmplex");
 		leftc.addName("cplx1");
 		rightc.addName("cplx1"); 
 		rightc.setCellularLocation(cl);
@@ -215,8 +205,7 @@ public class Level3RulesUnitTest {
 	@Test
 	public void testBiochemReactParticipantsLocationRule_Transport() throws IOException {
 		Rule rule = new BiochemReactParticipantsLocationRule();
-		BiochemicalReaction reaction = level3.createTransportWithBiochemicalReaction();	
-		reaction.setRDFId("#transportWithBiochemicalReaction");
+		BiochemicalReaction reaction = level3.create(TransportWithBiochemicalReaction.class, "#transportWithBiochemicalReaction");
 		reaction.addComment("This Transport contains one Rna that did not change its " +
 			"cellular location (error!) and another one that did not have any (which is now ok)");
 		
@@ -224,21 +213,19 @@ public class Level3RulesUnitTest {
 		Model m = level3.createModel();
 		m.add(reaction);
 		
-		Rna left = level3.createRna(); left.setRDFId("#Rna1");
-		Rna right = level3.createRna(); right.setRDFId("#modRna1");
-		EntityFeature feature = level3.createModificationFeature();
-		feature.setRDFId("feature1");
+		Rna left = level3.create(Rna.class, "#Rna1");
+		Rna right = level3.create(Rna.class, "#modRna1");
+		EntityFeature feature = level3.create(ModificationFeature.class, "feature1");
 		right.addFeature(feature);
 		right.addComment("modified");
-		RnaReference rnaReference = level3.createRnaReference();
-		rnaReference.setRDFId("#rnaRef");
+		RnaReference rnaReference = level3.create(RnaReference.class, "#rnaRef");
 		// set the same type (entity reference)
 		left.setEntityReference(rnaReference);
 		right.setEntityReference(rnaReference);
-		CellularLocationVocabulary cl = level3.createCellularLocationVocabulary();
-		CellularLocationVocabulary cr = level3.createCellularLocationVocabulary();
-		cl.setRDFId("#cl"); cl.addTerm("nucleus");
-		cr.setRDFId("#cr"); cr.addTerm("cytoplasm");
+		CellularLocationVocabulary cl = level3.create(CellularLocationVocabulary.class, "#cl");
+		CellularLocationVocabulary cr = level3.create(CellularLocationVocabulary.class, "#cr");
+		cl.addTerm("nucleus");
+		cr.addTerm("cytoplasm");
 		left.setDisplayName("rnaLeft1");
 		right.setDisplayName("rnaRight1");
 		reaction.addLeft(left);
@@ -263,8 +250,8 @@ public class Level3RulesUnitTest {
 		}
 		
 		// Now check with location is null on one side
-		right = level3.createRna(); right.setRDFId("#Rna2");
-		left = level3.createRna(); left.setRDFId("#modRna2");
+		right = level3.create(Rna.class, "#Rna2");
+		left = level3.create(Rna.class, "#modRna2");
 		left.addFeature(feature);
 		left.addComment("modified");
 		
@@ -295,16 +282,15 @@ public class Level3RulesUnitTest {
 	@Test
 	public void testBiopaxElementIdRule() throws IOException {
 		Rule<BioPAXElement> rule = new BiopaxElementIdRule();
-		Level3Element bpe = level3.createUnificationXref();
-		bpe.setRDFId("http://www.biopax.org/UnificationXref#Taxonomy_40674");
+		Level3Element bpe = level3.create(UnificationXref.class, 
+				"http://www.biopax.org/UnificationXref#Taxonomy_40674");
 		bpe.addComment("This is a valid ID");
 		rule.check(bpe, false);
 		
 		Model m = level3.createModel(); // to later generate examples
 		m.add(bpe);
 		
-		bpe = level3.createUnificationXref();
-		bpe.setRDFId("Taxonomy UnificationXref_40674");
+		bpe = level3.create(UnificationXref.class, "Taxonomy UnificationXref_40674");
 		bpe.addComment("Invalid ID (has a space)");
 		try { 
 			rule.check(bpe, false); 
@@ -319,9 +305,8 @@ public class Level3RulesUnitTest {
 	
     @Test
     public void testDuplicateNamesByExporter() throws IOException {
-    	Protein p = level3.createProtein();
+    	Protein p = level3.create(Protein.class, "myProtein");
     	String name = "aDisplayName";
-    	p.setRDFId("myProtein");
     	p.setDisplayName(name);
     	p.addComment("Display Name should not be repeated again in the Name property!");
     	Model m = level3.createModel();
@@ -343,16 +328,13 @@ public class Level3RulesUnitTest {
     @Test
     public void testProteinReferenceOrganismRule() throws IOException {
     	ProteinReferenceOrganismRule rule = new ProteinReferenceOrganismRule();
-    	BioSource bioSource = level3.createBioSource();
-    	bioSource.setRDFId("BioSource-Human");
+    	BioSource bioSource = level3.create(BioSource.class, "BioSource-Human");
     	bioSource.setDisplayName("Homo sapiens");
-    	UnificationXref taxonXref = level3.createUnificationXref();
+    	UnificationXref taxonXref = level3.create(UnificationXref.class, "Taxonomy_UnificationXref_9606");
     	taxonXref.setDb("taxonomy");
-    	taxonXref.setRDFId("Taxonomy_UnificationXref_9606");
     	taxonXref.setId("9606");
     	bioSource.addXref(taxonXref);
-    	ProteinReference pr = level3.createProteinReference();
-    	pr.setRDFId("ProteinReference1");
+    	ProteinReference pr = level3.create(ProteinReference.class, "ProteinReference1");
     	pr.setDisplayName("ProteinReference1");
     	pr.addComment("No value is set for the 'organism' property (must be exactly one)!");
     	
@@ -377,8 +359,7 @@ public class Level3RulesUnitTest {
 	public void testControlTypeRule() throws IOException
 	{
 		Rule rule = new ControlTypeRule();	
-		Catalysis ca = level3.createCatalysis();
-		ca.setRDFId("catalysis1");
+		Catalysis ca = level3.create(Catalysis.class, "catalysis1");
 		rule.check(ca, false); // controlType==null, no error expected
 		ca.setControlType(ControlType.ACTIVATION);
 		rule.check(ca, false); // no error expected
@@ -390,8 +371,7 @@ public class Level3RulesUnitTest {
 		} catch(BiopaxValidatorException e) {
 		}
 		
-		TemplateReactionRegulation tr = level3.createTemplateReactionRegulation();
-		tr.setRDFId("regulation1");
+		TemplateReactionRegulation tr = level3.create(TemplateReactionRegulation.class, "regulation1");
 		tr.setControlType(ControlType.INHIBITION);
 		rule.check(tr, false); // no error...
 		tr.setControlType(ControlType.ACTIVATION_ALLOSTERIC);
@@ -416,8 +396,7 @@ public class Level3RulesUnitTest {
 	public void testDegradationConversionDirectionRule() throws IOException
 	{
 		Rule rule = new DegradationConversionDirectionRule();
-		Conversion dg = level3.createDegradation();
-		dg.setRDFId("degradation-conversion-1");
+		Conversion dg = level3.create(Degradation.class, "degradation-conversion-1");
 		rule.check(dg, false); // direction is null, no error
 		dg.setConversionDirection(ConversionDirectionType.REVERSIBLE);
 		dg.addComment("error: illegal conversionDirection");

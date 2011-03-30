@@ -13,7 +13,7 @@ import java.util.*;
  *
  * @author Florian Reisinger
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
- * @author rodche (baderlab.org) - re-factoring
+ * @author rodche (baderlab.org) - re-factored/simplified for the BioPAX validator
  * @since 2.0.0
  */
 public class OntologyImpl implements Ontology {

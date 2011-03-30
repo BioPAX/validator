@@ -137,7 +137,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 					 * 2) having the chance of creating several xrefs with the same RDFId requires 
 					 *    a special care or follow-up merging, as simply adding them to a model will 
 					 *    throw the "already have this element" exception!); and other rules 
-					 *    can also generate duplicates... [SimpleMerger now helps tackle this!]
+					 *    can also generate duplicates...
 					 * 3) risk that a rule generating/adding a new element may cause  
 					 *    other rules to interfere via AOP and prevent changes in quite 
 					 *    unpredictable manner (...bites its own tail)
@@ -169,15 +169,17 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 										.getOntology(ontId).getName();
 								String id = term.getTermAccession();
 								// auto-create and add the xref to the cv
-								UnificationXref ux = BioPAXLevel.L3
-									.getDefaultFactory().reflectivelyCreate(UnificationXref.class);
+								String rdfid;
 								try {
-									ux.setRDFId(Normalizer.BIOPAX_URI_PREFIX
-										+ "UnificationXref:" + URLEncoder.encode(db + "_" + id,
-										"UTF-8").toUpperCase());
+									rdfid = Normalizer.BIOPAX_URI_PREFIX + "UnificationXref:" 
+										+ URLEncoder.encode(db + "_" + id,"UTF-8")
+										.toUpperCase(); // important!
 								} catch (UnsupportedEncodingException e) {
 									throw new RuntimeException(e);
 								}
+								
+								UnificationXref ux = BioPAXLevel.L3.getDefaultFactory()
+									.create(UnificationXref.class, rdfid);
 								ux.setDb(db);
 								ux.setId(id);
 								cv.addXref(ux);

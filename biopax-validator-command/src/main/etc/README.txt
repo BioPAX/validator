@@ -1,6 +1,6 @@
-/** BioPAX Validator, Version 2.0
+/** BioPAX Validator, Version 2.0.0
  **
- ** Copyright (c) 2010 University of Toronto (UofT)
+ ** Copyright (c) 2009-2011 University of Toronto (UofT)
  ** and Memorial Sloan-Kettering Cancer Center (MSKCC).
  **
  ** This is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 
 An open source validation framework for BioPAX (www.biopax.org).
 
-This is basically created with Java (5 or 6), Paxtools, Spring Framework (AOP,
+This is basically created with Java 6, Paxtools, Spring Framework (AOP,
 MVC), and other open source jars. This implementation targets the 
 BioPAX Level 3, but also it does support previous levels: Level 1 is auto-
 converted to L2, and L2 is validated alike the L3, but not all L2 rules have 
@@ -146,7 +146,7 @@ PREREQUISITES:
 
 DEPLOY
 
-Build from sources or download and rename the biopax-validator-2.0*.war to, e.g., biopax-validator.war, 
+Build from sources or download and rename the biopax-validator-2.0.*.war to, e.g., biopax-validator.war, 
 and simply copy to your Tomcat 'webapps' directory.
 
 Note: Optionally, inside the WAR or in the 'webapps' directory (after deploying there), 

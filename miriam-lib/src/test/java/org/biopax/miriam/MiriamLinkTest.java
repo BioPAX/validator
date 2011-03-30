@@ -106,6 +106,7 @@ public class MiriamLinkTest {
 	}
 
 	
+	@Test
 	public final void testGetNames() {
 		String[] names = MiriamLink.getNames(MIURN);
 		assertTrue(names.length==2);
@@ -113,6 +114,14 @@ public class MiriamLinkTest {
 		assertTrue(s.contains("MI"));
 		assertTrue(s.contains(MI));
 	}
+	
+	@Test
+	public final void testGetNames2() {
+		String[] names = MiriamLink.getNames("nci_nature");
+		assertTrue(names.length > 1);
+		assertTrue(Arrays.toString(names).contains("PID"));
+	}
+	
 
 	@Test
 	public final void testGetDataTypesName() {

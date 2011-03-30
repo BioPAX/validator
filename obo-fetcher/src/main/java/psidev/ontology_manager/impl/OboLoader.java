@@ -10,15 +10,17 @@ import org.apache.commons.logging.LogFactory;
 
 import psidev.ontology_manager.Ontology;
 import psidev.ontology_manager.OntologyTermI;
-import uk.ac.ebi.ook.loader.impl.AbstractLoader;
-import uk.ac.ebi.ook.loader.parser.OBOFormatParser;
-import uk.ac.ebi.ook.model.interfaces.TermRelationship;
-import uk.ac.ebi.ook.model.ojb.TermBean;
-import uk.ac.ebi.ook.model.ojb.TermSynonymBean;
+import uk.ac.ebi.ols.loader.impl.BaseAbstractLoader;
+import uk.ac.ebi.ols.loader.parser.OBOFormatParser;
+import uk.ac.ebi.ols.model.interfaces.TermRelationship;
+import uk.ac.ebi.ols.model.interfaces.TermSynonym;
+import uk.ac.ebi.ols.model.ojb.TermBean;
 
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.*;
 
 /**
@@ -28,7 +30,7 @@ import java.util.*;
  * @version $Id: OboLoader.java 656 2007-06-29 11:18:19 +0100 (Fri, 29 Jun 2007) skerrien $
  * @since <pre>30-Sep-2005</pre>
  */
-public class OboLoader extends AbstractLoader {
+public class OboLoader extends BaseAbstractLoader {
 
     /**
      * Sets up a logger for that class.
@@ -45,11 +47,6 @@ public class OboLoader extends AbstractLoader {
 
     protected void configure() {
         parser = new OBOFormatParser();
-        /*
-        ONTOLOGY_DEFINITION = "PSI MI";
-        FULL_NAME = "PSI Molecular Interactions";
-        SHORT_NAME = "PSI-MI";
-        */
     }
 
     protected void parse( Object params ) {
@@ -64,10 +61,6 @@ public class OboLoader extends AbstractLoader {
         }
     }
 
-    protected void printUsage() {
-        // done to comply to AbstractLoader requirements
-    }
-
     //////////////////////////////
     // User's methods
 
@@ -80,8 +73,8 @@ public class OboLoader extends AbstractLoader {
             TermBean term = ( TermBean ) iterator.next();
 
             /*
-             * Quick workaround an issue that
-             * we want to ignore PSI-MOD included in PSI-MI
+             * Quick workaround for that
+             * we want to ignore the PSI-MOD terms that are included into PSI-MI files!
              */
             if("PSI-MOD".equals(term.getNamespace()) 
             		&& ("PSI-MI".equals(ontologyID) || "MI".equals(ontologyID)))
@@ -89,9 +82,9 @@ public class OboLoader extends AbstractLoader {
             
             // convert term into a OboTerm
             OntologyTermI ontologyTerm = new OntologyTermImpl(ontologyID, term.getIdentifier(), term.getName() );
-            final Collection<TermSynonymBean> synonyms = (Collection<TermSynonymBean>) term.getSynonyms();
+            final Collection<TermSynonym> synonyms = (Collection<TermSynonym>) term.getSynonyms();
             if( synonyms != null ) {
-                for ( TermSynonymBean synonym : synonyms ) {
+                for ( TermSynonym synonym : synonyms ) {
                     ontologyTerm.getNameSynonyms().add( synonym.getSynonym() );
                 }
             }
@@ -119,9 +112,7 @@ public class OboLoader extends AbstractLoader {
                 for ( Iterator iterator1 = term.getRelationships().iterator(); iterator1.hasNext(); ) {
                     TermRelationship relation = ( TermRelationship ) iterator1.next();
                     
-                    /* pne more workaround an issue that
-                     * we want to ignore PSI-MOD included in PSI-MI
-                     */
+                   // one more step to ignore PSI-MOD included in PSI-MI
                    /*
                     String nso = relation.getObjectTerm().getNamespace();
                     String nss = relation.getSubjectTerm().getNamespace();
@@ -304,7 +295,7 @@ public class OboLoader extends AbstractLoader {
                 if ( log.isInfoEnabled() ) log.info( "Loading URL: " + url );
 
                 URLConnection con = url.openConnection();
-                int size = con.getContentLength();        // -1 if not stat available
+                long size = con.getContentLength();        // -1 if not stat available
 
                 if ( log.isInfoEnabled() ) log.info( "size = " + size );
 
@@ -322,7 +313,8 @@ public class OboLoader extends AbstractLoader {
                 String filename = url.getFile();
                 int idx = filename.lastIndexOf( '/' );
                 if ( idx != -1 ) {
-                    name = filename.substring( idx, filename.length() );
+                    name = filename.substring( idx+1, filename.length() );
+                    name = name.replaceAll("[.,;:&^%$@*?=]", "_");
                 } else {
                     name = "unknown";
                 }
@@ -339,23 +331,31 @@ public class OboLoader extends AbstractLoader {
 
                 FileOutputStream out = new FileOutputStream( ontologyFile );
 
+                //not very efficient -
+                /* 
                 int length = 0;
                 int current = 0;
                 byte[] buf = new byte[1024 * 1024];
 
-                // TODO write a nicer text-progress-bar...
                 while ( ( length = is.read( buf ) ) != -1 ) {
                     current += length;
                     out.write( buf, 0, length );
-
                     if ( log.isInfoEnabled() ) {
-                        log.info( "length = " + length );
-                        log.info( "Percent: " + ( ( current / ( float ) size ) * 100 ) + "%" );
+                        log.info( "length = " + current );
+                        if(size > 0)
+                        	log.info( "Percent: " 
+                        		+ ( ( current / ( float ) size ) * 100 ) + "%" );
                     }
                 }
+                */
+                
+                if(size == -1) size = 1024 * 1024 * 1024; //Integer.MAX_VALUE;
+                ReadableByteChannel source = Channels.newChannel(is);
+				size = out.getChannel().transferFrom(source, 0, size);
+				if(log.isInfoEnabled())
+					log.info(size + " bytes downloaded");
 
                 is.close();
-
                 out.flush();
                 out.close();
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#">
+<owl:Ontology rdf:about="">
+ <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl#" />
+</owl:Ontology>
+
+<bp:ProteinReference rdf:about="proteinreference1">
+ <bp:entityFeature rdf:resource="modnotfeature1" />
+ <bp:entityFeature rdf:resource="modfeature1" />
+</bp:ProteinReference>
+
+<bp:FragmentFeature rdf:about="modnotfeature1">
+</bp:FragmentFeature>
+
+<bp:ModificationFeature rdf:about="modfeature1">
+</bp:ModificationFeature>
+
+<bp:Protein rdf:about="protein1">
+ <bp:entityReference rdf:resource="proteinreference1" />
+ <bp:notFeature rdf:resource="modnotfeature1" />
+ <bp:feature rdf:resource="modfeature1" />
+</bp:Protein>
+</rdf:RDF>

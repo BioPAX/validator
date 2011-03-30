@@ -14,7 +14,7 @@ import org.junit.Test;
 
 public class Level2RulesUnitTest {
 
-	Level2Factory level2;
+	BioPAXFactory level2;
 	SimpleExporter exporter;
 	
 	final static String TEST_DATA_DIR = Level2RulesUnitTest.class.getResource("").getPath();
@@ -38,9 +38,9 @@ public class Level2RulesUnitTest {
 	@Test
 	public void testCanCheck() {
 		BiochemPathwayStepOneConversionRule rule = new BiochemPathwayStepOneConversionRule();
-		pathwayStep pstep = level2.createPathwayStep();
-		BioPAXElement bpe = level2.createConversion();
-		entity ent = level2.createProtein();
+		pathwayStep pstep = level2.create(pathwayStep.class, "1");
+		BioPAXElement bpe = level2.create(conversion.class, "2");
+		entity ent = level2.create(protein.class, "3");
 		assertFalse(rule.canCheck(null));
 		assertFalse(rule.canCheck(ent));
 		assertFalse(rule.canCheck(pstep));

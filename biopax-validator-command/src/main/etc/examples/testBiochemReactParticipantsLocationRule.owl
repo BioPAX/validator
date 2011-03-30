@@ -16,14 +16,14 @@
 </bp:BiochemicalReaction>
 
 <bp:Complex rdf:about="#complex">
- <bp:name rdf:datatype = "xsd:string">cplx2</bp:name>
- <bp:comment rdf:datatype = "xsd:string">location changed without transport?</bp:comment>
  <bp:cellularLocation rdf:resource="#cr" />
+ <bp:comment rdf:datatype = "xsd:string">location changed without transport?</bp:comment>
+ <bp:name rdf:datatype = "xsd:string">cplx2</bp:name>
 </bp:Complex>
 
 <bp:Complex rdf:about="#modifiedCmplex">
- <bp:name rdf:datatype = "xsd:string">cplx1</bp:name>
  <bp:cellularLocation rdf:resource="#cl" />
+ <bp:name rdf:datatype = "xsd:string">cplx1</bp:name>
 </bp:Complex>
 
 <bp:CellularLocationVocabulary rdf:about="#cl">
@@ -35,12 +35,12 @@
 </bp:CellularLocationVocabulary>
 
 <bp:Dna rdf:about="#modifiedDna">
- <bp:name rdf:datatype = "xsd:string">dnaRight</bp:name>
- <bp:feature rdf:resource="feature1" />
- <bp:entityReference rdf:resource="#dnaref" />
+ <bp:cellularLocation rdf:resource="#cr" />
  <bp:comment rdf:datatype = "xsd:string">location changed without transport?</bp:comment>
  <bp:comment rdf:datatype = "xsd:string">modified dna</bp:comment>
- <bp:cellularLocation rdf:resource="#cr" />
+ <bp:entityReference rdf:resource="#dnaref" />
+ <bp:name rdf:datatype = "xsd:string">dnaRight</bp:name>
+ <bp:feature rdf:resource="feature1" />
 </bp:Dna>
 
 <bp:DnaReference rdf:about="#dnaref">
@@ -50,8 +50,8 @@
 </bp:FragmentFeature>
 
 <bp:Dna rdf:about="#dna">
- <bp:name rdf:datatype = "xsd:string">dnaLeft</bp:name>
- <bp:entityReference rdf:resource="#dnaref" />
  <bp:cellularLocation rdf:resource="#cl" />
+ <bp:entityReference rdf:resource="#dnaref" />
+ <bp:name rdf:datatype = "xsd:string">dnaLeft</bp:name>
 </bp:Dna>
 </rdf:RDF>

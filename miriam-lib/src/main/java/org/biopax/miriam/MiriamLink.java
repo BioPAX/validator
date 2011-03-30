@@ -2,9 +2,9 @@ package org.biopax.miriam;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 
@@ -15,23 +15,16 @@ import javax.xml.bind.Unmarshaller;
 //import javax.xml.validation.SchemaFactory;
 //import javax.xml.XMLConstants;
 
-import net.biomodels.miriam.Miriam;
-import net.biomodels.miriam.Resource;
-import net.biomodels.miriam.Resources;
-import net.biomodels.miriam.Synonyms;
-import net.biomodels.miriam.Uri;
-import net.biomodels.miriam.UriType;
-import net.biomodels.miriam.Uris;
+import net.biomodels.miriam.*;
 import net.biomodels.miriam.Miriam.Datatype;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Singleton local Miriam resolver with all methods static
+ * Singleton local MIRIAM data resolver with all methods static.
  * 
  * @author rodche
- *
  */
 public class MiriamLink
 {
@@ -49,13 +42,19 @@ public class MiriamLink
     /** object of the generated from the Miriam schema type */
     private static final Miriam miriam;
     
+    /** */
+    private static final Map<String,Datatype> datatypesHash = new HashMap<String, Miriam.Datatype>();
+    
 	
 	/**
-	 * Default constructor: initialisation of some parameters
+	 * Default constructor: initialization of some parameters
 	 */
 	protected MiriamLink() {
     }
 	
+	/**
+	 * Initialization
+	 */
 	static
 	{
 		if(log.isInfoEnabled()) {
@@ -110,11 +109,37 @@ public class MiriamLink
 	    catch (MalformedURLException e) {
 	    	throw new RuntimeException(e);
 		}
+	    
+	    // build the name-datatype static hash (once!)
+		for(Datatype dt : miriam.getDatatype()) {
+			// index by name
+			datatypesHash.put(dt.getName().toUpperCase(), dt);
+			
+			// by identifier
+			datatypesHash.put(dt.getId().toUpperCase(), dt);
+			
+			// index by each synonym
+			// (Miriam must guarantee: different datatypes cannot have the same synonym!)
+			Synonyms synonyms = dt.getSynonyms();
+			if (synonyms != null) {
+				for (String syn : synonyms.getSynonym()) {
+					datatypesHash.put(syn.toUpperCase(), dt);
+				}
+			}
+			
+			// index by each URI
+			for(Uris uris : dt.getUris()) {
+				for(Uri uri : uris.getUri()) {
+					datatypesHash.put(uri.getValue(), dt);
+				}
+			}
+		}
 	}
 
 	
 	/**
      * Retrieves the current version of MIRIAM Web Services.  
+     * 
      * @return Current version of the Web Services
 	 */
     public static String getServicesVersion()
@@ -126,12 +151,13 @@ public class MiriamLink
      
     /**
      * Retrieves the unique (official) URI of a data type (example: "urn:miriam:uniprot").
-     * @param name name, synonym, or deprecated URI (URN or URL) of a data type (examples: "UniProt")
+     * 
+     * @param datatypeKey - ID, name, synonym, or (incl. deprecated) URI (URN or URL) of a data type (examples: "UniProt")
      * @return unique URI of the data type
      */
-    public static String getDataTypeURI(String name)
+    public static String getDataTypeURI(String datatypeKey)
     {
-    	Datatype datatype = getDatatype(name);
+    	Datatype datatype = getDatatype(datatypeKey);
     	return getOfficialDataTypeURI(datatype); 
     }
      
@@ -140,13 +166,13 @@ public class MiriamLink
      * Retrieves all the URIs of a data type, including all the deprecated ones 
      * (examples: "urn:miriam:uniprot", "http://www.uniprot.org/", "urn:lsid:uniprot.org:uniprot", ...).
      * 
-     * @param name name (or synonym) or deprecated URI (URN or URL) of the data type (examples: "ChEBI", "UniProt")
+     * @param datatypeKey name (or synonym), ID, or URI (URN or URL) of the data type (examples: "ChEBI", "UniProt")
      * @return all the URIs of a data type (including the deprecated ones)
      */
-    public static String[] getDataTypeURIs(String name)
+    public static String[] getDataTypeURIs(String datatypeKey)
     {
        	Set<String> alluris = new HashSet<String>();
-    	Datatype datatype = getDatatype(name);
+    	Datatype datatype = getDatatype(datatypeKey);
     	for(Uris uris : datatype.getUris()) {
     		for(Uri uri : uris.getUri()) {
     			alluris.add(uri.getValue());
@@ -158,43 +184,49 @@ public class MiriamLink
 	
 	/**
 	 * Retrieves the location (or country) of a resource (example: "United Kingdom").
-	 * @param id identifier of a resource (example: "MIR:00100009")
+	 * 
+	 * @param resourceId identifier of a resource (example: "MIR:00100009")
 	 * @return the location (the country) where the resource is managed
 	 */
-	public static String getResourceLocation(String id)
+	public static String getResourceLocation(String resourceId)
 	{
-		Resource resource = getResource(id);
+		Resource resource = getResource(resourceId);
     	return resource.getDataLocation();
 	}
 	
 	
 	/**
 	 * Retrieves the institution which manages a resource (example: "European Bioinformatics Institute").
-	 * @param id identifier of a resource (example: "MIR:00100009")
+	 * 
+	 * @param resourceId identifier of a resource (example: "MIR:00100009")
 	 * @return the institution managing the resource
 	 */
-	public static String getResourceInstitution(String id)
+	public static String getResourceInstitution(String resourceId)
 	{
-		Resource resource = getResource(id);
+		Resource resource = getResource(resourceId);
     	return resource.getDataInstitution();
 	}
 	  
     
     /**
      * Retrieves the unique MIRIAM URI of a specific entity (example: "urn:miriam:obo.go:GO%3A0045202").
-     * @param name name of a data type (examples: "ChEBI", "UniProt")
-     * @param id identifier of an enity within the data type (examples: "GO:0045202", "P62158")
-     * @return unique MIRIAM URI of a given entity
+     * 
+     * @param name - name, URI, or ID of a data type (examples: "ChEBI", "MIR:00000005")
+     * @param id identifier of an entity within the data type (examples: "GO:0045202", "P62158")
+     * @return unique standard MIRIAM URI of a given entity
      */
     public static String getURI(String name, String id)
     {
     	Datatype datatype = getDatatype(name);
     	String db = datatype.getName();
     	if(checkRegExp(id, db)) {
-    		return getOfficialDataTypeURI(datatype)	+ ":" + URLEncoder.encode(id);
-    	} 
-    	
-    	throw new IllegalArgumentException(
+    		try {
+				return getOfficialDataTypeURI(datatype)	+ ":" + URLEncoder.encode(id, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				throw new IllegalArgumentException("UTF-8 encoding error of id=" + id, e);
+			}
+    	} else 
+    		throw new IllegalArgumentException(
 				"ID pattern mismatch. db=" + db + ", id=" + id
 				+ ", regexp: " + datatype.getPattern());
     }
@@ -202,31 +234,33 @@ public class MiriamLink
     
     /**
 	 * Retrieves the definition of a data type.
-	 * @param nickname name or URI (URN or URL) of a data type
+	 * 
+	 * @param datatypeKey - ID, name or URI (URN or URL) of a data type
 	 * @return definition of the data type
 	 */
-    public static String getDataTypeDef(String nickname)
+    public static String getDataTypeDef(String datatypeKey)
     {
-    	Datatype datatype = getDatatype(nickname);
+    	Datatype datatype = getDatatype(datatypeKey);
     	return datatype.getDefinition();
     }
        
      
     /**
      * Retrieves the physical locationS (URLs) of web pageS providing knowledge about an entity.
-     * @param nickname name (can be a synonym) or URI of a data type (examples: "Gene Ontology", "UniProt")
-     * @param id identifier of an entity within the given data type (examples: "GO:0045202", "P62158")
-     * @return physical locationS of web pageS providing knowledge about the given entity
+     * 
+     * @param datatypeKey name (can be a synonym), ID, or URI of a data type (examples: "Gene Ontology", "UniProt")
+     * @param entityId identifier of an entity within the given data type (examples: "GO:0045202", "P62158")
+     * @return physical locationS (URL templates) of web pageS providing knowledge about the given entity
      */
-    public static String[] getLocations(String nickname, String id)
+    public static String[] getLocations(String datatypeKey, String entityId)
     {
        	Set<String> locations = new HashSet<String>();
-		Datatype datatype = getDatatype(nickname);
+		Datatype datatype = getDatatype(datatypeKey);
 		Resources resources = datatype.getResources();
 		if (resources != null) {
 			for (Resource resource : resources.getResource()) {
 				String link = resource.getDataEntry();
-				link = link.replaceFirst("\\$id", URLEncoder.encode(id));
+				link = link.replaceFirst("\\$id", URLEncoder.encode(entityId));
 				locations.add(link);
 			}
 		}
@@ -235,14 +269,15 @@ public class MiriamLink
        
     
     /**
-     * Retrieves all the physical locations (URLs) of the services providing the data type (web page).
-     * @param nickname name (can be a synonym) or URL or URN of a data type name (or synonym) or URI (URL or URN)
+     * Retrieves all the physical locations (usually, a home page URL) of a datatype.
+     * 
+     * @param datatypeKey - name (can be a synonym), ID, or URI (URL or URN) of a data type
      * @return array of strings containing all the address of the main page of the resources of the data type
 	 */
-    public static String[] getDataResources(String nickname)
+    public static String[] getDataResources(String datatypeKey)
     {
        	Set<String> locations = new HashSet<String>();
-    	Datatype datatype = getDatatype(nickname);
+    	Datatype datatype = getDatatype(datatypeKey);
     	Resources resources = datatype.getResources();
 		if (resources != null) {
 			for (Resource resource : resources.getResource()) {
@@ -256,12 +291,13 @@ public class MiriamLink
     
     /**
 	 * To know if a URI of a data type is deprecated.
+	 * 
 	 * @param uri (URN or URL) of a data type
 	 * @return answer ("true" or "false") to the question: is this URI deprecated?
 	 */
     public static boolean isDeprecated(String uri)
     {
-    	Datatype datatype = getDatatype(uri);
+    	Datatype datatype = datatypesHash.get(uri);
     	String urn = getOfficialDataTypeURI(datatype);
     	return !uri.equalsIgnoreCase(urn);
     }
@@ -269,37 +305,40 @@ public class MiriamLink
    
     /**
      * Retrieves the pattern (regular expression) used by the identifiers within a data type.
-     * @param nickname data type name (or synonym) or URI (URL or URN)
+     * 
+     * @param datatypeKey data type ID, name (or synonym), or URI (URL or URN)
      * @return pattern of the data type
 	 */
-    public static String getDataTypePattern(String nickname)
+    public static String getDataTypePattern(String datatypeKey)
     {
-    	Datatype datatype = getDatatype(nickname);
+    	Datatype datatype = getDatatype(datatypeKey);
     	return datatype.getPattern();
     }
     
     
     /**
-	 * Retrieves the common name of a data type.
-	 * @param uri URI (URL or URN), or nickname of a data type
+	 * Retrieves the preferred name of a data type.
+	 * 
+	 * @param datatypeKey URI (URL or URN), ID, or nickname of a data type
 	 * @return the common name of the data type
 	 */
-    public static String getName(String uri)
+    public static String getName(String datatypeKey)
     {
-    	Datatype datatype = getDatatype(uri);
+    	Datatype datatype = getDatatype(datatypeKey);
     	return datatype.getName();
     }
     
     
     /**
-	 * Retrieves all the names (with synonyms) of a data type.
-	 * @param uri URI (URL or URN) of a data type
-	 * @return the common name of the data type and all the synonyms
+	 * Retrieves all the synonyms (incl. the preferred name) of a data type.
+	 * 
+	 * @param datatypeKey ID, any name, or URI (URL or URN) of a data type
+	 * @return all the data type's synonyms (incl. preferred name)
 	 */
-    public static String[] getNames(String uri)
+    public static String[] getNames(String datatypeKey)
     {
     	Set<String> names = new HashSet<String>();
-    	Datatype datatype = getDatatype(uri);
+    	Datatype datatype = getDatatype(datatypeKey);
     	names.add(datatype.getName());
     	Synonyms synonyms = datatype.getSynonyms();
     	if(synonyms != null)
@@ -308,9 +347,11 @@ public class MiriamLink
     	  }
     	return names.toArray(ARRAY_OF_STRINGS);
     }
+
     
     /**
-     * Retrieves the list of names of all the data types available.
+     * Retrieves the list of preferred names of all the data types available.
+     * 
      * @return list of names of all the data types
      */
     public static String[] getDataTypesName()
@@ -324,7 +365,9 @@ public class MiriamLink
     
     
     /**
-     * Retrieves the internal identifier (stable and perennial) of all the data types (for example: "MIR:00000005").
+     * Retrieves the internal identifier (stable and perennial) of 
+     * all the data types (for example: "MIR:00000005").
+     * 
      * @return list of the identifier of all the data types
      */
     public static String[] getDataTypesId()
@@ -338,7 +381,9 @@ public class MiriamLink
     
     
     /**
-     * Retrieves the official URI (it will always be URN) of a data type corresponding to the deprecated one.
+     * Retrieves the official URI (it will always be URN) of 
+     * a data type corresponding to the deprecated one.
+     * 
      * @param uri deprecated URI (URN or URL) of a data type 
      * @return the official URI of a data type corresponding to the deprecated one
      * @deprecated use getDataTypeURI instead
@@ -350,7 +395,9 @@ public class MiriamLink
     
     
     /**
-     * Checks if the identifier given follows the regular expression of its data type (also provided).
+     * Checks if the identifier given follows the regular expression 
+     * of its data type (also provided).
+     * 
      * @param identifier internal identifier used by the data type
      * @param datatype name, synonym or URI of a data type
      * @return "true" if the identifier follows the regular expression, "false" otherwise
@@ -365,6 +412,7 @@ public class MiriamLink
 
     /**
      * Retrieves the unique (official) URI of a data type (example: "urn:miriam:uniprot").
+     * 
      * @param datatype net.biomodels.miriam.Miriam.Datatype
      * @return
      */
@@ -393,49 +441,25 @@ public class MiriamLink
 	/**
      * Gets Miriam Datatype by its ID, Name, Synonym, or URI (URN/URL) 
      * 
-     * @param datatype
+     * @param datatypeKey - a datatype ID, name, synonym, or URI
      * @return
      */
-	public static Datatype getDatatype(String datatype) {
-		
-		// name or id (quick scan)?
-		for(Datatype dt : miriam.getDatatype()) {
-			if(dt.getName().equalsIgnoreCase(datatype) 
-					|| dt.getId().equalsIgnoreCase(datatype)) {
-				return dt;
-			}
-		}
-		
-		// well, otherwise it'll take more time ;)
-		for(Datatype dt : miriam.getDatatype()) {
-			// synonym name?
-			Synonyms synonyms = dt.getSynonyms();
-			if (synonyms != null) {
-				for (String s : synonyms.getSynonym()) {
-					if (s.equalsIgnoreCase(datatype)) {
-						return dt;
-					}
-				}
-			}
-			
-			// URI?
-			URI datatypeUri = URI.create(datatype);
-			for(Uris uris : dt.getUris()) {
-				for(Uri uri : uris.getUri()) {
-					if(datatypeUri.equals(URI.create(uri.getValue()))) {
-						return dt;
-					}
-				}
-			}	
-		}
-		
-		throw new IllegalArgumentException("Datatype not found : " + datatype);
+	public static Datatype getDatatype(String datatypeKey) 
+	{	
+		if(containsIdOrName(datatypeKey))
+			return datatypesHash.get(datatypeKey.toUpperCase());
+		else if(containsUri(datatypeKey)) 
+			return datatypesHash.get(datatypeKey);
+		else
+			throw new IllegalArgumentException("Datatype not found : " + datatypeKey);
 	}
 
 
     /**
-     * Retrieves the internal identifier (stable and perennial) of all the resources (for example: "MIR:00100008" (bind) ).
-     * @return list of the identifier of all the data types
+     * Retrieves the internal identifier (stable and perennial) of 
+     * all the resources (for example: "MIR:00100008" (bind) ).
+     * 
+     * @return list of the identifiers of all data types
      */
     public static String[] getResourcesId()
     {
@@ -454,22 +478,47 @@ public class MiriamLink
     
     /**
      * Retrieves the resource by id (for example: "MIR:00100008" (bind) ).
-     * @return list of the identifier of all the data types
+     * 
+     * @param resourceId - resource identifier (similar to, but not a data type identifier!)
+     * @return
      */
-    public static Resource getResource(String id)
+    public static Resource getResource(String resourceId)
     {
         for(Datatype datatype : miriam.getDatatype()) {
 			Resources resources = datatype.getResources();
 			if (resources != null) {
 				for (Resource resource : resources.getResource()) {
-					if (resource.getId().equalsIgnoreCase(id)) {
+					if (resource.getId().equalsIgnoreCase(resourceId)) {
 						return resource;
 					}
 				}
 			}
         }
         
-        throw new IllegalArgumentException("Resource not found : " + id);
+        throw new IllegalArgumentException("Resource not found : " + resourceId);
     }
 
+    
+    /**
+     * Check whether Miriam contains a data type record with this 
+     * name (any synonym) or identifier (case insensitive)
+     *  
+     * @param searchKey  - ID, name, or synonym (case insensitive)
+     * @return
+     */
+    public static boolean containsIdOrName(String searchKey) {
+    	return datatypesHash.keySet().contains(searchKey.toUpperCase());
+    }
+ 
+    
+    /**
+     * Check whether Miriam contains a data type record with this URI
+     * (case sensitive)
+     * 
+     * @param searchUri - URI (case sensitive)
+     * @return
+     */
+    public static boolean containsUri(String searchUri) {
+    	return datatypesHash.keySet().contains(searchUri);
+    }
 }
