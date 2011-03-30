@@ -180,9 +180,8 @@ public class Normalizer {
 		// model has another object with the same (new) ID?
 		
 		if(model.containsID(newRdfid)) {
-			// replace with the existing element (new id)
-			BioPAXElement copy = copier.copy(model.getByID(newRdfid), newRdfid);
-			model.replace(bpe, copy);
+			// replace with the existing element (having new id)
+			model.replace(bpe, model.getByID(newRdfid));
 		} else {
 			// replace with its own copy that has new id
 			BioPAXElement copy = copier.copy(bpe, newRdfid);
@@ -439,7 +438,7 @@ public class Normalizer {
 		}
 		
 		// update properties/find children (self-merge)
-		model.merge(model);
+		model.repair();
 		
 		// auto-set dataSource property for all entities (top-down)
 		inferPropertyFromParent(model, "dataSource", Entity.class);

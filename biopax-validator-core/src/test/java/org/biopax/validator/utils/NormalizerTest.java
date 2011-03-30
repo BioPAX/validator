@@ -166,7 +166,13 @@ public class NormalizerTest {
 			 //TODO another bug (xref and xrefOf become out of sync)?
 			assertEquals(1, ((Xref)bpe).getXrefOf().size());
 		} catch (AssertionError e) {
-			System.out.println("WARN: xref and xrefOf become out of sync after the normalization...");
+			Xref x = (Xref) bpe;
+			XReferrable[] r = x.getXrefOf().toArray(new XReferrable[]{});
+			System.out.println("WARN: xref and xrefOf become out of sync " +
+				"after the normalization: xrefOf:" + x.getXrefOf()
+				+ " whereas model.contains for these returns: [" 
+				+ model.contains(r[0]) + ", " +  model.contains(r[1])
+				+ "]");
 		}
 		// almost the same xref (was different idVersion)
 		bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "RelationshipXref:REFSEQ_NP_001734_1");

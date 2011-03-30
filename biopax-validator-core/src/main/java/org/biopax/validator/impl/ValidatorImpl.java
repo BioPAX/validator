@@ -133,7 +133,7 @@ public class ValidatorImpl implements Validator {
 		 * ("merge" to itself)
 		 */
 		if (validation.isFix()) {
-			model.merge(model);
+			model.repair();
 		}
 		
 		// normalize?
