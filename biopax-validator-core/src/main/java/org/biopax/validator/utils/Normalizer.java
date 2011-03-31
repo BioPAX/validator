@@ -512,7 +512,9 @@ public class Normalizer {
 						}
 					}
 					// pick up the first name, get the standard name
-					pro.setStandardName(MiriamLink.getName(names.iterator().next()));
+					if(!names.isEmpty())
+						pro.setStandardName(MiriamLink
+							.getName(names.iterator().next()));
 			}
 			
 			// and add all the synonyms if any
