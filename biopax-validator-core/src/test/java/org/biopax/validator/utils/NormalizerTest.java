@@ -30,6 +30,7 @@ import static org.junit.Assert.*;
 
 import java.io.*;
 
+import org.biopax.paxtools.controller.ModelUtils;
 import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.*;
@@ -237,7 +238,7 @@ public class NormalizerTest {
 		pw2.setStandardName("Sub-Pathway");
 		pw2.addDataSource(pro2);
 		pw1.addPathwayComponent(pw2);
-		Normalizer.inferPropertyFromParent(model, "dataSource", Pathway.class);
+		ModelUtils.inferPropertyFromParent(model, "dataSource", Pathway.class);
 		assertEquals(2, pw2.getDataSource().size());
 		assertEquals(1, pw1.getDataSource().size());
 	}

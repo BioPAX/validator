@@ -139,6 +139,7 @@ public class ValidatorImpl implements Validator {
 		// normalize?
 		if (validation.isNormalize()) {
 			(new Normalizer(validation)).normalize(model);
+			model.repair();
 		}
 
 		// add comments and some statistics

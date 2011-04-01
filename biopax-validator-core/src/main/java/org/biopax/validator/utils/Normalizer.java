@@ -36,7 +36,6 @@ import org.apache.commons.logging.LogFactory;
 import org.biopax.miriam.MiriamLink;
 import org.biopax.paxtools.controller.*;
 import org.biopax.paxtools.converter.OneTwoThree;
-import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biopax.paxtools.io.simpleIO.SimpleReader;
 import org.biopax.paxtools.model.*;
@@ -441,7 +440,7 @@ public class Normalizer {
 		model.repair();
 		
 		// auto-set dataSource property for all entities (top-down)
-		inferPropertyFromParent(model, "dataSource", Entity.class);
+		ModelUtils.inferPropertyFromParent(model, "dataSource", Entity.class);
 		
 		/* 
 		 * We could also "fix" organism property, where it's null,
@@ -558,68 +557,5 @@ public class Normalizer {
 
 		// outta here
 		return toReturn;
-	}
-	
-	
-	/**
-	 * This method recursively copies parent object's property values 
-	 * down to all the children objects that have the same property. 
-	 * If the property is multiple cardinality property, it will add
-	 * new values, otherwise - will set but won't overwrite existing 
-	 * (not null) values.
-	 * 
-	 * @param model
-	 * @param property property name
-	 * @param type a class of elements which property is to infer
-	 */
-	public static <T extends BioPAXElement> void inferPropertyFromParent(
-		Model model, String property, Class<T> type) 
-	{	
-		// ready,..
-		final EditorMap editorMap = new SimpleEditorMap(model.getLevel());
-		final PropertyEditor propertyEditor = editorMap.getEditorForProperty(property, type);
-		if(propertyEditor == null) 
-			throw new IllegalArgumentException("No such property (editor): " 
-				+ type.getSimpleName() + "." + property);
-		// - set,..
-		final boolean isMul = propertyEditor.isMultipleCardinality();
-		/* 
-		 * Will ignore 'nextStep' property, because it can eventually lead 
-		 * outside the current pathway, and normally it (and pathwayOrder)
-		 * is not necessary for (step) processes to be reached (because they must be 
-		 * listed in the pathwayComponent property as well).
-		 */
-		PropertyFilter nextStepFilter = new PropertyFilter() {
-			@Override
-			public boolean filter(PropertyEditor editor) {
-				return !editor.getProperty().equals("nextStep");
-			}
-		};
-		Fetcher fetcher = new Fetcher(editorMap, nextStepFilter);
-		
-		// - go!
-		for(T bpe : model.getObjects(type)) {
-			Object val = propertyEditor.getValueFromBean(bpe);
-			if((isMul && ((Set)val).isEmpty()) || propertyEditor.isUnknown(val))
-				continue; // parent does not have any value for this property
-			
-			Model m = model.getLevel().getDefaultFactory().createModel();
-			fetcher.fetch(bpe, m);
-			m.remove(bpe); // remove itself
-			for(T child : m.getObjects(type)) {
-				Object existing = propertyEditor.getValueFromBean(child);
-				// set/add only if 
-				if(isMul || propertyEditor.isUnknown(existing)) {
-					if(!isMul)
-						propertyEditor.setValueToBean(val, child);
-					else {
-						for(Object v : (Set)val) {
-							if(!((Set)existing).contains(v))
-								propertyEditor.setValueToBean(v, child);
-						}
-					}
-				}
-			}
-		}
 	}
 }
