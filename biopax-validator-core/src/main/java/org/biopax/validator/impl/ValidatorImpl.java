@@ -6,7 +6,7 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.paxtools.converter.OneTwoThree;
-import org.biopax.paxtools.io.simpleIO.SimpleReader;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
@@ -180,7 +180,7 @@ public class ValidatorImpl implements Validator {
 
 	public void importModel(Validation validation, InputStream inputStream) {
 		// add the parser
-		SimpleReader simpleReader = new SimpleReader();
+		SimpleIOHandler simpleReader = new SimpleIOHandler();
 		simpleReader.mergeDuplicates(true);
 		associate(inputStream, validation);
 		associate(simpleReader, validation);

@@ -5,7 +5,7 @@ import java.io.*;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.impl.level3.Level3FactoryImpl;
 import org.biopax.paxtools.controller.SimpleEditorMap;
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
+import org.biopax.paxtools.io.*;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.Rule;
@@ -30,7 +30,7 @@ public class Level3RulesUnitTest {
 
 	static BioPAXFactory level3 = new Level3FactoryImpl(); // to create BioPAX objects
 	static EditorMap editorMap = new SimpleEditorMap(BioPAXLevel.L3);
-	static SimpleExporter exporter = new SimpleExporter(BioPAXLevel.L3);
+	static BioPAXIOHandler exporter = new SimpleIOHandler(BioPAXLevel.L3);
 	
 	final static String TEST_DATA_DIR = Level3RulesUnitTest.class
 		.getResource("").getPath();

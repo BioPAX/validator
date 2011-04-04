@@ -95,7 +95,7 @@ public interface Validator {
 	 * the corresponding validations
 	 * (that it's been associated with).
 	 * 
-	 * @param obj a BioPAX element, Model, or even SimpleReader
+	 * @param obj a BioPAX element, Model, or even SimpleIOHandler
 	 * @return
 	 */
 	Collection<Validation> findValidation(Object obj);

@@ -10,8 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.biopax.paxtools.impl.level3.Level3FactoryImpl;
-import org.biopax.paxtools.io.simpleIO.SimpleReader;
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
@@ -42,14 +41,14 @@ public class IntegrationTest {
     ApplicationContext context;
     
     Level3FactoryImpl factory3;
-	SimpleExporter exporter; // to write OWL examples of what rule checks
+	SimpleIOHandler simpleIO; // to write OWL examples of what rule checks
 	final static String OUTDIR = IntegrationTest.class.getResource("").getPath();
 	
     
     @Before
     public void setUp() {
         factory3 = new Level3FactoryImpl();
-        exporter = new SimpleExporter(BioPAXLevel.L3);
+        simpleIO = new SimpleIOHandler(BioPAXLevel.L3);
     }
 
     @Test
@@ -161,9 +160,8 @@ public class IntegrationTest {
         rule.check(v, false);
     	
     	// what a surprise, the following used to fail (before it's been fixed)
-        SimpleReader r = new SimpleReader(BioPAXLevel.L3);
-        r.mergeDuplicates(true);
-    	Model m = r.convertFromOWL(getClass().getResourceAsStream("InteractionVocabulary-Phosphorylation.xml"));
+        simpleIO.mergeDuplicates(true);
+    	Model m = simpleIO.convertFromOWL(getClass().getResourceAsStream("InteractionVocabulary-Phosphorylation.xml"));
     	InteractionVocabulary vv = (InteractionVocabulary) m.getByID("Interaction_Phosphorylation");
         rule.check(vv, false);
     }
@@ -323,7 +321,7 @@ public class IntegrationTest {
     
     private void writeExample(String file, Model model) {
     	try {
-			exporter.convertToOWL(model, 
+			simpleIO.convertToOWL(model, 
 					new FileOutputStream(OUTDIR + File.separator + file));
 		} catch (IOException e) {
 			throw new RuntimeException(e);

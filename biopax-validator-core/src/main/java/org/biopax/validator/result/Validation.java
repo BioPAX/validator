@@ -8,7 +8,7 @@ import java.util.*;
 import javax.xml.bind.annotation.*;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.util.AbstractFilterSet;
 import org.biopax.validator.utils.BiopaxValidatorException;
@@ -108,7 +108,7 @@ public class Validation implements Serializable {
 			try {
 				// export to OWL
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				(new SimpleExporter(model.getLevel())).convertToOWL(model, outputStream);
+				(new SimpleIOHandler(model.getLevel())).convertToOWL(model, outputStream);
 				this.modelSerialized = outputStream.toString("UTF-8");
 			} catch (IOException e) {
 				throw new BiopaxValidatorException(

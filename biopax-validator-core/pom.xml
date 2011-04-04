@@ -115,11 +115,6 @@
   	</dependency>
   	<dependency>
   		<groupId>org.biopax.paxtools</groupId>
-		<artifactId>paxtools-simple-io</artifactId>
-		<version>${paxtools.version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.biopax.paxtools</groupId>
   		<artifactId>biopax-converter</artifactId>
   		<version>${paxtools.version}</version>
   	</dependency>

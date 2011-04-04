@@ -36,8 +36,7 @@ import org.apache.commons.logging.LogFactory;
 import org.biopax.miriam.MiriamLink;
 import org.biopax.paxtools.controller.*;
 import org.biopax.paxtools.converter.OneTwoThree;
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
-import org.biopax.paxtools.io.simpleIO.SimpleReader;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.paxtools.util.ClassFilterSet;
@@ -59,7 +58,7 @@ public class Normalizer {
 	 */
 	public static final String BIOPAX_URI_PREFIX = "urn:biopax:";
 	
-	private SimpleReader biopaxReader;
+	private SimpleIOHandler biopaxReader;
 	private Validation validation;
 	private ShallowCopy copier;
 	
@@ -67,7 +66,7 @@ public class Normalizer {
 	 * Constructor
 	 */
 	public Normalizer() {
-		biopaxReader = new SimpleReader(BioPAXLevel.L3);
+		biopaxReader = new SimpleIOHandler(BioPAXLevel.L3);
 		biopaxReader.mergeDuplicates(true);
 		copier = new ShallowCopy(BioPAXLevel.L3);
 	}
@@ -297,12 +296,7 @@ public class Normalizer {
 
 	private String convertToOWL(Model model) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			(new SimpleExporter(model.getLevel())).convertToOWL(model, out);
-		} catch (IOException e) {
-			throw new RuntimeException("Conversion to OWL failed. " 
-				+ extraInfo(), e);
-		}
+		(new SimpleIOHandler(model.getLevel())).convertToOWL(model, out);
 		return out.toString();
 	}
 
@@ -534,16 +528,16 @@ public class Normalizer {
 		try {
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			InputStream is = new ByteArrayInputStream(biopaxData.getBytes());
-			SimpleReader reader = new SimpleReader();
-			reader.mergeDuplicates(true);
-			Model model = reader.convertFromOWL(is);
+			SimpleIOHandler io = new SimpleIOHandler();
+			io.mergeDuplicates(true);
+			Model model = io.convertFromOWL(is);
 			if (model.getLevel() != BioPAXLevel.L3) {
 				if (log.isInfoEnabled())
 					log.info("Converting to BioPAX Level3... " + extraInfo());
 				model = (new OneTwoThree()).filter(model);
 				if (model != null) {
-					SimpleExporter exporter = new SimpleExporter(model.getLevel());
-					exporter.convertToOWL(model, os);
+					io.setFactory(model.getLevel().getDefaultFactory());
+					io.convertToOWL(model, os);
 					toReturn = os.toString();
 				}
 			} else {

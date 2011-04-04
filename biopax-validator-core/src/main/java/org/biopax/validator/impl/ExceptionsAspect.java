@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.core.annotation.Order;
 
 import org.biopax.paxtools.controller.PropertyEditor;
-import org.biopax.paxtools.io.simpleIO.SimpleReader;
-import org.biopax.paxtools.io.simpleIO.SimpleReader.Triple;
+import org.biopax.paxtools.io.SimpleIOHandler;
+import org.biopax.paxtools.io.SimpleIOHandler.Triple;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Named;
@@ -148,10 +148,10 @@ public class ExceptionsAspect extends AbstractAspect {
      * 
      * @param jp
      */
-    @Around("execution(void org.biopax.paxtools.io.simpleIO.SimpleReader.createAndBind(*)) " +
+    @Around("execution(void org.biopax.paxtools.io.SimpleIOHandler.createAndBind(*)) " +
     		"&& args(model)")
     public void adviseCreateAndBind(ProceedingJoinPoint jp, Model model) {
-    	SimpleReader reader = (SimpleReader) jp.getTarget();
+    	SimpleIOHandler reader = (SimpleIOHandler) jp.getTarget();
     	String bpeId = null;
     	
     	// associate the model with the reader (and validation results)
@@ -171,11 +171,11 @@ public class ExceptionsAspect extends AbstractAspect {
     }
     
     
-    @Around("execution(* org.biopax.paxtools.io.simpleIO.SimpleReader.processIndividual(*)) " 
+    @Around("execution(* org.biopax.paxtools.io.SimpleIOHandler.processIndividual(*)) " 
     		+ "&& args(model)")
     public String adviseProcessIndividual(ProceedingJoinPoint jp, Model model) {  
     	String id = null;
-    	SimpleReader reader = (SimpleReader) jp.getThis();
+    	SimpleIOHandler reader = (SimpleIOHandler) jp.getThis();
     	String bpeId = null;
     	try {
     		bpeId = reader.getId();
@@ -192,10 +192,10 @@ public class ExceptionsAspect extends AbstractAspect {
     }
     
     
-    @Around("execution(private void org.biopax.paxtools.io.simpleIO.SimpleReader.bindValue(..))" +
+    @Around("execution(private void org.biopax.paxtools.io.SimpleIOHandler.bindValue(..))" +
     		" && args(triple, model)")
     public void adviseBindValue(ProceedingJoinPoint jp, Triple triple, Model model) {
-    	SimpleReader reader = (SimpleReader) jp.getTarget();
+    	SimpleIOHandler reader = (SimpleIOHandler) jp.getTarget();
     	// try to find the best object to report about...
     	Object o = reader;
     	String loc = reader.getXmlStreamInfo();
@@ -252,16 +252,16 @@ public class ExceptionsAspect extends AbstractAspect {
     	try {
     		model = jp.proceed();
     	} catch (Throwable ex) {
-    		reportException(ex, jp.getTarget()); // the second argument will be SimpleReader
+    		reportException(ex, jp.getTarget()); // the second argument will be SimpleIOHandler
     	}
     	
     	return model;
 	}
     
     
-    @Before("execution(* org.biopax.paxtools.io.simpleIO.SimpleReader.skip(..))")
+    @Before("execution(* org.biopax.paxtools.io.SimpleIOHandler.skip(..))")
 	public void adviseUnknownClass(JoinPoint jp) {
-    	SimpleReader reader = (SimpleReader) jp.getTarget();
+    	SimpleIOHandler reader = (SimpleIOHandler) jp.getTarget();
     	String loc = reader.getXmlStreamInfo();
 		report(reader, loc, "unknown.class", 
 			"reader", Behavior.ERROR, false, loc);	

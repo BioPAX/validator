@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import org.biopax.paxtools.io.simpleIO.SimpleReader;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.validator.result.Behavior;
 import org.biopax.validator.Validator;
 import org.biopax.validator.result.ErrorType;
@@ -76,9 +76,9 @@ abstract class AbstractAspect {
 				? t.getClass().getSimpleName() : t.getMessage();
 
 		String id;
-		if(obj instanceof SimpleReader)
+		if(obj instanceof SimpleIOHandler)
 		{
-			SimpleReader r = (SimpleReader) obj;
+			SimpleIOHandler r = (SimpleIOHandler) obj;
 			id = ""; 
 	    	try {
 	    		id = r.getId();

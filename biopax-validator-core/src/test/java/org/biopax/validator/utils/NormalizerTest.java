@@ -31,8 +31,7 @@ import static org.junit.Assert.*;
 import java.io.*;
 
 import org.biopax.paxtools.controller.ModelUtils;
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
-import org.biopax.paxtools.io.simpleIO.SimpleReader;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.utils.Normalizer;
@@ -45,13 +44,11 @@ import org.junit.Test;
  */
 public class NormalizerTest {
 	
-	static SimpleReader simpleReader;
-	static SimpleExporter simpleExporter;
+	static SimpleIOHandler simpleIO;
 	
 	static {
-		simpleExporter = new SimpleExporter(BioPAXLevel.L3);
-		simpleReader = new SimpleReader();
-		simpleReader.mergeDuplicates(true);
+		simpleIO = new SimpleIOHandler(BioPAXLevel.L3);
+		simpleIO.mergeDuplicates(true);
 	}
 
 	@Test
@@ -139,13 +136,9 @@ public class NormalizerTest {
 		normalizer.normalize(model);
 		
 		String xml = null;
-		try {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			simpleExporter.convertToOWL(model, out);
-			xml = out.toString();
-		} catch (IOException e1) {
-			fail(e1.toString());
-		}
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		simpleIO.convertToOWL(model, out);
+		xml = out.toString();
 		
 		// alternatively, normalize the serialized data,but this can hide funny bugs...
 		//xml = normalizer.normalize(out.toString());
@@ -312,13 +305,9 @@ public class NormalizerTest {
 		assertNotNull(e);
 		assertTrue(pr.isEquivalent(e));
 		
-		try {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			simpleExporter.convertToOWL(model, out);
-			System.out.println(out.toString());
-		} catch (IOException ex) {
-			fail(ex.toString());
-		}
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		simpleIO.convertToOWL(model, out);
+		System.out.println(out.toString());
 
 		for(Xref x : e.getXref()) {
 			System.out.println(x + " is " 

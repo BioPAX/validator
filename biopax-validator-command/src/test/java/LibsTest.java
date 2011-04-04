@@ -3,7 +3,7 @@ import static org.junit.Assert.*;
 import java.io.*;
 
 import org.biopax.paxtools.impl.level3.*;
-import org.biopax.paxtools.io.simpleIO.SimpleReader;
+import org.biopax.paxtools.io.*;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 
@@ -28,7 +28,7 @@ public class LibsTest {
     public void testBuildPaxtoolsL2ModelSimple() throws FileNotFoundException  {
         System.out.println("with Level2 data");
         InputStream is = getClass().getResourceAsStream(L2_SHORT_MET_PATHWAY);
-        SimpleReader io = new SimpleReader();
+        SimpleIOHandler io = new SimpleIOHandler();
         io.mergeDuplicates(true);
         Model model = io.convertFromOWL(is);
         assertNotNull(model);
@@ -40,7 +40,7 @@ public class LibsTest {
     public void testBuildPaxtoolsL3ModelSimple() throws FileNotFoundException {
         System.out.println("with Level3 data");
         InputStream is = getClass().getResourceAsStream(L3_SHORT_MET_PATHWAY);
-        SimpleReader simpleReader = new SimpleReader();
+        SimpleIOHandler simpleReader = new SimpleIOHandler();
         simpleReader.mergeDuplicates(true);
         Model model = simpleReader.convertFromOWL(is);
         assertNotNull(model);

@@ -5,7 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.biopax.paxtools.impl.level2.Level2FactoryImpl;
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
+import org.biopax.paxtools.io.BioPAXIOHandler;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level2.*;
 import org.biopax.validator.rules.BiochemPathwayStepOneConversionRule;
@@ -15,7 +16,7 @@ import org.junit.Test;
 public class Level2RulesUnitTest {
 
 	BioPAXFactory level2;
-	SimpleExporter exporter;
+	BioPAXIOHandler exporter;
 	
 	final static String TEST_DATA_DIR = Level2RulesUnitTest.class.getResource("").getPath();
 	
@@ -32,7 +33,7 @@ public class Level2RulesUnitTest {
 	@Before
 	public void setUp() {
 		level2 = new Level2FactoryImpl();	
-		exporter = new SimpleExporter(BioPAXLevel.L3);
+		exporter = new SimpleIOHandler(BioPAXLevel.L3);
 	}
 	
 	@Test
