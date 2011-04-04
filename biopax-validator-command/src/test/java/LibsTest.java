@@ -76,11 +76,17 @@ public class LibsTest {
     	assertTrue(x1.isEquivalent(x2));
     	
     	UnificationXref x3 = factory3.create(UnificationXref.class, "x1");
-    	x2.addComment("x3");
-    	x2.setDb(null);
-    	x2.setId("doesn't matter");
+    	x3.addComment("x3");
+    	x3.setDb(null);
+    	x3.setId("doesn't matter");
+    	assertFalse(x1.isEquivalent(x3)); // same ID does not matter anymore (since Apr'2011)!
     	
-    	assertTrue(x1.isEquivalent(x3)); // because of the same ID!
+    	x3.setDb("db");
+    	x3.setId("id");
+    	assertTrue(x1.isEquivalent(x3)); 
+    	
+    	x3 = x1;
+    	assertTrue(x1.isEquivalent(x3)); 
     }
 
 }
