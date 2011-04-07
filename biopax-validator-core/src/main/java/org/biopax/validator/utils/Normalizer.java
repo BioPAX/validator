@@ -434,7 +434,8 @@ public class Normalizer {
 		model.repair();
 		
 		// auto-set dataSource property for all entities (top-down)
-		ModelUtils.inferPropertyFromParent(model, "dataSource", Entity.class);
+		ModelUtils mu = new ModelUtils(model);
+		mu.inferPropertyFromParent("dataSource");
 		
 		/* 
 		 * We could also "fix" organism property, where it's null,

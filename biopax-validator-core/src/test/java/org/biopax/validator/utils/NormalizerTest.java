@@ -30,7 +30,6 @@ import static org.junit.Assert.*;
 
 import java.io.*;
 
-import org.biopax.paxtools.controller.ModelUtils;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
@@ -157,16 +156,16 @@ public class NormalizerTest {
 		//check xref's ID gets normalized
 		bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "RelationshipXref:REFSEQ_NP_001734");
 		try {
-			 //TODO another bug (xref and xrefOf become out of sync)?
+			//xref and xrefOf become out of sync can be fixed by ModelUtils.writeRead()
 			assertEquals(1, ((Xref)bpe).getXrefOf().size());
 		} catch (AssertionError e) {
 			Xref x = (Xref) bpe;
-			XReferrable[] r = x.getXrefOf().toArray(new XReferrable[]{});
 			System.out.println("WARN: xref and xrefOf become out of sync " +
-				"after the normalization: xrefOf:" + x.getXrefOf()
-				+ " whereas model.contains for these returns: [" 
-				+ model.contains(r[0]) + ", " +  model.contains(r[1])
-				+ "]");
+				"after the normalization. This is not quite a bug, " +
+				"and it can be fixed by write/read to/from OWL");
+			for(XReferrable xr : model.getObjects(XReferrable.class)) {
+				print(xr, model);
+			}
 		}
 		// almost the same xref (was different idVersion)
 		bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "RelationshipXref:REFSEQ_NP_001734_1");
@@ -220,24 +219,6 @@ public class NormalizerTest {
 	
 	
 	@Test
-	public final void testInferPropertyFromParent() {
-		Model model = BioPAXLevel.L3.getDefaultFactory().createModel();
-		Provenance pro1 = model.addNew(Provenance.class, "urn:miriam:pid.pathway");
-		Provenance pro2 = model.addNew(Provenance.class, "urn:miriam:signaling-gateway");
-		Pathway pw1 = model.addNew(Pathway.class, "pathway");
-		pw1.addDataSource(pro1);
-		pw1.setStandardName("Pathway");
-		Pathway pw2 = model.addNew(Pathway.class, "sub_pathway");
-		pw2.setStandardName("Sub-Pathway");
-		pw2.addDataSource(pro2);
-		pw1.addPathwayComponent(pw2);
-		ModelUtils.inferPropertyFromParent(model, "dataSource", Pathway.class);
-		assertEquals(2, pw2.getDataSource().size());
-		assertEquals(1, pw1.getDataSource().size());
-	}
-	
-	
-	@Test
 	public final void testNormalize2() {
 		Model model = BioPAXLevel.L3.getDefaultFactory().createModel();
 		Xref ref =  model.addNew(UnificationXref.class, "Xref1");
@@ -267,24 +248,8 @@ public class NormalizerTest {
 		ProteinReference e = (ProteinReference) model.getByID("urn:miriam:uniprot:Q0VCL1");
 		assertNotNull(e);
 		
-		/*
-		try {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			simpleExporter.convertToOWL(model, out);
-			System.out.println(out.toString());
-		} catch (IOException ex) {
-			fail(ex.toString());
-		}
-		System.out.println("xrefs: " + e.getXref().toString());
-		for(Xref x : e.getXref()) {
-			System.out.println(x + " is " 
-				+ x.getModelInterface().getSimpleName() 
-				+ ", " + x.getRDFId() + ", " + x.getDb()
-				+ ", " + x.getId() + ", " + x.getIdVersion());
-		}
-		*/
-		
-		assertEquals(4, e.getXref().size()); //FIXME duplicate xrefs bug!
+		assertEquals(4, e.getXref().size());
+		print(e, model);
 	}
 	
 	@Test
@@ -293,37 +258,59 @@ public class NormalizerTest {
 		Xref ref =  model.addNew(UnificationXref.class, "Xref1");
     	ref.setDb("uniprotkb"); // will be converted to 'uniprot'
     	ref.setId("Q0VCL1"); 
-    	ProteinReference pr = model.addNew(ProteinReference.class, "ProteinReference");
-    	pr.setDisplayName("ProteinReference");
+    	ProteinReference pr = model.addNew(ProteinReference.class, "ProteinReference1");
+    	pr.setDisplayName("A ProteinReference");
     	pr.addXref(ref);
+    	assertEquals(1, ref.getXrefOf().size());
+    	
+    	System.out.println("Before the model is normalized - ");
+    	print(pr, model);
 		
     	// go normalize!
 		Normalizer normalizer = new Normalizer();
 		normalizer.normalize(model);
 		
+		System.out.println("After the model is normalized - ");
+		print(pr, model);
+		
+		assertFalse(model.contains(pr)); // replaced by new norm. PR in the model
+		assertFalse(model.contains(ref)); // replaced by new norm. xref in the model
+		assertEquals(1, pr.getXref().size()); // still has one (new one!)
+		assertEquals(0, ref.getXrefOf().size()); // because the old xref was replaced in all parent elements!
+		
+		
 		ProteinReference e = (ProteinReference) model.getByID("urn:miriam:uniprot:Q0VCL1");
 		assertNotNull(e);
-		assertTrue(pr.isEquivalent(e));
+		assertTrue(pr.isEquivalent(e));		
+		assertEquals(1, e.getXref().size());
 		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		simpleIO.convertToOWL(model, out);
-		System.out.println(out.toString());
+		ref = (UnificationXref) model.getByID(Normalizer.BIOPAX_URI_PREFIX + "UnificationXref:UNIPROT_Q0VCL1");
+		assertEquals(2, ref.getXrefOf().size()); // because the old PR got this new xref as well
+		
+		
+		//ByteArrayOutputStream out = new ByteArrayOutputStream();
+		//simpleIO.convertToOWL(model, out);
+		//System.out.println(out.toString());
 
-		for(Xref x : e.getXref()) {
-			System.out.println(x + " is " 
+		print(e, model);
+	}
+	
+	
+	private void print(XReferrable xr, Model m) {
+		System.out.println("model=" + m.contains(xr) + ":\t" 
+			+ xr.getRDFId() + 
+			" is " + xr.getModelInterface().getSimpleName()
+			+ " and has xrefs: ");
+		for(Xref x : xr.getXref()) {
+			System.out.println("model=" + m.contains(x) + ":\t" 
+				+"  " + x + " is " 
 				+ x.getModelInterface().getSimpleName() 
-				+ ", " + x.getRDFId() + ", " + x.getDb()
-				+ ", " + x.getId() + ", " + x.getIdVersion());
+				+ " - " + x.getRDFId() + ", db=" + x.getDb()
+				+ ", id=" + x.getId() + ", idVer=" + x.getIdVersion());
+			for(XReferrable rx : x.getXrefOf()) {
+				System.out.println("model=" + m.contains(rx) + ":\t" 
+					+ "    xrefOf: " + rx);
+			}
 		}
-		for(XReferrable x : ref.getXrefOf()) {
-			System.out.println(ref + " is xrefOf: " 
-				+ x.getModelInterface().getSimpleName() 
-				+ ", " + x);
-		}
-		
-		assertEquals(1, e.getXref().size()); //FIXME duplicates in xref is a bug (in the Normalizer)!
-		// however, duplicates in xrefOf is not necessarily a bug (think of overlapping models)
-		// assertEquals(1, ref.getXrefOf().size());
-		// but, 
 	}
 }
