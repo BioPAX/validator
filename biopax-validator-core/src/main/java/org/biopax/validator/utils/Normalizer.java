@@ -97,11 +97,11 @@ public class Normalizer {
 		if(biopaxOwlData == null || biopaxOwlData.length() == 0) 
 			throw new IllegalArgumentException("no data. " + extraInfo());
 		
-		// if required, upgrade to L3
-		biopaxOwlData = convertToLevel3(biopaxOwlData);
-		
 		// quick-fix for older BioPAX L3 version (v0.9x) property 'taxonXref' (range: BioSource)
 		biopaxOwlData = biopaxOwlData.replaceAll("taxonXref","xref");
+		
+		// if required, upgrade to L3
+		biopaxOwlData = convertToLevel3(biopaxOwlData);
 		
 		// build the model
 		Model model = null;
@@ -435,7 +435,8 @@ public class Normalizer {
 		
 		// auto-set dataSource property for all entities (top-down)
 		ModelUtils mu = new ModelUtils(model);
-		mu.inferPropertyFromParent("dataSource");
+		mu.inferPropertyFromParent("dataSource"); //all Entity class
+		mu.inferPropertyFromParent("organism"); // all Gene, SequenceEntityReference, Pathway
 		
 		/* 
 		 * We could also "fix" organism property, where it's null,
@@ -546,7 +547,7 @@ public class Normalizer {
 			}
 		} catch(Exception e) {
 			throw new RuntimeException(
-				"Failed to reading data or convert to L3! "
+				"Failed to read data or convert to L3! "
 					+ extraInfo(), e);
 		}
 
