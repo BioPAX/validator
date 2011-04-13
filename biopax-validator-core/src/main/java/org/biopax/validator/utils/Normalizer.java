@@ -149,20 +149,26 @@ public class Normalizer {
 			}
 			
 			try {
-				// consistently build a new, standard id (URI)
-				String prefix = BIOPAX_URI_PREFIX + ref.getModelInterface().getSimpleName() + ":";
-				String ending = 
-					(ref.getIdVersion() != null && !"".equals(ref.getIdVersion().trim()))
-						? "_" + ref.getIdVersion() // add the id version/variant
-						: ""; // no endings
-				// add the local (last) part of the URI encoded -
-				String rdfid = prefix + URLEncoder.encode(name + "_" + ref.getId() + ending, "UTF-8").toUpperCase();
+				String rdfid; 
+				
+				if(ref instanceof PublicationXref) {
+					rdfid = MiriamLink.getURI(name, ref.getId());
+				} else {
+					// consistently build a new, standard id (URI)
+					String prefix = BIOPAX_URI_PREFIX + ref.getModelInterface().getSimpleName() + ":";
+					String ending = (ref.getIdVersion() != null && !"".equals(ref.getIdVersion().trim()))
+							? "_" + ref.getIdVersion() // add the id version/variant
+									: ""; // no endings
+					// add the local (last) part of the URI encoded -
+					rdfid = prefix + URLEncoder.encode(name + "_" + ref.getId() + ending, "UTF-8")
+						.toUpperCase();
+				}
 				
 				// if different id, - begin updating
 				if(!rdfid.equals(ref.getRDFId())) {
 					updateOrRemove(model, ref, rdfid);
 				}
-			} catch (UnsupportedEncodingException e) {
+			} catch (Exception e) {
 				log.error("Failed to create RDFID from xref: " +
 						ref + "! " + e + ". " + extraInfo());
 			}
@@ -435,8 +441,8 @@ public class Normalizer {
 		
 		// auto-set dataSource property for all entities (top-down)
 		ModelUtils mu = new ModelUtils(model);
-		mu.inferPropertyFromParent("dataSource"); //all Entity class
-		mu.inferPropertyFromParent("organism"); // all Gene, SequenceEntityReference, Pathway
+		mu.inferPropertyFromParent("dataSource");//, Entity.class);
+		mu.inferPropertyFromParent("organism");//, Gene.class, SequenceEntityReference.class, Pathway.class);
 		
 		/* 
 		 * We could also "fix" organism property, where it's null,
