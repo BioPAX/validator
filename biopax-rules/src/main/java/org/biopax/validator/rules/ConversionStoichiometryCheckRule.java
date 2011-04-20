@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  *
  * Checks if the stoichiometries of left and right participants matches.
- *
+ * TODO clarify; ignore small mols.? etc..
  */
 @Component
 public class ConversionStoichiometryCheckRule extends AbstractRule<Conversion> {

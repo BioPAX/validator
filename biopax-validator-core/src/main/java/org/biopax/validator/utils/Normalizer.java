@@ -61,6 +61,8 @@ public class Normalizer {
 	private SimpleIOHandler biopaxReader;
 	private Validation validation;
 	private ShallowCopy copier;
+	private NormalizerOptions options;
+	
 	
 	/**
 	 * Constructor
@@ -69,6 +71,7 @@ public class Normalizer {
 		biopaxReader = new SimpleIOHandler(BioPAXLevel.L3);
 		biopaxReader.mergeDuplicates(true);
 		copier = new ShallowCopy(BioPAXLevel.L3);
+		options = new NormalizerOptions(); // with default settings
 	}
 
 	/**
@@ -79,9 +82,26 @@ public class Normalizer {
 	public Normalizer(Validation validation) {
 		this();
 		this.validation = validation;
+		if(validation.getNormalizerOptions() != null) {
+			options = validation.getNormalizerOptions();
+		}
 	}
+		
 	
-	
+	/**
+	 * @return the options
+	 */
+	public NormalizerOptions getOptions() {
+		return options;
+	}
+
+	/**
+	 * @param options the options to set
+	 */
+	public void setOptions(NormalizerOptions options) {
+		this.options = options;
+	}
+
 	/**
 	 * Normalizes BioPAX OWL data and returns
 	 * the result as BioPAX OWL (string).
@@ -402,7 +422,9 @@ public class Normalizer {
 		normalizeXrefs(model);
 		
 		// fix displayName where possible
-		fixDisplayName(model);
+		if(options.fixDisplayName) {
+			fixDisplayName(model);
+		}
 				
 		// copy
 		Set<? extends UtilityClass> objects = 
@@ -441,8 +463,29 @@ public class Normalizer {
 		
 		// auto-set dataSource property for all entities (top-down)
 		ModelUtils mu = new ModelUtils(model);
-		mu.inferPropertyFromParent("dataSource");//, Entity.class);
-		mu.inferPropertyFromParent("organism");//, Gene.class, SequenceEntityReference.class, Pathway.class);
+		if(options.inferPropertyDataSource) {
+			mu.inferPropertyFromParent("dataSource");//, Entity.class);
+		}
+		
+		if(options.inferPropertyOrganism) {
+			mu.inferPropertyFromParent("organism");//, Gene.class, SequenceEntityReference.class, Pathway.class);
+		}
+		
+		if(options.generateRelatioshipToPathwayXrefs) {
+			mu.generateEntityProcessXrefs(Pathway.class, null);
+		} 
+		
+		if(options.generateRelatioshipToPathwayComments) {
+			mu.generateEntityProcessComments(Pathway.class);
+		}
+			
+		if(options.generateRelatioshipToInteractionXrefs) {
+			mu.generateEntityProcessXrefs(Interaction.class, null);
+		} 
+		
+		if(options.generateRelatioshipToInteractionComments) {
+			mu.generateEntityProcessComments(Interaction.class);
+		}
 		
 		/* 
 		 * We could also "fix" organism property, where it's null,
@@ -557,7 +600,70 @@ public class Normalizer {
 					+ extraInfo(), e);
 		}
 
-		// outta here
 		return toReturn;
 	}
+	
+	
+	/**
+	 * This nested class allows to set extra 
+	 * normalization options
+	 * (it follows builder design pattern).
+	 *
+	 */
+	public static class NormalizerOptions{
+		boolean fixDisplayName = true;
+		boolean inferPropertyOrganism = true;
+		boolean inferPropertyDataSource = true;
+		boolean generateRelatioshipToPathwayXrefs = false;
+		boolean generateRelatioshipToInteractionXrefs = false;
+		boolean generateRelatioshipToPathwayComments = true;
+		boolean generateRelatioshipToInteractionComments = false;
+		public boolean isFixDisplayName() {
+			return fixDisplayName;
+		}
+		public void setFixDisplayName(boolean fixDisplayName) {
+			this.fixDisplayName = fixDisplayName;
+		}
+		public boolean isInferPropertyOrganism() {
+			return inferPropertyOrganism;
+		}
+		public void setInferPropertyOrganism(boolean inferPropertyOrganism) {
+			this.inferPropertyOrganism = inferPropertyOrganism;
+		}
+		public boolean isInferPropertyDataSource() {
+			return inferPropertyDataSource;
+		}
+		public void setInferPropertyDataSource(boolean inferPropertyDataSource) {
+			this.inferPropertyDataSource = inferPropertyDataSource;
+		}
+		public boolean isGenerateRelatioshipToPathwayXrefs() {
+			return generateRelatioshipToPathwayXrefs;
+		}
+		public void setGenerateRelatioshipToPathwayXrefs(
+				boolean generateRelatioshipToPathwayXrefs) {
+			this.generateRelatioshipToPathwayXrefs = generateRelatioshipToPathwayXrefs;
+		}
+		public boolean isGenerateRelatioshipToInteractionXrefs() {
+			return generateRelatioshipToInteractionXrefs;
+		}
+		public void setGenerateRelatioshipToInteractionXrefs(
+				boolean generateRelatioshipToInteractionXrefs) {
+			this.generateRelatioshipToInteractionXrefs = generateRelatioshipToInteractionXrefs;
+		}
+		public boolean isGenerateRelatioshipToPathwayComments() {
+			return generateRelatioshipToPathwayComments;
+		}
+		public void setGenerateRelatioshipToPathwayComments(
+				boolean generateRelatioshipToPathwayComments) {
+			this.generateRelatioshipToPathwayComments = generateRelatioshipToPathwayComments;
+		}
+		public boolean isGenerateRelatioshipToInteractionComments() {
+			return generateRelatioshipToInteractionComments;
+		}
+		public void setGenerateRelatioshipToInteractionComments(
+				boolean generateRelatioshipToInteractionComments) {
+			this.generateRelatioshipToInteractionComments = generateRelatioshipToInteractionComments;
+		}
+	}
+	
 }

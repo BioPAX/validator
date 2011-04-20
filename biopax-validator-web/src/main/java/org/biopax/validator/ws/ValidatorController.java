@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.biopax.validator.result.*;
 import org.biopax.validator.Validator;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
+import org.biopax.validator.utils.Normalizer.NormalizerOptions;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -18,6 +19,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,10 +50,13 @@ public class ValidatorController {
 	}	
       
     @RequestMapping(value="/check", method=RequestMethod.GET)
-    public void check() {}
+    public void check(Model model) {
+    	model.addAttribute("options", new NormalizerOptions());
+    }   
     
     @RequestMapping(value="/check", method=RequestMethod.POST)
-    public String check(
+    public String check( 
+    		//use of smth. like @ModelAttribute("validation") Validation validation is inconvenient when multiple files...
     		HttpServletRequest request,
     		@RequestParam(required=false) String url, 
     		@RequestParam(required=false) String retDesired,
@@ -59,6 +64,8 @@ public class ValidatorController {
     		@RequestParam(required=false) Boolean normalize,
     		@RequestParam(required=false) Behavior filter,
     		@RequestParam(required=false) Integer maxErrors,
+    		//extra options (same for all files/url to check)
+    		@ModelAttribute("options") NormalizerOptions options,
     		Model model, Writer writer) throws IOException  
     {
     	Resource in = null; // a resource to validate
@@ -81,6 +88,10 @@ public class ValidatorController {
         		v.setMaxErrors(maxErrors.intValue());
         		log.info("Using max. errors limit=" + maxErrors 
         			+ "; success= " + v.isMaxErrorsSet());
+        	}
+        	
+        	if(normalize!= null && normalize == true && options != null) {
+        		v.setNormalizerOptions(options);
         	}
         	
     		try {
@@ -113,6 +124,9 @@ public class ValidatorController {
 	            		v.setMaxErrors(maxErrors.intValue());
 	            		log.info("Using max. errors limit=" + maxErrors 
 	            			+ "; success= " + v.isMaxErrorsSet());
+	            	}
+	            	if(normalize!= null && normalize == true && options != null) {
+	            		v.setNormalizerOptions(options);
 	            	}
 	    			doCheck(v, in);
 	    	    	validatorResponse.addValidationResult(v);

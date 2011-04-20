@@ -12,7 +12,7 @@ import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.util.AbstractFilterSet;
 import org.biopax.validator.utils.BiopaxValidatorException;
-import org.biopax.validator.utils.Normalizer;
+import org.biopax.validator.utils.Normalizer.NormalizerOptions;
 
 
 @XmlType(name="Validation", namespace="http://biopax.org/validator/2.0/schema")
@@ -34,6 +34,9 @@ public class Validation implements Serializable {
 	private boolean normalize = false;
 	
 	private int maxErrors; // limits the num. of not fixed error cases (1 means "fal-fast" mode, i.e., stop after the first serious and not fixed error)
+
+	// extra options for the normalizer (optional)
+	private NormalizerOptions normalizerOptions;
 	
 	// Default Constructor (this is mainly for OXM)
 	public Validation() {
@@ -467,5 +470,17 @@ public class Validation implements Serializable {
 	public boolean isMaxErrorsSet() {
 		return this.maxErrors > 0 
 			&& this.maxErrors < Integer.MAX_VALUE;
+	}
+
+	@XmlTransient
+	public NormalizerOptions getNormalizerOptions() {
+		return normalizerOptions;
+	}
+
+	/**
+	 * @param normalizerOptions the normalizerOptions to set
+	 */
+	public void setNormalizerOptions(NormalizerOptions normalizerOptions) {
+		this.normalizerOptions = normalizerOptions;
 	}
 } 

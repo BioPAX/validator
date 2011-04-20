@@ -34,6 +34,7 @@ import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.utils.Normalizer;
+import org.biopax.validator.utils.Normalizer.NormalizerOptions;
 import org.junit.Test;
 
 /**
@@ -293,6 +294,12 @@ public class NormalizerTest {
 		//System.out.println(out.toString());
 
 		print(e, model);
+	}
+	
+	//@Test
+	public final void testNormalizerOptions() {
+		NormalizerOptions options = new NormalizerOptions();
+		//TODO
 	}
 	
 	

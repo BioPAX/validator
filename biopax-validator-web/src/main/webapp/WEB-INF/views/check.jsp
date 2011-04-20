@@ -1,5 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -40,6 +42,16 @@
 		  }
 	  };
 	  
+	  function switchNormalizerOptions() {
+			var style = document.getElementById("normalizerOptions").style;
+			var cb = document.getElementById("normalize");
+			if (cb.checked == false) { //changed to 'checked'
+				style.display = "none";
+			} else {
+				style.display = "block";
+			}
+	  };
+	  
 	</script>
 	<title>Validate from URL</title>
 </head>
@@ -74,10 +86,20 @@
 		<input type="checkbox" name="autofix" value="true"/>
 		<label>Auto-Fix! (<b>experimental:</b> some rules can do, e.g., fix xref db/id, controlled vocabularies, set 'displayName', remove duplicates, etc.)</label>
 		<br/>
-		<input type="checkbox" name="normalize" value="true"/>
+		
+		<input type="checkbox" id="normalize" name="normalize" value="true" onchange="switchNormalizerOptions();" />
 		<label>Normalize! (<b>experimental:</b> where it is possible, - replaces identifiers of entity references, CVs, BioSource 
 		with Miriam's standard URNs; for xrefs, - generates new IDs like <em>urn:biopax:*Xref:&lt;db&gt;_&lt;id&gt;_&lt;ver&gt;</em> this makes BioPAX data integration and linking easier. 
 		if required, data are auto-converted to BioPAX Level3 first. It may remove some or add new BioPAX errors, especially if there were errors in the file.)</label>
+		<ul id="normalizerOptions" style="display: none;">
+			<li><form:checkbox path="options.fixDisplayName"/>&nbsp;<label>fix displayName (from names)</label></li>
+			<li><form:checkbox path="options.inferPropertyOrganism"/>&nbsp;<label>infer property: organism</label></li>
+			<li><form:checkbox path="options.inferPropertyDataSource"/>&nbsp;<label>infer property: dataSource</label></li>
+			<li><form:checkbox path="options.generateRelatioshipToPathwayXrefs"/>&nbsp;<label>generate pathway relationship xrefs</label></li>
+			<li><form:checkbox path="options.generateRelatioshipToInteractionXrefs"/>&nbsp;<label>generate interaction relationship xrefs</label></li>
+			<li><form:checkbox path="options.generateRelatioshipToPathwayComments"/>&nbsp;<label>generate pathway relationship comments</label></li>
+			<li><form:checkbox path="options.generateRelatioshipToInteractionComments"/>&nbsp;<label>generate interaction relationship comments</label></li>
+		</ul>
 		<br/>
 		<div class="form-row" style="padding-top: 2em;">
 		<label>Set the level (do the job, do not report everything)</label><br/>

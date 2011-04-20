@@ -128,17 +128,12 @@ public class ValidatorImpl implements Validator {
 			}
 		}
 
-		/* 
-		 * if fix==true, detect all the new elements that rules could have created;
-		 * ("merge" to itself)
-		 */
-		if (validation.isFix()) {
-			model.repair();
-		}
-		
 		// normalize?
 		if (validation.isNormalize()) {
 			(new Normalizer(validation)).normalize(model);
+		}
+		
+		if (validation.isFix() || validation.isNormalize()) {
 			model.repair();
 		}
 

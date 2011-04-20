@@ -11,7 +11,6 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<context:annotation-config/>
-	<mvc:annotation-driven/>
 
 	<mvc:view-controller path="/login.html"/>
 	<mvc:view-controller path="/denied.html"/>
@@ -54,5 +53,7 @@
 		<constructor-arg ref="validator" />
 		<constructor-arg ref="utils"/>
 	</bean>   
+
+	<mvc:annotation-driven/>
 
 </beans>

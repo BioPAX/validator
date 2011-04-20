@@ -89,7 +89,7 @@ public class BiopaxValidatorClient {
         	parts.add(new StringPart("autofix", "true"));
         }
         
-        if(normalize) {
+        if(normalize) { //TODO add extra options
         	parts.add(new StringPart("normalize", "true"));
         }
         
