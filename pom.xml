@@ -125,6 +125,9 @@
 					<url>file:///Volumes/Work/m2repo-biopax/releases</url>
 				</repository>
 			</distributionManagement>
+			<properties>
+				<scm.username>rodche</scm.username>
+			</properties>
 		</profile>
 	</profiles>
 
