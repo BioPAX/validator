@@ -10,6 +10,7 @@
 	<artifactId>biopax-validator-client</artifactId>
 	<packaging>jar</packaging>
 	<name>BioPAX Validator Client</name>
+	<version>2.0.0</version>
 	<description>This is a reference implementation of the client (examples, tests).</description>
 	<url>http://www.biopax.org</url>
 

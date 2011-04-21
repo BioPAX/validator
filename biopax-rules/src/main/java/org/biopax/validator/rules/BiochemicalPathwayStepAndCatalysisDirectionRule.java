@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * If stepDirection of BiochemicalPathwayStep is not empty, then direction 
  * of the Catalysis instance is either blank or "LEFT-TO-RIGHT";
  * and the corresponding conversionDirection property (of the Conversion, if any) 
- * in the stepConversion property is specified as "REVERSIBLE".
+ * in the stepConversion property is specified as "REVERSIBLE" (or empty).
  * 
  * @author rodche
  */
@@ -54,11 +54,13 @@ public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRul
 			}
 			
 			Conversion con = step.getStepConversion();
-			if( con != null && con.getConversionDirection() != ConversionDirectionType.REVERSIBLE) 
+			if( con != null 
+				&& con.getConversionDirection() != null
+				&& con.getConversionDirection() != ConversionDirectionType.REVERSIBLE) 
 			{
 				error(step, "direction.conflict", fix, 
 					"stepDirection=" + step.getStepDirection(), con, "conversionDirection=" 
-						+ con.getConversionDirection() + ", must be REVERSIBLE");
+						+ con.getConversionDirection() + ", must be REVERSIBLE or empty");
 				if(fix) {
 					fix(step, con, ConversionDirectionType.REVERSIBLE);
 				}
