@@ -59,7 +59,7 @@
   	<bean id="ontologyManager" class="org.biopax.validator.utils.BiopaxOntologyManager">
 		 <constructor-arg index="0" ref="ontologies" />
 		 <constructor-arg index="1"><null/></constructor-arg>
-		 <constructor-arg index="2" value="false"/> <!--TODO in production, set to false -->
+		 <constructor-arg index="2" value="true"/> <!--TODO in production, set to false -->
 	</bean>
 	
 	<!-- a helper and a proxy to access MIRIAM and MI database citation and regexps 

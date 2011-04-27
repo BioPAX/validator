@@ -1,7 +1,6 @@
 package org.biopax.validator.utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -38,8 +37,9 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	 * Constructor
 	 * 
 	 * @param ontologiesConfigXml
-	 * @throws IOException 
-	 * @throws OntologyLoaderException 
+	 * @param ontDir
+	 * @param isReuseAndStoreOntologiesLocally
+	 * 
 	 */
 	public BiopaxOntologyManager(Map<String, Resource> ontologiesConfig, String ontDir, 
 			boolean isReuseAndStoreOntologiesLocally)

@@ -43,7 +43,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<spring.version>3.0.5.RELEASE</spring.version>
-		<paxtools.version>3.0.0beta1</paxtools.version>
+		<paxtools.version>3.0.0-SNAPSHOT</paxtools.version>
 	</properties>
 	
 	<modules>
@@ -72,14 +72,6 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<configuration>
 						<testFailureIgnore>false</testFailureIgnore>
-						<!--
-						<systemProperties>
-							<property>
-								<name>log4j.configuration</name>
-								<value>file:${BIOPAX_HOME}/log4j.properties</value>
-							</property>
-						</systemProperties>
-						-->
 						<argLine>-Dfile.encoding=UTF-8 -Xmx1536M -Xms128M -ea</argLine>
 					</configuration>
 				</plugin>
@@ -110,20 +102,8 @@
 	<profiles>
 		<profile>
 			<id>rodche</id>
-			<distributionManagement>
-				<!--  this is to deploy to the local repository, which then is
-				manually synchronized with the remote one -->
-				<snapshotRepository>
-					<id>biopax.snapshots</id>
-					<name>Local BioPAX Snapshots Repository</name>
-					<url>file:///Volumes/Work/m2repo-biopax/snapshots</url>
-				</snapshotRepository>
-				<repository>
-					<id>biopax.releases</id>
-					<name>Local BioPAX Repository</name>
-					<url>file:///Volumes/Work/m2repo-biopax/releases</url>
-				</repository>
-			</distributionManagement>
+			<!-- used by maven-release-plugin during
+			"mvn release:prepare -Prodche", "mvn release:perform -Prodche" -->
 			<properties>
 				<scm.username>rodche</scm.username>
 			</properties>
@@ -141,7 +121,7 @@
 			<snapshots>
 			</snapshots>
 		</repository>
-				<repository>
+		<repository>
 			<id>biopax.releases</id>
 			<name>BioPAX Repository at Sourceforge</name>
 			<url>http://biopax.sourceforge.net/m2repo/releases/</url>
@@ -246,6 +226,35 @@
 		</contributor>
 	</contributors>
 	
+	<!-- In order to deploy or site:deploy this project:
+	1) have login/pw configured in their local (~/.m2/) settings.xml, i.e:
+	<servers>
+      <server>
+      	<id>biopax.sf.net</id>
+      	<username>USERID,biopax</username>
+      	<password>PASSWD</password>
+      </server>
+      <server>
+    	<id>biopax.releases</id>
+    	<username>USERID,biopax</username>
+    	<password>PASSWD</password>
+      </server>
+      <server>
+    	<id>biopax.snapshots</id>
+    	<username>USERID,biopax</username>
+    	<password>PASSWD</password>
+      </server>
+  	</servers>
+  	(alternatively, one can define developer's profile in this pom.xml 
+  	with a <distributionManagement/> inside, and use username explicitely, e.g., 
+  	<url>scp://USERID@shell.sourceforge.net/home/project-web/biopax/htdocs/validator</url>)
+  	2) [Important!] CREATE the remote shell first (before using "mvn deploy"):
+  		- from terminal do: "ssh -t USERID,biopax@shell.sourceforge.net create", wait...
+  		- once it's up, - exit (now you can login as "ssh USERID,biopax@shell.sourceforge.net", 
+  		but, after several minutes, the shell will expire due to inactivity; 
+  		see also: http://sourceforge.net/apps/trac/sourceforge/wiki/Shell%20service)
+  	3) now you can do "mvn deploy" or "mvn site:deploy" (do site:site first, for speed)!
+	-->
 	<distributionManagement>
 		<site>
 			<id>biopax.sf.net</id>
