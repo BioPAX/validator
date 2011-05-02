@@ -5,6 +5,12 @@ xmlns="http://java.sun.com/xml/ns/javaee"
 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
 id="BiopaxValidator2" version="2.5">
+  <display-name>The BioPAX Validator</display-name>
+  
+  <context-param>
+	<param-name>webAppRootKey</param-name>
+	<param-value>biopaxvalidator.root</param-value>
+  </context-param>
   
   <listener>
   	<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>

@@ -101,6 +101,12 @@
   		<groupId>org.biopax.validator</groupId>
   		<artifactId>obo-fetcher</artifactId>
   		<version>${project.version}</version>
+  		<exclusions>
+  			<exclusion>
+  				<artifactId>lucene</artifactId>
+  				<groupId>lucene</groupId>
+  			</exclusion>
+  		</exclusions>
   	</dependency>
   	  	<dependency>
     	<groupId>org.biopax</groupId>
