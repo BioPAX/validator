@@ -45,6 +45,9 @@ public class MiriamLink
     /** */
     private static final Map<String,Datatype> datatypesHash = new HashMap<String, Miriam.Datatype>();
     
+    
+    public static boolean useObsoleteDatatypes = true;
+    public static boolean useObsoleteResources = true;
 	
 	/**
 	 * Default constructor: initialization of some parameters
@@ -256,20 +259,17 @@ public class MiriamLink
     {
        	Set<String> locations = new HashSet<String>();
 		Datatype datatype = getDatatype(datatypeKey);
-		Resources resources = datatype.getResources();
-		if (resources != null) {
-			for (Resource resource : resources.getResource()) {
-				String link = resource.getDataEntry();
-				link = link.replaceFirst("\\$id", URLEncoder.encode(entityId));
-				locations.add(link);
-			}
+		for (Resource resource : getResources(datatype)) {
+			String link = resource.getDataEntry();
+			link = link.replaceFirst("\\$id", URLEncoder.encode(entityId));
+			locations.add(link);
 		}
     	return locations.toArray(ARRAY_OF_STRINGS);
     }
        
     
     /**
-     * Retrieves all the physical locations (usually, a home page URL) of a datatype.
+     * Retrieves home page URLs of a datatype.
      * 
      * @param datatypeKey - name (can be a synonym), ID, or URI (URL or URN) of a data type
      * @return array of strings containing all the address of the main page of the resources of the data type
@@ -278,12 +278,9 @@ public class MiriamLink
     {
        	Set<String> locations = new HashSet<String>();
     	Datatype datatype = getDatatype(datatypeKey);
-    	Resources resources = datatype.getResources();
-		if (resources != null) {
-			for (Resource resource : resources.getResource()) {
-				String link = resource.getDataResource();
-				locations.add(link);
-			}
+		for (Resource resource : getResources(datatype)) {
+			String link = resource.getDataResource();
+			locations.add(link);
 		}
     	return locations.toArray(ARRAY_OF_STRINGS);
     }
@@ -446,12 +443,23 @@ public class MiriamLink
      */
 	public static Datatype getDatatype(String datatypeKey) 
 	{	
+		Datatype dt = null;
 		if(containsIdOrName(datatypeKey))
-			return datatypesHash.get(datatypeKey.toUpperCase());
+			dt = datatypesHash.get(datatypeKey.toUpperCase());
 		else if(containsUri(datatypeKey)) 
-			return datatypesHash.get(datatypeKey);
+			dt = datatypesHash.get(datatypeKey);
 		else
 			throw new IllegalArgumentException("Datatype not found : " + datatypeKey);
+		
+		if(!useObsoleteDatatypes 
+				&& dt.isObsolete() != null 
+				&& dt.isObsolete().booleanValue() == true)
+			throw new IllegalArgumentException("Datatype " +
+				datatypeKey + "(" + dt.getName() + ") is obsolete" +
+					" (and useObsoleteDatatypes=false)");
+		
+		// return 
+		return dt;
 	}
 
 
@@ -465,11 +473,8 @@ public class MiriamLink
     {
         Set<String> ids = new HashSet<String>();
         for(Datatype datatype : miriam.getDatatype()) {
-        	Resources resources = datatype.getResources();
-			if (resources != null) {
-				for (Resource resource : resources.getResource()) {
-					ids.add(resource.getId());
-				}
+			for (Resource resource : getResources(datatype)) {
+				ids.add(resource.getId());
 			}
         }
         return ids.toArray(new String[] {});
@@ -485,13 +490,9 @@ public class MiriamLink
     public static Resource getResource(String resourceId)
     {
         for(Datatype datatype : miriam.getDatatype()) {
-			Resources resources = datatype.getResources();
-			if (resources != null) {
-				for (Resource resource : resources.getResource()) {
-					if (resource.getId().equalsIgnoreCase(resourceId)) {
-						return resource;
-					}
-				}
+			for (Resource resource : getResources(datatype)) {
+				if (resource.getId().equalsIgnoreCase(resourceId))
+					return resource;
 			}
         }
         
@@ -520,5 +521,31 @@ public class MiriamLink
      */
     public static boolean containsUri(String searchUri) {
     	return datatypesHash.keySet().contains(searchUri);
+    }
+    
+    
+    /**
+     * Gets the list of Miriam {@link Resource} from 
+     * the datatype, also taking the 'obsolete' flag/state
+     * into account.
+     * 
+     * @param datatype
+     * @return
+     */
+    private static List<Resource> getResources(Datatype datatype) {
+    	List<Resource> toReturn = new ArrayList<Resource>();
+    	
+    	Resources resources = datatype.getResources();
+		if (resources != null) {
+			for (Resource resource : resources.getResource()) {
+				if(useObsoleteResources // ok to collect (- do not care about obsolete)
+					|| resource.isObsolete() == null // undefined - here means non-obsolete (ok)
+						|| !resource.isObsolete().booleanValue()) {
+					toReturn.add(resource);
+				}
+			}
+		}
+		
+		return toReturn;
     }
 }
