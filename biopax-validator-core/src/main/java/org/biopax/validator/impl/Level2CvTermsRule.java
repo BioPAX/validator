@@ -4,6 +4,7 @@ import java.util.*;
 
 import javax.annotation.PostConstruct;
 
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.model.level2.Level2Element;
 import org.biopax.paxtools.model.level2.openControlledVocabulary;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
@@ -30,7 +31,7 @@ public abstract class Level2CvTermsRule<T extends Level2Element>
     public void init() {
     	super.init();
 		this.editor = (property != null && !openControlledVocabulary.class.isAssignableFrom(domain)) 
-			? BiopaxValidatorUtils.EDITOR_MAP_L2.getEditorForProperty(property, this.domain)
+			? SimpleEditorMap.L2.getEditorForProperty(property, this.domain)
 			: null;    	
     };
     

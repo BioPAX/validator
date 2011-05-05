@@ -3,7 +3,6 @@ package org.biopax.validator.utils;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.model.BioPAXElement;
-import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.level3.Named;
 import org.biopax.validator.result.*;
 
@@ -51,9 +50,6 @@ public class BiopaxValidatorUtils {
     private static JAXBContext jaxbContext;
     private final Set<String> ignoredCodes;
     public static int maxErrors = Integer.MAX_VALUE;
-    
-    public static final EditorMap EDITOR_MAP_L3 = new SimpleEditorMap(BioPAXLevel.L3);
-    public static final EditorMap EDITOR_MAP_L2 = new SimpleEditorMap(BioPAXLevel.L2);
     
     static {
     	try {

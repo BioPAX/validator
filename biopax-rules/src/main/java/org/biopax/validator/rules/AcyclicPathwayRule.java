@@ -3,13 +3,13 @@ package org.biopax.validator.rules;
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.controller.PropertyFilter;
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PathwayStep;
 import org.biopax.paxtools.model.level3.Process;
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.stereotype.Component;
 
 // cycles do exist in biological systems...
@@ -29,7 +29,7 @@ public class AcyclicPathwayRule extends AbstractRule<Pathway> {
 
 	public void check(final Pathway thing, boolean fix) {
 		AbstractTraverser checker = new AbstractTraverser(
-				BiopaxValidatorUtils.EDITOR_MAP_L3, filter)
+				SimpleEditorMap.L3, filter)
 		{
 			@Override
 			protected void visit(Object value, BioPAXElement bpe, 

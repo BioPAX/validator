@@ -12,7 +12,7 @@ import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.util.ClassFilterSet;
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -50,7 +50,7 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
     boolean findProteinOnTheOtherSide(final Conversion conversion, 
     		final SimplePhysicalEntity prot, final String side) 
     {
-    	AbstractTraverser runner = new AbstractTraverser(BiopaxValidatorUtils.EDITOR_MAP_L3) 
+    	AbstractTraverser runner = new AbstractTraverser(SimpleEditorMap.L3) 
     	{
     		@Override
 			protected void visit(Object value, BioPAXElement parent, 

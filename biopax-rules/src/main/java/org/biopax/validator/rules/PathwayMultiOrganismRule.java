@@ -12,6 +12,7 @@ import org.biopax.paxtools.model.level3.BioSource;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.springframework.stereotype.Component;
 
 /**
@@ -37,7 +38,7 @@ public class PathwayMultiOrganismRule extends AbstractRule<Pathway>
     	if(organism==null) return; // we do not care
     	
     	AbstractTraverser runner = new AbstractTraverser(
-    			BiopaxValidatorUtils.EDITOR_MAP_L3, filter) 
+    			SimpleEditorMap.L3, filter) 
     	{
     		@Override
 			protected void visit(Object value, BioPAXElement parent, 

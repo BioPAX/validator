@@ -10,7 +10,7 @@ import org.biopax.paxtools.model.level2.pathway;
 import org.biopax.paxtools.model.level2.pathwayStep;
 import org.biopax.paxtools.model.level2.process;
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,7 +30,7 @@ public class Level2AcyclicPathwayRule extends AbstractRule<pathway>
 
 	public void check(final pathway thing, boolean fix) {
 		AbstractTraverser checker = new AbstractTraverser(
-			BiopaxValidatorUtils.EDITOR_MAP_L2, filter)
+			SimpleEditorMap.L2, filter)
 	{
 			@Override
 			protected void visit(Object value, BioPAXElement parent,

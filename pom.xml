@@ -23,7 +23,7 @@
 
     <scm>
         <connection>scm:hg:http://biopax.hg.sourceforge.net:8000/hgroot/biopax/validator</connection>
-        <developerConnection>scm:hg:ssh://${scm.username},biopax@biopax.hg.sourceforge.net/hgroot/biopax/validator</developerConnection>
+        <developerConnection>scm:hg:ssh://${scm.username}@biopax.hg.sourceforge.net/hgroot/biopax/validator</developerConnection>
         <url>http://biopax.hg.sourceforge.net/hgweb/biopax/validator</url>
     </scm>
 
@@ -43,7 +43,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<spring.version>3.0.5.RELEASE</spring.version>
-		<paxtools.version>3.0.0-SNAPSHOT</paxtools.version>
+		<paxtools.version>4.0.0-SNAPSHOT</paxtools.version>
 	</properties>
 	
 	<modules>

@@ -5,7 +5,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
@@ -43,8 +43,8 @@ public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
 	public void check(Model model, final boolean fix) {
 		EditorMap editorMap = 
 			(model.getLevel() == BioPAXLevel.L3)
-				? BiopaxValidatorUtils.EDITOR_MAP_L3
-					: BiopaxValidatorUtils.EDITOR_MAP_L2;
+				? SimpleEditorMap.L3
+					: SimpleEditorMap.L2;
 		
 		AbstractTraverser checker = new AbstractTraverser(editorMap) {
 			@Override

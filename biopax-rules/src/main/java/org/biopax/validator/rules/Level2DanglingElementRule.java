@@ -10,7 +10,7 @@ import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.pathway;
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,7 +33,7 @@ public class Level2DanglingElementRule extends AbstractRule<Model>
 		
 		// extends traverser ;)
 		AbstractTraverser checker = new AbstractTraverser(
-			BiopaxValidatorUtils.EDITOR_MAP_L2) 
+			SimpleEditorMap.L2) 
 		{
 			@Override
 			protected void visit(Object value, BioPAXElement parent, Model model,

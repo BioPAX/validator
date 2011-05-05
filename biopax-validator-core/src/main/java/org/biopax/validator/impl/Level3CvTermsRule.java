@@ -6,12 +6,12 @@ import java.util.*;
 
 import javax.annotation.PostConstruct;
 
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.level3.Level3Element;
 import org.biopax.paxtools.model.level3.ControlledVocabulary;
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.util.ClassFilterSet;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.biopax.validator.utils.Normalizer;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -45,7 +45,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
     public void init() {
     	super.init();
 		this.editor = (property != null && !ControlledVocabulary.class.isAssignableFrom(domain)) 
-			? BiopaxValidatorUtils.EDITOR_MAP_L3.getEditorForProperty(property, this.domain)
+			? SimpleEditorMap.L3.getEditorForProperty(property, this.domain)
 			: null;    	
     };
     

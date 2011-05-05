@@ -13,6 +13,7 @@ import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.UtilityClass;
 import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.validator.impl.AbstractRule;
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.biopax.validator.utils.Cluster;
 import org.springframework.stereotype.Component;
@@ -82,7 +83,7 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 			final Collection<UtilityClass> clones) {	
 		if(master != null) {
 			AbstractTraverser traverser = 
-				new AbstractTraverser(BiopaxValidatorUtils.EDITOR_MAP_L3) 
+				new AbstractTraverser(SimpleEditorMap.L3) 
 			{	
 				@Override
 				protected void visit(Object range, BioPAXElement domain, 

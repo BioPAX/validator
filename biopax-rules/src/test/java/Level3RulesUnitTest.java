@@ -29,7 +29,7 @@ import org.biopax.paxtools.model.level3.Process;
 public class Level3RulesUnitTest {
 
 	static BioPAXFactory level3 = new Level3FactoryImpl(); // to create BioPAX objects
-	static EditorMap editorMap = new SimpleEditorMap(BioPAXLevel.L3);
+	static EditorMap editorMap = SimpleEditorMap.L3;
 	static BioPAXIOHandler exporter = new SimpleIOHandler(BioPAXLevel.L3);
 	
 	final static String TEST_DATA_DIR = Level3RulesUnitTest.class
