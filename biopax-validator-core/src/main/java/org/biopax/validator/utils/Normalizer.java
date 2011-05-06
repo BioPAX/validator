@@ -487,6 +487,15 @@ public class Normalizer {
 			mu.generateEntityProcessComments(Interaction.class);
 		}
 		
+		// the following two tasks better do AFTER inferPropertyOrganism (if enabled)
+		if(options.generateRelatioshipToOrganismXrefs) {
+			mu.generateEntityOrganismXrefs();
+		} 
+		
+		if(options.generateRelatioshipToOrganismComments) {
+			mu.generateEntityOrganismComments();
+		}
+		
 		/* 
 		 * We could also "fix" organism property, where it's null,
 		 * a swell (e.g., using the value from the pathway);
@@ -616,8 +625,12 @@ public class Normalizer {
 		boolean inferPropertyDataSource = true;
 		boolean generateRelatioshipToPathwayXrefs = false;
 		boolean generateRelatioshipToInteractionXrefs = false;
+		boolean generateRelatioshipToOrganismXrefs = false;
 		boolean generateRelatioshipToPathwayComments = true;
 		boolean generateRelatioshipToInteractionComments = false;
+		boolean generateRelatioshipToOrganismComments = true;
+		
+		
 		public boolean isFixDisplayName() {
 			return fixDisplayName;
 		}
@@ -664,6 +677,21 @@ public class Normalizer {
 				boolean generateRelatioshipToInteractionComments) {
 			this.generateRelatioshipToInteractionComments = generateRelatioshipToInteractionComments;
 		}
+		public boolean isGenerateRelatioshipToOrganismXrefs() {
+			return generateRelatioshipToOrganismXrefs;
+		}
+		public void setGenerateRelatioshipToOrganismXrefs(
+				boolean generateRelatioshipToOrganismXrefs) {
+			this.generateRelatioshipToOrganismXrefs = generateRelatioshipToOrganismXrefs;
+		}
+		public boolean isGenerateRelatioshipToOrganismComments() {
+			return generateRelatioshipToOrganismComments;
+		}
+		public void setGenerateRelatioshipToOrganismComments(
+				boolean generateRelatioshipToOrganismComments) {
+			this.generateRelatioshipToOrganismComments = generateRelatioshipToOrganismComments;
+		}
+		
 	}
 	
 }

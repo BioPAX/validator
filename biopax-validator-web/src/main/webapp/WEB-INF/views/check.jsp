@@ -99,6 +99,8 @@
 			<li><form:checkbox path="options.generateRelatioshipToInteractionXrefs"/>&nbsp;<label>generate interaction relationship xrefs</label></li>
 			<li><form:checkbox path="options.generateRelatioshipToPathwayComments"/>&nbsp;<label>generate pathway relationship comments</label></li>
 			<li><form:checkbox path="options.generateRelatioshipToInteractionComments"/>&nbsp;<label>generate interaction relationship comments</label></li>
+			<li><form:checkbox path="options.generateRelatioshipToOrganismComments"/>&nbsp;<label>generate organism relationship comments</label></li>
+			<li><form:checkbox path="options.generateRelatioshipToOrganismXrefs"/>&nbsp;<label>generate organism relationship xrefs</label></li>
 		</ul>
 		<br/>
 		<div class="form-row" style="padding-top: 2em;">
