@@ -345,8 +345,8 @@ public class Validation implements Serializable {
 	
 
 	public <T> Collection<T> getObjects(final Class<T> filterBy) {
-		return new AbstractFilterSet<T>(objects) {
-			protected boolean filter(Object value) {
+		return new AbstractFilterSet<Object,T>(objects) {
+			public boolean filter(Object value) {
 				return filterBy.isInstance(value);
 			}			
 		};

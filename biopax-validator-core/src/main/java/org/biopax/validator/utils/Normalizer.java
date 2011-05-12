@@ -329,7 +329,8 @@ public class Normalizer {
 
 	private List<UnificationXref> getUnificationXrefsSorted(XReferrable referrable) {
 		List<UnificationXref> urefs = new ArrayList<UnificationXref>(
-			new ClassFilterSet<UnificationXref>(referrable.getXref(), UnificationXref.class)
+			new ClassFilterSet<Xref,UnificationXref>(
+				referrable.getXref(), UnificationXref.class)
 		);	
 		
 		Comparator<UnificationXref> comparator = new Comparator<UnificationXref>() {
@@ -474,27 +475,15 @@ public class Normalizer {
 		if(options.generateRelatioshipToPathwayXrefs) {
 			mu.generateEntityProcessXrefs(Pathway.class, null);
 		} 
-		
-		if(options.generateRelatioshipToPathwayComments) {
-			mu.generateEntityProcessComments(Pathway.class);
-		}
 			
 		if(options.generateRelatioshipToInteractionXrefs) {
 			mu.generateEntityProcessXrefs(Interaction.class, null);
 		} 
 		
-		if(options.generateRelatioshipToInteractionComments) {
-			mu.generateEntityProcessComments(Interaction.class);
-		}
-		
 		// the following two tasks better do AFTER inferPropertyOrganism (if enabled)
 		if(options.generateRelatioshipToOrganismXrefs) {
 			mu.generateEntityOrganismXrefs();
 		} 
-		
-		if(options.generateRelatioshipToOrganismComments) {
-			mu.generateEntityOrganismComments();
-		}
 		
 		/* 
 		 * We could also "fix" organism property, where it's null,
@@ -625,11 +614,7 @@ public class Normalizer {
 		boolean inferPropertyDataSource = true;
 		boolean generateRelatioshipToPathwayXrefs = false;
 		boolean generateRelatioshipToInteractionXrefs = false;
-		boolean generateRelatioshipToOrganismXrefs = false;
-		boolean generateRelatioshipToPathwayComments = true;
-		boolean generateRelatioshipToInteractionComments = false;
-		boolean generateRelatioshipToOrganismComments = true;
-		
+		boolean generateRelatioshipToOrganismXrefs = false;		
 		
 		public boolean isFixDisplayName() {
 			return fixDisplayName;
@@ -663,20 +648,6 @@ public class Normalizer {
 				boolean generateRelatioshipToInteractionXrefs) {
 			this.generateRelatioshipToInteractionXrefs = generateRelatioshipToInteractionXrefs;
 		}
-		public boolean isGenerateRelatioshipToPathwayComments() {
-			return generateRelatioshipToPathwayComments;
-		}
-		public void setGenerateRelatioshipToPathwayComments(
-				boolean generateRelatioshipToPathwayComments) {
-			this.generateRelatioshipToPathwayComments = generateRelatioshipToPathwayComments;
-		}
-		public boolean isGenerateRelatioshipToInteractionComments() {
-			return generateRelatioshipToInteractionComments;
-		}
-		public void setGenerateRelatioshipToInteractionComments(
-				boolean generateRelatioshipToInteractionComments) {
-			this.generateRelatioshipToInteractionComments = generateRelatioshipToInteractionComments;
-		}
 		public boolean isGenerateRelatioshipToOrganismXrefs() {
 			return generateRelatioshipToOrganismXrefs;
 		}
@@ -684,14 +655,6 @@ public class Normalizer {
 				boolean generateRelatioshipToOrganismXrefs) {
 			this.generateRelatioshipToOrganismXrefs = generateRelatioshipToOrganismXrefs;
 		}
-		public boolean isGenerateRelatioshipToOrganismComments() {
-			return generateRelatioshipToOrganismComments;
-		}
-		public void setGenerateRelatioshipToOrganismComments(
-				boolean generateRelatioshipToOrganismComments) {
-			this.generateRelatioshipToOrganismComments = generateRelatioshipToOrganismComments;
-		}
-		
 	}
 	
 }

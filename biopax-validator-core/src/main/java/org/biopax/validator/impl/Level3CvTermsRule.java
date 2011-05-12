@@ -11,6 +11,7 @@ import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.level3.Level3Element;
 import org.biopax.paxtools.model.level3.ControlledVocabulary;
 import org.biopax.paxtools.model.level3.UnificationXref;
+import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.paxtools.util.ClassFilterSet;
 import org.biopax.validator.utils.Normalizer;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -57,11 +58,8 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 		// if the editor is null, we expect a ControlledVocabulary object!
 		if(editor == null) {
 			vocabularies.add((ControlledVocabulary)thing); 
-		} else if(editor.isMultipleCardinality()) {
-			vocabularies = (Collection<ControlledVocabulary>) editor.getValueFromBean(thing);
 		} else {
-			ControlledVocabulary value = (ControlledVocabulary) editor.getValueFromBean(thing);
-			if(value != null) vocabularies.add(value);
+			vocabularies = (Collection<ControlledVocabulary>) editor.getValueFromBean(thing);
 		}
 		
 		// shortcut
@@ -112,7 +110,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 							String db = ((OntologyManager) ontologyManager).getOntology(ontId).getName();
 							String id = term.getTermAccession();
 							// search for the xref with the same xref.id
-							for (UnificationXref x : new ClassFilterSet<UnificationXref>(
+							for (UnificationXref x : new ClassFilterSet<Xref,UnificationXref>(
 									cv.getXref(), UnificationXref.class)) {
 								/// exclude names "matching" uni.xrefs from the "no Xref" set
 								if(id.equalsIgnoreCase(x.getId()))  {
@@ -198,7 +196,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 				 * and report 'illegal.cv.xref' otherwise!
 				 */
 				final Set<UnificationXref> badXrefs = new HashSet<UnificationXref>(); // initially - none
-				for (UnificationXref x : new ClassFilterSet<UnificationXref>(
+				for (UnificationXref x : new ClassFilterSet<Xref,UnificationXref>(
 						cv.getXref(), UnificationXref.class)) {
 					OntologyTermI ot = ((OntologyManager) ontologyManager).findTermByAccession(x.getId());
 					if(ot == null || !getValidTerms().contains(ot.getPreferredName().toLowerCase())) {
@@ -253,7 +251,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 			ControlledVocabulary cv) 
 	{		
 		Set<String> inferred = new HashSet<String>();
-		for (UnificationXref x : new ClassFilterSet<UnificationXref>(
+		for (UnificationXref x : new ClassFilterSet<Xref,UnificationXref>(
 				cv.getXref(), UnificationXref.class)) 
 		{
 			OntologyTermI ot = ((OntologyManager) ontologyManager)

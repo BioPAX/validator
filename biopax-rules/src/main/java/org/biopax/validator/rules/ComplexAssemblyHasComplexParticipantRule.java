@@ -3,6 +3,7 @@ package org.biopax.validator.rules;
 import org.biopax.paxtools.model.level3.BindingFeature;
 import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.ComplexAssembly;
+import org.biopax.paxtools.model.level3.Entity;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.util.ClassFilterSet;
 import org.biopax.validator.impl.AbstractRule;
@@ -22,7 +23,7 @@ public class ComplexAssemblyHasComplexParticipantRule extends AbstractRule<Compl
     {
 		// check if there are any complexes on either side
     	Set<Complex> complexes = 
-			new ClassFilterSet<Complex>(complexAssembly.getParticipant(), Complex.class);
+			new ClassFilterSet<Entity,Complex>(complexAssembly.getParticipant(), Complex.class);
 		if(complexes.isEmpty()) {
 			boolean bound = isBound(complexAssembly.getRight());
 			if(!bound)

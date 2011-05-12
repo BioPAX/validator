@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.PropertyEditor;
-import org.biopax.paxtools.controller.PropertyFilter;
+import org.biopax.paxtools.util.Filter;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.BioSource;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PathwayMultiOrganismRule extends AbstractRule<Pathway> 
 {	
-	private final static PropertyFilter filter = new PropertyFilter() {
+	private final static Filter<PropertyEditor> filter = new Filter<PropertyEditor>() {
 		@Override
 		public boolean filter(PropertyEditor editor) {
 			return !"nextStep".equals(editor.getProperty());

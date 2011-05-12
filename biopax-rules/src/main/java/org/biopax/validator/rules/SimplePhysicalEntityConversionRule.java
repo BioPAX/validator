@@ -8,6 +8,7 @@ import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.ComplexAssembly;
 import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.Degradation;
+import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.util.ClassFilterSet;
@@ -32,7 +33,8 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
     public void check(SimplePhysicalEntity protein, boolean fix)
     {
        Set<Conversion> conversions = new HashSet<Conversion>(
-			new ClassFilterSet<Conversion>(protein.getParticipantOf(), Conversion.class));
+			new ClassFilterSet<Interaction,Conversion>(
+				protein.getParticipantOf(), Conversion.class));
        
        for(Conversion conversion : conversions) {
     	   if(conversion instanceof ComplexAssembly 

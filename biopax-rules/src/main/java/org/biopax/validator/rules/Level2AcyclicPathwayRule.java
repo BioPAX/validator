@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.PropertyEditor;
-import org.biopax.paxtools.controller.PropertyFilter;
+import org.biopax.paxtools.util.Filter;
 
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class Level2AcyclicPathwayRule extends AbstractRule<pathway> 
 {
 	
-	private final static PropertyFilter filter = new PropertyFilter() {
+	private final static Filter<PropertyEditor> filter = new Filter<PropertyEditor>() {
 		@Override
 		public boolean filter(PropertyEditor editor) {
 			return !"NEXT-STEP".equals(editor.getProperty());
