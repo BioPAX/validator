@@ -134,8 +134,9 @@ public class ExceptionsAspect extends AbstractAspect {
    				msg += " " + 
    				Arrays.toString(((BiopaxValidatorException)t).getMsgArgs());
    			}
-    		report(thing, thingId, t.getClass().getSimpleName(), 
-    				rule.getName(), Behavior.ERROR, false, msg);
+    		// report the exception using rule's behavior mode
+   			report(thing, thingId, t.getClass().getSimpleName(), 
+    				rule.getName(), rule.getBehavior(), false, msg);
     	}
     }
     
