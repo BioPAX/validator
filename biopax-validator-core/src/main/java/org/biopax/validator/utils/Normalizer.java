@@ -52,12 +52,6 @@ import org.biopax.validator.result.*;
 public class Normalizer {
 	private static final Log log = LogFactory.getLog(Normalizer.class);
 	
-	/* 
-	 * URI namespace prefix for the utility class IDs 
-	 * generated during data convertion, normalization, merge...
-	 */
-	public static final String BIOPAX_URI_PREFIX = "urn:biopax:";
-	
 	private SimpleIOHandler biopaxReader;
 	private Validation validation;
 	private ShallowCopy copier;
@@ -148,6 +142,7 @@ public class Normalizer {
 		// use a copy of the xrefs set (to avoid concurrent modif. exception)
 		Set<? extends Xref> xrefs = new HashSet<Xref>(model.getObjects(Xref.class));
 		for(Xref ref : xrefs) {
+			
 			// get database official urn
 			String name = ref.getDb();
 			
@@ -156,51 +151,89 @@ public class Normalizer {
 				log.error(ref.getModelInterface().getSimpleName() 
 					+ " " + ref + " - 'db' property is empty! "
 						+ extraInfo());
-				continue;
+				continue; // skip it
 			}
 			
 			try {
-				// update name to the primary one
+				// try to update name to the primary
 				name = MiriamLink.getName(name);
 				ref.setDb(name);
 			} catch (IllegalArgumentException e) {
-				log.error("Unknown or misspelled database name! " +
-					e + ". " + extraInfo());
-			}
-			
-			try {
-				String rdfid; 
-				
-				if(ref instanceof PublicationXref) {
-					rdfid = MiriamLink.getURI(name, ref.getId());
-				} else {
-					// consistently build a new, standard id (URI)
-					String prefix = BIOPAX_URI_PREFIX + ref.getModelInterface().getSimpleName() + ":";
-					String ending = (ref.getIdVersion() != null && !"".equals(ref.getIdVersion().trim()))
-							? "_" + ref.getIdVersion() // add the id version/variant
-									: ""; // no endings
-					// add the local (last) part of the URI encoded -
-					rdfid = prefix + URLEncoder.encode(name + "_" + ref.getId() + ending, "UTF-8")
-						.toUpperCase();
-				}
-				
-				// if different id, - begin updating
-				if(!rdfid.equals(ref.getRDFId())) {
-					updateOrRemove(model, ref, rdfid);
-				}
-			} catch (Exception e) {
-				log.error("Failed to create RDFID from xref: " +
+				if(log.isWarnEnabled())
+					log.warn("Unknown db: " + name +
+						". Cannot replace with a standard name for " +
 						ref + "! " + e + ". " + extraInfo());
+			}	
+			
+			String rdfid = generateURIForXref(name, ref.getId(), ref.getIdVersion(),
+					(Class<? extends Xref>) ref.getModelInterface());	
+			
+			// if different id, - begin updating
+			if(!ref.getRDFId().equals(rdfid)) {
+				updateOrRemove(model, ref, rdfid);
 			}
 		}
 	}	
 
 	
+	/**
+	 * Consistently builds a "normalized"
+	 * Xref URI from given parameters. 
+	 * Miriam resource is used to get a standard db name, 
+	 * and if it fails, the initial value is still used. 
+	 * 
+	 * @param db
+	 * @param id
+	 * @param ver
+	 * @param type
+	 * @return new ID (URI); not null (unless it's a bug :))
+	 * 
+	 */
+	public static String generateURIForXref(String db, String id, String ver, Class<? extends Xref> type) 
+	{
+		// try to use primary standard name if exists -
+		try {
+			db = MiriamLink.getName(db);
+			if(type.equals(PublicationXref.class)) {
+				return MiriamLink.getURI(db, id);
+			}
+		} catch (IllegalArgumentException e) {
+			if(log.isWarnEnabled())
+				log.warn("Unknown database name! " + e);
+			
+		}
+		
+		String rdfid = null;
+		// consistently build a new, standard id (URI)
+		String prefix = ModelUtils.uriPrefixForGeneratedXref(type);
+		String ending = (ver != null && !"".equals(ver.trim()))
+			? "_" + ver.trim() // add the id version/variant
+			: ""; // no endings
+			
+		// add the local part of the URI encoded -
+		try {
+			rdfid = prefix + URLEncoder
+				.encode(db.trim() + "_" + id.trim() + ending, "UTF-8")
+					.toUpperCase();
+		} catch (UnsupportedEncodingException e) {
+			if(log.isWarnEnabled())
+				log.warn("ID UTF-8 encoding failed! " +
+					"Using the platform default (deprecated method).", e);
+			rdfid = prefix + URLEncoder
+				.encode(db.trim() + "_" + id.trim() + ending).toUpperCase();
+		}
+
+		return rdfid;
+	}
+	
+	
+	
 	/*
 	 * Replaces rdfid; removes the element from the model if (with new rdfid) it becomes duplicate
 	 * Note: model loses its integrity (object properties fix is required after this)
 	 */
-	private void updateOrRemove(Model model, BioPAXElement bpe, String newRdfid) {
+	private void updateOrRemove(Model model, BioPAXElement bpe, String newRdfid) 
+	{
 		// model has another object with the same (new) ID?
 		
 		if(model.containsID(newRdfid)) {
@@ -439,11 +472,11 @@ public class Normalizer {
 				
 				UnificationXref uref = getFirstUnificationXref((XReferrable) bpe);
 				if (uref != null) 
-					normalizeID(model, bpe, uref.getDb(), uref.getId(), null); // no idVersion for CVs!
+					normalizeID(model, bpe, uref.getDb(), uref.getId(), null); // no idVersion for a CV or BS!
 				else 
 					if(log.isInfoEnabled())
-						log.info("Cannot normalize ControlledVocabulary: " +
-							"no unification xrefs found in " + bpe.getRDFId()
+						log.info("Cannot normalize " + bpe.getModelInterface().getSimpleName() 
+							+ " : no unification xrefs found in " + bpe.getRDFId()
 							+ ". " + extraInfo());
 			} else if(bpe instanceof EntityReference) {
 				UnificationXref uref = getFirstUnificationXrefOfEr((EntityReference) bpe);
@@ -473,11 +506,11 @@ public class Normalizer {
 		}
 		
 		if(options.generateRelatioshipToPathwayXrefs) {
-			mu.generateEntityProcessXrefs(Pathway.class, null);
+			mu.generateEntityProcessXrefs(Pathway.class);
 		} 
 			
 		if(options.generateRelatioshipToInteractionXrefs) {
-			mu.generateEntityProcessXrefs(Interaction.class, null);
+			mu.generateEntityProcessXrefs(Interaction.class);
 		} 
 		
 		// the following two tasks better do AFTER inferPropertyOrganism (if enabled)

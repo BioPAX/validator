@@ -147,7 +147,7 @@ public class NormalizerTest {
 		//System.out.println(xml);
 		
 		// check Xref
-		BioPAXElement bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "UnificationXref:UNIPROT_P68250");
+		BioPAXElement bpe = model.getByID("urn:biopax:UnificationXref:UNIPROT_P68250");
 		assertTrue(bpe instanceof UnificationXref);
 		
 		// check PR
@@ -155,7 +155,7 @@ public class NormalizerTest {
 		assertTrue(bpe instanceof ProteinReference);
 		
 		//check xref's ID gets normalized
-		bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "RelationshipXref:REFSEQ_NP_001734");
+		bpe = model.getByID("urn:biopax:RelationshipXref:REFSEQ_NP_001734");
 		try {
 			//xref and xrefOf become out of sync can be fixed by ModelUtils.writeRead()
 			assertEquals(1, ((Xref)bpe).getXrefOf().size());
@@ -169,7 +169,7 @@ public class NormalizerTest {
 			}
 		}
 		// almost the same xref (was different idVersion)
-		bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "RelationshipXref:REFSEQ_NP_001734_1");
+		bpe = model.getByID("urn:biopax:RelationshipXref:REFSEQ_NP_001734_1");
 		assertEquals(2, ((Xref)bpe).getXrefOf().size()); // must be "1" in fact...
 		
     	//TODO test when uniprot's is not the first xref
@@ -179,7 +179,7 @@ public class NormalizerTest {
 		//test BioSource
 		bpe = model.getByID("urn:miriam:taxonomy:10090");
 		assertTrue(bpe instanceof BioSource);
-		bpe = model.getByID(Normalizer.BIOPAX_URI_PREFIX + "UnificationXref:TAXONOMY_10090");
+		bpe = model.getByID("urn:biopax:UnificationXref:TAXONOMY_10090");
 		assertTrue(bpe instanceof UnificationXref);
 		
 		
@@ -285,7 +285,7 @@ public class NormalizerTest {
 		assertTrue(pr.isEquivalent(e));		
 		assertEquals(1, e.getXref().size());
 		
-		ref = (UnificationXref) model.getByID(Normalizer.BIOPAX_URI_PREFIX + "UnificationXref:UNIPROT_Q0VCL1");
+		ref = (UnificationXref) model.getByID("urn:biopax:UnificationXref:UNIPROT_Q0VCL1");
 		assertEquals(2, ref.getXrefOf().size()); // because the old PR got this new xref as well
 		
 		

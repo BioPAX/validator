@@ -1,7 +1,5 @@
 package org.biopax.validator.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
@@ -167,15 +165,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 										.getOntology(ontId).getName();
 								String id = term.getTermAccession();
 								// auto-create and add the xref to the cv
-								String rdfid;
-								try {
-									rdfid = Normalizer.BIOPAX_URI_PREFIX + "UnificationXref:" 
-										+ URLEncoder.encode(db + "_" + id,"UTF-8")
-										.toUpperCase(); // important!
-								} catch (UnsupportedEncodingException e) {
-									throw new RuntimeException(e);
-								}
-								
+								String rdfid = Normalizer.generateURIForXref(db, id, null, UnificationXref.class);								
 								UnificationXref ux = BioPAXLevel.L3.getDefaultFactory()
 									.create(UnificationXref.class, rdfid);
 								ux.setDb(db);
