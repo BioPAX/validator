@@ -149,7 +149,7 @@ public class Normalizer {
 			// workaround a null pointer exception
 			if(name == null || "".equals(name)) {
 				log.error(ref.getModelInterface().getSimpleName() 
-					+ " " + ref + " - 'db' property is empty! "
+					+ " " + ref.getRDFId() + " - 'db' property is empty! "
 						+ extraInfo());
 				continue; // skip it
 			}
@@ -161,8 +161,9 @@ public class Normalizer {
 			} catch (IllegalArgumentException e) {
 				if(log.isWarnEnabled())
 					log.warn("Unknown db: " + name +
-						". Cannot replace with a standard name for " +
-						ref + "! " + e + ". " + extraInfo());
+						". Cannot replace " + ref.getDb() +
+						" with a standard name! " +
+						ref.getRDFId() + "; " + e + "; " + extraInfo());
 			}	
 			
 			String rdfid = generateURIForXref(name, ref.getId(), ref.getIdVersion(),
@@ -199,7 +200,7 @@ public class Normalizer {
 			}
 		} catch (IllegalArgumentException e) {
 			if(log.isDebugEnabled())
-				log.debug("Unknown database name! " + e);
+				log.debug("Unknown database name: " + db + ". "  + e);
 			
 		}
 		
