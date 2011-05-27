@@ -198,8 +198,8 @@ public class Normalizer {
 				return MiriamLink.getURI(db, id);
 			}
 		} catch (IllegalArgumentException e) {
-			if(log.isWarnEnabled())
-				log.warn("Unknown database name! " + e);
+			if(log.isDebugEnabled())
+				log.debug("Unknown database name! " + e);
 			
 		}
 		
