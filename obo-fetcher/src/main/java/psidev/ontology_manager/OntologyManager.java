@@ -1,10 +1,8 @@
 package psidev.ontology_manager;
 
 import java.io.File;
-import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
-
-import org.springframework.core.io.Resource;
 
 import psidev.ontology_manager.impl.OntologyLoaderException;
 
@@ -26,7 +24,7 @@ public interface OntologyManager {
 	boolean containsOntology(String ontologyID);
 
 
-	void loadOntologies(Map<String, Resource> cfg)
+	void loadOntologies(Properties cfg)
 			throws OntologyLoaderException;
 
 	/**

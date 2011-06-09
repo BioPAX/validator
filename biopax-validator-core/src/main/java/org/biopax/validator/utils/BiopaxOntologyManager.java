@@ -9,7 +9,6 @@ import org.apache.commons.logging.LogFactory;
 import org.biopax.validator.CvRule;
 import org.biopax.validator.impl.CvTermRestriction;
 import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
-import org.springframework.core.io.Resource;
 
 import psidev.ontology_manager.Ontology;
 import psidev.ontology_manager.OntologyTermI;
@@ -41,7 +40,7 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	 * @param isReuseAndStoreOntologiesLocally
 	 * 
 	 */
-	public BiopaxOntologyManager(Map<String, Resource> ontologiesConfig, String ontDir, 
+	public BiopaxOntologyManager(Properties ontologiesConfig, String ontDir, 
 			boolean isReuseAndStoreOntologiesLocally)
 	{
 		if(ontDir != null) {

@@ -2,7 +2,8 @@ package psidev.ontology_manager.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.ResourceLoader;
 
 import psidev.ontology_manager.Ontology;
 import psidev.ontology_manager.OntologyManager;
@@ -24,6 +25,7 @@ public class OntologyManagerImpl implements OntologyManager {
 
     public static final Log log = LogFactory.getLog( OntologyManagerImpl.class );
    
+    private static final ResourceLoader LOADER = new DefaultResourceLoader();
     
     /**
      * The Map that holds the Ontologies.
@@ -41,10 +43,10 @@ public class OntologyManagerImpl implements OntologyManager {
     /** 
      * Creates a new OntologyManagerImpl managing the ontologies specified in the config map.
      *
-     * @param cfg configuration map for the manager (ID->resource location).
+     * @param cfg configuration properties for the manager (ID=resource_location).
      * @throws OntologyLoaderException if the config file could not be parsed or the loading of a ontology failed.
      */
-	public OntologyManagerImpl(Map<String, Resource> cfg)
+	public OntologyManagerImpl(Properties cfg)
 			throws OntologyLoaderException 
 	{
 		this();
@@ -82,23 +84,22 @@ public class OntologyManagerImpl implements OntologyManager {
     }
 
     
-    public void loadOntologies( Map<String, Resource> configMap ) 
+    public void loadOntologies( Properties config ) 
     	throws OntologyLoaderException 
     {
-        if ( configMap != null && !configMap.isEmpty()) {
-            for ( String ontId : configMap.keySet() ) 
+        if ( config != null && !config.isEmpty()) {
+            for ( Object ontId : config.keySet() ) 
             {
                 try {
-                	Resource source = configMap.get(ontId);
-                	URI uri = source.getURI();
-
+                	String key = (String) ontId;
+                	URI uri = LOADER.getResource(config.getProperty(key)).getURI();
                 	if ( log.isInfoEnabled() ) {
                 		log.info( "Loading ontology: ID= " + 
                 			ontId + ", uri=" + uri);
                 	}
 
-                    Ontology oa = fetchOntology( ontId, "OBO", uri );
-                    putOntology(ontId, oa);
+                    Ontology oa = fetchOntology( key, "OBO", uri );
+                    putOntology(key, oa);
                 } catch ( Exception e ) {
                     throw new OntologyLoaderException( "Failed loading ontology source.", e );
                 }
