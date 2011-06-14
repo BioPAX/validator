@@ -182,4 +182,14 @@ public class AOPAspectJLTWIntegrationTest {
     	ErrorType error = validation.findErrorType("cloned.utility.class", Behavior.WARNING);
     	assertNull(error);
     }
+    
+    @Test
+    public void testMemberPhysicalEntityRange() throws IOException {
+    	Validation validation = new Validation();
+    	validator.importModel(validation, getClass()
+    			.getResourceAsStream("testMemberPhysicalEntityRange.xml")); 
+    	validator.validate(validation);
+    	ErrorType error = validation.findErrorType("syntax.error", Behavior.ERROR);
+    	assertNotNull(error);
+    }
 }

@@ -225,9 +225,9 @@ public class ExceptionsAspect extends AbstractAspect {
 		}
     }
     
-    @Around("execution(* org.biopax.paxtools.controller.PropertyEditor*+.checkRestrictions(..)) " +
-    		"&& args(bean, value)")
-	public void adviseCheckRestrictions(ProceedingJoinPoint jp, Object bean, Object value) {
+    @Around("execution(protected void org.biopax.paxtools.controller.PropertyEditor*+.checkRestrictions(..)) " +
+    		"&& args(value, bean)")
+	public void adviseCheckRestrictions(ProceedingJoinPoint jp,  Object value, BioPAXElement bean) {
     	try {
     		jp.proceed();
     	} catch (Throwable ex) {
@@ -236,9 +236,9 @@ public class ExceptionsAspect extends AbstractAspect {
 	}    
     
     
-    @Around("execution(* org.biopax.paxtools.controller.PropertyEditor*+.invokeMethod(..)) " +
+    @Around("execution(protected void org.biopax.paxtools.controller.PropertyEditor*+.invokeMethod(..)) " +
     				"&& args(method, bean, value)")
-	public void adviseInvokeMethod(ProceedingJoinPoint jp, Method method, Object bean, Object value) {
+	public void adviseInvokeMethod(ProceedingJoinPoint jp, Method method, BioPAXElement bean, Object value) {
     	try {
     		jp.proceed();
     	} catch (Throwable ex) {
