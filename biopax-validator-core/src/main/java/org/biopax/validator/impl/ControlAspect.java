@@ -9,6 +9,8 @@ import org.aspectj.lang.annotation.*;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.validator.Rule;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 
 /**
  * This is a BioPAX Model controller/validator.
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Configurable;
  *
  * @author rodche
  */
+//@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Configurable
 @Aspect
 public class ControlAspect extends AbstractAspect { 

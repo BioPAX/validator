@@ -36,6 +36,7 @@ import org.biopax.validator.utils.BiopaxValidatorUtils;
  *
  * @author rodche
  */
+//@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Configurable
 @Aspect
 @Order(50)

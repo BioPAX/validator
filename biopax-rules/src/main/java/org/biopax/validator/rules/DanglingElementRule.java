@@ -7,7 +7,6 @@ import java.util.HashSet;
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
-import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.validator.impl.AbstractRule;
@@ -22,8 +21,7 @@ import org.springframework.stereotype.Component;
 public class DanglingElementRule extends AbstractRule<Model> {
 	
 	public boolean canCheck(Object thing) {
-		return thing instanceof Model
-			&& ((Model)thing).getLevel() == BioPAXLevel.L3;
+		return thing instanceof Model;
 	}
 
 	public void check(Model model, boolean fix) {
@@ -33,8 +31,9 @@ public class DanglingElementRule extends AbstractRule<Model> {
 			new HashSet<BioPAXElement>(model.getObjects());
 		
 		// extends traverser ;)
-		AbstractTraverser checker = new AbstractTraverser(SimpleEditorMap.L3) {
-			
+		AbstractTraverser checker = new AbstractTraverser(
+				SimpleEditorMap.get(model.getLevel())) 
+		{	
 			@Override
 			protected void visit(Object value, BioPAXElement parent, Model model,
 					PropertyEditor editor) {

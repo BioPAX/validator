@@ -177,6 +177,8 @@ public class NormalizerTest {
     	//TODO add to test CV (and use a MI term)
 		
 		//test BioSource
+		assertFalse(model.containsID("Xref7"));
+		assertFalse(model.containsID("BioSource_Mouse_Tissue"));
 		bpe = model.getByID("urn:miriam:taxonomy:10090");
 		assertTrue(bpe instanceof BioSource);
 		bpe = model.getByID("urn:biopax:UnificationXref:TAXONOMY_10090");

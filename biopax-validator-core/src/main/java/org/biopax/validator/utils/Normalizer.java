@@ -56,6 +56,8 @@ public class Normalizer {
 	private Validation validation;
 	private ShallowCopy copier;
 	private NormalizerOptions options;
+	private final Map<BioPAXElement,BioPAXElement> subs;
+	private Model subsModel;
 	
 	
 	/**
@@ -66,6 +68,8 @@ public class Normalizer {
 		biopaxReader.mergeDuplicates(true);
 		copier = new ShallowCopy(BioPAXLevel.L3);
 		options = new NormalizerOptions(); // with default settings
+		subs = new HashMap<BioPAXElement, BioPAXElement>();
+		subsModel = biopaxReader.getFactory().createModel();
 	}
 
 	/**
@@ -142,38 +146,43 @@ public class Normalizer {
 		// use a copy of the xrefs set (to avoid concurrent modif. exception)
 		Set<? extends Xref> xrefs = new HashSet<Xref>(model.getObjects(Xref.class));
 		for(Xref ref : xrefs) {
-			
 			// get database official urn
-			String name = ref.getDb();
-			
+			String db = ref.getDb();
+			String id = ref.getId();
 			// workaround a null pointer exception
-			if(name == null || "".equals(name)) {
+			if(db == null || "".equals(db)) {
 				log.error(ref.getModelInterface().getSimpleName() 
 					+ " " + ref.getRDFId() + " - 'db' property is empty! "
-						+ extraInfo());
+					+ extraInfo());
+				continue; // skip it
+			}
+			if(id == null || "".equals(id)) {
+				log.error(ref.getModelInterface().getSimpleName() 
+					+ " - 'id' property is empty! "
+					+ extraInfo());
 				continue; // skip it
 			}
 			
-			try {
-				// try to update name to the primary
-				name = MiriamLink.getName(name);
-				ref.setDb(name);
+			try {// to update name to the primary one
+				db = MiriamLink.getName(db);
+				ref.setDb(db);
 			} catch (IllegalArgumentException e) {
 				if(log.isWarnEnabled())
-					log.warn("Unknown db: " + name +
+					log.warn("Unknown db: " + db +
 						". Cannot replace " + ref.getDb() +
 						" with a standard name! " +
 						ref.getRDFId() + "; " + e + "; " + extraInfo());
 			}	
 			
-			String rdfid = generateURIForXref(name, ref.getId(), ref.getIdVersion(),
+			String rdfid = generateURIForXref(db, id, ref.getIdVersion(),
 					(Class<? extends Xref>) ref.getModelInterface());	
 			
-			// if different id, - begin updating
-			if(!ref.getRDFId().equals(rdfid)) {
-				updateOrRemove(model, ref, rdfid);
-			}
+			if(rdfid != null)
+				addToReplacementMap(model, ref, rdfid);
 		}
+		
+		// update/replace xrefs now
+		doSubs(model);
 	}	
 
 	
@@ -192,10 +201,17 @@ public class Normalizer {
 	 */
 	public static String generateURIForXref(String db, String id, String ver, Class<? extends Xref> type) 
 	{
+		if(id == null && "".equals(id.trim())) return null;
+		if(db == null && "".equals(db.trim())) return null;
+		
+		String rdfid = null;
+		
 		// try to use primary standard name if exists -
 		try {
 			db = MiriamLink.getName(db);
-			if(type.equals(PublicationXref.class)) {
+			if(type.equals(PublicationXref.class)
+				&& id != null && !"".equals(id.trim())) 
+			{
 				return MiriamLink.getURI(db, id);
 			}
 		} catch (IllegalArgumentException e) {
@@ -204,7 +220,6 @@ public class Normalizer {
 			
 		}
 		
-		String rdfid = null;
 		// consistently build a new, standard id (URI)
 		String prefix = ModelUtils.uriPrefixForGeneratedXref(type);
 		String ending = (ver != null && !"".equals(ver.trim()))
@@ -233,17 +248,19 @@ public class Normalizer {
 	 * Replaces rdfid; removes the element from the model if (with new rdfid) it becomes duplicate
 	 * Note: model loses its integrity (object properties fix is required after this)
 	 */
-	private void updateOrRemove(Model model, BioPAXElement bpe, String newRdfid) 
+	private void addToReplacementMap(Model model, BioPAXElement bpe, String newRdfid) 
 	{
 		// model has another object with the same (new) ID?
-		
 		if(model.containsID(newRdfid)) {
 			// replace with the existing element (having new id)
-			model.replace(bpe, model.getByID(newRdfid));
+			subs.put(bpe, model.getByID(newRdfid));
+		} else if(subsModel.containsID(newRdfid)) {
+			subs.put(bpe, subsModel.getByID(newRdfid));
 		} else {
 			// replace with its own copy that has new id
 			BioPAXElement copy = copier.copy(bpe, newRdfid);
-			model.replace(bpe, copy);
+			subs.put(bpe, copy);
+			subsModel.add(copy);
 		}
 	}
 
@@ -251,7 +268,7 @@ public class Normalizer {
 	private String extraInfo() {
 		return (validation != null) ? validation.getDescription() : "";
 	}
-
+	
 	
 	/**
 	 * Sets Miriam standard URI (if possible) for a utility object 
@@ -288,26 +305,29 @@ public class Normalizer {
 			return;
 		}
 		
-		if(idExt != null && !"".equals(idExt.trim())) {
-			try {
-				urn += "_" + URLEncoder.encode(idExt, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				log.error("UTF-8 encoding failed for (idVersion): " +
-						idExt + "! " + e + ". " + extraInfo());
+		if (bpe instanceof SmallMoleculeReference
+				&& db.trim().equalsIgnoreCase("chebi")) 
+		{
+			// A special case, shortcut, for the ChEBI SMR case
+			urn = "urn:miriam:";
+			// correction for missing 'chebi:' prefix
+			// (if it's not already fixed by the validator...)
+			String suf = id.trim().toLowerCase();
+			urn += ((suf.startsWith("chebi:")) ? suf : "chebi:" + suf);
+		} else {
+			if (idExt != null && !"".equals(idExt.trim())) {
+				try {
+					urn += "_" + URLEncoder.encode(idExt, "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					log.error("UTF-8 encoding failed for (idVersion): " + idExt
+							+ "! " + e + ". " + extraInfo());
+				}
 			}
 		}
 		
 		// if different id, edit the element
-		if (!urn.equals(bpe.getRDFId())) {
-			try {
-				updateOrRemove(model, bpe, urn);
-			} catch (Exception e) {
-				log.error("Failed to replace ID of " + bpe + " ("
-						+ bpe.getModelInterface().getSimpleName() + ") with '"
-						+ urn + "'. " + e + ". " + extraInfo());
-				return;
-			}
-		}
+		if(urn != null)
+			addToReplacementMap(model, bpe, urn);
 	}
 	
 	
@@ -422,7 +442,8 @@ public class Normalizer {
 					+ ". " + extraInfo());
 			} 
 			else if(uref.getDb().toLowerCase().startsWith("uniprot") 
-				|| uref.getDb().toLowerCase().startsWith("entrez")) {
+				|| uref.getDb().toLowerCase().startsWith("entrez")
+				|| uref.getDb().toLowerCase().startsWith("chebi")) {
 				toReturn = uref;
 				break;
 			} else if(toReturn == null) {
@@ -454,48 +475,34 @@ public class Normalizer {
 		}
 		
 		// clean/normalize xrefs first, because they gets used next!
+		if(log.isInfoEnabled())
+			log.info("Normalizing xrefs..." + extraInfo());
 		normalizeXrefs(model);
 		
 		// fix displayName where possible
 		if(options.fixDisplayName) {
+			if(log.isInfoEnabled())
+				log.info("Normalizing display names..." + extraInfo());
 			fixDisplayName(model);
 		}
-				
-		// copy
-		Set<? extends UtilityClass> objects = 
-			new HashSet<UtilityClass>(model.getObjects(UtilityClass.class));
-		// process the rest of utility classes (selectively though)
-		for(UtilityClass bpe : objects) 
-		{
-			if(bpe instanceof ControlledVocabulary || bpe instanceof BioSource) 
-			{
-				//note: it does not check/fix the CV term name if wrong or missing though...
-				
-				UnificationXref uref = getFirstUnificationXref((XReferrable) bpe);
-				if (uref != null) 
-					normalizeID(model, bpe, uref.getDb(), uref.getId(), null); // no idVersion for a CV or BS!
-				else 
-					if(log.isInfoEnabled())
-						log.info("Cannot normalize " + bpe.getModelInterface().getSimpleName() 
-							+ " : no unification xrefs found in " + bpe.getRDFId()
-							+ ". " + extraInfo());
-			} else if(bpe instanceof EntityReference) {
-				UnificationXref uref = getFirstUnificationXrefOfEr((EntityReference) bpe);
-				if (uref != null) 
-					normalizeID(model, bpe, uref.getDb(), uref.getId(), null); // not using idVersion!..
-				else 
-					if(log.isInfoEnabled())
-						log.info("Cannot normalize EntityReference: " +
-							"no unification xrefs found in " + bpe.getRDFId()
-							+ ". " + extraInfo());
-			} else if(bpe instanceof Provenance) {
-				normalizeProvenance((Provenance) bpe, model);
-			}
-		}
+			
+		if(log.isInfoEnabled())
+			log.info("Normalizing CVs and organisms..." + extraInfo());
+		normalizeCVsAndBioSource(model);
+		if(log.isInfoEnabled())
+			log.info("Normalizing data sources (Provenance)..." + extraInfo());
+		normalizeProvenance(model);
+		if(log.isInfoEnabled())
+			log.info("Normalizing entity references..." + extraInfo());
+		normalizeERs(model);
 		
-		// update properties/find children (self-merge)
+		// find/add lost (in replace) children
+		if(log.isInfoEnabled())
+			log.info("Repairing..." + extraInfo());
 		model.repair();
 		
+		if(log.isInfoEnabled())
+			log.info("Optional tasks (reasoning)..." + extraInfo());
 		// auto-set dataSource property for all entities (top-down)
 		ModelUtils mu = new ModelUtils(model);
 		if(options.inferPropertyDataSource) {
@@ -536,10 +543,81 @@ public class Normalizer {
 	}
 
 	
-	private void normalizeProvenance(Provenance pro, Model model) {
-		autoName(pro); // throws IAE (from MiriamLink)
-		// normalize rdfid
-		normalizeID(model, pro, pro.getStandardName(), null, null);
+	private void normalizeCVsAndBioSource(Model model) {
+		// process the rest of utility classes (selectively though)
+		for(UtilityClass bpe : model.getObjects(UtilityClass.class)) 
+		{
+			if(bpe instanceof ControlledVocabulary || bpe instanceof BioSource) 
+			{
+				//note: it does not check/fix the CV term name if wrong or missing though...
+				UnificationXref uref = getFirstUnificationXref((XReferrable) bpe);
+				if (uref != null) 
+					normalizeID(model, bpe, uref.getDb(), uref.getId(), null); // no idVersion for a CV or BS!
+				else 
+					if(log.isInfoEnabled())
+						log.info("Cannot normalize " + bpe.getModelInterface().getSimpleName() 
+							+ " : no unification xrefs found in " + bpe.getRDFId()
+							+ ". " + extraInfo());
+			} 
+		}
+		
+		// replace/update elements in the model
+		doSubs(model);
+	}
+	
+	private void normalizeERs(Model model) {
+		// process the rest of utility classes (selectively though)
+		for (EntityReference bpe : model.getObjects(EntityReference.class)) {
+			UnificationXref uref = getFirstUnificationXrefOfEr((EntityReference) bpe);
+			if (uref != null) // not using idVersion!..
+				normalizeID(model, bpe, uref.getDb(), uref.getId(), null); 
+			else if (log.isInfoEnabled())
+				log.info("Cannot normalize EntityReference: "
+						+ "no unification xrefs found in " + bpe.getRDFId()
+						+ ". " + extraInfo());
+		}
+		
+		// replace/update elements in the model
+		doSubs(model);
+	}
+	
+	private void normalizeProvenance(Model model) {
+		// process the rest of utility classes (selectively though)
+		for(Provenance pro : model.getObjects(Provenance.class)) 
+		{
+			autoName(pro); // throws IAE (from MiriamLink)
+			normalizeID(model, pro, pro.getStandardName(), null, null);
+		}
+		
+		// replace/update elements in the model
+		doSubs(model);
+	}
+
+	/**
+	 * Executes the batch replace/update 
+	 * to the normalized equivalent objects.
+	 * 
+	 * @param model
+	 */
+	private void doSubs(Model model) {
+		ModelUtils mu = new ModelUtils(model);
+		for(BioPAXElement e : subs.keySet()) {
+			model.remove(e);
+		}
+
+		try {
+			mu.replace(subs);
+		} catch (Exception e) {
+			log.error("Failed to replace IDs. " + extraInfo(), e);
+			return;
+		}
+		
+		for(BioPAXElement e : subs.values()) {
+			if(!model.contains(e))
+				model.add(e);
+		}
+		subs.clear();
+		subsModel = biopaxReader.getFactory().createModel();
 	}
 
 	

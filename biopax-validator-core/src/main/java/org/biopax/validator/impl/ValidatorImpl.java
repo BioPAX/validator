@@ -98,20 +98,17 @@ public class ValidatorImpl implements Validator {
 			validation.setModel(model); // not sure if this is necessarily...
 		}
 
+		
+		Stack<Object> curr = new Stack<Object>(); // validation is done when the size becomes 0
 		for (Rule rule : rules) {
 			// rules can check/fix the model or specific elements
 			if (log.isDebugEnabled())
 				log.debug("Current rule is: " + rule.getName());
 			
-			//stop if max.errors exceeded
-			if(validation.isMaxErrorsSet() 
-				&& validation.getNotFixedErrors() >= validation.getMaxErrors())
-			{
-				break;
-			}
 			if (rule.canCheck(model)) {
-				rule.check(model, false);
-			} else {
+				run(rule, model, curr);
+			} 
+			else {
 				// copy the elements collection to avoid concurrent modification (rules can add/remove objects)!
 				Set<BioPAXElement> elements = new HashSet<BioPAXElement>(model.getObjects());
 				for (BioPAXElement el : elements) {
@@ -122,12 +119,50 @@ public class ValidatorImpl implements Validator {
 						if(validation.isMaxErrorsSet() 
 								&& validation.getNotFixedErrors() >= validation.getMaxErrors())
 							break;
-						rule.check(el, validation.isFix());
+						
+						run(rule, el, validation.isFix(), curr);
 					}
 				}
 			}
 		}
 
+		// in the main thread, wait until all checks are done
+		int i = 0;
+		while (true) {
+			// have all the entries completed ?
+			synchronized(curr) {
+				//wait loop, to double-check that all done
+				if (curr.isEmpty()) 
+				{
+					i++;
+					if(i > 3) // perhaps, all done indeed ;)
+						break;
+				}
+				
+				//also stop if max.errors exceeded
+				if(validation.isMaxErrorsSet() 
+					&& validation.getNotFixedErrors() >= validation.getMaxErrors())
+				{
+					break;
+				}
+				
+				if (log.isDebugEnabled())
+					log.debug("Active rule checks: " + curr.size());
+			}
+
+			// sleep for a bit
+			try {
+				Thread.sleep(100);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+		
+		if (log.isDebugEnabled())
+			log.debug("All rules checked!");
+		
 		// normalize?
 		if (validation.isNormalize()) {
 			(new Normalizer(validation)).normalize(model);
@@ -159,6 +194,32 @@ public class ValidatorImpl implements Validator {
 	}
 
 	
+	private void run(final Rule rule, final BioPAXElement el, final boolean fix, final Stack curr) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				synchronized(curr) {curr.push(el);} // push something, start
+				rule.check(el, fix);
+				synchronized(curr) {curr.pop();} // done, remove whatever (only size matters)
+			}
+		})
+		.run();
+	}
+
+	
+	private void run(final Rule rule, final Model model, final Stack curr) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				synchronized(curr) {curr.push(rule);} // push something, start
+				rule.check(model, false);
+				synchronized(curr) {curr.pop();} // done, remove smth. (only size matters)
+			}
+		})
+		.run();
+	}
+
+
 	public Rule<?> findRuleByName(String name) {
 		Rule<?> found = null;
 		if (name != null || !"".equals(name)) {
@@ -204,9 +265,6 @@ public class ValidatorImpl implements Validator {
 		} else {
 			validation.getObjects().add(obj);
 		}
-		
-		if(log.isDebugEnabled())
-			log.debug("this validator : " + this);
 	}
 
 
@@ -329,5 +387,4 @@ public class ValidatorImpl implements Validator {
 			v.addError(err);
 		}		
 	}
-    
 }

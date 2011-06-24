@@ -61,6 +61,7 @@ public class AOPAspectJLTWIntegrationTest {
     	result.setDescription(resource.getDescription());
     	validator.importModel(result, resource.getInputStream());
         validator.validate(result); // check all rules
+        System.out.println(result.getError().toString());
         assertFalse(result.getError().isEmpty());
         validator.getResults().clear(); // clean after itself
     }

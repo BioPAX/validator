@@ -10,6 +10,8 @@ import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.biopax.validator.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 
 /**
@@ -21,6 +23,7 @@ import org.springframework.core.annotation.Order;
  *
  * @author rodche
  */
+//@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Configurable
 @Aspect
 @Order(25) // 'checkBehavior' runs around the ExceptionsAspect's 'adviseRuleExceptions'!

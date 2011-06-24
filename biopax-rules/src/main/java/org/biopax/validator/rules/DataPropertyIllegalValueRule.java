@@ -12,6 +12,7 @@ import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
+import org.biopax.paxtools.model.level3.Level3Element;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
+public class DataPropertyIllegalValueRule extends AbstractRule<BioPAXElement> {
 	/*
 	 * @Autowired, even with @Qualifier, won't work here, 
 	 * because we need to inject a particular bean (<util:set>) 
@@ -36,15 +37,13 @@ public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
 	}
 	
 	public boolean canCheck(Object thing) {
-		return thing instanceof Model 
-			&& !((Model)thing).getObjects().isEmpty();
+		return thing instanceof BioPAXElement;
 	}
 
-	public void check(Model model, final boolean fix) {
-		EditorMap editorMap = 
-			(model.getLevel() == BioPAXLevel.L3)
-				? SimpleEditorMap.L3
-					: SimpleEditorMap.L2;
+	public void check(BioPAXElement bpe, final boolean fix) {
+		EditorMap editorMap = (bpe instanceof Level3Element)
+			? SimpleEditorMap.get(BioPAXLevel.L3)
+				: SimpleEditorMap.get(BioPAXLevel.L2);
 		
 		AbstractTraverser checker = new AbstractTraverser(editorMap) {
 			@Override
@@ -64,9 +63,7 @@ public class DataPropertyIllegalValueRule extends AbstractRule<Model> {
 			}
 		};
 		
-		for(BioPAXElement e: model.getObjects()) {
-			checker.traverse(e, model);
-		}
+		checker.traverse(bpe, null);
 	}
 	
 }
