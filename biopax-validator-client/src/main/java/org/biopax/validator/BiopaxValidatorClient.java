@@ -99,7 +99,7 @@ public class BiopaxValidatorClient {
 		}
         
 		if(filterBy != null) {
-			parts.add(new StringPart("retDesired", filterBy.toString()));
+			parts.add(new StringPart("filter", filterBy.toString()));
 		}
 		
 		if(maxErrs != null && maxErrs > 0) {
