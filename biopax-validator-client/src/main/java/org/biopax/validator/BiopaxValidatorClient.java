@@ -81,7 +81,7 @@ public class BiopaxValidatorClient {
      * @throws IOException
      */
     public void validate(boolean autofix, boolean normalize, RetFormat retFormat, Behavior filterBy,
-    		String biopaxUrl, File[] biopaxFiles, OutputStream out) throws IOException 
+    		Integer maxErrs, String biopaxUrl, File[] biopaxFiles, OutputStream out) throws IOException 
     {
         Collection<Part> parts = new HashSet<Part>();
         
@@ -100,6 +100,10 @@ public class BiopaxValidatorClient {
         
 		if(filterBy != null) {
 			parts.add(new StringPart("retDesired", filterBy.toString()));
+		}
+		
+		if(maxErrs != null && maxErrs > 0) {
+			parts.add(new StringPart("maxErrors", maxErrs.toString()));
 		}
 		
         // add data

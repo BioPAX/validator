@@ -23,7 +23,7 @@ public class BiopaxValidatorClientTest {
 		};
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		client.validate(false, false, RetFormat.HTML, null, null, files, baos);
+		client.validate(false, false, RetFormat.HTML, null, null, null, files, baos);
 		
 		System.out.println(baos.toString());
     }
@@ -40,7 +40,7 @@ public class BiopaxValidatorClientTest {
 		};
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		client.validate(true, true, RetFormat.XML, null, null, files, baos);
+		client.validate(true, true, RetFormat.XML, null, null, null, files, baos);
 		
 		//System.out.println(baos.toString());
 		
