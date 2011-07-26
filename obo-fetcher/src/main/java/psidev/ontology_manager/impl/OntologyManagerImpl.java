@@ -90,8 +90,8 @@ public class OntologyManagerImpl implements OntologyManager {
         if ( config != null && !config.isEmpty()) {
             for ( Object ontId : config.keySet() ) 
             {
-                try {
-                	String key = (String) ontId;
+            	String key = (String) ontId;
+            	try {
                 	URI uri = LOADER.getResource(config.getProperty(key)).getURI();
                 	if ( log.isInfoEnabled() ) {
                 		log.info( "Loading ontology: ID= " + 
@@ -100,8 +100,9 @@ public class OntologyManagerImpl implements OntologyManager {
 
                     Ontology oa = fetchOntology( key, "OBO", uri );
                     putOntology(key, oa);
-                } catch ( Exception e ) {
-                    throw new OntologyLoaderException( "Failed loading ontology source.", e );
+                } catch ( Throwable e ) { //using Throwable because StackOverflowError is also possible here
+                    throw new OntologyLoaderException("Failed loading/parsing ontology " + key 
+                    	+ " from " + config.getProperty(key), e );
                 }
             }
         } else {
@@ -134,7 +135,7 @@ public class OntologyManagerImpl implements OntologyManager {
                     
                     oa = loader.parseOboFile( url, ontologyID );
                     oa.setName(ontologyID);
-                } catch ( OntologyLoaderException e ) {
+                } catch ( Exception e ) {
                     throw new OntologyLoaderException( "OboFile parser failed with Exception: ", e );
                 }
             }

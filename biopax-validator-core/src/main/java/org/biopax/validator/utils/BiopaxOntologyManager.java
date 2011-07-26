@@ -57,8 +57,8 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 		
 		try {
 			loadOntologies(ontologiesConfig);
-		} catch (OntologyLoaderException e) {
-			throw new RuntimeException(e);
+		} catch (Throwable e) {
+			throw new RuntimeException("Failed to load or parse all required biological ontologies!", e);
 		}
 	}
 

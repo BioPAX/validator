@@ -20,7 +20,7 @@ PRGDIR=`cd "$PRGDIR" ; pwd -P`
 echo BioPAX Validator Home Dir: $PRGDIR
 echo Starting...
 
-CLASSPATH=$PRGDIR/lib
+CLASSPATH=$PRGDIR:$PRGDIR/lib
 # interate over all jars in PRGDIR/lib and add to class path
 JARS="$PRGDIR/lib/*.jar"
 for jar in $(ls $JARS); do
@@ -31,4 +31,4 @@ done
 #echo Using Classpath: $CLASSPATH
 
 # run validator
-$JAVA_HOME/bin/java -cp $CLASSPATH -javaagent:$PRGDIR/lib/spring-instrument-3.0.5.RELEASE.jar -Xms2g -Xmx2g -Dfile.encoding=UTF-8 org.biopax.validator.Main $1 $2 $3 $4 $5 $6
+$JAVA_HOME/bin/java -cp $CLASSPATH -javaagent:$PRGDIR/lib/spring-instrument-3.0.5.RELEASE.jar -Xms2g -Xmx2g -Dfile.encoding=UTF-8 -Djava.io.tmpdir=$PRGDIR/tmp org.biopax.validator.Main $1 $2 $3 $4 $5 $6

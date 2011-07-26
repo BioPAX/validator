@@ -36,18 +36,19 @@ public class Main {
 	public static void main(String[] args) throws Exception {				
         if(args.length == 0) {
         	String usage = 
-    			"\n BioPAX Validator v2.0.0\n\n" +
+    			"\n The BioPAX Validator v2.0.0\n\n" +
     		    "Parameters: <input> [--output=<file>] [--auto-fix] [--normalize] [--return-biopax] [--max-errors=<n>]\n" + 
-    		    "(the second and next arguments are optional and can go in any order)\n" +
-    		    "For Example:\n" +
+    		    "(the second and next arguments are optional and can go in any order).\n" +
+    		    "For example:\n" +
+    		    "  path/dir --output=errors.xml\n" +
     		    "  list:batch_file_name \n" +
-    		    "  file:biopax.owl auto-fix normalize errors.xml\n" +
-    		    "  http://www.some.net/data.owl output.xml\n\n" +
-    		    "A Batch File Should List One Task Per Line: " +
-    		    "file:/path/to/file or URL (to BioPAX data)\n" +
+    		    "  file:biopax.owl auto-fix normalize --output=errors.xml\n" +
+    		    "  http://www.some.net/data.owl --output=errors.xml\n\n" +
+    		    "A batch file should list one task (resource) per line, i.e., " +
+    		    "file:path/file or URL (to BioPAX data)\n" +
     		    "Use 'return-biopax' flag " +
     		    "(only works together with the 'auto-fix' or 'normalize') " +
-    		    " to get the modified BioPAX OWL (no error messages are reported)";
+    		    " to get the modified BioPAX OWL only (no error messages are reported)";
             System.out.println(usage);
             System.exit(-1);
         }

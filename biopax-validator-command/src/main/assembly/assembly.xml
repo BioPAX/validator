@@ -40,5 +40,10 @@
       <fileMode>0644</fileMode>
       <outputDirectory>sampleData</outputDirectory>
     </fileSet>
+    <fileSet>
+      <directory>src/main/etc/tmp</directory>
+      <fileMode>0644</fileMode>
+      <outputDirectory>tmp</outputDirectory>
+    </fileSet>
   </fileSets>
 </assembly>
