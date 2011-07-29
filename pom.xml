@@ -43,7 +43,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<spring.version>3.0.5.RELEASE</spring.version>
-		<paxtools.version>4.0.0-SNAPSHOT</paxtools.version>
+		<paxtools.version>4.0.0b</paxtools.version>
 	</properties>
 	
 	<modules>
@@ -125,7 +125,7 @@
 				<site>
 					<id>biopax.sf.net</id>
 					<name>BioPAX Sourceforge site</name>
-					<url>${local.biopax.site}/validator</url>
+					<url>${local.biopax.site}/validator-${project.version}</url>
 				</site>
 			</distributionManagement>
 		</profile>
@@ -268,7 +268,7 @@
   	</servers>
   	(alternatively, one can define developer's profile in this pom.xml 
   	with a <distributionManagement/> inside, and use username explicitely, e.g., 
-  	<url>scp://USERID@shell.sourceforge.net/home/project-web/biopax/htdocs/validator</url>)
+  	<url>scp://USERID@shell.sourceforge.net/home/project-web/biopax/htdocs/validator-${project.version}</url>)
   	2) [Important!] CREATE the remote shell first (before using "mvn deploy"):
   		- from terminal do: "ssh -t USERID,biopax@shell.sourceforge.net create", wait...
   		- once it's up, - exit (now you can login as "ssh USERID,biopax@shell.sourceforge.net", 
@@ -286,7 +286,7 @@
 		<site>
 			<id>biopax.sf.net</id>
 			<name>BioPAX Sourceforge site</name>
-			<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/validator</url>
+			<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/validator-${project.version}</url>
 		</site>
 		<snapshotRepository>
 			<id>biopax.snapshots</id>
