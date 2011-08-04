@@ -21,22 +21,17 @@
 
 <h2>Welcome!</h2>
 <div style="width: 90%">
-BioPAX is an important standard for communicating the knowledge about biochemical processes.  
-In the course of data exchange, errors that occur in data modeling, 
-curation, or transformation can be big obstacle. The BioPAX Validator is being developed 
-to help improve the BioPAX data quality, which also makes pathway knowledge interpretation 
-and integration possible in a greater level of detail.
-It checks the BioPAX models for dozens of custom rules, some of which cannot be expressed 
-(reasonably, at the moment, or at all) in OWL or related rule definition languages.
-<p/>
-The validator runs syntactic and advanced semantic validation rules that came from the 
-BioPAX specification and community best practices, expressed in plain Java, and embraced by the 
-cross-cutting error reporting framework. The rules are, basically, generic Java classes 
-making use of Paxtools API. They can also check across several BioPAX entities, check entire model, 
-can be nested, or overlap in their subjects. A BioPAX element can be checked in "real-time" 
-(on property change) or "post-model" (after the model is complete) modes. 
-However, in most cases such as when one checks files, the former is not required; but 
-the "real-time" mode would come to play in an interactive BioPAX editor software that use this API.
+BioPAX is a standard for communicating the knowledge about biochemical processes.  
+The BioPAX Validator is to help detect and fix syntax and non-trivial semantic issues 
+introduced in the course of biological pathway data modeling, mapping, and exporting to BioPAX. 
+"Valid" pathway knowledge is easier to analyze and merge at a much greater level of detail and with more generic, standard tools. 
+The BioPAX Validator has dozens of custom rules defined, some of which cannot be expressed in OWL or related rule definition languages.
+These rules come from the BioPAX specification and community best practices, are expressed in plain Java and embraced by the 
+validator's original cross-cutting error reporting framework. The rules are, basically, generic Java classes 
+built around Paxtools API. They can check across several BioPAX entities, check entire BioPAX model, 
+can be nested, can overlap in their subjects, can check "real-time" (on a property change). 
+The BioPAX Validator can run on the web, command line, or - integrated into other java applications.
+
 </div>
 &nbsp;
 <div>

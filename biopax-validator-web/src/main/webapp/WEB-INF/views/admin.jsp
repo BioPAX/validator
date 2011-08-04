@@ -21,7 +21,7 @@
     <div id="left">
 		<h1>Settings</h1>
 		<div>
-			<security:authorize ifNotGranted="ROLE_ADMIN">Everyone can see but only Admin modify the following
+			<security:authorize ifNotGranted="ROLE_ADMIN">Everyone can see but only Admin modify some of the following
 			</security:authorize>
 			<security:authorize ifAnyGranted="ROLE_ADMIN">All changes immediately apply for all users.
 			</security:authorize>
@@ -30,7 +30,16 @@
 		<div>
 			<a href='<c:url value="/rules.html"/>' >Validation Rules</a>
 		</div>
+		<br/>
+		<div>
+			<a href='<c:url value="/errorTypes.html"/>' >Error Classes</a>
+		</div>
+		<br/>
+		<div>
+			<a href='<c:url value="/extraCfg.html"/>' >Additional Configuration</a>
+		</div>
     </div>
+    <br/>
     <div id="right">
       <jsp:include page="/templates/menu.jsp"/>
       <jsp:include page="/templates/box.jsp"/>

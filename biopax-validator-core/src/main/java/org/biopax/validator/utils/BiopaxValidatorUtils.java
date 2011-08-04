@@ -370,7 +370,7 @@ public class BiopaxValidatorUtils {
 		error.addErrorCase(new ErrorCaseType(ruleName, objectName, msg));
 		
 		String category = messageSource.getMessage(errorCode + ".category", 
-			null, "INFORMATION", locale);
+			null, Category.INFORMATION.name(), locale);
 		error.setCategory(Category.valueOf(category.trim().toUpperCase()));
 		
 		return error;
