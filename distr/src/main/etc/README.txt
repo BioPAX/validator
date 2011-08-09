@@ -187,7 +187,7 @@ III. Errors, Logging, Behavior (actions to undertake)
 The most important thing is to make sure the validator 
 starts using Java 6 with, e.g., the following JVM options:
 
--javaagent:lib/spring-instrument.jar -Xmx2048m -Xms256m -Dfile.encoding=UTF-8
+-javaagent:spring-instrument.jar -Xmx2048m -Xms256m -Dfile.encoding=UTF-8
 
 (one may have to provide the full path to the spring-instrument.jar)
 

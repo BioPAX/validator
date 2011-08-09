@@ -50,7 +50,7 @@
 		<module>biopax-validator-web</module>
 		<module>biopax-validator-core</module>
 		<module>biopax-rules</module>
-		<module>biopax-validator-command</module>
+		<module>distr</module>
 		<module>obo-fetcher</module>
 		<module>miriam-lib</module>
 		<module>biopax-validator-test</module>

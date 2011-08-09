@@ -8,7 +8,7 @@
 	<groupId>org.biopax.validator</groupId>
 	<artifactId>biopax-validator-test</artifactId>
 	<name>BioPAX Validator Integration Tests</name>
-	<description>Runs BioPAX Validator Integration Tests within the AspectJ LTW context</description>
+	<description>Runs BioPAX Validator Integration Tests (AspectJ LTW is disabled; it is to be tested in the distribution module)</description>
 
 	<build>
 		<plugins>
@@ -16,7 +16,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<argLine>-ea -Xmx1536m -DBIOPAX_HOME=${BIOPAX_HOME} -javaagent:${BIOPAX_HOME}/spring-instrument-3.0.5.RELEASE.jar</argLine>
+					<argLine>-ea -Xmx1536m</argLine>
 					<useSystemClassLoader>true</useSystemClassLoader>
 				</configuration>
 			</plugin>
@@ -28,19 +28,13 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>biopax-rules</artifactId>
 			<version>${project.version}</version>
-			<scope>compile</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>biopax-validator-core</artifactId>
 			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-instrument</artifactId>
-			<version>${spring.version}</version>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
