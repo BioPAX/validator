@@ -11,8 +11,7 @@ import java.util.Set;
  * Checks PhysicalEntities that reference the same EntityReference 
  * to be in different states (i.e. features on the PhysicalEntity can't be 
  * exactly the same on another PhysicalEntity, e.g. two proteins that 
- * reference the same ProteinReference must have different phosphorylation 
- * states.
+ * reference the same ProteinReference must have different states.
  * 
  * @author rodche
  */

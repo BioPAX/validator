@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * Component's cellularLocation is empty
  * when complex'es is not.
  * 
- * @author rodch
+ * @author rodche
  *
  * TODO check for "same location" taking into account the cell compartments hierarchy?
  */

@@ -75,7 +75,8 @@ public class ValidatorImpl implements Validator {
 		
 		if (validation == null || validation.getModel() == null) {
 			throw new BiopaxValidatorException(
-					"Failed! Did you import a model?");
+				"Failed: no BioPAX model to validate " +
+				"(have you successfully imported or created one already?)");
 		}
 
 		// register the validation (if not done already)
@@ -245,6 +246,11 @@ public class ValidatorImpl implements Validator {
 		 * during this, many errors/warnings may be caught and reported via AOP ;))
 		 */
 		Model model = simpleReader.convertFromOWL(inputStream); 
+		
+		if(model == null)
+			throw new BiopaxValidatorException(
+				"Failed importing a BioPAX model!");
+		
 		associate(model, validation);
 	}
 	
