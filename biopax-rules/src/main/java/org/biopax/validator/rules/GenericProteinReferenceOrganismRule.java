@@ -15,7 +15,7 @@ public class GenericProteinReferenceOrganismRule extends AbstractRule<ProteinRef
    public void check(ProteinReference er, boolean fix) {
 	 if(!er.getMemberEntityReference().isEmpty()) { // is generic 
        if (er.getOrganism() == null) {
-    	   error(er, "cardinality.violated", false, "organism", 1);
+    	   error(er, "min.cardinality.violated", false, "organism", 1);
        }
 	 }
     }

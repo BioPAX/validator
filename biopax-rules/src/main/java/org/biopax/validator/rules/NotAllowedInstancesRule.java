@@ -3,12 +3,9 @@ package org.biopax.validator.rules;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 import org.biopax.paxtools.model.*;
-import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.Entity;
-import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.UtilityClass;
 import org.biopax.paxtools.model.level3.Xref;
-import org.biopax.paxtools.model.level2.conversion;
 import org.biopax.paxtools.model.level2.entity;
 import org.biopax.paxtools.model.level2.utilityClass;
 import org.biopax.paxtools.model.level2.xref;
@@ -26,13 +23,10 @@ public class NotAllowedInstancesRule extends AbstractRule<BioPAXElement> {
 
    static final Class[] NOT_ALLOWED = {
         Entity.class,
-        Conversion.class,
-        Interaction.class,
         UtilityClass.class,
         Xref.class,
 	xref.class,
 	entity.class,
-	conversion.class,
 	utilityClass.class,
 	externalReferenceUtilityClass.class
     };

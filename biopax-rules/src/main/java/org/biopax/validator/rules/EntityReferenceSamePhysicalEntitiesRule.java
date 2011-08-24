@@ -1,11 +1,14 @@
 package org.biopax.validator.rules;
 
+import org.apache.commons.collections15.set.CompositeSet;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.utils.BiopaxValidatorUtils;
+import org.biopax.validator.utils.Cluster;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Checks PhysicalEntities that reference the same EntityReference 
@@ -17,22 +20,37 @@ import java.util.Set;
  */
 @Component
 public class EntityReferenceSamePhysicalEntitiesRule extends
-		AbstractRule<EntityReference> {
+		AbstractRule<EntityReference> 
+{
 
-	public void check(EntityReference eref, boolean fix) {
-		Set<SimplePhysicalEntity> simplePhysEnts = eref.getEntityReferenceOf();
-		for (SimplePhysicalEntity e1 : simplePhysEnts) {
-			for (SimplePhysicalEntity e2 : simplePhysEnts) {
-				//try { // exceptions can be the result of a bug in equivalence method
-					if (	!e1.equals(e2) 
-							&& e1.hasEquivalentFeatures(e2) 
-							&& e1.hasEquivalentCellularLocation(e2)) {
-						error(eref, "same.state.entity", false, e1, e2);
-					}
-				//TODO } catch (RuntimeException e) {} 
-				// - commented out in hope to make 'failFast' mode work
-			}
+	Cluster<SimplePhysicalEntity> algorithm = new Cluster<SimplePhysicalEntity>() {
+		@Override
+		public boolean match(SimplePhysicalEntity e1, SimplePhysicalEntity e2) {
+			assert e1.getModelInterface().equals(e2.getModelInterface()); //true as they're both from eref.entityReferenceOf()...
+			return  e1.hasEquivalentFeatures(e2) 
+					&& e1.hasEquivalentCellularLocation(e2);
+			//TODO add 'standardName' for comparison?
 		}
+	};
+	
+	
+	public void check(EntityReference eref, boolean fix) 
+	{
+		SimplePhysicalEntity[] simplePhysEnts = eref.getEntityReferenceOf()
+				.toArray(new SimplePhysicalEntity[]{});
+		
+		CompositeSet<SimplePhysicalEntity> clasters 
+			= algorithm.groupByEquivalence(simplePhysEnts, BiopaxValidatorUtils.maxErrors);
+	
+		// report the error case once per cluster
+		for (Collection<SimplePhysicalEntity> col : clasters.getCollections()) 
+		{
+			SimplePhysicalEntity u = col.iterator().next();
+			col.remove(u);
+			error(eref, "same.state.entity", false, u,
+					BiopaxValidatorUtils.getIdListAsString(col));
+		}
+
 	}
 
 	public boolean canCheck(Object thing) {
