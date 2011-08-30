@@ -200,7 +200,6 @@ public class ExceptionsAspect extends AbstractAspect {
     	SimpleIOHandler reader = (SimpleIOHandler) jp.getTarget();
     	// try to find the best object to report about...
     	Object o = reader;
-    	String loc = reader.getXmlStreamInfo();
     	BioPAXElement el = model.getByID(triple.domain);
     	if(el != null) {
     		o =  el;
@@ -210,11 +209,13 @@ public class ExceptionsAspect extends AbstractAspect {
 				// auto-fix (for some)
 				if(triple.property.equals("taxonXref")) {
 					report(el, BiopaxValidatorUtils.getId(el), "unknown.property", 
-							"reader", Behavior.ERROR, true, triple.property + " - replaced with 'xref'");
+							"reader", Behavior.ERROR, true, triple.property + 
+							" - replaced with 'xref'");
 					triple.property = "xref";
 				} else {
 					report(el, BiopaxValidatorUtils.getId(el), "unknown.property", 
-							"reader", Behavior.ERROR, false, triple.property + " - skipped");
+							"reader", Behavior.ERROR, false, triple.property + 
+							" - skipped");
 				}
 			}
     	} 

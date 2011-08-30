@@ -28,12 +28,12 @@
 
 An open source validation framework for BioPAX (www.biopax.org).
 
-This is basically created with Java 6, Paxtools, Spring Framework (AOP,
-MVC), and other open source jars. This implementation targets the 
-BioPAX Level 3, but also it does support previous levels: Level 1 is auto-
+This application was created with Java 6, Paxtools, Spring Framework (AOP,
+MVC), and many other open source java libraries. This implementation targets the 
+BioPAX Level 3, but also has some support for the previous levels: Level 1 is auto-
 converted to L2, and L2 is validated alike the L3, but not all L2 rules have 
-been implemented. Optionally (when 'normalize' flag is set), L2 data can be 
-converted to the L3, first, and then the result is validated and normalized.
+been implemented. Optionally (when 'normalize' flag is set), L2 data is also 
+converted to the L3, first, and then the result is validated or normalized.
 
 Project URL: 
 http://sourceforge.net/projects/biopax/
@@ -47,7 +47,7 @@ Download the latest BioPAX validator ZIP distribution from
 
 http://sourceforge.net/projects/biopax/files/
 
-Unpack 
+Unpack (it also includes the WAR). 
 
 
 ******************************************************************************
@@ -59,17 +59,11 @@ Execute:
 
 $sh path/to/validate.sh [args]
 
-(It prints a brief help when there are no arguments provided; 
-e.g., run as "sh path1/validate.sh path2/input-dir path3/output.xml auto-fix normalize return-biopax")
+It prints a brief help when there are no arguments provided, e.g: 
 
-For the input, one can use:
-path/dir - to check all the OWL files in the directory (it is probably the best pick)
-file:path/file.owl - to check a single file;
-classpath:path/file.owl - to check a file that can be found in java classpath (currently it's relative to the 'build' directory).
-http://www.link.to/somer-biopax/ - to validate from a URL resource (remote file or service)
-list:input.txt - execute lines, each like the above, from the specified 'batch' file
+sh validate.sh path/dir --output=path/errors.xml --auto-fix --normalize
 
-Validation messages will be printed to STDERR, unless user specified the output file.
+Validation messages are printed to STDERR, unless "--output=" argument used.
 
 NOTEs:
 
@@ -97,7 +91,7 @@ USING WEB APPLICATION
 PREREQUISITES:
 
 - Java 6
-- spring-instrument.jar (from Spring 3; enables AspectJ load-time weaving)
+- spring-instrument.jar (from Spring 3.0.x; enables AspectJ load-time weaving)
 - Tomcat (6) must be started with the following option: 
 
 -Xmx2048m -Xms256m -Dfile.encoding=UTF-8 -javaagent:/full-path-to/spring-instrument.jar
@@ -107,15 +101,15 @@ PREREQUISITES:
 
 DEPLOY
 
-Build from sources or download and rename the biopax-validator-2.0.*.war to, e.g., biopax-validator.war, 
-and simply copy to your Tomcat 'webapps' directory.
+Build from sources or get from the above distribution archive 
+and copy biopax-validator.war to your Tomcat instance's  webapps directory.
 
 Note: Optionally, inside the WAR or in the 'webapps' directory (after deploying there), 
 one can modify security settings in WEB-INF/users.properties and WEB-INF/security-config.xml
-(secured access is used to change validation rules behavior at runtime);
+(authorization is required to change validation rules's behavior at runtime)
 
 Once it gets auto-deployed (also check server logs),
-open http://localhost/biopax-validator with a browser. 
+open http://localhost/biopax-validator in a browser. 
 
 Also, one CAN edit URLs in the obo.properties file (usually - in the WEB-INF/classes) 
 and restart the server to use other than default OBO ontologies/revisions 

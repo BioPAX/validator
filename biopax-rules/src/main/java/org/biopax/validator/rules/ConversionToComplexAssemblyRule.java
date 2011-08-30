@@ -1,6 +1,12 @@
 package org.biopax.validator.rules;
 
+import org.biopax.paxtools.controller.Fetcher;
+import org.biopax.paxtools.controller.PropertyEditor;
+import org.biopax.paxtools.controller.SimpleEditorMap;
+import org.biopax.paxtools.model.BioPAXLevel;
+import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
+import org.biopax.paxtools.util.Filter;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -20,10 +26,18 @@ import java.util.Set;
  */
 @Component
 public class ConversionToComplexAssemblyRule extends AbstractRule<Conversion> {
-
+	// Fetcher is infinite-loop-safe!
+	static final Fetcher fetcher = new Fetcher(
+		SimpleEditorMap.L3, new Filter<PropertyEditor>() {
+			//complex.component only
+			public boolean filter(PropertyEditor editor) {
+				return editor.getProperty().equals("component");
+			}
+		});
+	
     public void check(Conversion thing, boolean fix) {
-        Set<PhysicalEntity> left = getPEsRecursively(thing.getLeft()),
-                            right = getPEsRecursively(thing.getRight());
+        Set<PhysicalEntity> left = getPEsRecursively(thing.getLeft());
+        Set<PhysicalEntity> right = getPEsRecursively(thing.getRight());
 
         left.removeAll(right);
 
@@ -46,15 +60,20 @@ public class ConversionToComplexAssemblyRule extends AbstractRule<Conversion> {
     }
 
     private Set<PhysicalEntity> getPEsRecursively(Set<PhysicalEntity> pes) {
-        Set<PhysicalEntity> pool = new HashSet<PhysicalEntity>();
-        for(PhysicalEntity pe: pes) {
-            if(pe instanceof Complex)
-                pool.addAll(getPEsRecursively(((Complex) pe).getComponent()));
-            else
-                pool.add(pe);
-        }
-
-        return pool;
+    	Model m = BioPAXLevel.L3.getDefaultFactory().createModel();
+    	for(PhysicalEntity pe : pes) {
+    		if(pe instanceof Complex)
+    			fetcher.fetch(pe,m);
+    		else 
+    			if(!m.contains(pe)) 
+    				m.add(pe);
+    	}   
+    	
+    	// assert all are PEs
+    	assert m.getObjects(PhysicalEntity.class).size() == m.getObjects().size();
+    	
+    	// because m.getObjects returns an unmodifiable set
+    	return new HashSet<PhysicalEntity>(m.getObjects(PhysicalEntity.class));
     }
 
     public boolean canCheck(Object thing) {

@@ -1,6 +1,7 @@
 import static org.junit.Assert.*;
 
 import java.io.*;
+import java.net.URI;
 
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.impl.level3.Level3FactoryImpl;
@@ -301,6 +302,11 @@ public class Level3RulesUnitTest {
 		}
 		
 		writeExample("testBiopaxElementIdRule.owl", m);
+		
+		// weird but legal URIs:
+		URI.create("#a");
+		URI.create("a,b,c");
+		//URI.create("a[b"); // will fail
 	}
 	
     @Test

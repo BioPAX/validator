@@ -10,7 +10,6 @@
 	<packaging>war</packaging>
 	<name>BioPAX Validator Web Application</name>
 	<description>BioPAX Validator Web Application (UI and Web Service)</description>
-	<url>http://www.springframework.org/spring-ws</url>
 	<build>
 		<finalName>biopax-validator</finalName>
 	</build>

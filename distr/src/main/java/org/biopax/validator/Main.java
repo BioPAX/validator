@@ -30,25 +30,25 @@ public class Main {
 	static ApplicationContext ctx;
 	static boolean autofix = false;
 	static boolean normalize = false;
-	static boolean ret_biopax = false;
 	static int maxErrors = 0;
+	static final String EXT = ".modified.owl";
 
 	public static void main(String[] args) throws Exception {				
         if(args.length == 0) {
         	String usage = 
     			"\n The BioPAX Validator v2.0.0\n\n" +
-    		    "Parameters: <input> [--output=<file>] [--auto-fix] [--normalize] [--return-biopax] [--max-errors=<n>]\n" + 
+    		    "Parameters: <input> [--output=<file.xml>] [--auto-fix] [--normalize] [--max-errors=<n>]\n" + 
     		    "(the second and next arguments are optional and can go in any order).\n" +
     		    "For example:\n" +
     		    "  path/dir --output=errors.xml\n" +
-    		    "  list:batch_file_name \n" +
+    		    "  list:batch_file.txt \n" +
     		    "  file:biopax.owl auto-fix normalize --output=errors.xml\n" +
     		    "  http://www.some.net/data.owl --output=errors.xml\n\n" +
     		    "A batch file should list one task (resource) per line, i.e., " +
     		    "file:path/file or URL (to BioPAX data)\n" +
-    		    "Use 'return-biopax' flag " +
-    		    "(only works together with the 'auto-fix' or 'normalize') " +
-    		    " to get the modified BioPAX OWL only (no error messages are reported)";
+    		    "If '--auto-fix' or '--normalize' options were used, it " +
+    		    "also creates a new BioPAX file for each input file " +
+    		    "in the current working directory (using '.modified.owl' exention).";
             System.out.println(usage);
             System.exit(-1);
         }
@@ -62,8 +62,6 @@ public class Main {
 					autofix = true;
 				} else if("--normalize".equalsIgnoreCase(args[i])) {
 					normalize = true;
-				} else if("--return-biopax".equalsIgnoreCase(args[i])) {
-					ret_biopax = true;
 				} else if(args[i].startsWith("--max-errors=")) {
 					String n = args[i].substring(13);
 					maxErrors = Integer.parseInt(n);
@@ -82,24 +80,41 @@ public class Main {
 		
 		// go!
 		if (input != null && !"".equals(input)) {
-			PrintWriter writer = (output == null) 
-				? new PrintWriter(System.out)
-					: new PrintWriter(output);
+			// validate all
 			ValidatorResponse validatorResponse = runBatch(validator,
 					getResourcesToValidate(input));
-			if (!ret_biopax) {
-				Source xsltSrc = new StreamSource(ctx.getResource(
-						"classpath:default-result.xsl").getInputStream());
-				BiopaxValidatorUtils.write(validatorResponse, writer, xsltSrc);
-			} else if (autofix || normalize) {
-				for (Validation result : validatorResponse
-						.getValidationResult()) {
+			
+			// save modified BioPAX data
+			if (autofix || normalize) {
+				for (Validation result : validatorResponse.getValidationResult()) 
+				{
+					String out = result.getDescription();
+					// if was URL, create a shorter name;
+					out = out.replaceAll("\\[|\\]","").replaceFirst("/&", ""); // remove ']', '[', and ending '/', if any
+					int idx = out.lastIndexOf('/');
+					if(idx >= 0) {
+						if(idx < out.length() - 1)
+							out = out.substring(idx+1);
+					}
+					out += EXT; // add the file extension
+					PrintWriter bpWriter = new PrintWriter(out);
 					String owl = result.getModelSerialized();
-					writer.write(owl, 0, owl.length());
-					writer.write(System.getProperty ( "line.separator" ));
-					writer.flush();
+					bpWriter.write(owl, 0, owl.length());
+					bpWriter.write(System.getProperty ( "line.separator" ));
+					bpWriter.flush();
+					// remove now saved BioPAX model from the xml result
+					result.setModel(null);
+					result.setModelSerialized(null);
 				}
 			}
+			
+			// init errors writer
+			PrintWriter errWriter = (output == null) 
+				? new PrintWriter(System.out)
+					: new PrintWriter(output);
+			// save the validation result as XML
+			Source xsltSrc = new StreamSource(ctx.getResource("classpath:default-result.xsl").getInputStream());
+			BiopaxValidatorUtils.write(validatorResponse, errWriter, xsltSrc);
 		}
 	}
 	
@@ -181,17 +196,5 @@ public class Main {
 	        }
 	              
 		return setRes;
-	}
-	
-	private static void listAllRules(OutputStream out, Set<Rule<?>> set) {
-		// show currently loaded rules:
-		StringBuffer sb = new StringBuffer("Loaded rules:\n");
-		for (Rule<?> r : set) {
-			sb.append(r.getName()).append(" => ");
-			sb.append(r.getTip()).append(" (");
-			sb.append(r.getBehavior()).append(")\n");
-		}
-		PrintWriter w = new PrintWriter(out);
-		w.write(sb.toString());
 	}
 }
