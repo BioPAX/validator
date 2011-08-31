@@ -5,8 +5,6 @@ import org.biopax.validator.Messenger;
 import org.biopax.validator.Rule;
 import org.biopax.validator.utils.BiopaxValidatorException;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Component;
  * @author rodche
  *
  */
-//@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Component
 @Configurable
 public class SimplyThrowExceptionMessenger implements Messenger {

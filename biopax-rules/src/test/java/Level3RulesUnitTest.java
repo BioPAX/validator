@@ -2,6 +2,7 @@ import static org.junit.Assert.*;
 
 import java.io.*;
 import java.net.URI;
+import java.util.Arrays;
 
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.impl.level3.Level3FactoryImpl;
@@ -652,6 +653,31 @@ public class Level3RulesUnitTest {
 
         rule.check(p, true);
         writeExample("testSimplePhysicalEntityFeaturesRuleFixed.owl", m);
+    }
+    
+    
+    @Test
+    public void testAcyclicComplexRule() {
+        Rule<Complex> rule = new AcyclicComplexRule();
+        Model m = level3.createModel();
+
+        Complex complex = m.addNew(Complex.class, "complex");
+        Complex component = m.addNew(Complex.class, "component");
+
+        // loop
+        complex.addComponent(component);
+        component.addComponent(complex);
+
+        assertTrue(rule.canCheck(complex));
+
+        try {
+			rule.check(complex, false);
+			fail("must throw BiopaxValidatorException");
+		} catch(BiopaxValidatorException e) {
+//			System.out.println(e + " " + Arrays.toString(e.getMsgArgs()));
+		}
+
+        writeExample("testAcyclicComplexRule.owl", m);
     }
 
 }

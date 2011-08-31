@@ -133,17 +133,17 @@ public abstract class AbstractRule<T> implements Rule<T> {
     	Messenger m = getMessenger();
     	if(m != null) {
     		m.sendErrorCase(this, object, code, setFixed, args); // to be processed...
-    	} else {
+    	} else { // - running outside the framework (tests?)
     		String event = ((setFixed) ? "FIXED " : "") 
-    			+ this.getBehavior() + " " + code;
+    			+ this.getBehavior() + " " + code + " in "
+    			+ BiopaxValidatorUtils.getId(object);
     		
     		if(logger.isWarnEnabled())
     			logger.warn(this.getName() + 
     			" won't register the event: '" + event + "' (Messenger is null)");
     		
     		if(!setFixed)
-    			throw new BiopaxValidatorException(event, 
-    				BiopaxValidatorUtils.getId(object), args);
+    			throw new BiopaxValidatorException(event, args);
     	}
     }
        
