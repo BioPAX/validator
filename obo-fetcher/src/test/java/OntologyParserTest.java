@@ -14,21 +14,6 @@ import psidev.ontology_manager.impl.OntologyManagerImpl;
 import java.util.Collection;
 import java.util.Properties;
 
-/*
-SO:
-http://obo.cvs.sourceforge.net/*checkout* /obo/obo/ontology/genomic-proteomic/so.obo
-http://berkeleybop.org/ontologies/obo-all/sequence/sequence.obo
-http://song.cvs.sourceforge.net/viewvc/song/ontology/so.obo?revision=1.283
-file://...
-MI:
-http://psidev.cvs.sourceforge.net/viewvc/*checkout* /psidev/psi/mi/rel25/data/psi-mi25.obo
-http://berkeleybop.org/ontologies/obo-all/psi-mi/psi-mi.obo
-http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mi/rel25/data/psi-mi25.obo?revision=1.58
-MOD:
-http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mod/data/PSI-MOD.obo
-http://berkeleybop.org/ontologies/obo-all/psi-mod/psi-mod.obo
-http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mod/data/PSI-MOD.obo?revision=1.23
- */
 public class OntologyParserTest {
 	 
 	@Test
@@ -36,9 +21,9 @@ public class OntologyParserTest {
 		OntologyManagerContext.getInstance().setStoreOntologiesLocally(true);
 		
 		final Properties cfg = new Properties();
-		cfg.put("SO", "http://song.cvs.sourceforge.net/viewvc/song/ontology/so.obo"); //?revision=1.283
-		cfg.put("MI", "http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mi/rel25/data/psi-mi25.obo?revision=1.58");
-		cfg.put("MOD", "http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mod/data/PSI-MOD.obo?revision=1.23");
+		cfg.put("SO", "http://song.cvs.sourceforge.net/viewvc/song/ontology/so.obo?revision=1.310");
+		cfg.put("MI", "http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/mi/rel25/data/psi-mi25.obo?revision=1.60");
+		cfg.put("MOD", "http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/mod/data/PSI-MOD.obo?revision=1.24");
 		
 		OntologyManager manager = new OntologyManagerImpl(cfg);
 		
