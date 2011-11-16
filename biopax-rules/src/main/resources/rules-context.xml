@@ -200,6 +200,10 @@
 			<value>ECO</value>
 			<value>EVIDENCE CODE</value>
 		</list>
+		<list>
+			<value>REACTOME</value>
+			<value>REACTOME STABLE ID</value>
+		</list>
 	</util:set>
 
 	<!-- end of the XrefRule config. -->

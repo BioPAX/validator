@@ -12,7 +12,6 @@ import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
 
 import psidev.ontology_manager.Ontology;
 import psidev.ontology_manager.OntologyTermI;
-import psidev.ontology_manager.impl.OntologyLoaderException;
 import psidev.ontology_manager.impl.OntologyManagerContext;
 import psidev.ontology_manager.impl.OntologyManagerImpl;
 import psidev.ontology_manager.impl.OntologyUtils;

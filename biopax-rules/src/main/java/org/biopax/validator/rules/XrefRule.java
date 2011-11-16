@@ -44,7 +44,7 @@ public class XrefRule extends AbstractRule<Xref>{
 				} else if (!xrefHelper.checkIdFormat(preferedDbName, id)) {
 					String regxp = xrefHelper.getRegexpString(preferedDbName);
 					// report error with fixed=false 
-					error(x, "invalid.id.format", false, db, id, regxp);
+					error(x, "invalid.id.format", false, db, preferedDbName, id, regxp);
 					// now try to correct (only for some...)
 					if(fix) {
 						// guess, it's like id_ver or id-ver
