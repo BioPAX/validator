@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.biopax.validator</groupId>
@@ -62,6 +63,7 @@
 			<plugins>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
 					<configuration>
 						<source>1.6</source>
 						<target>1.6</target>
@@ -75,8 +77,41 @@
 						<argLine>-Dfile.encoding=UTF-8 -Xmx1536M -Xms128M -ea</argLine>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.2</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>test-jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>2.0</version>
+			</extension>
+		</extensions>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 
 	<reporting>
@@ -84,12 +119,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
+<!-- 				<version>2.7</version> -->
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jxr-maven-plugin</artifactId>
-				<version>2.0-beta-1</version>
+<!-- 				<version>2.0-beta-1</version> -->
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -99,37 +134,42 @@
 		</plugins>
 	</reporting>
 
+	
 	<profiles>
 		<profile>
-			<id>rodche</id>
-			<!-- used by maven-release-plugin during 
-				"mvn release:prepare -Prodche", 
-				"mvn release:perform -Prodche";
-			${local.biopax.m2repo}, ${local.biopax.site} must 
-			be defined in the local ~/.m2/settings.xml, profiles
-			-->
+			<id>sourceforge</id>
 			<properties>
-				<scm.username>rodche</scm.username>
+				<biopax.site.url>
+					scp://shell.sourceforge.net/home/project-web/biopax/htdocs/
+				</biopax.site.url>
+				<biopax.snapshot.url>
+					scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/snapshots
+				</biopax.snapshot.url>
+				<biopax.release.url>
+					scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/releases
+				</biopax.release.url>
 			</properties>
-			<distributionManagement>
-				<snapshotRepository>
-					<id>biopax.snapshots</id>
-					<name>Local BioPAX Snapshots Repository</name>
-					<url>${local.biopax.m2repo}/snapshots</url>
-				</snapshotRepository>
-				<repository>
-					<id>biopax.releases</id>
-					<name>Local BioPAX Repository</name>
-					<url>${local.biopax.m2repo}/releases</url>
-				</repository>
-				<site>
-					<id>biopax.sf.net</id>
-					<name>BioPAX Sourceforge site</name>
-					<url>${local.biopax.site}/validator-${project.version}</url>
-				</site>
-			</distributionManagement>
 		</profile>
 	</profiles>
+
+	<distributionManagement>
+		<site>
+			<id>biopax.sf.net</id>
+			<name>BioPAX Sourceforge site</name>
+			<url>${biopax.site.url}/validator-${project.version}</url>
+		</site>
+		<snapshotRepository>
+			<id>biopax.snapshots</id>
+			<name>BioPAX Snapshots Repository</name>
+			<url>${biopax.snapshot.url}</url>
+		</snapshotRepository>
+		<repository>
+			<id>biopax.releases</id>
+			<name>BioPAX Releases Repository</name>
+			<url>${biopax.release.url}</url>
+		</repository>
+	</distributionManagement>
+
 
 	<repositories>
 		<repository>
@@ -246,58 +286,5 @@
 			</roles>
 		</contributor>
 	</contributors>
-	
-	<!-- In order to deploy or site:deploy this project:
-	1) have login/pw configured in their local (~/.m2/) settings.xml, i.e:
-	<servers>
-      <server>
-      	<id>biopax.sf.net</id>
-      	<username>USERID,biopax</username>
-      	<password>PASSWD</password>
-      </server>
-      <server>
-    	<id>biopax.releases</id>
-    	<username>USERID,biopax</username>
-    	<password>PASSWD</password>
-      </server>
-      <server>
-    	<id>biopax.snapshots</id>
-    	<username>USERID,biopax</username>
-    	<password>PASSWD</password>
-      </server>
-  	</servers>
-  	(alternatively, one can define developer's profile in this pom.xml 
-  	with a <distributionManagement /> inside, and use username explicitely, e.g., 
-  	<url>scp://USERID@shell.sourceforge.net/home/project-web/biopax/htdocs/validator-${project.version}</url>)
-  	2) [Important!] CREATE the remote shell first (before using "mvn deploy"):
-  		- from terminal do: "ssh -t USERID,biopax@shell.sourceforge.net create", wait...
-  		- once it's up, - exit (now you can login as "ssh USERID,biopax@shell.sourceforge.net", 
-  		but, after several minutes, the shell will expire due to inactivity; 
-  		see also: http://sourceforge.net/apps/trac/sourceforge/wiki/Shell%20service)
-  	3) now you can do "mvn deploy" or "mvn site:deploy" (do site:site first, for speed)!
-	
-	Alternative approach:
-  	- configure to use local <site> and <repository> locations in your <profile>,
-  	- do site, deploy normally (it now goes not ot tthe BioPAX@Sourceforge but to a local dir) 
-  	- setup/use RSYNC (outside maven stuff) to upload the releases and docs from that locations to @sf.net
-	-->
-	
-	<distributionManagement>
-		<site>
-			<id>biopax.sf.net</id>
-			<name>BioPAX Sourceforge site</name>
-			<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/validator-${project.version}</url>
-		</site>
-		<snapshotRepository>
-			<id>biopax.snapshots</id>
-			<name>BioPAX Snapshots Repository</name>
-			<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>biopax.releases</id>
-			<name>BioPAX Releases Repository</name>
-			<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/releases</url>
-		</repository>
-	</distributionManagement>
 	
 </project>
