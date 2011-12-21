@@ -42,8 +42,9 @@ public class MiriamLinkTest {
 	@Test
 	public final void testGetDataTypeURIs() {
 		String[] uris = MiriamLink.getDataTypeURIs(MI);
-		assertTrue(uris.length==1);
-		assertEquals(MIURN, uris[0]);
+		System.out.println(Arrays.toString(uris));
+		assertTrue(uris.length > 0);
+		assertTrue(Arrays.toString(uris).contains(MIURN));
 	}
 
 	@Test
