@@ -1,43 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
-    MiriamXML_Schema: XML Schema of the XML export of MIRIAM Registry
-
-    MIRIAM Registry is a set of online services created to catalog 
-    biological data types, their URIs and the corresponding physical URLs,
-    whether these are controlled vocabularies or databases.
-    Ref. http://www.ebi.ac.uk/miriam/
-
-    Copyright (C) 2007-2011  BioModels.net (EMBL-EBI)
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-    For more information: http://www.gnu.org/licenses/gpl.txt
-
-    version:  20110629
-    Author :  Camille Laibe
-    E-Mail :  camille.laibe@ebi.ac.uk
-    Address:  Computational Neurobiology,
-              EMBL - European Bioinformatics Institute,
-              Wellcome-Trust Genome Campus
-              Hinxton, CAMBRIDGE
-              CB10 1SD
-              United Kingdom
- -->
-
-
 <xsd:schema targetNamespace="http://www.biomodels.net/MIRIAM/" 
             xmlns="http://www.biomodels.net/MIRIAM/" 
             xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
@@ -146,6 +106,32 @@
     </xsd:simpleContent>
   </xsd:complexType>
   
+  <!-- Definition of the list of restrictions -->
+  <xsd:complexType name="restrictions">
+    <xsd:sequence>
+      <xsd:element name="restriction" type="restriction" minOccurs="1" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <!-- Definition of a restriction -->
+  <xsd:complexType name="restriction">
+    <xsd:sequence>
+      <xsd:element name="statement" type="xsd:string" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="link" type="link" minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>
+    <xsd:attribute name="type" type="xsd:byte" use="required" />
+    <xsd:attribute name="desc" type="xsd:string" use="required" />
+  </xsd:complexType>
+  
+  <!-- Definition of a link -->
+  <xsd:complexType name="link">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="desc" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
   <!-- Definition of the list of tags -->
   <xsd:complexType name="tags">
     <xsd:sequence>
@@ -216,13 +202,16 @@
               <xsd:element name="synonyms" type="synonyms" minOccurs="0" maxOccurs="1" />
               <xsd:element name="definition" type="xsd:string" minOccurs="1" maxOccurs="1" />
               <xsd:element name="uris" type="uris" minOccurs="1" maxOccurs="unbounded" />
+              <xsd:element name="namespace" type="xsd:string" minOccurs="1" maxOccurs="1" />
               <xsd:element name="documentations" type="documentations" minOccurs="0" maxOccurs="1" />
               <xsd:element name="resources" type="resources" minOccurs="1" maxOccurs="1" />
+              <xsd:element name="restrictions" type="restrictions" minOccurs="0" maxOccurs="1" />
               <xsd:element name="tags" type="tags" minOccurs="0" maxOccurs="1" />
               <xsd:element name="annotation" type="annotation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="id" type="dataTypeID" use="required" />
             <xsd:attribute name="pattern" type="xsd:string" use="required" />
+            <xsd:attribute name="restricted" type="TrueOrFalse" use="optional" />
             <xsd:attribute name="obsolete" type="TrueOrFalse" use="optional" />
             <xsd:attribute name="replacement" type="xsd:string" use="optional" />
           </xsd:complexType>
@@ -235,3 +224,4 @@
   </xsd:element>
 
 </xsd:schema>
+

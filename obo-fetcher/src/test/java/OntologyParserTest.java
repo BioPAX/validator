@@ -6,6 +6,7 @@ import org.springframework.core.io.ResourceLoader;
 
 import psidev.ontology_manager.Ontology;
 import psidev.ontology_manager.OntologyManager;
+import psidev.ontology_manager.OntologyTermI;
 import psidev.ontology_manager.impl.OntologyImpl;
 import psidev.ontology_manager.impl.OntologyLoaderException;
 import psidev.ontology_manager.impl.OntologyManagerContext;
@@ -35,6 +36,12 @@ public class OntologyParserTest {
 		Ontology oa2 = manager.getOntology("MOD");
 		assertNotNull(oa2);
 		assertTrue(oa2 instanceof OntologyImpl);
+		
+		OntologyTermI t = oa2.getTermForAccession("MOD:00048");
+		assertNotNull(t);
+		//test that apostrophe is not escaped (-due to a bug in the OBO parser, part of ols-1.18)!
+		assertTrue(t.getPreferredName().equalsIgnoreCase("O4'-phospho-L-tyrosine"));
+		
 
 		oa2 = manager.getOntology("SO");
 		Assert.assertNotNull(oa2);

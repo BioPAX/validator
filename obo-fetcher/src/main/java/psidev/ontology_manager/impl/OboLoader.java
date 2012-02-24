@@ -5,16 +5,19 @@
  */
 package psidev.ontology_manager.impl;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 import psidev.ontology_manager.Ontology;
 import psidev.ontology_manager.OntologyTermI;
-import uk.ac.ebi.ols.loader.impl.BaseAbstractLoader;
-import uk.ac.ebi.ols.loader.parser.OBOFormatParser;
-import uk.ac.ebi.ols.model.interfaces.TermRelationship;
-import uk.ac.ebi.ols.model.interfaces.TermSynonym;
-import uk.ac.ebi.ols.model.ojb.TermBean;
+import uk.ac.ebi.ols.TermRelationship;
+import uk.ac.ebi.ols.TermSynonym;
+import uk.ac.ebi.ols.impl.BaseOBO2AbstractLoader;
+import uk.ac.ebi.ols.impl.OBO2FormatParser;
+import uk.ac.ebi.ols.impl.TermBean;
+
 
 import java.io.*;
 import java.net.URL;
@@ -30,7 +33,7 @@ import java.util.*;
  * @version $Id: OboLoader.java 656 2007-06-29 11:18:19 +0100 (Fri, 29 Jun 2007) skerrien $
  * @since <pre>30-Sep-2005</pre>
  */
-public class OboLoader extends BaseAbstractLoader {
+public class OboLoader extends BaseOBO2AbstractLoader {
 
     /**
      * Sets up a logger for that class.
@@ -42,24 +45,6 @@ public class OboLoader extends BaseAbstractLoader {
     public OboLoader( ) {
     }
 
-    /////////////////////////////
-    // AbstractLoader's methods
-
-    protected void configure() {
-        parser = new OBOFormatParser();
-    }
-
-    protected void parse( Object params ) {
-        try {
-            Vector v = new Vector();
-            v.add( ( String ) params );
-            ( ( OBOFormatParser ) parser ).configure( v );
-            parser.parseFile();
-
-        } catch ( Exception e ) {
-            log.fatal( "Parse failed: " + e.getMessage(), e );
-        }
-    }
 
     //////////////////////////////
     // User's methods
@@ -81,10 +66,17 @@ public class OboLoader extends BaseAbstractLoader {
             	continue; // skip
             
             // convert term into a OboTerm
-            OntologyTermI ontologyTerm = new OntologyTermImpl(ontologyID, term.getIdentifier(), term.getName() );
+            OntologyTermI ontologyTerm = new OntologyTermImpl(ontologyID, term.getIdentifier(), 
+            		term.getName() );
+// the "unescape" workaround is not required anymore - after obo-fetcher internal implementation changed!
+//            		StringEscapeUtils.unescapeXml(term.getName()) ); 
+//            //- unescapeXml above and below is a workaround the bug in ols-1.18 OBO parser (uk.ac.ebi.ols.loader..), 
+//            // which returns, e.g., "O4&;apos;-phospho-L-tyrosine" instead "O4'-phospho-L-tyrosine")
+            
             final Collection<TermSynonym> synonyms = (Collection<TermSynonym>) term.getSynonyms();
             if( synonyms != null ) {
                 for ( TermSynonym synonym : synonyms ) {
+//                    ontologyTerm.getNameSynonyms().add( StringEscapeUtils.unescapeXml(synonym.getSynonym()) );
                     ontologyTerm.getNameSynonyms().add( synonym.getSynonym() );
                 }
             }
@@ -153,18 +145,17 @@ public class OboLoader extends BaseAbstractLoader {
             throw new IllegalArgumentException( file.getAbsolutePath() + " could not be read." );
         }
 
-        //setup vars
-        configure();
-
-        //parse obo file
-        parse( file.getAbsolutePath() );
-
-        //process into relations
-        process();
+        try {
+            setParser(new OBO2FormatParser(file.getAbsolutePath()));
+            process();
+        } catch ( Exception e ) {
+            log.fatal( "Parse failed: " + e.getMessage(), e );
+        }
 
         return buildOntology(ontologyID);
     }
 
+    
     private File getRegistryFile() throws OntologyLoaderException {
         File ontologyDirectory = OntologyManagerContext.getInstance().getOntologyDirectory();
 

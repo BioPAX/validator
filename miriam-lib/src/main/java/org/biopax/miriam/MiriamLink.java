@@ -60,11 +60,6 @@ public class MiriamLink
 	 */
 	static
 	{
-		if(log.isInfoEnabled()) {
-			log.info("Getting the latest Miriam XML from " 
-					+ XML_LOCATION);
-		}
-		
 		try
 	    {
 			URL url = new URL(XML_LOCATION);
@@ -83,6 +78,10 @@ public class MiriamLink
             //mir = (Miriam) unmarshaller.unmarshal(conn.getInputStream());
             try {
             	mir = (Miriam) unmarshaller.unmarshal(url.openStream());
+        		if(log.isInfoEnabled()) {
+        			log.info("Got the latest Miriam XML db from " 
+        				+ XML_LOCATION);
+        		}
             } catch (IOException e) {
             	// fall-back (to using local Miriam.xml)
             	if(log.isWarnEnabled())
