@@ -49,7 +49,7 @@ import org.biopax.validator.result.*;
  * @author rodch
  *
  */
-public class Normalizer {
+public final class Normalizer {
 	private static final Log log = LogFactory.getLog(Normalizer.class);
 	
 	private SimpleIOHandler biopaxReader;
@@ -634,7 +634,7 @@ public class Normalizer {
 			
 		}
 		else { // i.e., 'name' is not empty or ID is the URN
-			SortedSet<String> names = new TreeSet<String>();
+			final SortedSet<String> names = new TreeSet<String>();
 			
 			String key = null;
 			if(pro.getRDFId().startsWith("urn:miriam:")) {
@@ -649,15 +649,17 @@ public class Normalizer {
 				try {
 					names.addAll(Arrays.asList(MiriamLink.getNames(key)));
 					pro.setStandardName(MiriamLink.getName(key));
+					// get the datasource description
+					String description = MiriamLink.getDataTypeDef(pro.getStandardName());
+					pro.addComment(description);
 				} catch (IllegalArgumentException e) {
 					// ignore (then, names is still empty...)
 				}
 			} 
 			
-			// anyway, the above may fail (no match in Miriam)
+			// when the above failed (no match in Miriam), or key was null -
 			if(names.isEmpty()) {
 				// finally, trying to find all valid names for each existing one
-				
 					for (String name : pro.getName()) {
 						try {
 							names.addAll(Arrays.asList(MiriamLink.getNames(name)));
@@ -674,6 +676,10 @@ public class Normalizer {
 			// and add all the synonyms if any
 			for(String name : names)
 				pro.addName(name);
+			
+			//set display name if not set (standard name is set already)
+			if(pro.getDisplayName() == null)
+				pro.setDisplayName(pro.getStandardName());			
 		}
 	}
 	
