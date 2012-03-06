@@ -82,7 +82,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 				//TODO (advanced feature, can/must be a separate rule) check if multiple terms are, in fact, synonyms/equivalent...
 				
 				final Set<String> badTerms = new HashSet<String>(); // initially - none
-				final Set<String> noXrefTerms = new HashSet<String>(cv.getTerm()); // initially - all
+				final Map<String, Set<OntologyTermI>> noXrefTerms = new HashMap<String, Set<OntologyTermI>>();
 				
 				// first, check terms (names) are valid
 				for(String name : cv.getTerm()) 
@@ -90,7 +90,6 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 					if(!getValidTerms().contains(name.toLowerCase())) {
 						// save to report/delete/replace the invalid term later
 						badTerms.add(name);
-						noXrefTerms.remove(name); // - exclude invalid terms from extra checks (below)
 					}
 				}
 				
@@ -102,24 +101,28 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 						// check if there is the corresponding unification xref
 						Set<OntologyTermI> ots = ((OntologyManager) ontologyManager).searchTermByName(name.toLowerCase());
 						assert(!ots.isEmpty()); // shouldn't be, because the above getValidTerms() contains the name
-						for(OntologyTermI term : ots) {
-							String prefname = term.getPreferredName();
-							String ontId = term.getOntologyId(); // e.g., "GO" 
-							String db = ((OntologyManager) ontologyManager).getOntology(ontId).getName();
+						boolean noXrefsForTermNameFound = true; // next, - prove otherwise is the case
+						terms: for(OntologyTermI term : ots) {
+//							String prefname = term.getPreferredName();
+//							String ontId = term.getOntologyId(); // e.g., "GO" 
+//							String db = ((OntologyManager) ontologyManager).getOntology(ontId).getName();
 							String id = term.getTermAccession();
 							// search for the xref with the same xref.id
 							for (UnificationXref x : new ClassFilterSet<Xref,UnificationXref>(
 									cv.getXref(), UnificationXref.class)) {
-								/// exclude names "matching" uni.xrefs from the "no Xref" set
 								if(id.equalsIgnoreCase(x.getId()))  {
-									noXrefTerms.remove(name);
+									noXrefsForTermNameFound = false;
+									break terms; // exit this and outer loops!
 								}
 							}
 						}
+						
+						if(noXrefsForTermNameFound)
+							noXrefTerms.put(name, ots); //store terms to fix later (to generate xrefs)
 					}
 				}
 				
-				// note: at this point, 'noXrefTerms' (valid terms only) set is defined...
+				// note: at this point, 'noXrefTerms' (valid terms only) map is defined...
 				
 				if (!noXrefTerms.isEmpty()) {		
 					String noXrefTermsInfo = noXrefTerms.toString();
@@ -143,10 +146,9 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 					 *    That's awesome!!!
 					 */
 						Set<OntologyTermI> validTermIs = ontologyManager.getValidTerms(this);
-						for (String name : noXrefTerms) {
-							//search for the ontology term(s) by name
-							Set<OntologyTermI> ots = ((OntologyManager) ontologyManager)
-									.searchTermByName(name.toLowerCase());
+						for (String name : noXrefTerms.keySet()) {
+							//get previously saved valid ontology term beans by name
+							Set<OntologyTermI> ots = noXrefTerms.get(name);
 							//get only top (parent) valid terms
 							Set<OntologyTermI> topvalids = new HashSet<OntologyTermI>();
 							for (OntologyTermI term : ots) {
@@ -161,8 +163,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 							}
 							for (OntologyTermI term : topvalids) {								
 								String ontId = term.getOntologyId();
-								String db = ((OntologyManager) ontologyManager)
-										.getOntology(ontId).getName();
+								String db = ((OntologyManager) ontologyManager).getOntology(ontId).getName();
 								String id = term.getTermAccession();
 								// auto-create and add the xref to the cv
 								String rdfid = Normalizer.generateURIForXref(db, id, null, UnificationXref.class);								
