@@ -499,12 +499,14 @@ public final class Normalizer {
 		// find/add lost (in replace) children
 		if(log.isInfoEnabled())
 			log.info("Repairing..." + extraInfo());
-		model.repair();
+		model.repair(); // it does not remove dangling utility class objects (can be done separately, later, if needed)
 		
 		if(log.isInfoEnabled())
 			log.info("Optional tasks (reasoning)..." + extraInfo());
-		// auto-set dataSource property for all entities (top-down)
+		
 		ModelUtils mu = new ModelUtils(model);
+		
+		// auto-set dataSource property for all entities (top-down)
 		if(options.inferPropertyDataSource) {
 			mu.inferPropertyFromParent("dataSource");//, Entity.class);
 		}
@@ -732,7 +734,8 @@ public final class Normalizer {
 		boolean inferPropertyDataSource = true;
 		boolean generateRelatioshipToPathwayXrefs = false;
 		boolean generateRelatioshipToInteractionXrefs = false;
-		boolean generateRelatioshipToOrganismXrefs = false;		
+		boolean generateRelatioshipToOrganismXrefs = false;
+		//TODO add a "remove utility class duplicates/clones" option
 		
 		public boolean isFixDisplayName() {
 			return fixDisplayName;

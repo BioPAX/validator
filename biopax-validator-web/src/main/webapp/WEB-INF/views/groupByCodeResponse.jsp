@@ -12,7 +12,17 @@
 	<link rel="stylesheet" type="text/css" href="styles/style.css" media="screen" />
 	<link rel="shortcut icon" href="images/favicon.ico" />
 	<script type="text/javascript" src="scripts/rel.js"></script>
-	<title>Validation Results</title>
+	<script type="text/javascript"> <!-- this function is here (not in a separate .js file) for off-line use -->
+		function switchit(list) {
+			var listElementStyle = document.getElementById(list).style;
+			if (listElementStyle.display == "none") {
+				listElementStyle.display = "block";
+			} else {
+				listElementStyle.display = "none";
+			}
+		}
+	</script>
+<title>Validation Results</title>
 </head>
 <body>
 

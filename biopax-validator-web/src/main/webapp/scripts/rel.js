@@ -9,12 +9,3 @@ function externalLinks() {
  }
 }
 window.onload = externalLinks;
-
-function switchit(list) {
-	var listElementStyle = document.getElementById(list).style;
-	if (listElementStyle.display == "none") {
-		listElementStyle.display = "block";
-	} else {
-		listElementStyle.display = "none";
-	}
-}

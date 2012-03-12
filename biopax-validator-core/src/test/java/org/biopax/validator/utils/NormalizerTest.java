@@ -140,12 +140,6 @@ public class NormalizerTest {
 		simpleIO.convertToOWL(model, out);
 		xml = out.toString();
 		
-		// alternatively, normalize the serialized data,but this can hide funny bugs...
-		//xml = normalizer.normalize(out.toString());
-		// read it back, reset to check
-		//model = simpleReader.convertFromOWL(new ByteArrayInputStream(xml.getBytes("UTF-8")));
-		//System.out.println(xml);
-		
 		// check Xref
 		BioPAXElement bpe = model.getByID("urn:biopax:UnificationXref:UNIPROT_P68250");
 		assertTrue(bpe instanceof UnificationXref);
@@ -290,11 +284,6 @@ public class NormalizerTest {
 		ref = (UnificationXref) model.getByID("urn:biopax:UnificationXref:UNIPROT_Q0VCL1");
 		assertEquals(2, ref.getXrefOf().size()); // because the old PR got this new xref as well
 		
-		
-		//ByteArrayOutputStream out = new ByteArrayOutputStream();
-		//simpleIO.convertToOWL(model, out);
-		//System.out.println(out.toString());
-
 		print(e, model);
 	}
 	

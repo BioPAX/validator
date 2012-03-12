@@ -5,6 +5,7 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biopax.paxtools.controller.ModelUtils;
 import org.biopax.paxtools.converter.OneTwoThree;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
@@ -17,6 +18,7 @@ import org.biopax.paxtools.model.level3.Gene;
 import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
+import org.biopax.paxtools.model.level3.UtilityClass;
 import org.biopax.validator.Rule;
 import org.biopax.validator.result.ErrorCaseType;
 import org.biopax.validator.result.ErrorType;
@@ -170,7 +172,10 @@ public class ValidatorImpl implements Validator {
 		}
 		
 		if (validation.isFix() || validation.isNormalize()) {
+			// discover, explicitly add child elements to the model
 			model.repair();
+			// remove all dangling utility class objects
+			(new ModelUtils(model)).removeObjectsIfDangling(UtilityClass.class);
 		}
 
 		// add comments and some statistics

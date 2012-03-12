@@ -3,11 +3,7 @@ package org.biopax.validator.rules;
 import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
-import org.biopax.paxtools.model.level3.SequenceEntityReference;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
-import org.biopax.paxtools.model.level3.SmallMoleculeReference;
-import org.biopax.paxtools.model.level3.UnificationXref;
-import org.biopax.paxtools.util.ClassFilterSet;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
