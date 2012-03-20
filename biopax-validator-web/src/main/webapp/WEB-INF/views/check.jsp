@@ -12,47 +12,6 @@
 	<link rel="stylesheet" type="text/css" href="styles/style.css" media="screen" />
 	<link rel="shortcut icon" href="images/favicon.ico" />
 	<script type="text/javascript" src="scripts/rel.js"></script>
-	<script type="text/javascript">
-	  function switchInput() {
-		  var f = document.getElementById('file');
-		  var u = document.getElementById('url');
-		  var cb = document.getElementById('switch');
-		  if(cb.checked == true) {
-			f.disabled = false;
-			u.disabled = true;
-			u.value = null;
-			document.getElementById('urlMsg').innerHTML = null;
-		  } else {
-			f.disabled = true;
-			f.value = null;
-			u.disabled = false;
-		  }
-	  };
-
-	  function isUrl(s) {
-			var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
-			return regexp.test(s);
-	  };
-
-	  function validate() {
-		  var u = document.getElementById('url');
-		  if(!u.disabled && !isUrl(u.value)) {
-			  document.getElementById('urlMsg').innerHTML = 'Malformed URL!';
-			  return false;
-		  }
-	  };
-	  
-	  function switchNormalizerOptions() {
-			var style = document.getElementById("normalizerOptions").style;
-			var cb = document.getElementById("normalize");
-			if (cb.checked == false) { //changed to 'checked'
-				style.display = "none";
-			} else {
-				style.display = "block";
-			}
-	  };
-	  
-	</script>
 	<title>Validate from URL</title>
 </head>
 <body>
@@ -82,15 +41,34 @@
         <label style="color: red;" id="urlMsg">${error}</label>
     </div>
 	<div class="form-row" style="padding-top: 2em;">
-		Options:<br/>
+		Options (<a href="javascript:switchit('aboutOptions')">what if it's enabled?</a>):<br/>
+		<ul id="aboutOptions" style="display: none;">
+			<li>errors and warnings are still reported with the reference to the original data 
+			(validator does not re-check, however, users can download and re-submit the modified BioPAX);</li>
+			<li>"dangling" <em>UtilityClass</em> (and sub-classes) individuals will be removed;</li>
+			<li>not all problems can be fixed automatically; some issues are consequence of others; 
+			even new errors may be introduced (see below);</li>
+			<li>it cannot reliably fix such issues as: syntax errors, a <em>UnificationXref</em> shared by different objects, 
+			no unification xrefs attached to important utility objects, such as non-generic EntityReference, etc., 
+			- but you get a rough idea about what unsupervised tools might infer 
+			from this data and whether it is the knowledge one really wanted to share);</li>
+			<li>normalization can be the first step in BioPAX data integration pipeline, which makes next steps easier.</li>
+		</ul>
+		
 		<input type="checkbox" name="autofix" value="true"/>
-		<label>Auto-Fix! (<b>experimental:</b> some rules can do, e.g., fix xref db/id, controlled vocabularies, set 'displayName', remove duplicates, etc.)</label>
+		<label>Auto-Fix! (<b>experimental</b>): e.g., some rules can fix xref's <em>db/id</em> properties, 
+		controlled vocabularies (use of external ontologies), fix <em>displayName</em>, remove duplicates, etc.</label>
 		<br/>
 		
 		<input type="checkbox" id="normalize" name="normalize" value="true" onchange="switchNormalizerOptions();" />
-		<label>Normalize! (<b>experimental:</b> where it is possible, - replaces identifiers of entity references, CVs, BioSource 
-		with Miriam's standard URNs; for xrefs, - generates new IDs like <em>urn:biopax:*Xref:&lt;db&gt;_&lt;id&gt;_&lt;ver&gt;</em> this makes BioPAX data integration and linking easier. 
-		if required, data are auto-converted to BioPAX Level3 first. It may remove some or add new BioPAX errors, especially if there were errors in the file.)</label>
+		<label>Normalize! (<b>experimental)</b>: if possible, replaces URIs of <em>EntityReference</em>, 
+		<em>ControlledVocabulary</em>, <em>BioSource</em>, <em>PublicationXref</em>, and <em>Provenance</em> 
+		with MIRIAM standard URNs; e.g., for a protein reference, it can get a URN like <em>urn:miriam:uniprot:Q06609</em>;
+		for other xrefs, - like <em>urn:biopax:UnificationXref:&lt;db&gt;_&lt;id&gt;_&lt;ver&gt;</em>.
+		If required, data are auto-converted to BioPAX Level3 first.</label>
+
+		<br/>
+		 
 		<ul id="normalizerOptions" style="display: none;">
 			<li><form:checkbox path="options.fixDisplayName"/>&nbsp;<label>fix displayName (from names)</label></li>
 			<li><form:checkbox path="options.inferPropertyOrganism"/>&nbsp;<label>infer property: organism</label></li>
@@ -153,4 +131,3 @@
 
 </body>
 </html>
-

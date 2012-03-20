@@ -6,6 +6,7 @@ import javax.annotation.PostConstruct;
 //import javax.annotation.Resource;
 
 import org.biopax.paxtools.controller.PropertyEditor;
+import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.validator.CvRule;
 import org.biopax.validator.utils.CvValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +15,22 @@ import org.springframework.beans.factory.annotation.Configurable;
 /**
  * An abstract class for CV terms checks.
  * 
- * @author rodch
- * 
+ * @author rodche
+ *
+ * @param <D> property domain
  */
 @Configurable
-public abstract class AbstractCvRule<T> extends AbstractRule<T> implements CvRule<T> {
+public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRule<D> implements CvRule<D> {
     
-	//@Resource // matching by name (can be risky..)
+	//@Resource // @Resource uses matching by name; too risky
     @Autowired
 	protected CvValidator ontologyManager;
     
-    protected final Class<T> domain;
+    protected final Class<D> domain;
     protected final String property; // helps validate generic ControlledVocabulary instances
     protected final Set<CvTermRestriction> restrictions;
 	private Set<String> validTerms;
-	protected PropertyEditor editor;
+	protected PropertyEditor<? super D, ?> editor;
   
     /**
      * Constructor.
@@ -38,7 +40,7 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> implements CvRul
      * @param restrictions a list of beans, each defining names (a subtree of an ontology) that 
      * is either to include or exclude (when 'not' flag is set) from the valid names set.
      */
-    public AbstractCvRule(Class<T> domain, String property, CvTermRestriction... restrictions)
+    public AbstractCvRule(Class<D> domain, String property, CvTermRestriction... restrictions)
     {
     	this.domain = domain;
     	this.property = property;
@@ -89,7 +91,7 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> implements CvRul
 	/* (non-Javadoc)
 	 * @see org.biopax.validator.impl.CvRule#getDomain()
 	 */
-	public Class<T> getDomain() {
+	public Class<D> getDomain() {
 		return domain;
 	}
 	
@@ -115,7 +117,7 @@ public abstract class AbstractCvRule<T> extends AbstractRule<T> implements CvRul
 	 * 
 	 * @return
 	 */
-	public PropertyEditor getEditor() {
+	public PropertyEditor<? super D, ?> getEditor() {
 		return editor;
 	}
 }

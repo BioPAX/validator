@@ -63,7 +63,7 @@ public class LibsTest {
     
     @Test
     public void testIsEquivalentUnificationXref() {
-    	BioPAXFactory factory3 = new Level3FactoryImpl();
+    	BioPAXFactory factory3 = BioPAXLevel.L3.getDefaultFactory();
     	UnificationXref x1 = factory3.create(UnificationXref.class, "x1");
     	x1.addComment("x1");
     	x1.setDb("db");

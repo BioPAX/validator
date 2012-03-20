@@ -19,9 +19,9 @@ import org.springframework.context.MessageSource;
 /**
  * Abstract validation rule.
  * 
- * 
- *
  * @author rodche
+ *
+ * @param <T> a type the rule can validate, though it also depends on {@link #canCheck(Object)} method implementation
  */
 @Configurable
 public abstract class AbstractRule<T> implements Rule<T> {
@@ -122,12 +122,8 @@ public abstract class AbstractRule<T> implements Rule<T> {
              
 
 	/**
-	 * 
-	 * Implementation Note: A Rule can report the same error (code) 
-	 * with the same 'thing' (regardless of the message text)
-	 * only once; i.e., last reported overrides previous
-	 * (so, take care!)
-	 * 
+	 * A Rule should not call this method using the same error 'code' 
+	 * and 'object' (regardless of other arguments) more than once!
 	 */
     public void error(Object object, String code, boolean setFixed, Object... args) {
     	Messenger m = getMessenger();
@@ -171,4 +167,5 @@ public abstract class AbstractRule<T> implements Rule<T> {
     public void setMessenger(Messenger messenger) {
 		this.messenger = messenger;
 	}
+
 }

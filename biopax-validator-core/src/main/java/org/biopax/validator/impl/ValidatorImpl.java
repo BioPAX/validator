@@ -71,7 +71,6 @@ public class ValidatorImpl implements Validator {
     }
     
     
-	@SuppressWarnings("unchecked")
 	public void validate(Validation validation) {
 		assert(validation != null);
 		
@@ -101,67 +100,44 @@ public class ValidatorImpl implements Validator {
 			validation.setModel(model); // not sure if this is necessarily...
 		}
 
-		
-		Stack<Object> curr = new Stack<Object>(); // validation is done when the size becomes 0
-		for (Rule rule : rules) {
-			// rules can check/fix the model or specific elements
-			if (log.isDebugEnabled())
-				log.debug("Current rule is: " + rule.getName());
-			
-			if (rule.canCheck(model)) {
-				run(rule, model, curr);
-			} 
-			else {
-				// copy the elements collection to avoid concurrent modification (rules can add/remove objects)!
-				Set<BioPAXElement> elements = new HashSet<BioPAXElement>(model.getObjects());
-				for (BioPAXElement el : elements) {
-					//skip if cannot check 
-					if (rule.canCheck(el)) 
-					{
-						//break if max.errors exceeded
-						if(validation.isMaxErrorsSet() 
-								&& validation.getNotFixedErrors() >= validation.getMaxErrors())
-							break;
-						
-						run(rule, el, validation.isFix(), curr);
-					}
-				}
-			}
-		}
 
-		// in the main thread, wait until all checks are done
-		int i = 0;
-		while (true) {
-			// have all the entries completed ?
-			synchronized(curr) {
-				//wait loop, to double-check that all done
-				if (curr.isEmpty()) 
-				{
-					i++;
-					if(i > 3) // perhaps, all done indeed ;)
+		//First, check/fix individual objects
+		for (Rule<?> rule : rules) {
+			// rules can check/fix specific elements
+			// copy the elements collection to avoid concurrent modification
+			// (rules can add/remove objects)!
+			Set<BioPAXElement> elements = new HashSet<BioPAXElement>(
+					model.getObjects());
+			for (BioPAXElement el : elements) {
+				// skip if cannot check
+				if (rule.canCheck(el)) {
+					// break if max.errors exceeded
+					if (validation.isMaxErrorsSet()
+							&& validation.getNotFixedErrors() >= validation
+								.getMaxErrors())
 						break;
+					
+					@SuppressWarnings("unchecked")
+					Rule<BioPAXElement> r = (Rule<BioPAXElement>) rule;
+					
+					r.check(el, validation.isFix());
 				}
-				
-				//also stop if max.errors exceeded
-				if(validation.isMaxErrorsSet() 
-					&& validation.getNotFixedErrors() >= validation.getMaxErrors())
-				{
-					break;
-				}
-				
-				if (log.isDebugEnabled())
-					log.debug("Active rule checks: " + curr.size());
-			}
-
-			// sleep for a bit
-			try {
-				Thread.sleep(100);
-			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
-				break;
 			}
 		}
+		
+		//Second, check/fix <Model> rules
+		for (Rule<?> rule : rules) {
+			if (rule.canCheck(model)) {
+				if (log.isDebugEnabled())
+					log.debug("Current rule is: " + rule.getName());
+				
+				@SuppressWarnings("unchecked")
+				Rule<Model> r = (Rule<Model>) rule;
+				
+				r.check(model, validation.isFix());
+			} 
+		}
+
 		
 		if (log.isDebugEnabled())
 			log.debug("All rules checked!");
@@ -197,32 +173,6 @@ public class ValidatorImpl implements Validator {
 					+ model.getObjects(pathway.class).size());
 		}
 
-	}
-
-	
-	private void run(final Rule rule, final BioPAXElement el, final boolean fix, final Stack curr) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				synchronized(curr) {curr.push(el);} // push something, start
-				rule.check(el, fix);
-				synchronized(curr) {curr.pop();} // done, remove whatever (only size matters)
-			}
-		})
-		.run();
-	}
-
-	
-	private void run(final Rule rule, final Model model, final Stack curr) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				synchronized(curr) {curr.push(rule);} // push something, start
-				rule.check(model, false);
-				synchronized(curr) {curr.pop();} // done, remove smth. (only size matters)
-			}
-		})
-		.run();
 	}
 
 

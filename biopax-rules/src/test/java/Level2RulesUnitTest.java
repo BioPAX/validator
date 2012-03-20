@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.biopax.paxtools.impl.level2.Level2FactoryImpl;
 import org.biopax.paxtools.io.BioPAXIOHandler;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.*;
@@ -32,8 +31,8 @@ public class Level2RulesUnitTest {
 	
 	@Before
 	public void setUp() {
-		level2 = new Level2FactoryImpl();	
-		exporter = new SimpleIOHandler(BioPAXLevel.L3);
+		level2 = BioPAXLevel.L2.getDefaultFactory();	
+		exporter = new SimpleIOHandler(BioPAXLevel.L2);
 	}
 	
 	@Test

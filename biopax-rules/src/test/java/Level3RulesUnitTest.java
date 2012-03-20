@@ -5,7 +5,7 @@ import java.net.URI;
 import java.util.Arrays;
 
 import org.biopax.paxtools.controller.EditorMap;
-import org.biopax.paxtools.impl.level3.Level3FactoryImpl;
+import org.biopax.paxtools.controller.ModelUtils;
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.io.*;
 import org.biopax.paxtools.model.*;
@@ -30,7 +30,7 @@ import org.biopax.paxtools.model.level3.Process;
  */
 public class Level3RulesUnitTest {
 
-	static BioPAXFactory level3 = new Level3FactoryImpl(); // to create BioPAX objects
+	static BioPAXFactory level3 =BioPAXLevel.L3.getDefaultFactory(); // to create BioPAX objects
 	static EditorMap editorMap = SimpleEditorMap.L3;
 	static BioPAXIOHandler exporter = new SimpleIOHandler(BioPAXLevel.L3);
 	
@@ -680,4 +680,28 @@ public class Level3RulesUnitTest {
         writeExample("testAcyclicComplexRule.owl", m);
     }
 
+    
+    @Test
+    public void testSharedUnificationXrefRule() {
+        Rule<UnificationXref> rule = new SharedUnificationXrefRule();
+        Model m = level3.createModel();
+        Evidence ev1 = m.addNew(Evidence.class, "evidence1");
+        Evidence ev2 = m.addNew(Evidence.class, "evidence2");
+        UnificationXref x = m.addNew(UnificationXref.class, "shared");
+        UnificationXref ux1 = m.addNew(UnificationXref.class, "unique1");
+        UnificationXref ux2 = m.addNew(UnificationXref.class, "unique2");
+        ev1.addXref(x);
+        ev1.addXref(ux1);
+        ev2.addXref(x);
+        ev2.addXref(ux2);
+
+        try {
+			rule.check(x, false);
+			fail("must throw BiopaxValidatorException");
+		} catch(BiopaxValidatorException e) {
+		}
+
+        writeExample("testSharedUnificationXrefRule.owl", m);
+// this rule cannot fix the issue (safely, reliably)        
+    }
 }

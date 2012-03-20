@@ -6,7 +6,7 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import java.io.*;
 
-import org.biopax.paxtools.impl.level3.Level3FactoryImpl;
+import org.biopax.paxtools.model.BioPAXFactory;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
@@ -51,7 +51,7 @@ public class AOPAspectJLTWIntegrationTest {
     @Autowired
     ApplicationContext context;
 
-    Level3FactoryImpl factory3 = (Level3FactoryImpl) BioPAXLevel.L3.getDefaultFactory();
+    BioPAXFactory factory3 = BioPAXLevel.L3.getDefaultFactory();
     
     @Test
     public void testValidator() throws IOException {

@@ -10,6 +10,7 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.EntityReference;
+import org.biopax.paxtools.model.level3.Named;
 import org.biopax.paxtools.model.level3.UtilityClass;
 import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.validator.impl.AbstractRule;
@@ -47,16 +48,20 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 			= algorithm.groupByEquivalence(peers, BiopaxValidatorUtils.maxErrors);
 		
 		// report the error once for each cluster
-		for (Collection<UtilityClass> duplicates : clasters.getCollections()) {
-			UtilityClass u = duplicates.iterator().next();
-			duplicates.remove(u); // keep the first element
-			
-			error(u, "cloned.utility.class", fix, 
-					BiopaxValidatorUtils.getIdListAsString(duplicates), 
-						u.getModelInterface().getSimpleName());
+		for (Collection<UtilityClass> clones : clasters.getCollections()) {
+			UtilityClass u = clones.iterator().next();
+			clones.remove(u); // keep the first element
+			String idListAsString = BiopaxValidatorUtils.getIdListAsString(clones);
 			if(fix) {
 				// use the same value for all corresp. props 
-				fix(model, u, duplicates);
+				fix(model, u, clones);
+				// set "fixed", but keep the old message
+				error(u, "cloned.utility.class", true, 
+					idListAsString, u.getModelInterface().getSimpleName());
+			} else {
+				// report the problem (not fixed)
+				error(u, "cloned.utility.class", false, 
+					idListAsString, u.getModelInterface().getSimpleName());
 			}
 		}
 		
@@ -124,12 +129,21 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 				traverser.traverse(element, model);
 			}
 			
-			/* let's check for inconsistency, but
-			 * keep (dangling) duplicates in the model,
-			 * because, if we do remove them now, -
-			 * won't be able to find other duplicate types later!
-			 */
+
+			// merge comments and names to 'master'
+			//TODO can do better? (smart/selective copying of data props, if required at all...)
 			for(UtilityClass clone : clones) {
+				for(String comm : clone.getComment())
+					master.addComment(comm);
+				if(master instanceof Named && clone instanceof Named) // - may be too much safety..
+					for(String n : ((Named)clone).getName())
+						((Named)master).addName(n);
+				
+				/* let's check for inconsistency, but
+				 * keep (dangling) duplicates in the model,
+				 * because, if we do remove them now, -
+				 * won't be able to find other duplicate types later!
+				 */
 				if(clone instanceof Xref)
 					assert(((Xref)clone).getXrefOf().isEmpty());
 				else if(clone instanceof EntityReference)
