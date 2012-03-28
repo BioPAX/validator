@@ -262,7 +262,8 @@ public class NormalizerTest {
 		
 		assertFalse(model.contains(pr)); // replaced by new norm. PR in the model
 		assertFalse(model.contains(ref)); // replaced by new norm. xref in the model
-		assertEquals(0, pr.getXref().size()); // old PR has xref removed! (now xrefOf is consistent with xref for all objects inn the model)
+		//now xrefOf is consistent with xref for all objects inn the model (since after some paxtools 4.1.3 snapshot)
+		assertEquals(0, pr.getXref().size()); // old PR has xref removed!
 		assertEquals(0, ref.getXrefOf().size()); // because the old xref was replaced in all parent elements!
 		
 		ProteinReference e = (ProteinReference) model.getByID("urn:miriam:uniprot:Q0VCL1");
