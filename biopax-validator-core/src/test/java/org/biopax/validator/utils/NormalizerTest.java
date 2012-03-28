@@ -150,21 +150,11 @@ public class NormalizerTest {
 		
 		//check xref's ID gets normalized
 		bpe = model.getByID("urn:biopax:RelationshipXref:REFSEQ_NP_001734");
-		try {
-			//xref and xrefOf become out of sync can be fixed by ModelUtils.writeRead()
-			assertEquals(1, ((Xref)bpe).getXrefOf().size());
-		} catch (AssertionError e) {
-			Xref x = (Xref) bpe;
-			System.out.println("WARN: xref and xrefOf become out of sync " +
-				"after the normalization. This is not quite a bug, " +
-				"and it can be fixed by write/read to/from OWL");
-			for(XReferrable xr : model.getObjects(XReferrable.class)) {
-				print(xr, model);
-			}
-		}
+		assertEquals(1, ((Xref)bpe).getXrefOf().size());
+
 		// almost the same xref (was different idVersion)
 		bpe = model.getByID("urn:biopax:RelationshipXref:REFSEQ_NP_001734_1");
-		assertEquals(2, ((Xref)bpe).getXrefOf().size()); // must be "1" in fact...
+		assertEquals(1, ((Xref)bpe).getXrefOf().size());
 		
     	//TODO test when uniprot's is not the first xref
     	//TODO test illegal 'id', 'db', etc.
@@ -272,17 +262,15 @@ public class NormalizerTest {
 		
 		assertFalse(model.contains(pr)); // replaced by new norm. PR in the model
 		assertFalse(model.contains(ref)); // replaced by new norm. xref in the model
-		assertEquals(1, pr.getXref().size()); // still has one (new one!)
+		assertEquals(0, pr.getXref().size()); // old PR has xref removed! (now xrefOf is consistent with xref for all objects inn the model)
 		assertEquals(0, ref.getXrefOf().size()); // because the old xref was replaced in all parent elements!
 		
-		
 		ProteinReference e = (ProteinReference) model.getByID("urn:miriam:uniprot:Q0VCL1");
-		assertNotNull(e);
-		assertTrue(pr.isEquivalent(e));		
+		assertNotNull(e);	
 		assertEquals(1, e.getXref().size());
 		
 		ref = (UnificationXref) model.getByID("urn:biopax:UnificationXref:UNIPROT_Q0VCL1");
-		assertEquals(2, ref.getXrefOf().size()); // because the old PR got this new xref as well
+		assertEquals(1, ref.getXrefOf().size());
 		
 		print(e, model);
 	}

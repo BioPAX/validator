@@ -36,12 +36,15 @@ public class DuplicateIdCaseInsensitiveRule extends	AbstractRule<Model> {
 		for (Collection<BioPAXElement> duplicates : clasters.getCollections()) {
 			BioPAXElement u = duplicates.iterator().next();
 			duplicates.remove(u); // keep the first element
-			error(u, "duplicate.id.ignoringcase", fix, 
-					BiopaxValidatorUtils.getIdListAsString(duplicates), 
-						u.getModelInterface().getSimpleName());
+			
+			boolean fixed = false;
 			if(fix) {
 				// TODO
 			}
+			
+			error(u, "duplicate.id.ignoringcase", fix && fixed, 
+					BiopaxValidatorUtils.getIdListAsString(duplicates), 
+						u.getModelInterface().getSimpleName());
 		}
 	}
 
