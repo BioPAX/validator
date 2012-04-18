@@ -489,9 +489,11 @@ public final class Normalizer {
 		if(log.isInfoEnabled())
 			log.info("Normalizing CVs and organisms..." + extraInfo());
 		normalizeCVsAndBioSource(model);
-		if(log.isInfoEnabled())
-			log.info("Normalizing data sources (Provenance)..." + extraInfo());
-		normalizeProvenance(model);
+		
+//		if(log.isInfoEnabled())
+//			log.info("Normalizing data sources (Provenance)..." + extraInfo());
+//		normalizeProvenance(model);
+		
 		if(log.isInfoEnabled())
 			log.info("Normalizing entity references..." + extraInfo());
 		normalizeERs(model);
@@ -583,6 +585,7 @@ public final class Normalizer {
 		doSubs(model);
 	}
 	
+	@Deprecated //does not worth it (Miriam cannot help with all DBs)
 	private void normalizeProvenance(Model model) {
 		// process the rest of utility classes (selectively though)
 		for(Provenance pro : model.getObjects(Provenance.class)) 
@@ -632,7 +635,7 @@ public final class Normalizer {
 	public static void autoName(Provenance pro) {
 		if(!pro.getRDFId().startsWith("urn:miriam:") && pro.getName().isEmpty()) {
 			if(log.isInfoEnabled())
-				log.info("Cannot generate names from ID/name of Provenance: " + pro.getRDFId());
+				log.info("Skipping: cannot normalize Provenance: " + pro.getRDFId());
 			
 		}
 		else { // i.e., 'name' is not empty or ID is the URN

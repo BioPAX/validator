@@ -11,7 +11,9 @@ import org.springframework.stereotype.Component;
 /**
  * Checks: Provenance should have valid name and no unification xrefs 
  * (warning)
- *
+ * 
+ * @deprecated this rule may me invalid or not required...
+ * 
  * @author rodche
  */
 @Component

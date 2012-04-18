@@ -172,17 +172,17 @@ public class NormalizerTest {
 		// test that one of ProteinReference (2nd or 3rd) is removed
 		assertEquals(2, model.getObjects(ProteinReference.class).size());
 		
-		// check Provenance is normalized
+		// Provenance is no more normalized (Miriam is not enough for this task)!
 		assertEquals(2, model.getObjects(Provenance.class).size());
-		pro1 = (Provenance) model.getByID("urn:miriam:pid.pathway");
-		assertNotNull(pro1);
-		assertTrue(pro1.getName().contains("PID"));
-		assertTrue(pro1.getName().contains("foo"));
-		assertFalse(pro1.getStandardName().equals("foo"));
-		pro2 = (Provenance) model.getByID("urn:miriam:signaling-gateway");
-		assertNotNull(pro2);
-		assertNotNull(pro2.getStandardName());
-		assertTrue(pro2.getName().contains("SGMP"));
+//		pro1 = (Provenance) model.getByID("urn:miriam:pid.pathway");
+//		assertNotNull(pro1);
+//		assertTrue(pro1.getName().contains("PID"));
+//		assertTrue(pro1.getName().contains("foo"));
+//		assertFalse(pro1.getStandardName().equals("foo"));
+//		pro2 = (Provenance) model.getByID("urn:miriam:signaling-gateway");
+//		assertNotNull(pro2);
+//		assertNotNull(pro2.getStandardName());
+//		assertTrue(pro2.getName().contains("SGMP"));
 		
 		// check dataSource property has been inferred
 		pw2 = (Pathway) model.getByID("sub_pathway");
