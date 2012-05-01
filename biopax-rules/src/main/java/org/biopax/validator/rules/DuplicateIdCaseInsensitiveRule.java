@@ -1,8 +1,7 @@
 package org.biopax.validator.rules;
 
-import java.util.Collection;
+import java.util.Set;
 
-import org.apache.commons.collections15.set.CompositeSet;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.validator.impl.AbstractRule;
@@ -18,10 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DuplicateIdCaseInsensitiveRule extends	AbstractRule<Model> {
 	
-	public void check(Model model, boolean fix) {
-		BioPAXElement[] peers = 
-				model.getObjects().toArray(new BioPAXElement[]{});
-		
+	public void check(Model model, boolean fix) {		
 		Cluster<BioPAXElement> algorithm = new Cluster<BioPAXElement>() {
 			@Override
 			public boolean match(BioPAXElement a, BioPAXElement b) {
@@ -29,22 +25,18 @@ public class DuplicateIdCaseInsensitiveRule extends	AbstractRule<Model> {
 			}
 		};
 		
-		CompositeSet<BioPAXElement> clasters 
-			= algorithm.groupByEquivalence(peers, Integer.MAX_VALUE);
+		Set<Set<BioPAXElement>> clasters 
+			= algorithm.cluster(model.getObjects(), Integer.MAX_VALUE);
 		
 		// report the error once for each cluster
-		for (Collection<BioPAXElement> duplicates : clasters.getCollections()) {
-			BioPAXElement u = duplicates.iterator().next();
-			duplicates.remove(u); // keep the first element
-			
-			boolean fixed = false;
-			if(fix) {
-				// TODO
-			}
-			
-			error(u, "duplicate.id.ignoringcase", fix && fixed, 
+		for (Set<BioPAXElement> duplicates : clasters) {
+			if(duplicates.size() > 1) {
+				BioPAXElement u = duplicates.iterator().next();
+				duplicates.remove(u); // keep the first element
+				error(u, "duplicate.id.ignoringcase", false, 
 					BiopaxValidatorUtils.getIdListAsString(duplicates), 
 						u.getModelInterface().getSimpleName());
+			}
 		}
 	}
 

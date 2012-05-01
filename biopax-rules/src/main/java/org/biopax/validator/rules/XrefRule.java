@@ -27,7 +27,6 @@ public class XrefRule extends AbstractRule<Xref>{
 		if (db != null) { 
 			// check db
 			String preferedDbName = xrefHelper.getPrimaryDbName(db);
-			
 			if (preferedDbName == null) {
 				error(x, "unknown.db", false, db);
 				return;

@@ -38,7 +38,7 @@ public class OntologyUtils {
      */
     public static Collection<String> getAccessions(  Collection<OntologyTermI> terms ) {
         if ( terms == null ) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         Collection<String> accessions = new ArrayList<String>( terms.size() );
         for ( OntologyTermI term : terms ) {
@@ -54,7 +54,7 @@ public class OntologyUtils {
      */
     public static Collection<String> getTermNames(  Collection<OntologyTermI> terms ) {
         if ( terms == null ) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         Collection<String> names = new ArrayList<String>( terms.size() );
         for ( OntologyTermI term : terms ) {

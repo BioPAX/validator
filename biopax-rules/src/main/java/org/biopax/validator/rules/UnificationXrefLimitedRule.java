@@ -24,36 +24,49 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
     private Map<Class<BioPAXElement>, Set<String>> allow;
     private Map<Class<BioPAXElement>, Set<String>> deny;
     private XrefHelper helper;
+    
+    private Map<Class<BioPAXElement>, String> dbAllow;
+    private Map<Class<BioPAXElement>, String> dbDeny;
+    private boolean ready = false;
        
     @Resource(name="dbAllow")
     public void setDbAllow(Map<Class<BioPAXElement>, String> dbAllow) {
-		// init 'allow' map
-		this.allow = new HashMap<Class<BioPAXElement>, Set<String>>();
-		for (Class<BioPAXElement> clazz : dbAllow.keySet()) {
-			String[] a = dbAllow.get(clazz).toLowerCase().split(":");
-			final Set<String> allSynonyms = new HashSet<String>();
-			for(String db : a) {
-				Collection<String> synonymsOfDb = helper.getSynonymsForDbName(db);
-				allSynonyms.addAll(synonymsOfDb);
-			}
-			this.allow.put(clazz, allSynonyms);
-		}
+		this.dbAllow = dbAllow;
 	}
     
     @Resource(name="dbDeny")
     public void setDbDeny(Map<Class<BioPAXElement>, String> dbDeny) {
-		// init 'deny' map
-		this.deny = new HashMap<Class<BioPAXElement>, Set<String>>();
-		for (Class<BioPAXElement> clazz : dbDeny.keySet()) {
-			String[] a = dbDeny.get(clazz).toLowerCase().split(":");
-			final Set<String> allSynonyms = new HashSet<String>();
-			for(String db : a) {
-				Collection<String> synonymsOfDb = helper.getSynonymsForDbName(db);
-				allSynonyms.addAll(synonymsOfDb);
-			}
-			this.deny.put(clazz, allSynonyms);
-		}
+		this.dbDeny = dbDeny;
 	}
+    
+    // to init on the first check(..) call
+    void initInternalMaps() {
+    	if(!ready) {
+    		this.allow = new HashMap<Class<BioPAXElement>, Set<String>>();
+    		for (Class<BioPAXElement> clazz : dbAllow.keySet()) {
+    			String[] a = dbAllow.get(clazz).toLowerCase().split(":");
+    			final Set<String> allSynonyms = new HashSet<String>();
+    			for(String db : a) {
+    				Collection<String> synonymsOfDb = helper.getSynonymsForDbName(db);
+    				allSynonyms.addAll(synonymsOfDb);
+    			}
+    			this.allow.put(clazz, allSynonyms);
+    		}
+    		
+    		this.deny = new HashMap<Class<BioPAXElement>, Set<String>>();
+    		for (Class<BioPAXElement> clazz : dbDeny.keySet()) {
+    			String[] a = dbDeny.get(clazz).toLowerCase().split(":");
+    			final Set<String> allSynonyms = new HashSet<String>();
+    			for(String db : a) {
+    				Collection<String> synonymsOfDb = helper.getSynonymsForDbName(db);
+    				allSynonyms.addAll(synonymsOfDb);
+    			}
+    			this.deny.put(clazz, allSynonyms);
+    		}
+    		
+    		ready = true;
+    	}
+    }
     
     
     /**
@@ -73,6 +86,8 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
 	}
     
 	public void check(UnificationXref x, boolean fix) {
+		if(!ready)
+			initInternalMaps();
 		
 		if (x.getDb() == null 
 			|| helper.getPrimaryDbName(x.getDb())==null) 

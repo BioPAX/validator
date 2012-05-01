@@ -1,6 +1,6 @@
 package org.biopax.validator.rules;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.apache.commons.collections15.set.CompositeSet;
 import org.biopax.paxtools.controller.AbstractTraverser;
@@ -29,10 +29,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 	
+	private final static Set<UtilityClass>[] UC_SET = new Set[]{};
+	
 	public void check(Model model, boolean fix) {
-		UtilityClass[] peers = 
-				model.getObjects(UtilityClass.class).toArray(new UtilityClass[]{});
-		
 		Cluster<UtilityClass> algorithm = new Cluster<UtilityClass>() {
 			@Override
 			public boolean match(UtilityClass a, UtilityClass b) {
@@ -42,15 +41,18 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 		
 		/* Note: BiopaxValidatorUtils.maxErrors (e.g., 50) here sets
 		 * the max. no. of duplicates to report (the rest is ignored).
-		 * TODO report/fix all the duplicates (performance risk)...
 		 */
-		CompositeSet<UtilityClass> clasters 
-			= algorithm.groupByEquivalence(peers, BiopaxValidatorUtils.maxErrors);
+		Set<Set<UtilityClass>> clusters 
+			= algorithm.cluster(model.getObjects(UtilityClass.class), BiopaxValidatorUtils.maxErrors);
 		
 		// report the error once for each cluster
-		for (Collection<UtilityClass> clones : clasters.getCollections()) {
+		for (Set<UtilityClass> clones : clusters) {
+			if(clones.size() < 2)
+				continue; //skip unique individuals
+			
 			UtilityClass u = clones.iterator().next();
-			clones.remove(u); // keep the first element
+			boolean removed = clones.remove(u); // remove the first (saved!) element from the clones collection
+			assert removed;
 			String idListAsString = BiopaxValidatorUtils.getIdListAsString(clones);
 			if(fix) {
 				// use the same value for all corresp. props 
@@ -65,12 +67,14 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 			}
 		}
 		
-		// now should be safe to remove them from the model
+		// now it's safe to remove the rest of clones 
+		// from the model (above we excluded, thus protected, the first one in each group)
 		if (fix) {
-			for (UtilityClass duplicate : clasters.toCollection()) {
+			CompositeSet<UtilityClass> composed = new CompositeSet<UtilityClass>(clusters.toArray(UC_SET));
+			for (UtilityClass duplicate : composed) {
 				model.remove(duplicate);
-				if(logger.isInfoEnabled())
-					logger.info("Duplicate object " + duplicate.getRDFId() 
+				if(logger.isDebugEnabled())
+					logger.debug("Duplicate object " + duplicate.getRDFId() 
 						+ " " + duplicate.getModelInterface().getSimpleName() 
 						+ " has been removed from the model"
 						+ " and all object properties updated!");
@@ -85,14 +89,18 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 
 	
 	private void fix(final Model model, final UtilityClass master, 
-			final Collection<UtilityClass> clones) {	
+			final Set<UtilityClass> clones) {	
 		if(master != null) {
+			assert clones.size() > 0; 
+			//- there was is at least one more (besides 'master') object
+			
+			@SuppressWarnings("unchecked") //- no filters
 			AbstractTraverser traverser = 
 				new AbstractTraverser(SimpleEditorMap.L3) 
 			{	
 				@Override
 				protected void visit(Object range, BioPAXElement domain, 
-						Model model, PropertyEditor editor) 
+						Model model, @SuppressWarnings("rawtypes") PropertyEditor editor) //TODO API issue...
 				{		
 					if(editor instanceof ObjectPropertyEditor && clones.contains(range)) 
 					{

@@ -1,10 +1,8 @@
 package org.biopax.validator.rules;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.collections15.set.CompositeSet;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
@@ -41,16 +39,17 @@ public class SameNameDiffKindPhysEntitiesRule extends
 					}
 			};
 			
-			CompositeSet<SimplePhysicalEntity> sharedNamesClusters = 
-				groupping.groupByEquivalence(peers.toArray(new SimplePhysicalEntity[]{}),
-						BiopaxValidatorUtils.maxErrors);
+			Set<Set<SimplePhysicalEntity>> sharedNamesClusters = 
+				groupping.cluster(peers, BiopaxValidatorUtils.maxErrors);
 				
 			// report the error once for each cluster
-			for (Collection<SimplePhysicalEntity> s : sharedNamesClusters.getCollections()) 
+			for (Set<SimplePhysicalEntity> sharedNames : sharedNamesClusters) 
 			{
-				SimplePhysicalEntity a = s.iterator().next();
-				error(a, "diff.kind.same.name", false, 
-						BiopaxValidatorUtils.getIdListAsString(s));
+				if(sharedNames.size() > 1) {
+					SimplePhysicalEntity a = sharedNames.iterator().next();
+					error(a, "diff.kind.same.name", false, 
+						BiopaxValidatorUtils.getIdListAsString(sharedNames));
+				}
 			}
 	}
 

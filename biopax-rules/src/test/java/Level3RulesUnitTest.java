@@ -2,10 +2,8 @@ import static org.junit.Assert.*;
 
 import java.io.*;
 import java.net.URI;
-import java.util.Arrays;
 
 import org.biopax.paxtools.controller.EditorMap;
-import org.biopax.paxtools.controller.ModelUtils;
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.io.*;
 import org.biopax.paxtools.model.*;

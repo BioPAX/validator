@@ -40,7 +40,7 @@
        
 	<!-- end of BiopaxValidatorUtils config. -->
 
-  	<bean id="ontologyManager" class="org.biopax.validator.utils.BiopaxOntologyManager">
+  	<bean id="ontologyManager" class="org.biopax.validator.utils.BiopaxOntologyManager" scope="singleton">
 		 <constructor-arg index="0">
 		 	<util:properties local-override="false" location="classpath:obo.properties"/>
 		 </constructor-arg>
@@ -50,7 +50,7 @@
 	
 	<!-- a helper and a proxy to access MIRIAM and MI database citation and regexps 
    		to validate their corresponding IDs -->
-    <bean id="xrefHelper" class="org.biopax.validator.utils.XrefHelper">
+    <bean id="xrefHelper" class="org.biopax.validator.utils.XrefHelper" scope="singleton">
 		<constructor-arg ref="extraDbSynonyms"/>
         <constructor-arg ref="ontologyManager" />
     </bean>

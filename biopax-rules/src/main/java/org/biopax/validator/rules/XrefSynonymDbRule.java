@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Checks db is the recommended one (look up synonyms)
+ * Checks xref.db is official db name (catch for known unofficial synonyms and misspelling)
  *
  * @author rodche
  */
@@ -28,7 +28,9 @@ public class XrefSynonymDbRule extends AbstractRule<Xref>{
         }
 
         String primary = xrefHelper.getPrimaryDbName(db);
-		if (primary != null && !primary.equals(xrefHelper.dbName(db))) {
+        //if primary is null, another rule (XrefRule) reports this
+        // report/fix only if it is not official db synonym (it's known misspelling or other name)
+		if (primary != null && xrefHelper.isUnofficialOrMisspelledDbName(db)) {
 			error(x, "db.name.spelling", fix, db, primary);
 			if(fix) {
 				x.setDb((String) primary);

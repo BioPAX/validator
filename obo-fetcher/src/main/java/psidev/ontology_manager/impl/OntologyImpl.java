@@ -197,7 +197,7 @@ public class OntologyImpl implements Ontology {
         }
 
         if ( roots.isEmpty() ) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         return roots;
@@ -238,7 +238,7 @@ public class OntologyImpl implements Ontology {
     public Set<OntologyTermI> getDirectParents( OntologyTermI term ) {
         final Set<OntologyTermI> directParents = parents.get( term );
         if ( directParents == null ) {
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         } else {
             return directParents;
         }
@@ -247,7 +247,7 @@ public class OntologyImpl implements Ontology {
     public Set<OntologyTermI> getDirectChildren( OntologyTermI term ) {
         final Set<OntologyTermI> directChildren = children.get( term );
         if ( directChildren == null ) {
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         } else {
             return directChildren;
         }

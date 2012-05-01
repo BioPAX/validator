@@ -1,6 +1,5 @@
 package org.biopax.validator.rules;
 
-import org.apache.commons.collections15.set.CompositeSet;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.validator.impl.AbstractRule;
@@ -8,7 +7,7 @@ import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.biopax.validator.utils.Cluster;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * Checks PhysicalEntities that reference the same EntityReference 
@@ -36,19 +35,19 @@ public class EntityReferenceSamePhysicalEntitiesRule extends
 	
 	public void check(EntityReference eref, boolean fix) 
 	{
-		SimplePhysicalEntity[] simplePhysEnts = eref.getEntityReferenceOf()
-				.toArray(new SimplePhysicalEntity[]{});
-		
-		CompositeSet<SimplePhysicalEntity> clasters 
-			= algorithm.groupByEquivalence(simplePhysEnts, BiopaxValidatorUtils.maxErrors);
+
+		Set<Set<SimplePhysicalEntity>> clasters 
+			= algorithm.cluster(eref.getEntityReferenceOf(), BiopaxValidatorUtils.maxErrors);
 	
 		// report the error case once per cluster
-		for (Collection<SimplePhysicalEntity> col : clasters.getCollections()) 
+		for (Set<SimplePhysicalEntity> col : clasters) 
 		{
-			SimplePhysicalEntity u = col.iterator().next();
-			col.remove(u);
-			error(eref, "same.state.entity", false, u,
+			if(col.size() > 1) {
+				SimplePhysicalEntity u = col.iterator().next();
+				col.remove(u);
+				error(eref, "same.state.entity", false, u,
 					BiopaxValidatorUtils.getIdListAsString(col));
+			}
 		}
 
 	}

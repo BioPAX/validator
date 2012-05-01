@@ -19,6 +19,7 @@ import org.biopax.validator.rules.CellularLocationCvRule;
 import org.biopax.validator.rules.InteractionTypeCvRule;
 import org.biopax.validator.rules.ProteinModificationFeatureCvRule;
 import org.biopax.validator.rules.XrefRule;
+import org.biopax.validator.rules.XrefSynonymDbRule;
 import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.utils.XrefHelper;
 
@@ -53,7 +54,7 @@ public class IntegrationTest {
 
     @Test
     public void testRange1() {
-        System.out.println("test Range (1)");
+//        System.out.println("test Range (1)");
         Evidence ev = (Evidence) factory3.create(Evidence.class, "1");
         EvidenceCodeVocabulary ec = factory3.create(EvidenceCodeVocabulary.class, "2");
         ev.addEvidenceCode(ec);
@@ -95,6 +96,10 @@ public class IntegrationTest {
     	assertTrue(gs.contains("GO"));
     	assertTrue(gs.contains("GENE ONTOLOGY"));
     	assertTrue(gs.contains("GENE_ONTOLOGY"));
+    	
+    	assertTrue(xrefHelper.isUnofficialOrMisspelledDbName("GENE_ONTOLOGY"));
+    	assertFalse(xrefHelper.isUnofficialOrMisspelledDbName("GO"));
+    	assertTrue(xrefHelper.isUnofficialOrMisspelledDbName("medline"));
     }
 
     
@@ -317,6 +322,43 @@ public class IntegrationTest {
     	
    		rule.check(mf, false); // should not fail
 	}
+    
+    
+    @Test
+    public void testXrefSynonymDbRule() {
+    	XrefSynonymDbRule instance =  (XrefSynonymDbRule) context.getBean("xrefSynonymDbRule");
+        instance.setBehavior(Behavior.ERROR);
+        UnificationXref x = factory3.create(UnificationXref.class, "1");
+        //use an unofficial/misspelled name
+        x.setDb("entrez_gene");
+        x.setId("0000000");
+        try {
+        	instance.check(x, false);
+        	fail("Must throw BiopaxValidatorException!");
+        } catch (BiopaxValidatorException e) {
+			//ok
+		}
+        // use one of its official synonyms
+        x.setDb("entre-zgene");
+        x.setId("0000000");
+        instance.check(x, false);
+        
+        //use an unofficial/misspelled name
+        x.setDb("gene_ontology");
+        x.setId("0000000");
+        try {
+        	instance.check(x, false);
+        	fail("Must throw BiopaxValidatorException!");
+        } catch (BiopaxValidatorException e) {
+			//ok
+		}
+        // use one of its official synonyms
+        x.setDb("go");
+        x.setId("0000000");
+        instance.check(x, false);
+    }
+    
+    
     
     
     private void writeExample(String file, Model model) {
