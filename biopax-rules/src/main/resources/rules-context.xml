@@ -57,7 +57,17 @@
 		<entry key="org.biopax.paxtools.model.level3.Interaction" value="PSI-MI"/>
 	</util:map>
 
-	<!-- XrefRule, XrefSynonymDbRule additional (optional) configuration -->
+	<!-- XrefRule, XrefSynonymDbRule additional (optional) configuration 
+	The following LISTS of DB (biodata source) synonyms and typos will
+	merge with overlapping groups from Miriam and PSI-MI ("database citation" 
+	ontology branch) and then used to warn about non-standard but 
+	somewhat close/known names and probably auto-fix all such cases. If
+	the first name in a list below is a STANDARD name (found in Miriam or MI),
+	then the corresponding PREFERRED name will be suggested as the replacement.
+	If the first name in a list below is a STANDARD Miriam datasource name, then 
+	the rules will be able also to check identifiers using the ID pattern.
+	Otherwise (- not Miriam, no pattern), it won't validate identifiers.
+	-->
 	<util:set id="extraDbSynonyms">
 		<list>
 			<value>ENTREZ GENE</value>
@@ -68,6 +78,11 @@
 			<value>ENTREZGENE</value>
 			<value>ENTREZ GENE/LOCUSLINK</value>
 		</list>
+		<list>
+			<value>NCBI GI</value>
+			<value>ENTREZ GI</value>
+			<value>GI</value>
+		</list>		
 		<list>
 			<value>PUBCHEM-COMPOUND</value>
 			<value>NCBI PUBCHEM</value>
@@ -138,11 +153,6 @@
 			<value>EMBL</value>
 		</list>
 		<list>
-			<value>NCBI GI</value>
-			<value>ENTREZ GI</value>
-			<value>GI</value>
-		</list>
-		<list>
 			<value>PROTEIN GENBANK IDENTIFIER</value>
 			<value>GENPEPT</value>
 		</list>
@@ -205,6 +215,11 @@
 			<value>REACTOME</value>
 			<value>REACTOME STABLE ID</value>
 		</list>
+		<list>
+			<value>BIOCYC</value>
+			<value>HUMANCYC</value>
+			<value>MOUSECYC</value>
+		</list>			
 	</util:set>
 
 	<!-- end of the XrefRule config. -->

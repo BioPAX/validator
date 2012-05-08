@@ -385,7 +385,17 @@ public final class Normalizer {
 		List<UnificationXref> urefs = new ArrayList<UnificationXref>(
 			new ClassFilterSet<Xref,UnificationXref>(
 				referrable.getXref(), UnificationXref.class)
-		);	
+		);
+		
+		for(UnificationXref ux : new ArrayList<UnificationXref>(urefs)) {
+			if(ux.getDb() == null || ux.getId() == null) {
+				// report error, try next xref
+				log.warn("Won't consider the UnificationXref " +
+					"having NULL 'db' or 'id' property: " + 
+					ux + ", " + ux.getRDFId() + ". " + extraInfo());
+				urefs.remove(ux);
+			} 
+		}
 		
 		Comparator<UnificationXref> comparator = new Comparator<UnificationXref>() {
 			@Override
@@ -402,68 +412,79 @@ public final class Normalizer {
 	}
 
 	
-	/*
-	 * Gets the first one, the set is not empty, or null.
+	/**
+	 * Gets the first preferred xref, if exists.
+	 * Otherwise, - simply the first correct one.
+	 * Preferred db values are:
+	 * "entrez gene" - for NucleicAcidReference/NucleicAcidRegionReference;
+	 * "uniprot" or "refseq" for ProteinReference;
+	 * "chebi" - SMRs
+	 * 
+	 * @param bpe
+	 * @return the "best" first unification xref 
 	 */
-	private UnificationXref getFirstUnificationXref(XReferrable xr) 
-	{
-		List<UnificationXref> urefs = getUnificationXrefsSorted(xr);
-		UnificationXref toReturn = null;
-		for(UnificationXref uref : urefs) 
-		{
-			if(uref.getDb() == null || uref.getId() == null) {
-				// report error, skip
-				log.error("UnificationXref's properties 'db' or 'id' " +
-					"cannot be null: " + uref + ", " + uref.getRDFId()
-					+ ". " + extraInfo());
-			} else {
-				toReturn = uref;
-				break;
-			}
-		}
-		return toReturn;
-	}
-
-	
-	/*
-	 * The first uniprot or enterz gene xref, if exists, will be returned;
-	 * otherwise, the first one of any kind is the answer.
-	 */
-	private UnificationXref getFirstUnificationXrefOfEr(EntityReference er) 
+	private UnificationXref getFirstUnificationXref(XReferrable bpe) 
 	{
 		UnificationXref toReturn = null;
 		
-		for(UnificationXref uref : getUnificationXrefsSorted(er)) 
-		{
-			if(uref.getDb() == null || uref.getId() == null) {
-				// report error, skip
-				log.error("UnificationXref's properties 'db' or 'id' " +
-					"cannot be null: " + uref + ", " + uref.getRDFId()
-					+ ". " + extraInfo());
-			} 
-			else if(uref.getDb().toLowerCase().startsWith("uniprot") 
-				|| uref.getDb().toLowerCase().startsWith("entrez")
-				|| uref.getDb().toLowerCase().startsWith("chebi")) {
-				toReturn = uref;
-				break;
-			} else if(toReturn == null) {
-				// if not already done, pick up the first one for now...
-				toReturn = uref; 
-				// - may be re-assigned later if there are uniprot/entrez ones
-			}
+		String preferredDb = null; 
+		//use preferred db prefix for different type of ER
+		if(bpe instanceof ProteinReference)
+			preferredDb = "uniprot";
+		else if(bpe instanceof SmallMoleculeReference)
+			preferredDb = "chebi";
+		else if(bpe instanceof NucleicAcidReference || bpe instanceof NucleicAcidRegionReference)
+			preferredDb = "entrez";
+		
+		Collection<UnificationXref> orderedUrefs = getUnificationXrefsSorted(bpe);
+		
+		if(preferredDb == null && !orderedUrefs.isEmpty()) {
+			toReturn = orderedUrefs.iterator().next(); 
+			return toReturn;
+		} else {
+			for(UnificationXref uref : orderedUrefs) 
+				if(uref.getDb().toLowerCase().startsWith(preferredDb)) {
+					toReturn = uref;
+					break;
+				}
 		}
-
+		
+		if(toReturn == null && bpe instanceof ProteinReference)
+			for(UnificationXref uref : orderedUrefs) 
+				if(uref.getDb().toLowerCase().startsWith("refseq")) {
+					toReturn = uref;
+					break;
+				}
+		
 		return toReturn;
 	}
 
-
+	/**
+	 * Normalize the BioPAX model in the 
+	 * internal {@link Validation} ({@link #validation}) object.
+	 * 
+	 * @param model
+	 * @see #normalize(Model)
+	 */
+	public void normalize() {
+		normalize(validation.getModel());
+	}
+	
 	/**
 	 * BioPAX normalization 
 	 * (modifies the original Model!)
 	 * 
 	 * @param model
+	 * @throws IllegalStateException if {@link #validation} is not null and its {@link Validation#getModel()} is different from this model
+	 * @throws NullPointerException if model is null
 	 */
 	public void normalize(Model model) {
+		if(validation != null && model != validation.getModel())
+			throw new IllegalStateException("'validation' was set, " +
+				"but its model object is not the same as this model; " +
+				"so, you can either use the normalize() method without " +
+				"arguments or - setValidation(null) instead!");
+		
 		/* save curr. state;
 		 * disable error reporting: it generates artifact errors (via AOP)
 		 * during the normalization, because the model is being edited!
@@ -572,7 +593,7 @@ public final class Normalizer {
 	private void normalizeERs(Model model) {
 		// process the rest of utility classes (selectively though)
 		for (EntityReference bpe : model.getObjects(EntityReference.class)) {
-			UnificationXref uref = getFirstUnificationXrefOfEr((EntityReference) bpe);
+			UnificationXref uref = getFirstUnificationXref(bpe);
 			if (uref != null) // not using idVersion!..
 				normalizeID(model, bpe, uref.getDb(), uref.getId(), null); 
 			else if (log.isInfoEnabled())
@@ -621,6 +642,8 @@ public final class Normalizer {
 			if(!model.contains(e))
 				model.add(e);
 		}
+		
+		// clear internal tmp stuff
 		subs.clear();
 		subsModel = biopaxReader.getFactory().createModel();
 	}

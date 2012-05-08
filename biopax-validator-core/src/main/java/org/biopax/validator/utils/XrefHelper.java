@@ -33,9 +33,14 @@ public class XrefHelper {
     private final CompositeCollection<String> extraGroups; //set in Constructor
     private Set<String> unofficialDbNames; // to be generated	
     
+    /**
+     * Constructor.
+     * 
+     * @param extraSynonyms a set of lists of unofficial names or common typos
+     * @param ontologyManager the object that gives access to some of controlled vocabularies/ontologies (OBO)
+     */
     public XrefHelper(Set<List<String>> extraSynonyms, 
     	BiopaxOntologyManager ontologyManager) 
-    		throws Exception 
     {   	
 		// all database names and ID patterns go here
 		this.dataPatterns = new HashMap<String, Pattern>();
@@ -55,9 +60,14 @@ public class XrefHelper {
     }
 
     /**
-     * initialize
+     * Post-construct initializer.
+     * 
+     * Loads and merges bio database/datasource names and synonyms
+     * from Miriam resource, PSI-MI ontology ("database citation" branch),
+     * and extra (configured by user) names.
+     * 
      */
-    @PostConstruct
+    @PostConstruct //vital thing
     void init() {
 		this.allSynonyms =  new CompositeCollection<String>();
 		this.unofficialDbNames = new HashSet<String>();	

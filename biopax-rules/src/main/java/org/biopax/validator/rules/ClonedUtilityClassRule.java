@@ -2,7 +2,6 @@ package org.biopax.validator.rules;
 
 import java.util.Set;
 
-import org.apache.commons.collections15.set.CompositeSet;
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.ObjectPropertyEditor;
 import org.biopax.paxtools.controller.PropertyEditor;
@@ -50,34 +49,30 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 			if(clones.size() < 2)
 				continue; //skip unique individuals
 			
-			UtilityClass u = clones.iterator().next();
-			boolean removed = clones.remove(u); // remove the first (saved!) element from the clones collection
-			assert removed;
+			UtilityClass first = clones.iterator().next();
+			boolean ok = clones.remove(first); // pop the first element from the clones collection
+			assert ok;
 			String idListAsString = BiopaxValidatorUtils.getIdListAsString(clones);
 			if(fix) {
 				// use the same value for all corresp. props 
-				fix(model, u, clones);
+				fix(model, first, clones);
+				// remove clones
+				for (UtilityClass clone : clones) {
+					model.remove(clone);
+					if(logger.isDebugEnabled())
+						logger.debug("Duplicate object " + clone.getRDFId() 
+							+ " " + clone.getModelInterface().getSimpleName() 
+							+ " has been replaced with " + first.getRDFId() +
+							" and removed from the model");
+				}
+				
 				// set "fixed", but keep the old message
-				error(u, "cloned.utility.class", true, 
-					idListAsString, u.getModelInterface().getSimpleName());
+				error(first, "cloned.utility.class", true, 
+					idListAsString, first.getModelInterface().getSimpleName());
 			} else {
 				// report the problem (not fixed)
-				error(u, "cloned.utility.class", false, 
-					idListAsString, u.getModelInterface().getSimpleName());
-			}
-		}
-		
-		// now it's safe to remove the rest of clones 
-		// from the model (above we excluded, thus protected, the first one in each group)
-		if (fix) {
-			CompositeSet<UtilityClass> composed = new CompositeSet<UtilityClass>(clusters.toArray(UC_SET));
-			for (UtilityClass duplicate : composed) {
-				model.remove(duplicate);
-				if(logger.isDebugEnabled())
-					logger.debug("Duplicate object " + duplicate.getRDFId() 
-						+ " " + duplicate.getModelInterface().getSimpleName() 
-						+ " has been removed from the model"
-						+ " and all object properties updated!");
+				error(first, "cloned.utility.class", false, 
+					idListAsString, first.getModelInterface().getSimpleName());
 			}
 		}
 	}

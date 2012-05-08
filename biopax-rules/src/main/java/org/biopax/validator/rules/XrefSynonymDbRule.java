@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Checks xref.db is official db name (catch for known unofficial synonyms and misspelling)
+ * Checks xref.db is one of official db names 
+ * (warn about known unofficial synonyms and misspelling)
  *
  * @author rodche
  */

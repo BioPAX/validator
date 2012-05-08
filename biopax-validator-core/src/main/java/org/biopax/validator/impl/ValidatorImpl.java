@@ -144,7 +144,9 @@ public class ValidatorImpl implements Validator {
 		
 		// normalize?
 		if (validation.isNormalize()) {
-			(new Normalizer(validation)).normalize(model);
+			Normalizer normalizer = new Normalizer(validation);
+			normalizer.normalize();
+			model = validation.getModel(); // reset the ref. (less worry...)
 		}
 		
 		if (validation.isFix() || validation.isNormalize()) {
