@@ -153,7 +153,7 @@ public class ValidatorImpl implements Validator {
 			// discover, explicitly add child elements to the model
 			model.repair();
 			// remove all dangling utility class objects
-			(new ModelUtils(model)).removeObjectsIfDangling(UtilityClass.class);
+			ModelUtils.removeObjectsIfDangling(model, UtilityClass.class);
 		}
 
 		// add comments and some statistics

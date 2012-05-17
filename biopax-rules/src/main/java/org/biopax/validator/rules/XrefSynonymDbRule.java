@@ -29,10 +29,13 @@ public class XrefSynonymDbRule extends AbstractRule<Xref>{
         }
 
         String primary = xrefHelper.getPrimaryDbName(db);
-        //if primary is null, another rule (XrefRule) reports this
-        // report/fix only if it is not official db synonym (it's known misspelling or other name)
-		if (primary != null && xrefHelper.isUnofficialOrMisspelledDbName(db)) {
-			error(x, "db.name.spelling", fix, db, primary);
+        // if primary is null, do nothing, - another rule (XrefRule) reports this
+		if (primary != null && !primary.equalsIgnoreCase(db)) {
+	        // report only if it is definitely not official db synonym 
+			if (xrefHelper.isUnofficialOrMisspelledDbName(db))
+				error(x, "db.name.spelling", fix, db, primary);
+				
+			// fix, sometimes w/o error message, anyway ;)
 			if(fix) {
 				x.setDb((String) primary);
 			}

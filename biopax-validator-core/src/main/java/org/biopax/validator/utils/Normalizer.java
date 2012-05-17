@@ -163,6 +163,8 @@ public final class Normalizer {
 				continue; // skip it
 			}
 			
+			//TODO someday,.. get the preferred DB name using XrefHelper!
+			
 			try {// to update name to the primary one
 				db = MiriamLink.getName(db);
 				ref.setDb(db);
@@ -527,28 +529,26 @@ public final class Normalizer {
 		if(log.isInfoEnabled())
 			log.info("Optional tasks (reasoning)..." + extraInfo());
 		
-		ModelUtils mu = new ModelUtils(model);
-		
 		// auto-set dataSource property for all entities (top-down)
 		if(options.inferPropertyDataSource) {
-			mu.inferPropertyFromParent("dataSource");//, Entity.class);
+			ModelUtils.inferPropertyFromParent(model, "dataSource");//, Entity.class);
 		}
 		
 		if(options.inferPropertyOrganism) {
-			mu.inferPropertyFromParent("organism");//, Gene.class, SequenceEntityReference.class, Pathway.class);
+			ModelUtils.inferPropertyFromParent(model, "organism");//, Gene.class, SequenceEntityReference.class, Pathway.class);
 		}
 		
 		if(options.generateRelatioshipToPathwayXrefs) {
-			mu.generateEntityProcessXrefs(Pathway.class);
+			ModelUtils.generateEntityProcessXrefs(model, Pathway.class);
 		} 
 			
 		if(options.generateRelatioshipToInteractionXrefs) {
-			mu.generateEntityProcessXrefs(Interaction.class);
+			ModelUtils.generateEntityProcessXrefs(model, Interaction.class);
 		} 
 		
 		// the following two tasks better do AFTER inferPropertyOrganism (if enabled)
 		if(options.generateRelatioshipToOrganismXrefs) {
-			mu.generateEntityOrganismXrefs();
+			ModelUtils.generateEntityOrganismXrefs(model);
 		} 
 		
 		/* 
@@ -626,13 +626,12 @@ public final class Normalizer {
 	 * @param model
 	 */
 	private void doSubs(Model model) {
-		ModelUtils mu = new ModelUtils(model);
 		for(BioPAXElement e : subs.keySet()) {
 			model.remove(e);
 		}
-
+		
 		try {
-			mu.replace(subs);
+			ModelUtils.replace(model, subs);
 		} catch (Exception e) {
 			log.error("Failed to replace IDs. " + extraInfo(), e);
 			return;
@@ -642,6 +641,11 @@ public final class Normalizer {
 			if(!model.contains(e))
 				model.add(e);
 		}
+	
+		for(BioPAXElement e : model.getObjects()) {
+			ModelUtils.fixDanglingInverseProperties(e, model);
+		}
+		
 		
 		// clear internal tmp stuff
 		subs.clear();

@@ -168,7 +168,6 @@ public class NormalizerTest {
 		bpe = model.getByID("urn:biopax:UnificationXref:TAXONOMY_10090");
 		assertTrue(bpe instanceof UnificationXref);
 		
-		
 		// test that one of ProteinReference (2nd or 3rd) is removed
 		assertEquals(2, model.getObjects(ProteinReference.class).size());
 		
