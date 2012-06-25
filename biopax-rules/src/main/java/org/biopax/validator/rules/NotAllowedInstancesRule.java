@@ -21,7 +21,7 @@ import org.biopax.paxtools.model.level2.externalReferenceUtilityClass;
 @Component
 public class NotAllowedInstancesRule extends AbstractRule<BioPAXElement> {
 
-   static final Class[] NOT_ALLOWED = {
+   final Class[] NOT_ALLOWED = {
         Entity.class,
         UtilityClass.class,
         Xref.class,

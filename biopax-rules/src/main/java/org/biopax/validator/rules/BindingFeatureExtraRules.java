@@ -41,7 +41,7 @@ public class BindingFeatureExtraRules extends AbstractRule<Model> {
 		};
 		
 		Set<Set<BindingFeature>> violations 
-			= groupping.cluster(bfs, BiopaxValidatorUtils.maxErrors);
+			= groupping.cluster(bfs, Integer.MAX_VALUE);
 		
 		// report the error once for each cluster >1
 		for (Set<BindingFeature> s : violations) {

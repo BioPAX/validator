@@ -2,6 +2,9 @@ package org.biopax.validator.impl;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +27,7 @@ import org.biopax.validator.result.ErrorCaseType;
 import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.result.Validation;
 import org.biopax.validator.utils.BiopaxValidatorException;
+import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.biopax.validator.utils.Normalizer;
 import org.biopax.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +75,7 @@ public class ValidatorImpl implements Validator {
     }
     
     
-	public void validate(Validation validation) {
+	public void validate(final Validation validation) {
 		assert(validation != null);
 		
 		if (validation == null || validation.getModel() == null) {
@@ -100,44 +104,70 @@ public class ValidatorImpl implements Validator {
 			validation.setModel(model); // not sure if this is necessarily...
 		}
 
+		//we'll check rules concurrently
+		ExecutorService exec = Executors.newFixedThreadPool(30);
 
 		//First, check/fix individual objects
-		for (Rule<?> rule : rules) {
+		for (final Rule<?> rule : rules) {
 			// rules can check/fix specific elements
 			// copy the elements collection to avoid concurrent modification
 			// (rules can add/remove objects)!
 			Set<BioPAXElement> elements = new HashSet<BioPAXElement>(
 					model.getObjects());
-			for (BioPAXElement el : elements) {
+			for (final BioPAXElement el : elements) {
 				// skip if cannot check
 				if (rule.canCheck(el)) {
 					// break if max.errors exceeded
 					if (validation.isMaxErrorsSet()
-							&& validation.getNotFixedErrors() >= validation
-								.getMaxErrors())
+							&& validation.getNotFixedErrors() >= validation.getMaxErrors())
 						break;
 					
 					@SuppressWarnings("unchecked")
-					Rule<BioPAXElement> r = (Rule<BioPAXElement>) rule;
+					final Rule<BioPAXElement> r = (Rule<BioPAXElement>) rule;
 					
-					r.check(el, validation.isFix());
+					exec.submit(new Runnable() {
+						@Override
+						public void run() {
+							r.check(el, validation.isFix());
+						}
+					});
+
 				}
 			}
 		}
+		exec.shutdown();
+		try {
+			exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			throw new BiopaxValidatorException("Interrupted unexpectedly!");
+		}
 		
+		exec = Executors.newFixedThreadPool(30);
 		//Second, check/fix <Model> rules
+		final Model m = model;
 		for (Rule<?> rule : rules) {
 			if (rule.canCheck(model)) {
 				if (log.isDebugEnabled())
 					log.debug("Current rule is: " + rule.getName());
 				
 				@SuppressWarnings("unchecked")
-				Rule<Model> r = (Rule<Model>) rule;
+				final Rule<Model> r = (Rule<Model>) rule;
 				
-				r.check(model, validation.isFix());
+				exec.submit(new Runnable() {
+					@Override
+					public void run() {
+						r.check(m, validation.isFix());
+					}
+				});
+				
 			} 
 		}
-
+		exec.shutdown();
+		try {
+			exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			throw new BiopaxValidatorException("Interrupted unexpectedly!");
+		}
 		
 		if (log.isDebugEnabled())
 			log.debug("All rules checked!");
@@ -291,9 +321,25 @@ public class ValidatorImpl implements Validator {
 		}
 	}
 
+		
     /**
-     * When this method is normally called, 
-     * 'err' usually has only one error case. 
+     * Saves or updates the information about a error/warning case
+     * with all the {@link Validation} jobs known to this validator
+     * object. 
+     * 
+     * This is one of most important SPI methods used, e.g., 
+     * indirectly by all the AOP advices (objects) which intercept, analyze,
+     * and properly register all problems (messages) sent from independent
+     * validation rules (taking into account rules configuration, threshold,
+     * where a BioPAX element or other troubled object belongs to, etc.)
+     * 
+     * NOTE: in the current implementation, this method is normally (in fact, always) 
+     * called with the error type ('err') having only ONE error case!
+     * @see {@link BiopaxValidatorUtils#createError(String, String, String, org.biopax.validator.result.Behavior, Object...)}
+     * 
+     * @param obj
+     * @param err
+     * @param setFixed
      * 	
      */
     public void report(Object obj, ErrorType err, boolean setFixed) 
@@ -325,15 +371,8 @@ public class ValidatorImpl implements Validator {
 		
 		// add to the corresponding validation result
 		for(Validation v: validations) { 
-			assert v != null : "The list of avauilable validations contains NULL!";
-			
-			if(log.isTraceEnabled()) {
-				log.trace("Failed: " + err.toString() 
-					+ " "+ err.getErrorCase().toArray()[0] + 
-					" in: " + v.getDescription() + 
-					"; fixed=" + setFixed);
-			}
-			
+			assert v != null : "The list of available validations contains NULL!";
+					
 			if(v.isMaxErrorsSet() && v.getNotFixedErrors() >= v.getMaxErrors())
 			{
 				log.info("Won't save the case: max. errors " +
@@ -346,7 +385,8 @@ public class ValidatorImpl implements Validator {
 				ect.setFixed(setFixed); 
 			}
 
-			// add or update the error case(s)
+			// add or update the error case(s), i.e., if there was same type error,
+			// this will add or update existing error cases (- no duplicate type-object pair cases)
 			v.addError(err);
 		}		
 	}

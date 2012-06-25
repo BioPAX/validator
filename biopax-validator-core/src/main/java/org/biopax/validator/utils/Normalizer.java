@@ -344,8 +344,9 @@ public final class Normalizer {
 					if (log.isInfoEnabled())
 						log.info(e + " displayName auto-fix: "
 								+ e.getDisplayName() + ". " + extraInfo());
-					Validation.setFixed(validation, BiopaxValidatorUtils.getId(e), 
-						"displayNameRule", "no.display.name", null);
+					if(validation != null)
+						validation.setFixed(BiopaxValidatorUtils.getId(e), 
+								"displayNameRule", "no.display.name", null);
 				} else if (!e.getName().isEmpty()) {
 					String dsp = e.getName().iterator().next();
 					for (String name : e.getName()) {
@@ -356,8 +357,9 @@ public final class Normalizer {
 					if (log.isInfoEnabled())
 						log.info(e + " displayName auto-fix: " + dsp
 							+ ". " + extraInfo());
-					Validation.setFixed(validation, BiopaxValidatorUtils.getId(e), 
-						"displayNameRule", "no.display.name", null);
+					if(validation != null)
+						validation.setFixed(BiopaxValidatorUtils.getId(e), 
+								"displayNameRule", "no.display.name", null);
 				}
 			}
 		}
@@ -367,8 +369,9 @@ public final class Normalizer {
 				if(spe.getDisplayName() == null || spe.getDisplayName().trim().length() == 0) {
 					if(er.getDisplayName() != null && er.getDisplayName().trim().length() > 0) {
 						spe.setDisplayName(er.getDisplayName());
-						Validation.setFixed(validation, BiopaxValidatorUtils.getId(spe), 
-							"displayNameRule", "no.display.name", null);
+						if(validation != null)
+							validation.setFixed(BiopaxValidatorUtils.getId(spe), 
+									"displayNameRule", "no.display.name", null);
 					}
 				}
 			}

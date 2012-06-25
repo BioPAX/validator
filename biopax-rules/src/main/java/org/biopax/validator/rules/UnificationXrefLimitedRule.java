@@ -1,6 +1,7 @@
 package org.biopax.validator.rules;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
@@ -31,18 +32,18 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
        
     @Resource(name="dbAllow")
     public void setDbAllow(Map<Class<BioPAXElement>, String> dbAllow) {
-		this.dbAllow = dbAllow;
+		this.dbAllow = new ConcurrentHashMap<Class<BioPAXElement>, String>(dbAllow);
 	}
     
     @Resource(name="dbDeny")
     public void setDbDeny(Map<Class<BioPAXElement>, String> dbDeny) {
-		this.dbDeny = dbDeny;
+		this.dbDeny = new ConcurrentHashMap<Class<BioPAXElement>, String>(dbDeny);
 	}
     
     // to init on the first check(..) call
     void initInternalMaps() {
     	if(!ready) {
-    		this.allow = new HashMap<Class<BioPAXElement>, Set<String>>();
+    		this.allow = new ConcurrentHashMap<Class<BioPAXElement>, Set<String>>();
     		for (Class<BioPAXElement> clazz : dbAllow.keySet()) {
     			String[] a = dbAllow.get(clazz).toLowerCase().split(":");
     			final Set<String> allSynonyms = new HashSet<String>();
@@ -53,7 +54,7 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
     			this.allow.put(clazz, allSynonyms);
     		}
     		
-    		this.deny = new HashMap<Class<BioPAXElement>, Set<String>>();
+    		this.deny = new ConcurrentHashMap<Class<BioPAXElement>, Set<String>>();
     		for (Class<BioPAXElement> clazz : dbDeny.keySet()) {
     			String[] a = dbDeny.get(clazz).toLowerCase().split(":");
     			final Set<String> allSynonyms = new HashSet<String>();

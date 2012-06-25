@@ -40,7 +40,7 @@ public class SameNameDiffKindPhysEntitiesRule extends
 			};
 			
 			Set<Set<SimplePhysicalEntity>> sharedNamesClusters = 
-				groupping.cluster(peers, BiopaxValidatorUtils.maxErrors);
+				groupping.cluster(peers, Integer.MAX_VALUE);
 				
 			// report the error once for each cluster
 			for (Set<SimplePhysicalEntity> sharedNames : sharedNamesClusters) 

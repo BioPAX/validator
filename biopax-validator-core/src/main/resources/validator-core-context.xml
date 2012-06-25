@@ -35,7 +35,7 @@
 	<bean id="utils" class="org.biopax.validator.utils.BiopaxValidatorUtils">
 		<property name="messageSource" ref="rulesMessageSource" />
 		<property name="locale" value="en" />
-		<property name="maxErrors" value="1000" />
+		<property name="maxErrors" value="10000" />
 	</bean>
        
 	<!-- end of BiopaxValidatorUtils config. -->

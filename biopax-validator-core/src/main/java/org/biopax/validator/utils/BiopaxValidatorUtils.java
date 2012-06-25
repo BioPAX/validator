@@ -47,7 +47,7 @@ public class BiopaxValidatorUtils {
     //private static Jaxb2Marshaller resultsMarshaller;
     private static JAXBContext jaxbContext;
     private final Set<String> ignoredCodes;
-    public static int maxErrors = Integer.MAX_VALUE;
+    private int maxErrors = Integer.MAX_VALUE;
     
     static {
     	try {
@@ -349,6 +349,16 @@ public class BiopaxValidatorUtils {
 	}
 
     
+	/**
+	 * Creates an error type with single error case.
+	 * 
+	 * @param objectName
+	 * @param errorCode
+	 * @param ruleName
+	 * @param warnOrErr
+	 * @param msgArgs
+	 * @return
+	 */
     public ErrorType createError(String objectName, String errorCode, 
     		String ruleName, Behavior warnOrErr, Object... msgArgs) {
 		

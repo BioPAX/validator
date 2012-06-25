@@ -28,8 +28,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 	
-	private final static Set<UtilityClass>[] UC_SET = new Set[]{};
-	
 	public void check(Model model, boolean fix) {
 		Cluster<UtilityClass> algorithm = new Cluster<UtilityClass>() {
 			@Override
@@ -42,7 +40,7 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 		 * the max. no. of duplicates to report (the rest is ignored).
 		 */
 		Set<Set<UtilityClass>> clusters 
-			= algorithm.cluster(model.getObjects(UtilityClass.class), BiopaxValidatorUtils.maxErrors);
+			= algorithm.cluster(model.getObjects(UtilityClass.class), Integer.MAX_VALUE);
 		
 		// report the error once for each cluster
 		for (Set<UtilityClass> clones : clusters) {

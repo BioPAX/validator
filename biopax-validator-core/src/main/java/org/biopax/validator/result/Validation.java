@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.xml.bind.annotation.*;
 
@@ -34,16 +36,16 @@ public class Validation implements Serializable {
 	private boolean normalize = false;
 	
 	private int maxErrors; // limits the num. of not fixed error cases (1 means "fal-fast" mode, i.e., stop after the first serious and not fixed error)
-
+	
 	// extra options for the normalizer (optional)
 	private NormalizerOptions normalizerOptions;
 	
 	// Default Constructor (this is mainly for OXM)
 	public Validation() {
-		this.error = new TreeSet<ErrorType>();
+		this.error = new ConcurrentSkipListSet<ErrorType>();
+		this.objects = Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>());
 		this.description = "unknown";
 		this.comment = new HashSet<String>();
-		this.objects = new HashSet<Object>();
 		this.fix = false;
 		this.normalize = false;
 		this.threshold = Behavior.WARNING;
@@ -94,6 +96,12 @@ public class Validation implements Serializable {
 		return error;
 	}
 
+	/**
+	 * This method should never be used
+	 * (this is for OXM frameworks only)!
+	 * 
+	 * @param errors
+	 */
 	public void setError(Collection<ErrorType> errors) {
 		error.clear();
 		error.addAll(errors);
@@ -107,7 +115,6 @@ public class Validation implements Serializable {
 	public void updateModelSerialized() {
 		Model model = getModel();
 		if (model != null) {
-			// update the OWL data
 			try {
 				// export to OWL
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -132,6 +139,12 @@ public class Validation implements Serializable {
 		return modelSerialized;
 	}
 	
+	/**
+	 * This method should never be used
+	 * (this is for OXM frameworks only)!
+	 *
+	 * @param modelSerialized
+	 */
 	public void setModelSerialized(String modelSerialized) {
 		this.modelSerialized = modelSerialized;
 	}
@@ -163,14 +176,19 @@ public class Validation implements Serializable {
 
 	
 	/**
-	 * Adds the error (with cases) to the collection.
+	 * Adds or updates the error (with cases) to the errors collection.
+	 * This is the primary method to save or update a just discovered or 
+	 * fixed validation problem!
 	 * 
 	 * If the same 'error' already exists there 
 	 * (i.e. type:code where type is either 'warning' or 'error'), 
 	 * the new error cases will be copied to it;
 	 * otherwise, the new one is simply added to the set.
 	 * 
-	 * It also takes the 'error threshold' (level) into account!
+	 * It also updates the notfixed errors counter, 
+	 * taking into account current validation threshold (level)
+	 * and error's own type {@link Behavior} set by a validation rule
+	 * that created it!
 	 * 
 	 * @see #setThreshold(Behavior)
 	 * @see ErrorType#hashCode()
@@ -192,10 +210,10 @@ public class Validation implements Serializable {
 				for (ErrorType et : error) {
 					if (et.equals(e)) {
 						et.addCases(e.getErrorCase());
-						return;
+						break;
 					}
 				}
-			} else {
+			} else { //adding a new error type (code)
 				error.add(e);
 			}
 			break;
@@ -215,6 +233,12 @@ public class Validation implements Serializable {
 		return description;
 	}
 	
+	/**
+	 * This method should never be used
+	 * (this is for OXM frameworks only)!
+	 *
+	 * @param comments
+	 */
 	public void setComment(Collection<String> comments) {
 		this.comment.clear();
 		this.comment.addAll(comments);
@@ -380,7 +404,8 @@ public class Validation implements Serializable {
 	}
 	
 	/**
-	 * Total error and warning cases (fixed or not)
+	 * Total number of {@link Behavior#ERROR} and 
+	 * {@link Behavior#WARNING} cases (either fixed or not).
 	 * 
 	 * @return
 	 */
@@ -390,7 +415,8 @@ public class Validation implements Serializable {
 	}
 
 	/**
-	 * Total error and warning cases, not fixed.
+	 * Total number of {@link Behavior#ERROR} and 
+	 * {@link Behavior#WARNING} cases, NOT fixed.
 	 * 
 	 * @return
 	 */
@@ -400,7 +426,7 @@ public class Validation implements Serializable {
 	}
 	
 	/** 
-	 * Total error cases, not fixed.
+	 * Total number of NOT fixed {@link Behavior#ERROR} cases.
 	 * 
 	 * @return
 	 */
@@ -408,55 +434,41 @@ public class Validation implements Serializable {
 	public int getNotFixedErrors() {
 		return countErrors(null, null, null, null, true, true);
 	}
+
 	
 	/** 
 	 * Finds the previously reported
 	 * by the rule error case and marks it as fixed.
 	 * 
-	 * (This method can be used from the {@link Normalizer})
+	 * This method is used by {@link Normalizer} to allow
+	 * fixing and reporting as 'fixed' for some error cases 
+	 * previously found by the validator (using this validation instance).
 	 * 
-	 * @param validation
 	 * @param objectId BioPAX element identifier (associated with the error)
-	 * @param rule a BioPAX Validator rule ID (that reports with the error code)
+	 * @param rule a BioPAX validation rule ID (that reports with the error code)
 	 * @param errCode specific error code
 	 * @param newMsg a message, if not null/empty, to replace the original one
 	 */
-	public static void setFixed(Validation validation, 
-		String objectId, String rule, String errCode, String newMsg) 
+	public void setFixed(String objectId, String rule, String errCode, String newMsg) 
 	{
-		if(validation != null) {
-			Behavior type = Behavior.WARNING;
-			ErrorCaseType ect = validation.findErrorCase(
+		Behavior type = Behavior.WARNING;
+		ErrorCaseType ect = findErrorCase(
+			new ErrorType(errCode, type), 
+			new ErrorCaseType(rule, objectId, null)); // msg is ignored when comparing errors
+		if(ect == null) {
+			type = Behavior.ERROR;
+			ect = findErrorCase(
 				new ErrorType(errCode, type), 
-				new ErrorCaseType(rule, objectId, null)); // msg is ignored when comparing errors
-			if(ect == null) {
-				type = Behavior.ERROR;
-				ect = validation.findErrorCase(
-					new ErrorType(errCode, type), 
-					new ErrorCaseType(rule, objectId, null));
-			}
-			if(ect != null) {
-				ect.setFixed(true);
-				if(newMsg != null && !"".equals(newMsg.trim()))
-					ect.setMessage(newMsg);
-			}
+				new ErrorCaseType(rule, objectId, null));
+		}
+		if(ect != null && !ect.isFixed()) {
+			ect.setFixed(true);
+			if(newMsg != null && !"".equals(newMsg.trim()))
+				ect.setMessage(newMsg);
 		}
 	}
 
 	
-	/**
-	 * @see #setFixed(Validation, String, String, String, String)
-	 * 
-	 * @param objectId
-	 * @param rule
-	 * @param errCode
-	 * @param newMsg
-	 */
-	public void setFixed(String objectId, String rule, String errCode, String newMsg) 
-	{
-		setFixed(this, objectId, rule, errCode, newMsg);
-	}
-		
 	@XmlAttribute(required=false)
 	public int getMaxErrors() {
 		return (isMaxErrorsSet()) ? maxErrors : 0;

@@ -2,6 +2,7 @@ package org.biopax.validator.result;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.xml.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	private Category category = Category.INFORMATION; // default
 
 	public ErrorType() {
-		errorCase = new TreeSet<ErrorCaseType>();
+		errorCase = new ConcurrentSkipListSet<ErrorCaseType>(); //new TreeSet<ErrorCaseType>();
 	}
 
 	public ErrorType(String code, Behavior type) {

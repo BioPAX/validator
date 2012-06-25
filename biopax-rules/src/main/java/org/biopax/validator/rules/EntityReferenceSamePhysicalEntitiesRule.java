@@ -37,7 +37,7 @@ public class EntityReferenceSamePhysicalEntitiesRule extends
 	{
 
 		Set<Set<SimplePhysicalEntity>> clasters 
-			= algorithm.cluster(eref.getEntityReferenceOf(), BiopaxValidatorUtils.maxErrors);
+			= algorithm.cluster(eref.getEntityReferenceOf(), Integer.MAX_VALUE);
 	
 		// report the error case once per cluster
 		for (Set<SimplePhysicalEntity> col : clasters) 

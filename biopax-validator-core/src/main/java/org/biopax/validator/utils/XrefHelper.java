@@ -1,6 +1,7 @@
 package org.biopax.validator.utils;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.*;
 
 import javax.annotation.PostConstruct;
@@ -43,7 +44,7 @@ public class XrefHelper {
     	BiopaxOntologyManager ontologyManager) 
     {   	
 		// all database names and ID patterns go here
-		this.dataPatterns = new HashMap<String, Pattern>();
+		this.dataPatterns = new ConcurrentHashMap<String, Pattern>();
 		
 		// copy/normalize provided extra synonyms
 		this.extraGroups = new CompositeCollection<String>();
@@ -70,7 +71,7 @@ public class XrefHelper {
     @PostConstruct //vital thing
     void init() {
 		this.allSynonyms =  new CompositeCollection<String>();
-		this.unofficialDbNames = new HashSet<String>();	
+		this.unofficialDbNames = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());	
     	
     	// need a temporaty, local "all synonyms" collection
     	// (hide the member one)

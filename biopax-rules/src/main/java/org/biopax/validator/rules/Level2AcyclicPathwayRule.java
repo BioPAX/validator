@@ -16,21 +16,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class Level2AcyclicPathwayRule extends AbstractRule<pathway> 
 {
-	
-	private final static Filter<PropertyEditor> filter = new Filter<PropertyEditor>() {
-		@Override
-		public boolean filter(PropertyEditor editor) {
-			return !"NEXT-STEP".equals(editor.getProperty());
-		}
-	};
-
 	public boolean canCheck(Object thing) {
 		return thing instanceof pathway;
 	}
 
 	public void check(final pathway thing, boolean fix) {
 		AbstractTraverser checker = new AbstractTraverser(
-			SimpleEditorMap.L2, filter)
+			SimpleEditorMap.L2, new Filter<PropertyEditor>() {
+				@Override
+				public boolean filter(PropertyEditor editor) {
+					return !"NEXT-STEP".equals(editor.getProperty());
+				}
+			})
 	{
 			@Override
 			protected void visit(Object value, BioPAXElement parent,

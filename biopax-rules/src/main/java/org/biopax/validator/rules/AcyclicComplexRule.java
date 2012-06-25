@@ -25,13 +25,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AcyclicComplexRule extends AbstractRule<Complex> {
-
-	static final Filter<PropertyEditor> filter = new Filter<PropertyEditor>() {
-		//complex.component only
-		public boolean filter(PropertyEditor editor) {
-			return editor.getProperty().equals("component");
-		}
-	};
 	
 	public boolean canCheck(Object thing) {
 		return thing instanceof Complex;
@@ -39,7 +32,13 @@ public class AcyclicComplexRule extends AbstractRule<Complex> {
 
 	public void check(final Complex thing, boolean fix) {
 		final Traverser traverser = new AbstractTraverser(
-				SimpleEditorMap.L3, filter) {
+				SimpleEditorMap.L3, new Filter<PropertyEditor>() {
+					//complex.component only
+					public boolean filter(PropertyEditor editor) {
+						return editor.getProperty().equals("component");
+					}
+				})
+		{
 			@Override
 			protected void visit(Object range, BioPAXElement domain, Model model,
 					PropertyEditor editor) {

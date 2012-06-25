@@ -20,7 +20,7 @@ import org.biopax.paxtools.model.level2.physicalEntity;
 @Component
 public class NotAdvisedInstancesRule extends AbstractRule<BioPAXElement> {
 
-    static final Class[] NOT_ADVISED = {
+    final Class[] NOT_ADVISED = {
     	Control.class, 
     	Conversion.class,
         Interaction.class,

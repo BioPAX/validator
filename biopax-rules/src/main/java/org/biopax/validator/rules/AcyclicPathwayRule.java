@@ -16,14 +16,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class AcyclicPathwayRule extends AbstractRule<Pathway> {
 	
-	@SuppressWarnings("rawtypes") // it's ok to suppress: we use generic type as a parameter for another generic type...
-	private final static Filter<PropertyEditor> filter = new Filter<PropertyEditor>() {
-		@Override
-		public boolean filter(PropertyEditor editor) {
-			return !"nextStep".equals(editor.getProperty());
-		}
-	};
-	
 	public boolean canCheck(Object thing) {
 		return thing instanceof Pathway;
 	}
@@ -31,8 +23,14 @@ public class AcyclicPathwayRule extends AbstractRule<Pathway> {
 	public void check(final Pathway thing, boolean fix) {
 		@SuppressWarnings("unchecked")
 		AbstractTraverser checker = new AbstractTraverser(
-				SimpleEditorMap.L3, filter)
-		{
+				SimpleEditorMap.L3, 
+				new Filter<PropertyEditor>() {
+					@Override
+					public boolean filter(PropertyEditor editor) {
+						return !"nextStep".equals(editor.getProperty());
+					}
+				}) 
+		{	
 			@Override
 			protected void visit(Object value, BioPAXElement bpe, 
 					Model model, PropertyEditor<?,?> editor) 
