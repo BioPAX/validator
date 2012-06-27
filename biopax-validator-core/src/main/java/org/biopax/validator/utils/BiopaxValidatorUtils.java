@@ -81,7 +81,10 @@ public class BiopaxValidatorUtils {
 	public static Marshaller getMarshaller() {
 		//return resultsMarshaller;
 		try {
-			return jaxbContext.createMarshaller();
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+			return marshaller;
 		} catch (JAXBException e) {
 			throw new RuntimeException("Failed to create Marshaller", e);
 		}
@@ -271,9 +274,28 @@ public class BiopaxValidatorUtils {
 	 * @param validatorResponse
 	 * @param writer
 	 */
-	public static void write(ValidatorResponse validatorResponse, Writer writer, Source xslt) {
-		Document doc = asDocument(validatorResponse);
-		transformAndWrite(doc, writer, xslt);
+	public static void write(ValidatorResponse validatorResponse,
+			Writer writer, Source xslt) 
+	{
+		try {
+			if (xslt != null) {
+				Document doc = asDocument(validatorResponse);
+				Source xmlSource = new DOMSource(doc);
+				Result result = new StreamResult(writer);
+				TransformerFactory transFact = TransformerFactory.newInstance();
+				Transformer trans = transFact.newTransformer(xslt);
+				trans.setOutputProperty(OutputKeys.INDENT, "yes");
+				trans.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+				trans.transform(xmlSource, result);
+			} else {
+				// write without any xslt
+				getMarshaller().marshal(validatorResponse, writer);
+			}
+
+		} catch (Exception e) {
+			throw new RuntimeException("Cannot transform/serialize/write: "
+					+ validatorResponse, e);
+		}
 	}
 	
 	/**
@@ -316,24 +338,6 @@ public class BiopaxValidatorUtils {
 	}
 	
 	
-	public static void transformAndWrite(Node resultNode, Writer writer, Source xsltSource) {
-		try {
-				Source xmlSource = new DOMSource(resultNode);
-				Result result = new StreamResult(writer);
-				TransformerFactory transFact = TransformerFactory.newInstance();
-				Transformer trans = null; 
-				if (xsltSource != null) {
-					trans = transFact.newTransformer(xsltSource);
-				} else {
-					trans = transFact.newTransformer();
-				}
-				trans.transform(xmlSource, result);
-		} catch (Exception e) {
-			throw new RuntimeException("Cannot transform/write.", e);
-		} 
-	}
-	
-	
 	protected static DOMResult marshal(Object obj) {
 		DOMResult domResult = new DOMResult();
 		try {
@@ -341,10 +345,6 @@ public class BiopaxValidatorUtils {
 		} catch (Exception e) {
 			throw new RuntimeException("Cannot serialize object: " + obj, e);
 		} 
-		if(logger.isDebugEnabled()) {
-			logger.debug(obj.getClass().getSimpleName() + 
-				" is serialized: " + domResult.getNode().getNodeName());
-		}
 		return domResult;
 	}
 

@@ -104,7 +104,7 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
 		for (XReferrable bpe : x.getXrefOf()) {
 			for (Class<BioPAXElement> c : allow.keySet()) {
 				if (c.isInstance(bpe)) {
-					if (!allow.get(c).contains(xdb)) {
+					if (allow.get(c) != null && !allow.get(c).contains(xdb)) {
 						error(x, "not.allowed.xref", false, x.getDb(), bpe, 
 							c.getSimpleName(), allow.get(c).toString());
 					}
@@ -112,7 +112,7 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
 			}
 			for (Class<BioPAXElement> c : deny.keySet()) {
 				if (c.isInstance(bpe)) {
-					if (deny.get(c).contains(xdb)) {
+					if (deny.get(c) != null && deny.get(c).contains(xdb)) {
 						error(x, "denied.xref", false, x.getDb(), bpe, 
 							c.getSimpleName(), deny.get(c).toString());
 					}
