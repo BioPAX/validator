@@ -34,29 +34,32 @@ public class Main {
 	static final String EXT = ".modified.owl";
 
 	public static void main(String[] args) throws Exception {				
-        if(args.length == 0) {
+        if(args.length < 2) {
         	String usage = 
-    			"\n The BioPAX Validator v2.0.0\n\n" +
-    		    "Parameters: <input> [--output=<file.xml>] [--auto-fix] [--normalize] [--max-errors=<n>]\n" + 
+    			"\n The BioPAX Validator v2.2, Console Java Application\n\n" +
+    		    "Parameters: <input> <output[.xml|.html]> [--auto-fix] [--normalize] [--max-errors=<n>]\n" + 
     		    "(the second and next arguments are optional and can go in any order).\n" +
     		    "For example:\n" +
-    		    "  path/dir --output=errors.xml\n" +
-    		    "  list:batch_file.txt \n" +
-    		    "  file:biopax.owl auto-fix normalize --output=errors.xml\n" +
-    		    "  http://www.some.net/data.owl --output=errors.xml\n\n" +
+    		    "  path/dir errors.xml\n" +
+    		    "  list:batch_file.txt errors.xml\n" +
+    		    "  file:biopax.owl errors.xml --auto-fix --normalize\n" +
+    		    "  http://www.some.net/data.owl errors.html\n\n" +
     		    "A batch file should list one task (resource) per line, i.e., " +
     		    "file:path/file or URL (to BioPAX data)\n" +
     		    "If '--auto-fix' or '--normalize' options were used, it " +
     		    "also creates a new BioPAX file for each input file " +
-    		    "in the current working directory (using '.modified.owl' exention).";
+    		    "in the current working directory (using '.modified.owl' exention). " +
+    		    "If the output file extension is '.html', the XML result will " +
+    		    "be auto-transformed to a stand-alone HTML/javascript page, " +
+    		    "which is very similar to what the online version returns.";
             System.out.println(usage);
             System.exit(-1);
         }
         
 		String input = args[0];
-		String output = null;
+		String output = args[1];
 
-		if (args.length > 1) {
+		if (args.length > 2) {
 			for (int i = 1; i < args.length; i++) {
 				if("--auto-fix".equalsIgnoreCase(args[i])) {
 					autofix = true;
@@ -65,8 +68,6 @@ public class Main {
 				} else if(args[i].startsWith("--max-errors=")) {
 					String n = args[i].substring(13);
 					maxErrors = Integer.parseInt(n);
-				} else if(args[i].startsWith("--output=")) {
-					output = args[i].substring(9);
 				}
 			}
 		}
@@ -112,8 +113,11 @@ public class Main {
 			PrintWriter errWriter = (output == null) 
 				? new PrintWriter(System.out)
 					: new PrintWriter(output);
-			// save the validation result as XML
-			Source xsltSrc = new StreamSource(ctx.getResource("classpath:default-result.xsl").getInputStream());
+				
+			// save the validation result either as XML or HTML
+			Source xsltSrc = (output != null && output.endsWith(".html"))
+				? new StreamSource(ctx.getResource("classpath:html-result.xsl").getInputStream())
+				: null;
 			BiopaxValidatorUtils.write(validatorResponse, errWriter, xsltSrc);
 		}
 	}

@@ -59,11 +59,14 @@ Execute:
 
 $sh path/to/validate.sh [args]
 
-It prints a brief help when there are no arguments provided, e.g: 
+It prints a brief help message when no arguments provided; otherwise, use as, e.g: 
 
-sh validate.sh path/dir --output=path/errors.xml --auto-fix --normalize
+sh validate.sh input_dir_or_file output[.html] --auto-fix --normalize
 
-Validation messages are printed to STDERR, unless "--output=" argument used.
+Validation result is saved to the output file. When the '.html' file extension is used,
+the XML validation response is auto-transformed to HTML with Javascript (similar to 
+what the web application produces by default) 
+
 
 NOTEs:
 

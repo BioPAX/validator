@@ -143,6 +143,8 @@ public class ValidatorController {
     	if("xml".equalsIgnoreCase(retDesired)) {
         	BiopaxValidatorUtils.write(validatorResponse, writer, null);
     	} else if("html".equalsIgnoreCase(retDesired)) {
+    		/* could also use BiopaxValidatorUtils.write with a xml-to-html xslt source
+    		 but using JSP here makes it easier to keep the same style, header, footer*/
 			model.addAttribute("response", validatorResponse);
 			return "groupByCodeResponse";
 		} else { // owl only

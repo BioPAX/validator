@@ -2,8 +2,7 @@ package org.biopax.validator.utils;
 
 import static org.junit.Assert.*;
 
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 
 import javax.xml.transform.stream.StreamSource;
 
@@ -29,7 +28,7 @@ public class BiopaxValidatorUtilsTest {
 		validation.setThreshold(Behavior.WARNING);
 		response.addValidationResult(validation);
 	
-		StringWriter writer = new StringWriter();
+		Writer writer = new StringWriter();
 		BiopaxValidatorUtils.write(response, writer, null);
 		String xml = writer.toString();
 		assertTrue(xml.length()>0);
@@ -43,9 +42,22 @@ public class BiopaxValidatorUtilsTest {
 		String xml2 = writer.toString();
 		assertTrue(xml2.length()>0);
 		
-		//System.out.println(xml);
-		//System.out.println(xml2);
-		assertEquals(xml, xml2);		
+//		System.out.println(xml);
+//		System.out.println(xml2);
+		assertEquals(xml, xml2);
+		
+		// test pretty html output works (by XSLT)
+		writer = new StringWriter();
+		BiopaxValidatorUtils.write(response, writer, new StreamSource(getClass().getResourceAsStream("/html-result.xsl")));
+		String html = writer.toString();
+		
+//		System.out.println(html);
+		assertTrue(html.length()>0);
+		
+		writer = new PrintWriter(new FileOutputStream(getClass().getClassLoader().getResource("")
+				.getPath() + File.separator + "testXsltReport.html"));
+			((PrintWriter)writer).println(html);
+		writer.flush();
 	}
 
 	
