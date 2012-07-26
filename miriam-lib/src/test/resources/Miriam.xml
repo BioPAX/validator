@@ -3306,7 +3306,7 @@ All content is under the Creative Commons Attribution 3.0 Unported license.</def
 		</annotation>
 	</datatype>
 
-	<datatype id="MIR:00000080" pattern="^(HGNC:)?\d{1,4}$">
+	<datatype id="MIR:00000080" pattern="^(HGNC:)?\d{1,5}$">
 		<name>HGNC</name>
 		<synonyms>
 			<synonym>HUGO Gene Nomenclature Committee</synonym>
