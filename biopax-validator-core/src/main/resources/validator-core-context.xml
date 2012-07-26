@@ -27,7 +27,7 @@
 			<list>
 				<value>rule-descriptions</value>
 				<value>error-codes</value>
-				<value>profile-ideal</value>
+				<value>rule-behaviors</value>
 			</list>
 		</property>
 	</bean>
