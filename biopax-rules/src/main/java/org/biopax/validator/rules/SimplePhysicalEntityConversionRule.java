@@ -1,27 +1,23 @@
 package org.biopax.validator.rules;
 
-import org.biopax.paxtools.controller.AbstractTraverser;
-import org.biopax.paxtools.controller.PropertyEditor;
-import org.biopax.paxtools.model.BioPAXElement;
-import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.ComplexAssembly;
 import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.Degradation;
 import org.biopax.paxtools.model.level3.Interaction;
+import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.util.ClassFilterSet;
 import org.biopax.validator.impl.AbstractRule;
-import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This rule checks that biopolymers on one side of the conversion 
- * are those modified/relocated on the other side, and not new ones;
+ * This rule checks that a biopolymer on one side of a conversion 
+ * is that modified/relocated on the other side, and not new one;
  * (two exceptions: ComplexAssembly and Degradation)
  * 
  * User: rodche
@@ -30,57 +26,50 @@ import java.util.Set;
 public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysicalEntity>
 {
 	
-    public void check(SimplePhysicalEntity protein, boolean fix)
-    {
-       Set<Conversion> conversions = new HashSet<Conversion>(
+    public void check(SimplePhysicalEntity spe, boolean fix)
+    {    	
+    	Set<Conversion> conversions = new HashSet<Conversion>(
 			new ClassFilterSet<Interaction,Conversion>(
-				protein.getParticipantOf(), Conversion.class));
+				spe.getParticipantOf(), Conversion.class));
        
-       for(Conversion conversion : conversions) {
+    	for(Conversion conversion : conversions) {
     	   if(conversion instanceof ComplexAssembly 
     			   || conversion instanceof Degradation) {
-    		   continue;
+    		   continue; //ignore these conversion types
     	   }
-    	   String side = 
-    		   (conversion.getLeft().contains(protein)) ? "right" : "left";
-    	   if(!findProteinOnTheOtherSide(conversion, protein, side)) {
-    		   error(protein, "illegal.conversion", false, conversion, side);
-    	   }
-       }
+    	   Set<PhysicalEntity> side = conversion.getLeft();
+    	   if(side.contains(spe))
+    		   side = conversion.getRight();
+  
+    	   if(!sameKindEntityExists(spe, side))
+    		   error(spe, "illegal.conversion", false, conversion);
+    	}
     }
     
-    boolean findProteinOnTheOtherSide(final Conversion conversion, 
-    		final SimplePhysicalEntity prot, final String side) 
-    {
-    	AbstractTraverser runner = new AbstractTraverser(SimpleEditorMap.L3) 
-    	{
-    		@Override
-			protected void visit(Object value, BioPAXElement parent, 
-					Model model, PropertyEditor editor) {
-    			if(!editor.getProperty().equals(side)) {
-    				return; // skip same-side participants
-    			}
-    			
-				if(value instanceof SimplePhysicalEntity
-					&& ((SimplePhysicalEntity)value).getEntityReference() != null 
-					&& ((SimplePhysicalEntity)value).getEntityReference()
-						.isEquivalent(prot.getEntityReference())) 
-				{
-					
-					throw new RuntimeException("found!");
-					
-				} else if (value instanceof Complex){ 
-					traverse((Complex) value, model);
-				}
-			}
-    	};
+    boolean sameKindEntityExists(SimplePhysicalEntity spe, Set<PhysicalEntity> side) 
+    {    	
+    	assert !(spe instanceof SmallMolecule);
     	
-    	try {
-    		runner.traverse(conversion, null);
-    	} catch (RuntimeException e) {
-			return true;
+    	boolean ret = false;
+    	
+    	for (PhysicalEntity value : side) {
+			if (value instanceof SimplePhysicalEntity) {
+				SimplePhysicalEntity that = (SimplePhysicalEntity) value;
+				if( !(value instanceof SmallMolecule)
+					&& that.getEntityReference() != null
+					&& that.getEntityReference().isEquivalent(spe.getEntityReference())) 
+					return true;
+			} else { // Complex
+				if(sameKindEntityExists(spe, ((Complex)value).getComponent()))
+					return true;
+			}
+			
+	    	//still false - check member PEs as well ;)
+	    	if(sameKindEntityExists(spe, value.getMemberPhysicalEntity()))
+	    		return true;
 		}
-   		return false;
+  	
+   		return ret;
     }
     
     public boolean canCheck(Object thing) {
