@@ -57,7 +57,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 		if(editor == null) {
 			vocabularies.add((ControlledVocabulary)thing); 
 		} else {
-			vocabularies = (Collection<ControlledVocabulary>) editor.getValueFromBean(thing);
+			vocabularies.addAll((Collection<ControlledVocabulary>) editor.getValueFromBean(thing));
 		}
 		
 		// shortcut

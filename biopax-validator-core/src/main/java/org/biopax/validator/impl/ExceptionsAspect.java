@@ -1,5 +1,7 @@
 package org.biopax.validator.impl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -123,22 +125,28 @@ public class ExceptionsAspect extends AbstractAspect {
     	
     	/*
     	 * Rule may throw other exceptions
-    	 * to be caught and reported 
+    	 * to be caught and reported accurately 
+    	 * to fix what's probably a bug
     	 */
     	try {
     		jp.proceed(); // go ahead validating the 'thing'
     	} catch (Throwable t) {
    			log.fatal(rule.getName() + ".check(" + thingId 
     			+ ") threw the exception: " + t.toString(), t);
-   			String msg = t.getMessage();
-   			if(t instanceof BiopaxValidatorException) { 
-   				msg += " " + 
-   				Arrays.toString(((BiopaxValidatorException)t).getMsgArgs());
-   			}
+   			String msg = t.toString() + " - " + getStackTrace(t) + " - ";
+   			if(t instanceof BiopaxValidatorException)
+   				msg = msg + Arrays.toString(((BiopaxValidatorException)t).getMsgArgs());
+   			
     		// report the exception using rule's behavior mode
    			report(thing, thingId, t.getClass().getSimpleName(), 
     				rule.getName(), rule.getBehavior(), false, msg);
     	}
+    }
+    
+    private static String getStackTrace(Throwable aThrowable) {
+        final PrintWriter printWriter = new PrintWriter(new StringWriter());
+        aThrowable.printStackTrace(printWriter);
+        return printWriter.toString();
     }
     
     /**
