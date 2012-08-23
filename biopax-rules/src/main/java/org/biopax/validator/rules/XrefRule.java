@@ -53,14 +53,16 @@ public class XrefRule extends AbstractRule<Xref>{
 						if(i<0) 
 							i = id.lastIndexOf('.');
 						if(i > 0 && i < id.length()) {
-							x.setId(id.substring(0, i));
-							x.setIdVersion(id.substring(i+1));
-							if (logger.isDebugEnabled())
-								logger.debug(
-									"auto-fix: split id and idVersion for xref: " 
-									+ x + " " +  x.getRDFId());
-							// update the error case, set fixed=true there
-							error(x, "invalid.id.format", true);
+							String newId = id.substring(0, i);
+							if (xrefHelper.checkIdFormat(preferedDbName, newId)) {
+								x.setId(newId);
+								x.setIdVersion(id.substring(i + 1));
+								if (logger.isDebugEnabled())
+									logger.debug("auto-fix: split id and idVersion for xref: "
+											+ x + " " + x.getRDFId());
+								// update the error case, set fixed=true there
+								error(x, "invalid.id.format", true);
+							}
 						}
 						
 						// quick fixes
@@ -70,18 +72,22 @@ public class XrefRule extends AbstractRule<Xref>{
 						 */
 						i = regxp.lastIndexOf(':');
 						if(i>0) {
-							// guess, regexp looks like "^GO:%d{7}", and we want to get "GO:"
+							// guess, regexp looks like "^GO:%d{7}", and we want to get "GO"
 							String prefix = regxp.substring(1, i).toUpperCase();
 							if (logger.isDebugEnabled())
 								logger.debug("Trying to fix id with missing prefix: " + prefix);
 							if(preferedDbName.equalsIgnoreCase(xrefHelper.getPrimaryDbName(prefix))
 									&& !id.toUpperCase().startsWith(prefix)) 
 							{
-								x.setId(prefix + ':' + id);
-								error(x, "invalid.id.format", true);
-								if (logger.isDebugEnabled())
-									logger.debug(x.getModelInterface().getSimpleName() 
-										+ " " + x + " 'id' auto-fixed! (was: " + id + ")");
+								String newId = prefix + ':' + id;
+								if (xrefHelper.checkIdFormat(preferedDbName, newId)) {
+									x.setId(newId);
+									error(x, "invalid.id.format", true);
+									if (logger.isDebugEnabled())
+										logger.debug(x.getModelInterface()
+											.getSimpleName() + " " + x
+											+ " 'id' auto-fixed! (was: " + id + ")");
+								}
 							}
 						}
 

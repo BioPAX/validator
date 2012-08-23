@@ -214,7 +214,7 @@ public final class Normalizer {
 			if(type.equals(PublicationXref.class)
 				&& id != null && !"".equals(id.trim())) 
 			{
-				return MiriamLink.getURI(db, id);
+				return MiriamLink.getIdentifiersOrgURI(db, id);
 			}
 		} catch (IllegalArgumentException e) {
 			if(log.isDebugEnabled())
@@ -280,9 +280,8 @@ public final class Normalizer {
 	 * @param bpe a utility class element, except for xref, to normalize
 	 * @param db official database name or synonym (that of bpe's unification xref)
 	 * @param id identifier (if null, new ID will be that of the Miriam Data Type; this is mainly for Provenance)
-	 * @param idExt id suffix
 	 */
-	private void normalizeID(Model model, UtilityClass bpe, String db, String id, String idExt) 
+	private void normalizeID(Model model, UtilityClass bpe, String db, String id) 
 	{	
 		if(bpe instanceof Xref) {
 			log.error("normalizeID is not supposed to " +
@@ -296,35 +295,17 @@ public final class Normalizer {
 		try {
 			// make a new ID for the element
 			if(id != null)
-				urn = MiriamLink.getURI(db, id);
-			else 
-				urn = MiriamLink.getDataTypeURI(db);
+				urn = MiriamLink.getIdentifiersOrgURI(db, id);
+			else {
+					urn = MiriamLink.getDataTypeURI(db)
+						.replace("urn:miriam:", "http://identifiers.org/") + "/";
+				}
 		} catch (Exception e) {
 			log.error("Cannot get a Miriam standard ID for " + bpe 
 				+ " (" + bpe.getModelInterface().getSimpleName()
 				+ ") " + ", using " + db + ":" + id 
 				+ ". " + e + ". " + extraInfo());
 			return;
-		}
-		
-		if (bpe instanceof SmallMoleculeReference
-				&& db.trim().equalsIgnoreCase("chebi")) 
-		{
-			// A special case, shortcut, for the ChEBI SMR case
-			urn = "urn:miriam:";
-			// correction for missing 'chebi:' prefix
-			// (if it's not already fixed by the validator...)
-			String suf = id.trim().toLowerCase();
-			urn += ((suf.startsWith("chebi:")) ? suf : "chebi:" + suf);
-		} else {
-			if (idExt != null && !"".equals(idExt.trim())) {
-				try {
-					urn += "_" + URLEncoder.encode(idExt, "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					log.error("UTF-8 encoding failed for (idVersion): " + idExt
-							+ "! " + e + ". " + extraInfo());
-				}
-			}
 		}
 		
 		// if different id, edit the element
@@ -580,7 +561,7 @@ public final class Normalizer {
 				//note: it does not check/fix the CV term name if wrong or missing though...
 				UnificationXref uref = getFirstUnificationXref((XReferrable) bpe);
 				if (uref != null) 
-					normalizeID(model, bpe, uref.getDb(), uref.getId(), null); // no idVersion for a CV or BS!
+					normalizeID(model, bpe, uref.getDb(), uref.getId()); // no idVersion for a CV or BS!
 				else 
 					if(log.isInfoEnabled())
 						log.info("Cannot normalize " + bpe.getModelInterface().getSimpleName() 
@@ -598,7 +579,7 @@ public final class Normalizer {
 		for (EntityReference bpe : model.getObjects(EntityReference.class)) {
 			UnificationXref uref = getFirstUnificationXref(bpe);
 			if (uref != null) // not using idVersion!..
-				normalizeID(model, bpe, uref.getDb(), uref.getId(), null); 
+				normalizeID(model, bpe, uref.getDb(), uref.getId()); 
 			else if (log.isInfoEnabled())
 				log.info("Cannot normalize EntityReference: "
 						+ "no unification xrefs found in " + bpe.getRDFId()
@@ -615,7 +596,7 @@ public final class Normalizer {
 		for(Provenance pro : model.getObjects(Provenance.class)) 
 		{
 			autoName(pro); // throws IAE (from MiriamLink)
-			normalizeID(model, pro, pro.getStandardName(), null, null);
+			normalizeID(model, pro, pro.getStandardName(), null);
 		}
 		
 		// replace/update elements in the model
@@ -663,7 +644,8 @@ public final class Normalizer {
 	 * @param pro
 	 */
 	public static void autoName(Provenance pro) {
-		if(!pro.getRDFId().startsWith("urn:miriam:") && pro.getName().isEmpty()) {
+		if(!(pro.getRDFId().startsWith("urn:miriam:") || pro.getRDFId().startsWith("http://identifiers.org/"))
+				&& pro.getName().isEmpty()) {
 			if(log.isInfoEnabled())
 				log.info("Skipping: cannot normalize Provenance: " + pro.getRDFId());
 			
@@ -672,7 +654,7 @@ public final class Normalizer {
 			final SortedSet<String> names = new TreeSet<String>();
 			
 			String key = null;
-			if(pro.getRDFId().startsWith("urn:miriam:")) {
+			if(pro.getRDFId().startsWith("urn:miriam:") || pro.getRDFId().startsWith("http://identifiers.org/")) {
 				key = pro.getRDFId();
 			} else if (pro.getStandardName() != null) {
 				key = pro.getStandardName();

@@ -213,7 +213,7 @@ public class MiriamLink
     /**
      * Retrieves the unique MIRIAM URI of a specific entity (example: "urn:miriam:obo.go:GO%3A0045202").
      * 
-     * @param name - name, URI, or ID of a data type (examples: "ChEBI", "MIR:00000005")
+     * @param name - name, URI/URL, or ID of a data type (examples: "ChEBI", "MIR:00000005")
      * @param id identifier of an entity within the data type (examples: "GO:0045202", "P62158")
      * @return unique standard MIRIAM URI of a given entity
      */
@@ -546,5 +546,52 @@ public class MiriamLink
 		}
 		
 		return toReturn;
+    }
+ 
+    
+    /**
+     * Converts a MIRIAM URN into its equivalent Identifiers.org URL.
+     * 
+     * @see #getURI(String, String) - use this to get the URN
+     * @see #getIdentifiersOrgURI(String, String) - better
+     * 
+     * @param urn - an existing Miriam URN, e.g., "urn:miriam:obo.go:GO%3A0045202"
+     * @return the Identifiers.org URL corresponding to the data URN, e.g., "http://identifiers.org/obo.go/GO:0045202"
+     */
+    public static String convertUrn(String urn) {
+    	String[] tokens = urn.split(":");
+    	return "http://identifiers.org/" + tokens[tokens.length-2] 
+    		+ "/" + URLDecoder.decode(tokens[tokens.length-1]);
+    }
+    
+    
+    /**
+     * Gets the Identifiers.org URI/URL of the entity (example: "http://identifiers.org/obo.go/GO:0045202").
+     * 
+     * @param name - name, URI/URL, or ID of a data type (examples: "ChEBI", "MIR:00000005")
+     * @param id identifier of an entity within the data type (examples: "GO:0045202", "P62158")
+     * @return Identifiers.org URL for the id
+     */
+    public static String getIdentifiersOrgURI(String name, String id)
+    {
+    	String url = null;
+    	Datatype datatype = getDatatype(name);
+    	String db = datatype.getName();
+    	if(checkRegExp(id, db)) {
+   			uris: 
+   			for(Uris uris : datatype.getUris()) {
+   				for(Uri uri : uris.getUri()) {
+   					if(uri.getValue().startsWith("http://identifiers.org/")) {
+   						url = uri.getValue() + id;
+   						break uris;
+   					}
+   				}
+   			}
+    	} else 
+    		throw new IllegalArgumentException(
+				"ID pattern mismatch. db=" + db + ", id=" + id
+				+ ", regexp: " + datatype.getPattern());
+    	
+    	return url;
     }
 }

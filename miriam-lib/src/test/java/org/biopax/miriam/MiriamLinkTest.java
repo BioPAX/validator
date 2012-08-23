@@ -42,7 +42,7 @@ public class MiriamLinkTest {
 	@Test
 	public final void testGetDataTypeURIs() {
 		String[] uris = MiriamLink.getDataTypeURIs(MI);
-		System.out.println(Arrays.toString(uris));
+//		System.out.println(Arrays.toString(uris));
 		assertTrue(uris.length > 0);
 		assertTrue(Arrays.toString(uris).contains(MIURN));
 	}
@@ -169,6 +169,17 @@ public class MiriamLinkTest {
 		Resource resource = MiriamLink.getResource("MIR:00100008");
 		assertNotNull(resource);
 		assertEquals("Canada", resource.getDataLocation());
+	}
+	
+	@Test
+	public final void testConvertUrn() {
+		assertEquals("http://identifiers.org/obo.go/GO:0045202", MiriamLink.convertUrn("urn:miriam:obo.go:GO%3A0045202"));
+	}
+	
+	@Test
+	public final void testGetIdentifiersOrgURI() {
+		assertEquals("http://identifiers.org/obo.go/GO:0045202", MiriamLink.getIdentifiersOrgURI("urn:miriam:obo.go", "GO:0045202"));
+		assertEquals("http://identifiers.org/obo.go/GO:0045202", MiriamLink.getIdentifiersOrgURI("go", "GO:0045202"));
 	}
 
 }

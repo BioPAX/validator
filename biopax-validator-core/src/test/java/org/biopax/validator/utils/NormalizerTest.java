@@ -120,7 +120,7 @@ public class NormalizerTest {
 		pro1.addName("nci_nature"); // must be case insensitive (recognized)
 		pro1.setStandardName("foo"); // must be replaced
 		// Provenance (must create names from urn)
-		Provenance pro2 = model.addNew(Provenance.class, "urn:miriam:signaling-gateway");
+		Provenance pro2 = model.addNew(Provenance.class, "http://identifiers.org/signaling-gateway/");
 		
 		// add some entities with props
 		Pathway pw1 = model.addNew(Pathway.class, "pathway");
@@ -145,7 +145,7 @@ public class NormalizerTest {
 		assertTrue(bpe instanceof UnificationXref);
 		
 		// check PR
-		bpe = model.getByID("urn:miriam:uniprot:Q0VCL1");
+		bpe = model.getByID("http://identifiers.org/uniprot/Q0VCL1");
 		assertTrue(bpe instanceof ProteinReference);
 		
 		//check xref's ID gets normalized
@@ -163,7 +163,7 @@ public class NormalizerTest {
 		//test BioSource
 		assertFalse(model.containsID("Xref7"));
 		assertFalse(model.containsID("BioSource_Mouse_Tissue"));
-		bpe = model.getByID("urn:miriam:taxonomy:10090");
+		bpe = model.getByID("http://identifiers.org/taxonomy/10090");
 		assertTrue(bpe instanceof BioSource);
 		bpe = model.getByID("urn:biopax:UnificationXref:TAXONOMY_10090");
 		assertTrue(bpe instanceof UnificationXref);
@@ -194,7 +194,7 @@ public class NormalizerTest {
 	@Test
 	public final void testAutoName() {
 		Model model = BioPAXLevel.L3.getDefaultFactory().createModel();
-		Provenance pro = model.addNew(Provenance.class, "urn:miriam:pid.pathway");
+		Provenance pro = model.addNew(Provenance.class, "http://identifiers.org/pid.pathway/");
 		pro.setStandardName("foo");
 		Normalizer.autoName(pro);
 		assertNotNull(pro.getStandardName());
@@ -231,7 +231,7 @@ public class NormalizerTest {
 		Normalizer normalizer = new Normalizer();
 		normalizer.normalize(model);
 		
-		ProteinReference e = (ProteinReference) model.getByID("urn:miriam:uniprot:Q0VCL1");
+		ProteinReference e = (ProteinReference) model.getByID("http://identifiers.org/uniprot/Q0VCL1");
 		assertNotNull(e);
 		
 		assertEquals(4, e.getXref().size());
@@ -265,7 +265,7 @@ public class NormalizerTest {
 		assertEquals(0, pr.getXref().size()); // old PR has xref removed!
 		assertEquals(0, ref.getXrefOf().size()); // because the old xref was replaced in all parent elements!
 		
-		ProteinReference e = (ProteinReference) model.getByID("urn:miriam:uniprot:Q0VCL1");
+		ProteinReference e = (ProteinReference) model.getByID("http://identifiers.org/uniprot/Q0VCL1");
 		assertNotNull(e);	
 		assertEquals(1, e.getXref().size());
 		
