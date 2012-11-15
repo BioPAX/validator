@@ -11,10 +11,11 @@ import org.biopax.paxtools.model.level3.ControlledVocabulary;
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.paxtools.util.ClassFilterSet;
-import org.biopax.validator.utils.Normalizer;
+import org.biopax.psidev.ontology_manager.*;
+import org.biopax.validator.CvRestriction;
+import org.biopax.validator.result.Validation;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import psidev.ontology_manager.*;
 
 
 /**
@@ -29,13 +30,13 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
     /**
      * Constructor.
      * 
-     * TODO allow using properties path as the 'property' name parameter, i.e., "modificationFeature/modificationType"
+     * TODO a feature: to allow using a properties path in the 'property' parameter, like "modificationFeature/modificationType"
      * 
      * @param domain
      * @param property
      * @param restrictions
      */
-    public Level3CvTermsRule(Class<T> domain, String property, CvTermRestriction... restrictions)
+    public Level3CvTermsRule(Class<T> domain, String property, CvRestriction... restrictions)
     {
     	super(domain, property, restrictions);
     }
@@ -49,7 +50,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
     };
     
     
-	public void check(T thing, boolean fix) {
+	public void check(Validation validation, T thing) {
 		// a set of CVs for this rule to validate
 		Collection<ControlledVocabulary> vocabularies = new HashSet<ControlledVocabulary>();
 		
@@ -79,7 +80,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 				 * or Normalizercan do! */
 			} 
 			else {
-				//TODO (advanced feature, can/must be a separate rule) check if multiple terms are, in fact, synonyms/equivalent...
+				//TODO (an advanced feature, a separate rule - ) to check if multiple terms are synonyms (equivalent)...
 				
 				final Set<String> badTerms = new HashSet<String>(); // initially - none
 				final Map<String, Set<OntologyTermI>> noXrefTerms = new HashMap<String, Set<OntologyTermI>>();
@@ -128,7 +129,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 					String noXrefTermsInfo = noXrefTerms.toString();
 					boolean fixed = false;
 					
-					if(fix) {
+					if(validation.isFix()) {
 					/*
 					 * However, it's not so trivial to fix by adding the xrefs, because:
 					 * 1) no reference to the parent Model here available
@@ -165,10 +166,10 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 								String ontId = term.getOntologyId();
 								String db = ((OntologyManager) ontologyManager).getOntology(ontId).getName();
 								String id = term.getTermAccession();
-								// auto-create and add the xref to the cv
-								String rdfid = Normalizer.generateURIForXref(db, id, null, UnificationXref.class);								
-								UnificationXref ux = BioPAXLevel.L3.getDefaultFactory()
-									.create(UnificationXref.class, rdfid);
+								// auto-create and add the xref to the cv;
+								// generate some URI in the same namespace (Normalizer may be called later to fix all xrefs's URIs)
+								String rdfid = cv.getRDFId() + "_UnificationXref_" + db + "_" + id;								
+								UnificationXref ux = BioPAXLevel.L3.getDefaultFactory().create(UnificationXref.class, rdfid);
 								ux.setDb(db);
 								ux.setId(id);
 								cv.addXref(ux);
@@ -179,8 +180,8 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 					}
 					
 					// report					
-					error(thing, "no.xref.cv.terms", fixed, 
-						noXrefTermsInfo, cvRuleInfo);
+					error(validation, thing, "no.xref.cv.terms", 
+						fixed, noXrefTermsInfo, cvRuleInfo);
 				}
 				
 				/* check if valid terms that can be inferred from the xref.id, 
@@ -198,14 +199,14 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 				// fix / cleanup and report wrong uni.xrefs (important: before fixing wrong terms!)
 				if(!badXrefs.isEmpty()) {
 					String bads = badXrefs.toString();
-					if(fix) {
+					if(validation.isFix()) {
 						cv.getXref().removeAll(badXrefs);
 						bads += " were removed!";
-						error(thing, "illegal.cv.xref", true, // fixed!
-								bads, cvRuleInfo);
+						error(validation, thing, "illegal.cv.xref", // fixed!
+								true, bads, cvRuleInfo);
 					} else {
-						error(thing, "illegal.cv.xref", false, // not fixed!
-								bads, cvRuleInfo);
+						error(validation, thing, "illegal.cv.xref", // not fixed!
+								false, bads, cvRuleInfo);
 					}
 				}
 									
@@ -213,7 +214,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 				if (!badTerms.isEmpty()) {	
 					boolean fixed = false;
 					String badTermInfo = badTerms.toString();
-					if (fix) {
+					if (validation.isFix()) {
 						/* remove illegal terms only if addTerms (to add) is not empty,
 						 * otherwise - do not fix!
 						 */
@@ -230,7 +231,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
 						}
 					}
 					// report
-					error(thing, "illegal.cv.term", fixed, badTermInfo, cvRuleInfo);
+					error(validation, thing, "illegal.cv.term", fixed, badTermInfo, cvRuleInfo);
 				}
 
 			} 

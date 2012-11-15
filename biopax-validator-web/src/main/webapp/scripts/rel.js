@@ -8,7 +8,8 @@ function externalLinks() {
      anchor.target = "_blank";
  }
 }
-window.onload = externalLinks;
+
+window.onload = function init() { externalLinks; switchNormalizerOptions()};
 
 function switchInput() {
 	  var f = document.getElementById('file');
@@ -41,7 +42,7 @@ function validate() {
 
 function switchNormalizerOptions() {
 		var style = document.getElementById("normalizerOptions").style;
-		var cb = document.getElementById("normalize");
+		var cb = document.getElementById("autofix");
 		if (cb.checked == false) { //changed to 'checked'
 			style.display = "none";
 		} else {

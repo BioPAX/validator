@@ -1,6 +1,7 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.BindingFeature;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -18,14 +19,14 @@ public class BindingFeatureSymmetricRule extends AbstractRule<BindingFeature> {
 			&& ((BindingFeature)thing).getBindsTo() != null;
 	}
 
-	public void check(BindingFeature thing, boolean fix) {
+	public void check(final Validation validation, BindingFeature thing) {
 		BindingFeature to = thing.getBindsTo();
 		if (to != null) {
 			if (to.getBindsTo() == null || !thing.equals(to.getBindsTo())) 
 			{	
-				error(thing, "symmetric.violated", fix, "bindsTo", 
-						thing.getBindsTo());
-				if(fix) {
+				error(validation, thing, "symmetric.violated", validation.isFix(), 
+						"bindsTo", thing.getBindsTo());
+				if(validation.isFix()) {
 					to.setBindsTo(thing);
 				}
 			}

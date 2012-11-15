@@ -4,6 +4,7 @@ import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ public class DanglingPropertyValueRule extends AbstractRule<Model> {
 		return thing instanceof Model;
 	}
 
-	public void check(Model model, boolean fix) {
+	public void check(final Validation validation, Model model) {
 		AbstractTraverser traverser = new AbstractTraverser(
 				SimpleEditorMap.get(model.getLevel())) 
 		{
@@ -32,8 +33,8 @@ public class DanglingPropertyValueRule extends AbstractRule<Model> {
 					PropertyEditor editor) {
 				if(value instanceof BioPAXElement 
 						&& !model.contains((BioPAXElement)value)) {
-					error(value, "dangling.value", 
-						false, editor.getDomain().getSimpleName(), editor.getProperty());
+					error(validation, value, 
+						"dangling.value", false, editor.getDomain().getSimpleName(), editor.getProperty());
 				} 	
 			}
 		};

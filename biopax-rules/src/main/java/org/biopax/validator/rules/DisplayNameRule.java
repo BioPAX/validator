@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.level3.Named;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -23,12 +24,12 @@ public class DisplayNameRule extends AbstractRule<Named> {
 		return (thing instanceof Named); 
 	}
     
-    public void check(Named named, boolean fix) 
+    public void check(final Validation validation, Named named) 
     {
     	boolean fixed = false;
     	
     	if (named.getDisplayName() == null) {
-    		if(fix) {
+    		if(validation.isFix()) {
     			// use the standardName if present
 				if (named.getStandardName() != null) {
 					named.setDisplayName(named.getStandardName());
@@ -45,7 +46,7 @@ public class DisplayNameRule extends AbstractRule<Named> {
 				}
 			}
     		// report
-			error(named, "no.display.name", fixed && fix);
+			error(validation, named, "no.display.name", fixed && validation.isFix());
 		} 
     	
     	// check max. length
@@ -55,9 +56,9 @@ public class DisplayNameRule extends AbstractRule<Named> {
         	Integer max = (maxDisplayNameLengths.containsKey(cl)) 
         		? maxDisplayNameLengths.get(cl)	: MAX_DISPLAYNAME_LEN;
         	if (name.length() > max)
-				error(named, "too.long.display.name", false, name 
-					+ ((fixed) ? "(auto-created form other names!)" : "")
-					, name.length(), max);
+				error(validation, named, "too.long.display.name", false
+					, name 
+						+ ((fixed) ? "(auto-created form other names!)" : ""), name.length(), max);
 		}
     }
 

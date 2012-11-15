@@ -1,6 +1,7 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.DnaRegion;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +18,10 @@ public class DnaRegionEntityReferenceRule extends AbstractRule<DnaRegion> {
 	}
 
 	@Override
-	public void check(DnaRegion sm, boolean fix) {
+	public void check(final Validation validation, DnaRegion sm) {
 		if(sm.getEntityReference() == null) {
 			if(sm.getMemberPhysicalEntity().isEmpty()) {
-				error(sm, "null.entity.reference", false, "DnaRegionReference");
+				error(validation, sm, "null.entity.reference", false, "DnaRegionReference");
 			} 
 		}
 	} 

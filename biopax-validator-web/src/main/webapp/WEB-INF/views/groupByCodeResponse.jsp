@@ -32,6 +32,7 @@
     <div id="left">
 
 <h2>Validation Results</h2>
+<div><label style="color: red;">${error}</label></div>
 <ul>
 <c:forEach var="result" items="${response.validationResult}" varStatus="rstatus">
 	<li style="text-decoration: underline" title="Click to see more detail">
@@ -43,7 +44,13 @@
 		${comment}&nbsp;
 	  </c:forEach>
 	</li>
-	<li>auto-fix: ${result.fix};&nbsp;normalize: ${result.normalize}</li>
+	<li>
+	  <c:choose>
+		<c:when test="${result.profile != null}">profile: ${result.profile};&nbsp;</c:when>
+		<c:otherwise>profile: default;&nbsp;</c:otherwise>
+	  </c:choose>
+	  auto-fix: ${result.fix}
+	</li>
 	<li>
 	  errors/warnings: ${result.totalProblemsFound};&nbsp;- not fixed: ${result.notFixedProblems};&nbsp; 
 	  <c:choose>
@@ -56,9 +63,8 @@
 	  </c:choose>
 	</li>
 	
-	<c:if test="${result.fix || result.normalize}">
-	  	<li><a href="javascript:switchit('result${rstatus.index}owl')">Modified BioPAX</a>&nbsp;
-	  	("escaped" RDF in HTML; choose BioPAX or XML as return if you plan to process it)</li>
+	<c:if test="${result.fix}">
+	  	<li><a href="javascript:switchit('result${rstatus.index}owl')">Modified BioPAX</a>&nbsp;(HTML-escaped BioPAX RDF/XML)</li>
 		<ul id="result${rstatus.index}owl" style="display: none">
 			<li><div>${result.modelSerializedHtmlEscaped}</div></li>
 		</ul>

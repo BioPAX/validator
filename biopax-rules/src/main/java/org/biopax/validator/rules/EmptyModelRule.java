@@ -1,6 +1,7 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.Model;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +15,9 @@ public class EmptyModelRule extends AbstractRule<Model> {
 		return thing instanceof Model;
 	}
 
-	public void check(Model model, boolean fix) {
+	public void check(final Validation validation, Model model) {
 		if(model.getObjects().isEmpty())
-			error(model, "empty.biopax.model", false, model.getLevel().toString());
+			error(validation, model, "empty.biopax.model", false, model.getLevel().toString());
 	}
 
 }

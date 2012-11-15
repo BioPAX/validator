@@ -2,7 +2,7 @@ package org.biopax.validator;
 
 import java.util.Set;
 
-import org.biopax.validator.impl.CvTermRestriction;
+
 
 public interface CvRule<T> extends Rule<T>{
 
@@ -18,7 +18,7 @@ public interface CvRule<T> extends Rule<T>{
 	 */
 	void setValidTerms(Set<String> validTerms);
 
-	Set<CvTermRestriction> getRestrictions();
+	Set<CvRestriction> getRestrictions();
 
 	Class<T> getDomain();
 

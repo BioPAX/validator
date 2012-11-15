@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.controller.AbstractTraverser;
@@ -40,7 +41,8 @@ public class DataPropertyIllegalValueRule extends AbstractRule<BioPAXElement> {
 		return thing instanceof BioPAXElement;
 	}
 
-	public void check(BioPAXElement bpe, final boolean fix) {
+	@Override
+	public void check(final Validation validation, BioPAXElement bpe) {
 		EditorMap editorMap = (bpe instanceof Level3Element)
 			? SimpleEditorMap.get(BioPAXLevel.L3)
 				: SimpleEditorMap.get(BioPAXLevel.L2);
@@ -51,8 +53,8 @@ public class DataPropertyIllegalValueRule extends AbstractRule<BioPAXElement> {
 					Model model, PropertyEditor editor) {
 				if (value != null && !(value instanceof BioPAXElement)) {
 					if (warnOnDataPropertyValues.contains(value.toString().trim().toUpperCase())) {
-						error(parent, "illegal.property.value", fix, editor.getProperty(), value);
-						if(fix) {
+						error(validation, parent, "illegal.property.value", validation.isFix(), editor.getProperty(), value);
+						if(validation.isFix()) {
 							if(editor.isMultipleCardinality())
 								editor.removeValueFromBean(value, parent);
 							else

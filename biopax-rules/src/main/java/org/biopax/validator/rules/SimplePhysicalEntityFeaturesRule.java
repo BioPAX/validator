@@ -3,6 +3,7 @@ package org.biopax.validator.rules;
 import org.biopax.paxtools.model.level3.EntityFeature;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ import java.util.Set;
 public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysicalEntity>{
 
     @Override
-    public void check(SimplePhysicalEntity thing, boolean fix) {
+    public void check(final Validation validation, SimplePhysicalEntity thing) {
         EntityReference er = thing.getEntityReference();
         Set<EntityFeature> erefs = er.getEntityFeature(),
                            peefs = new HashSet<EntityFeature>();
@@ -30,10 +31,10 @@ public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysica
 
         for(EntityFeature ef: peefs) {
             if(!erefs.contains(ef)) {
-                if(fix)
+                if(validation.isFix())
                     er.addEntityFeature(ef);
 
-                error(thing, "improper.feature.use", fix, ef.getRDFId(), er.getRDFId());
+                error(validation, thing, "improper.feature.use", validation.isFix(), ef.getRDFId(), er.getRDFId());
             }
         }
     }

@@ -73,14 +73,14 @@ public class BiopaxValidatorClient {
      * and prints the results to the output stream.
      * 
      * @param autofix true/false (experimental)
-     * @param normalize true/false (experimental)
-     * @param retFormat xml, html, or owl (no errors, just modified owl, - when 'autofix' or 'normalize' is true); see also {@link RetFormat}
+     * @param profile validation profile name
+     * @param retFormat xml, html, or owl (no errors, just modified owl, if autofix=true)
      * @param biopaxUrl check the BioPAX at the URL
      * @param biopaxFiles an array of BioPAX files to validate
      * @param out
      * @throws IOException
      */
-    public void validate(boolean autofix, boolean normalize, RetFormat retFormat, Behavior filterBy,
+    public void validate(boolean autofix, String profile, RetFormat retFormat, Behavior filterBy,
     		Integer maxErrs, String biopaxUrl, File[] biopaxFiles, OutputStream out) throws IOException 
     {
         Collection<Part> parts = new HashSet<Part>();
@@ -88,9 +88,10 @@ public class BiopaxValidatorClient {
         if(autofix) {
         	parts.add(new StringPart("autofix", "true"));
         }
-        
-        if(normalize) { //TODO add extra options
-        	parts.add(new StringPart("normalize", "true"));
+        //TODO add extra options (normalizer, xml:base)?
+              
+        if(profile != null && !profile.isEmpty()) {
+        	parts.add(new StringPart("profile", profile));
         }
         
         // set result type

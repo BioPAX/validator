@@ -10,6 +10,7 @@ import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.util.Filter;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +31,7 @@ public class AcyclicComplexRule extends AbstractRule<Complex> {
 		return thing instanceof Complex;
 	}
 
-	public void check(final Complex thing, boolean fix) {
+	public void check(final Validation validation, final Complex thing) {
 		final Traverser traverser = new AbstractTraverser(
 				SimpleEditorMap.L3, new Filter<PropertyEditor>() {
 					//complex.component only
@@ -44,7 +45,7 @@ public class AcyclicComplexRule extends AbstractRule<Complex> {
 					PropertyEditor editor) {
 				assert range instanceof PhysicalEntity; // - because of filter and mul.cardinality
 				if (thing.equals(range)) {
-					error(thing, "cyclic.inclusion", false, getVisited().toString());
+					error(validation, thing, "cyclic.inclusion", false, getVisited().toString());
 				} else if(range instanceof Complex) {
 					traverse((Complex) range, model);
 				}

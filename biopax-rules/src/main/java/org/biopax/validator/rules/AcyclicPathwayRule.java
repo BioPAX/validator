@@ -9,6 +9,7 @@ import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PathwayStep;
 import org.biopax.paxtools.model.level3.Process;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class AcyclicPathwayRule extends AbstractRule<Pathway> {
 		return thing instanceof Pathway;
 	}
 
-	public void check(final Pathway thing, boolean fix) {
+	public void check(final Validation validation, final Pathway thing) {
 		@SuppressWarnings("unchecked")
 		AbstractTraverser checker = new AbstractTraverser(
 				SimpleEditorMap.L3, 
@@ -40,8 +41,8 @@ public class AcyclicPathwayRule extends AbstractRule<Pathway> {
 					if (value instanceof Pathway && thing.getRDFId()
 						.equalsIgnoreCase(((Pathway) value).getRDFId()))
 					{
-						error(thing, "cyclic.inclusion",
-								false, getVisited().toString());
+						error(validation, thing,
+								"cyclic.inclusion", false, getVisited().toString());
 					} 
 					else {
 						if (log.isTraceEnabled())

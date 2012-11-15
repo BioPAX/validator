@@ -1,6 +1,7 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.*;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +18,13 @@ import java.util.Set;
 public class ConversionStoichiometryCheckRule extends AbstractRule<Conversion> {
 
     @Override
-    public void check(Conversion thing, boolean fix) {
+    public void check(final Validation validation, Conversion thing) {
         float lsto = getStoichiometry(thing.getParticipantStoichiometry(), thing.getLeft()),
               rsto = getStoichiometry(thing.getParticipantStoichiometry(), thing.getRight()),
               diff = Math.abs(lsto - rsto);
 
         if(diff > 0)
-            error(thing, "stoichiometry.mismatch", false, lsto, rsto);
+            error(validation, thing, "stoichiometry.mismatch", false, lsto, rsto);
     }
 
     private int getStoichiometry(Set<Stoichiometry> stois, Set<PhysicalEntity> pes) {

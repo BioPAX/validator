@@ -6,6 +6,7 @@ import java.io.*;
 
 import javax.xml.transform.stream.StreamSource;
 
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.result.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,13 +20,12 @@ public class BiopaxValidatorUtilsTest {
 	@Test
 	public final void testMarshalUnmarshalValidationResponse() throws Exception {
 		ValidatorResponse response = new ValidatorResponse();
-		Validation validation = new Validation("test");
+		Validation validation = new Validation("test", false, Behavior.WARNING, 0, null);
 		ErrorType e = new ErrorType("foo.bar", Behavior.ERROR);
 		ErrorCaseType err = new ErrorCaseType("junit-test", "Test", "test error message");
 		e.addErrorCase(err);
 		validation.addError(e);
 		validation.addComment("test comment");
-		validation.setThreshold(Behavior.WARNING);
 		response.addValidationResult(validation);
 	
 		Writer writer = new StringWriter();

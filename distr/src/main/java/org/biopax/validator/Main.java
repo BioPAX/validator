@@ -8,10 +8,12 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biopax.paxtools.model.Model;
 import org.biopax.validator.Validator;
 import org.biopax.validator.result.Validation;
 import org.biopax.validator.result.ValidatorResponse;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
+import org.biopax.validator.utils.Normalizer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
@@ -32,12 +34,13 @@ public class Main {
 	static boolean normalize = false;
 	static int maxErrors = 0;
 	static final String EXT = ".modified.owl";
+	static String profile = null;
 
 	public static void main(String[] args) throws Exception {				
         if(args.length < 2) {
         	String usage = 
-    			"\n The BioPAX Validator v2.2, Console Java Application\n\n" +
-    		    "Parameters: <input> <output[.xml|.html]> [--auto-fix] [--normalize] [--max-errors=<n>]\n" + 
+    			"\n The BioPAX Validator v3, Console Java Application\n\n" +
+    		    "Parameters: <input> <output[.xml|.html]> [--auto-fix] [--normalize] [--max-errors=<n>] [--profile=notstrict]\n" + 
     		    "(the second and next arguments are optional and can go in any order).\n" +
     		    "For example:\n" +
     		    "  path/dir errors.xml\n" +
@@ -68,6 +71,8 @@ public class Main {
 				} else if(args[i].startsWith("--max-errors=")) {
 					String n = args[i].substring(13);
 					maxErrors = Integer.parseInt(n);
+				} else if(args[i].startsWith("--profile=")) {
+					profile = args[i].substring(10);
 				}
 			}
 		}
@@ -129,10 +134,8 @@ public class Main {
 
         // Read from the batch and validate from file, id or url, line-by-line (stops on first empty line)
         for (Resource resource: resources) {
-        	Validation result = new Validation();
-        	result.setFix(autofix);
-        	result.setNormalize(normalize);
-        	result.setMaxErrors(maxErrors);
+        	Validation result = new Validation(resource.getDescription(), 
+        			autofix, null, maxErrors, profile);
         	result.setDescription(resource.getDescription());
         	if(log.isInfoEnabled())
         		log.info("BioPAX DATA IMPORT FROM: " 
@@ -140,8 +143,15 @@ public class Main {
 			try{
 				validator.importModel(result, resource.getInputStream());
 				validator.validate(result);
-				if(autofix || normalize)
-					result.updateModelSerialized();
+				
+				//normalize if needed
+				if(normalize) {
+					Model model = (Model) result.getModel();
+					Normalizer normalizer = new Normalizer();
+					normalizer.normalize(model);
+					result.updateModelSerialized(model);
+				}
+				
 			} catch (Exception e) {
 				log.error("failed", e);
 				if(log.isDebugEnabled()) {

@@ -11,11 +11,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import psidev.ontology_manager.Ontology;
-import psidev.ontology_manager.OntologyTermI;
-import psidev.ontology_manager.impl.OntologyTermImpl;
 
 import org.biopax.miriam.MiriamLink;
+import org.biopax.psidev.ontology_manager.Ontology;
+import org.biopax.psidev.ontology_manager.OntologyTermI;
+import org.biopax.psidev.ontology_manager.impl.OntologyTermImpl;
 
 /**
  * This helps validate xref's 'db', where different database synonymous 
@@ -209,7 +209,7 @@ public class XrefHelper {
      * The first in the list is the recommended one.
      *
      * @param name case insensitive
-     * @param groups TODO
+     * @param groups
      * @return set of equivalent database names
      */
     public List<String> getSynonymsForDbName(String name) {

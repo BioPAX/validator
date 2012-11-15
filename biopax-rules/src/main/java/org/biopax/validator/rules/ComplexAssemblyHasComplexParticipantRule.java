@@ -6,6 +6,7 @@ import org.biopax.paxtools.model.level3.ComplexAssembly;
 import org.biopax.paxtools.model.level3.Entity;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.util.ClassFilterSet;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ import java.util.Set;
 @Component
 public class ComplexAssemblyHasComplexParticipantRule extends AbstractRule<ComplexAssembly>
 {
-    public void check(ComplexAssembly complexAssembly, boolean fix)
+    public void check(final Validation validation, ComplexAssembly complexAssembly)
     {
 		// check if there are any complexes on either side
     	Set<Complex> complexes = 
@@ -29,7 +30,7 @@ public class ComplexAssemblyHasComplexParticipantRule extends AbstractRule<Compl
 			if(!bound)
 				bound = isBound(complexAssembly.getLeft());
 			if(!bound)
-				error(complexAssembly, "complex.not.present", false);
+				error(validation, complexAssembly, "complex.not.present", false);
 		}
     }
 

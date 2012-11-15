@@ -3,10 +3,9 @@
 	<parent>
 		<artifactId>biopax-validator</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>2.2.0-SNAPSHOT</version>
+		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.biopax.validator</groupId>
 	<artifactId>biopax-validator-core</artifactId>
 	<name>BioPAX Validator Core</name>
 
@@ -20,24 +19,24 @@
 				<version>1.2</version>
 				<executions>
 					<execution>
-						<phase>generate-resources</phase>
+						<phase>process-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
-						<configuration>
-							<project>${project}</project>
-							<srcdir>${project.build.sourceDirectory}/org/biopax/validator/result/</srcdir>
-							<schemas>
-								<schema>
-									<namespace>http://biopax.org/validator/2.0/schema</namespace>
-									<file>validator-response-2.0.xsd</file>
-								</schema>
-							</schemas>
-							<verbose>true</verbose>
-							<destdir>${project.build.outputDirectory}</destdir>
-						</configuration>
 					</execution>
 				</executions>
+				<configuration>
+					<project>${project}</project>
+					<srcdir>${project.build.sourceDirectory}/org/biopax/validator/result/</srcdir>
+					<schemas>
+						<schema>
+							<namespace>http://biopax.org/validator/2.0/schema</namespace>
+							<file>validator-response-2.0.xsd</file>
+						</schema>
+					</schemas>
+					<verbose>true</verbose>
+					<destdir>${project.build.outputDirectory}</destdir>
+				</configuration>
 				<dependencies>
 					<dependency>
 						<groupId>javax.xml.bind</groupId>
@@ -57,24 +56,24 @@
 				</dependencies>
 			</plugin>
 
-<!-- <plugin> -->
-<!--     <groupId>org.codehaus.mojo</groupId> -->
-<!--     <artifactId>jaxb2-maven-plugin</artifactId> -->
-<!--     <version>1.3.1</version> -->
-<!--     <executions> -->
-<!--         <execution> -->
-<!--             <goals> -->
-<!--                 <goal>schemagen</goal> -->
-<!--             </goals> -->
-<!--             <configuration> -->
-<!--                 <includes> -->
-<!--                     <include>org/biopax/validator/result/*.java</include> -->
-<!--                 </includes> -->
-<!--                 <outputDirectory></outputDirectory> -->
-<!--             </configuration> -->
-<!--         </execution> -->
-<!--     </executions> -->
-<!-- </plugin> -->
+			<!-- <plugin> -->
+			<!-- <groupId>org.codehaus.mojo</groupId> -->
+			<!-- <artifactId>jaxb2-maven-plugin</artifactId> -->
+			<!-- <version>1.3.1</version> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <goals> -->
+			<!-- <goal>schemagen</goal> -->
+			<!-- </goals> -->
+			<!-- <configuration> -->
+			<!-- <includes> -->
+			<!-- <include>org/biopax/validator/result/*.java</include> -->
+			<!-- </includes> -->
+			<!-- <outputDirectory></outputDirectory> -->
+			<!-- </configuration> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
 		</plugins>
 	</build>
 
@@ -113,7 +112,7 @@
   		<version>${spring.version}</version>
   	</dependency>
   	<dependency>
-  		<groupId>org.biopax</groupId>
+  		<groupId>org.biopax.validator</groupId>
   		<artifactId>obo-fetcher</artifactId>
   		<version>${project.version}</version>
   		<exclusions>
@@ -126,7 +125,7 @@
   	  	<dependency>
     	<groupId>org.biopax</groupId>
     	<artifactId>miriam-lib</artifactId>
-    	<version>${project.version}</version>
+    	<version>${miriam-lib.version}</version>
     </dependency>
   	<dependency>
 		<groupId>org.biopax.paxtools</groupId>

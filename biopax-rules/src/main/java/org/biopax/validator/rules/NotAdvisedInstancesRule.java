@@ -1,5 +1,6 @@
 package org.biopax.validator.rules;
 
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.Control;
@@ -46,8 +47,8 @@ public class NotAdvisedInstancesRule extends AbstractRule<BioPAXElement> {
 		return notAllowed(thing);
 	}
 
-	public void check(BioPAXElement thing, boolean fix) {
-		error(thing, "not.specific.element", false, thing.getModelInterface().getSimpleName());
+	public void check(final Validation validation, BioPAXElement thing) {
+		error(validation, thing, "not.specific.element", false, thing.getModelInterface().getSimpleName());
 	}
 
 }

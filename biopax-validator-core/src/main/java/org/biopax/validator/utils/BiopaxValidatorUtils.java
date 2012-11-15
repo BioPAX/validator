@@ -1,5 +1,6 @@
 package org.biopax.validator.utils;
 
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.level3.Named;
 import org.biopax.validator.result.*;
@@ -17,6 +18,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -46,7 +48,6 @@ public class BiopaxValidatorUtils {
     private MessageSource messageSource; 
     //private static Jaxb2Marshaller resultsMarshaller;
     private static JAXBContext jaxbContext;
-    private final Set<String> ignoredCodes;
     private int maxErrors = Integer.MAX_VALUE;
     
     static {
@@ -62,7 +63,6 @@ public class BiopaxValidatorUtils {
     }
     
     public BiopaxValidatorUtils() {
-		this.ignoredCodes = new HashSet<String>();
 		this.locale = Locale.getDefault();
 	}
     
@@ -124,11 +124,11 @@ public class BiopaxValidatorUtils {
     /**
      * Sets current max number of errors to report.
      * 
-     * TODO implement this feature in the next release (currently it's ignored).
      */
     public void setMaxErrors(int max) {
         maxErrors = max;
     }
+
     
 	/**
 	 * Gets object's "id" to use in error messages.
@@ -141,12 +141,22 @@ public class BiopaxValidatorUtils {
 	 */
     public static String getId(Object obj) {
     	String id = "";
-		if (obj instanceof BioPAXElement 
+    	
+		if(obj instanceof SimpleIOHandler) {
+			SimpleIOHandler r = (SimpleIOHandler) obj;
+			id = r.getClass().getSimpleName(); 
+	    	try {
+	    		id = r.getId(); //current element URI
+	    	} catch (Throwable e) {
+	    		id = r.getXmlStreamInfo(); //location
+			}
+		} else if (obj instanceof BioPAXElement 
 				&& ((BioPAXElement)obj).getRDFId() != null) {
 			id = getLocalId((BioPAXElement)obj);
 		} else {
 			id = "" + obj;
 		}
+		
 		return id;
 	}
     
@@ -207,66 +217,8 @@ public class BiopaxValidatorUtils {
 		}
 		return sb.toString();
     }
-    
-    
-    /**
-     * Adds codes for the corresponding errors to be ignored
-     * (not shown in the validation report).
-     * 
-     * @param codes Set of error codes.
-     */
-    public void addIgnoredCodes(Set<String> codes) {
-		if(logger.isTraceEnabled()) {
-			logger.trace("adding ignored codes");
-		}
-		
-		this.ignoredCodes.addAll(codes);
-		
-		if(logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
-			for(String c: ignoredCodes) {
-				sb.append(c + " ");
-			}
-			logger.trace("(after adding) codes to ignore: " + sb.toString());
-		}
-	}
-    
-    /**
-     * Removes codes from the ignored set.
-     * 
-     * @param codes codes to free
-     */
-    public void removeIgnoredCodes(Set<String> codes) {
-		if(logger.isTraceEnabled()) {
-			logger.trace("removing ignored codes");
-		}
-		
-		this.ignoredCodes.removeAll(codes);
-		
-		if(logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
-			for(String c: ignoredCodes) {
-				sb.append(c + " ");
-			}
-			logger.trace("(after removal) codes to ignore: " + sb.toString());
-		}
-	}
-    
-    public Set<String> getIgnoredCodes() {
-		return ignoredCodes;
-	}
-    
-    /**
-     * Tests whether the error code should be ignored.
-     * 
-     * @param errorCode
-     * @return
-     */
-    public boolean isIgnoredCode(String errorCode) {
-    	return getIgnoredCodes().contains(errorCode)
-    	|| getIgnoredCodes().contains("all");
-    }
- 	
+       
+	
 	/**
  	 * Writes the multiple results report.
 	 * (as transformed XML).
@@ -348,41 +300,81 @@ public class BiopaxValidatorUtils {
 		return domResult;
 	}
 
-    
+	
 	/**
 	 * Creates an error type with single error case.
 	 * 
 	 * @param objectName
 	 * @param errorCode
 	 * @param ruleName
-	 * @param warnOrErr
+	 * @param profile validation profile
+	 * @param isFixed
 	 * @param msgArgs
 	 * @return
 	 */
     public ErrorType createError(String objectName, String errorCode, 
-    		String ruleName, Behavior warnOrErr, Object... msgArgs) {
+    		String ruleName, String profile, boolean isFixed, 
+    		Object... msgArgs) 
+    {
+    	return createError(messageSource, locale, objectName, errorCode, ruleName, profile, isFixed, msgArgs);
+    }
+    
+	/**
+	 * Creates an error type with single error case.
+	 * If the message source is null (e.g., in tests, when a rule
+	 * is checked outside the validator framework), 
+	 * 
+	 * @param messageSource
+	 * @param locale
+	 * @param objectName
+	 * @param errorCode
+	 * @param ruleName
+	 * @param profile validation profile
+	 * @param isFixed
+	 * @param msgArgs
+	 * @return
+	 */
+    public static ErrorType createError(
+    		MessageSource messageSource, Locale locale,
+    		String objectName, String errorCode, 
+    		String ruleName, String profile, boolean isFixed, 
+    		Object... msgArgs) 
+    {
 		
     	if(objectName == null) {
     		objectName = "null";
     		logger.warn("Creating an error " + errorCode + " for Null object!");
     	}
     	
-    	ErrorType error = new ErrorType(errorCode, warnOrErr);
+    	//get/use current behavior
+    	Behavior behavior = getRuleBehavior(ruleName, profile, messageSource);
+    	// new error object
+    	ErrorType error = new ErrorType(errorCode, behavior);
 		
-		String commonMsg = messageSource.getMessage(errorCode + ".default",
-				new Object[]{}, "No description.", locale);
+    	// build human-friendly messages using default locale and property files (msg sources)
+		String commonMsg = (messageSource != null)
+			? messageSource.getMessage(errorCode + ".default", new Object[]{}, "No description.", locale)
+				: "No description.";
 		error.setMessage(commonMsg);
 		
 		String[] args = BiopaxValidatorUtils.fixMessageArgs(msgArgs);
+		String msg = (messageSource != null)
+			? messageSource.getMessage(errorCode, args, toString(msgArgs), locale).replaceAll("\r|\n+", " ")
+				: toString(msgArgs);
 		
-		String msg = messageSource.getMessage(
-				errorCode, args, toString(msgArgs), locale).replaceAll("\r|\n+", " ");
-		error.addErrorCase(new ErrorCaseType(ruleName, objectName, msg));
+		// resolve/set BioPAX problem category
+		String category = (messageSource != null)
+			? messageSource.getMessage(errorCode + ".category", null, Category.INFORMATION.name(), locale)
+				: null;
+		if(category != null)
+			error.setCategory(Category.valueOf(category.trim().toUpperCase()));
 		
-		String category = messageSource.getMessage(errorCode + ".category", 
-			null, Category.INFORMATION.name(), locale);
-		error.setCategory(Category.valueOf(category.trim().toUpperCase()));
+		// add one error case
+		ErrorCaseType errorCase = new ErrorCaseType(ruleName, objectName, msg);
+		errorCase.setFixed(isFixed); //
+		error.addErrorCase(errorCase);
 		
+		//done.
 		return error;
     }
     
@@ -411,5 +403,66 @@ public class BiopaxValidatorUtils {
 		Resource r =  new FileSystemResource(ResourceUtils.getFile("classpath:"));
 		return r.createRelative("..").getFile().getCanonicalPath();
     }
+    
+       
+    /**
+     * Gets rule's behavior (mode), to be used
+     * when registering an error case reported by the rule.
+     * 
+     * @see Behavior
+     * 
+     * @param ruleName validation rule class name, e.g., org.biopax.validator.rules.MyRule
+     * @param profile validation profile name or null (default profile)
+     * @param messageSource 
+     * @return
+     */
+    public Behavior getRuleBehavior(String ruleName, String profile) { 
+    	return getRuleBehavior(ruleName, profile, messageSource);
+    }
+    
+    
+    /**
+     * Gets rule's behavior (mode) during unit testing
+     * when messageSource can be null.
+     * 
+     * @see BiopaxValidatorUtils#getRuleBehavior(String, String)
+     * @see BiopaxValidatorUtils#createError(MessageSource, Locale, String, String, String, String, boolean, Object...)
+     * 
+     * @param ruleName validation rule class name, e.g., org.biopax.validator.rules.MyRule
+     * @param profile validation profile name or null (default profile)
+     * @param messageSource 
+     * @return
+     */
+    private static Behavior getRuleBehavior(String ruleName, String profile, MessageSource messageSource) {
+    	if(messageSource == null) return Behavior.ERROR;
+    	
+    	// get the default behavior value first
+    	String value = messageSource.getMessage(ruleName + ".behavior", null, "ERROR", Locale.getDefault());
+    		
+    	// - override from the profile, if set/available
+    	if(profile != null && !profile.isEmpty())
+    		value = messageSource.getMessage(ruleName + ".behavior." + profile, null, value, Locale.getDefault());
+    	
+		return Behavior.valueOf(value.toUpperCase());
+	}
+    
+    
+    /**
+     * 
+     * @param ruleName validation rule class name, e.g., org.biopax.validator.rules.MyRule
+     * @return
+     */
+	public String getRuleDescription(String ruleName) {
+		
+		String tip = messageSource.getMessage(ruleName, null, "",
+				Locale.getDefault());
+		if (tip == null || "".equals(tip)) {
+			tip = "description is not found in the messages.properties file";
+		} else {
+			tip = StringEscapeUtils.escapeHtml(tip);
+		}
+		
+		return tip;
+	}
 
 }

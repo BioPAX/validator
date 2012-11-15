@@ -7,6 +7,7 @@ import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.paxtools.util.Filter;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ import java.util.Set;
  */
 @Component
 public class ConversionToComplexAssemblyRule extends AbstractRule<Conversion> {
-    public void check(Conversion thing, boolean fix) {
+    public void check(final Validation validation, Conversion thing) {
     	//for thread safety (concurrency) we're using a new fetcher here rather than static one 
     	Fetcher fetcher = new Fetcher(
     			SimpleEditorMap.L3, new Filter<PropertyEditor>() {
@@ -42,7 +43,7 @@ public class ConversionToComplexAssemblyRule extends AbstractRule<Conversion> {
         int complexDiff = getComplexCount(thing.getLeft()) - getComplexCount(thing.getRight());
         if( left.isEmpty()  // when there are no modifications really, but different no. complexes or participants
                 && (complexDiff != 0 || thing.getLeft().size() - thing.getRight().size() != 0 ))
-            error(thing, "wrong.conversion.class", false, thing.getModelInterface());
+            error(validation, thing, "wrong.conversion.class", false, thing.getModelInterface());
 
     }
 

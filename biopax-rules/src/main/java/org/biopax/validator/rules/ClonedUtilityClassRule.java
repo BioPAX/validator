@@ -12,6 +12,7 @@ import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.Named;
 import org.biopax.paxtools.model.level3.UtilityClass;
 import org.biopax.paxtools.model.level3.Xref;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
@@ -28,7 +29,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 	
-	public void check(Model model, boolean fix) {
+	public void check(final Validation validation, Model model) {
 		Cluster<UtilityClass> algorithm = new Cluster<UtilityClass>() {
 			@Override
 			public boolean match(UtilityClass a, UtilityClass b) {
@@ -51,7 +52,7 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 			boolean ok = clones.remove(first); // pop the first element from the clones collection
 			assert ok;
 			String idListAsString = BiopaxValidatorUtils.getIdListAsString(clones);
-			if(fix) {
+			if(validation.isFix()) {
 				// use the same value for all corresp. props 
 				fix(model, first, clones);
 				// remove clones
@@ -65,12 +66,12 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 				}
 				
 				// set "fixed", but keep the old message
-				error(first, "cloned.utility.class", true, 
-					idListAsString, first.getModelInterface().getSimpleName());
+				error(validation, first, "cloned.utility.class", 
+					true, idListAsString, first.getModelInterface().getSimpleName());
 			} else {
 				// report the problem (not fixed)
-				error(first, "cloned.utility.class", false, 
-					idListAsString, first.getModelInterface().getSimpleName());
+				error(validation, first, "cloned.utility.class", 
+					false, idListAsString, first.getModelInterface().getSimpleName());
 			}
 		}
 	}

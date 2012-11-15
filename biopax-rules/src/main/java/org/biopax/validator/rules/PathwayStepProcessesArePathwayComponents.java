@@ -5,6 +5,7 @@ import java.util.*;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PathwayStep;
 import org.biopax.paxtools.model.level3.Process;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +30,7 @@ public class PathwayStepProcessesArePathwayComponents extends AbstractRule<Pathw
 		 && ((PathwayStep)thing).getPathwayOrderOf() != null;
 	}
 
-	public void check(PathwayStep step, boolean fix) {
+	public void check(final Validation validation, PathwayStep step) {
 		Pathway pathway = step.getPathwayOrderOf();
 		/* can be null, e.g., when the check is called 
 		 * during a new PathwayStep is added to the model 
@@ -39,7 +40,7 @@ public class PathwayStepProcessesArePathwayComponents extends AbstractRule<Pathw
 			Set<Process> pathwayComponents = pathway.getPathwayComponent();
 			for (Process stepProcess : step.getStepProcess()) {
 				if (!pathwayComponents.contains(stepProcess)) {
-					error(step, "component.not.found", false, stepProcess, pathway);
+					error(validation, step, "component.not.found", false, stepProcess, pathway);
 				}
 			}
 		}

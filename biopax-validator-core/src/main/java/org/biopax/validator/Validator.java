@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Set;
 
-import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.result.Validation;
 
 /**
@@ -22,14 +21,6 @@ public interface Validator {
 	 * @return
 	 */
 	Set<Rule<?>> getRules();
-	
-	/**
-	 * Get the BioPAX rule by its bean name.
-	 * 
-	 * @param ruleName
-	 * @return
-	 */
-	Rule<?> findRuleByName(String ruleName);
 	
 	
 	/**
@@ -110,17 +101,17 @@ public interface Validator {
 	 * @param validation
 	 */
 	void validate(Validation validation);
-
-
 	
-    /**
+	/**
      * Adds the validation error (with proper attributes)
-     * to corresponding registered validation objects.
-     * 
-     * @param obj associated with a validation result objects (can be even InputStream, during import, but usually is a BioPAX element)
-     * @param error
-     * @param setFixed if true, - find and set the attribute
-     */
-	void report(Object obj, ErrorType error, boolean setFixed);
+     * to registered validation objects associated with the object.
+	 * 
+	 * @param obj object associated with a validation result (can be even InputStream, during import, but usually is a BioPAX element)
+	 * @param errorCode error code
+	 * @param reportedBy class name of a validation rule or a name of another BioPAX validating class, method (e.g., AOP aspect's method/joinpoint name).
+	 * @param isFixed if true, - find and set the attribute
+	 * @param args
+	 */
+	void report(Object obj, String errorCode, String reportedBy, boolean isFixed, Object... args);
 	
 }

@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
 public abstract class Level3CardinalityAndRangeRule<E extends Level3Element> 
-	extends BasicCardinalityAndRangeRule<E>
+	extends AbstractCardinalityAndRangeRule<E>
 {
 	// Constructor with arguments
 	public Level3CardinalityAndRangeRule(Class<E> domain, String property,

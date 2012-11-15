@@ -4,6 +4,7 @@ import org.biopax.paxtools.model.level3.Evidence;
 import org.biopax.paxtools.model.level3.EvidenceCodeVocabulary;
 import org.biopax.paxtools.model.level3.ExperimentalForm;
 import org.biopax.paxtools.model.level3.Score;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -19,23 +20,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class EvidencePropertiesUsageRule extends AbstractRule<Evidence> {
 
-    public void check(Evidence ev, boolean fix) {
+    public void check(final Validation validation, Evidence ev) {
 
 		// check it has AT LEAST one of the things
 		if ((ev.getEvidenceCode() == null || ev.getEvidenceCode().isEmpty())
 				&& (ev.getExperimentalForm() == null || ev.getExperimentalForm().isEmpty())
 				&& (ev.getConfidence() == null || ev.getConfidence().isEmpty())) {
-			error(ev, "min.cardinality.violated",
-					false, "'evidenceCode' or 'confidence' or 'experimantalForm'", 1);
+			error(validation, ev,
+					"min.cardinality.violated", false, "'evidenceCode' or 'confidence' or 'experimantalForm'", 1);
 		} else {
 
 			// evidenceCode range
 			if (ev.getEvidenceCode() != null) {
 				for (Object cv : ev.getEvidenceCode()) {
 					if (!EvidenceCodeVocabulary.class.isInstance(cv)) {
-						error(ev, "range.violated", false, 
-								"evidenceCode", cv,
-								cv.getClass().getSimpleName(), "EvidenceCodeVocabulary");
+						error(validation, ev, "range.violated", 
+								false, "evidenceCode",
+								cv, cv.getClass().getSimpleName(), "EvidenceCodeVocabulary");
 					}
 				}
 			}
@@ -44,8 +45,8 @@ public class EvidencePropertiesUsageRule extends AbstractRule<Evidence> {
 			if (ev.getExperimentalForm() != null) {
 				for (Object cv : ev.getExperimentalForm()) {
 					if (!ExperimentalForm.class.isInstance(cv)) {
-						error(ev, "range.violated", false, 
-								"experimentalForm", cv, cv.getClass().getSimpleName(), "ExperimentalForm");
+						error(validation, ev, "range.violated", 
+								false, "experimentalForm", cv, cv.getClass().getSimpleName(), "ExperimentalForm");
 					}
 				}
 			}
@@ -54,8 +55,8 @@ public class EvidencePropertiesUsageRule extends AbstractRule<Evidence> {
 			if (ev.getConfidence() != null) {
 				for (Object cv : ev.getConfidence()) {
 					if (!Score.class.isInstance(cv)) {
-						error(ev, "range.violated", false, 
-								"confidence", cv, cv.getClass().getSimpleName(), "Score");
+						error(validation, ev, "range.violated", 
+								false, "confidence", cv, cv.getClass().getSimpleName(), "Score");
 					}
 				}
 			}

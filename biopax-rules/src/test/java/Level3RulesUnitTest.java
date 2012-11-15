@@ -9,6 +9,7 @@ import org.biopax.paxtools.io.*;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.Rule;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.rules.*;
 import org.biopax.validator.utils.*;
 import org.junit.Test;
@@ -55,17 +56,17 @@ public class Level3RulesUnitTest {
 		conv.addComment("a conversion reaction (not Control)");
 		step.addStepProcess((Process) conv);
 		step.addComment("error: has not a Control type step process");
-		try {
-			rule.check(step, false); 
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-			//System.out.println("thrown: " + e);
-			Model m = level3.createModel();
-			m.add(conv);
-			m.add(step);
-			writeExample("testBiochemicalPathwayStepProcessOnlyControlCRRule.owl",m);
-		}
 		
+		Validation v = new Validation();
+		rule.check(v, step); 
+		assertFalse(v.getError().isEmpty());
+		assertEquals(1, v.countErrors(step.getRDFId(), null, "range.violated", null, false, false));
+		
+		//System.out.println("thrown: " + e);
+		Model m = level3.createModel();
+		m.add(conv);
+		m.add(step);
+		writeExample("testBiochemicalPathwayStepProcessOnlyControlCRRule.owl",m);
 	}
 	
 	
@@ -95,27 +96,33 @@ public class Level3RulesUnitTest {
 		//ok
 		Conversion conv = level3.create(BiochemicalReaction.class, "conversion1");
 		step.setStepConversion(conv);
-		rule.check(step, false); // shouldn't throw a BiopaxValidatorException
+		Validation v = new Validation();
+		rule.check(v, step);
+		assertTrue(v.getError().isEmpty());
 		
 		//ok
 		Catalysis catalysis = level3.create(Catalysis.class, "catalysis1");
 		catalysis.addComment("valid step process value");
-		step.addStepProcess((Process)catalysis); //org.biopax.paxtools.model.level3.Process !!! :)
-		rule.check(step, false);
+		step.addStepProcess((org.biopax.paxtools.model.level3.Process)catalysis); //org.biopax.paxtools.model.level3.Process !!!
+		v = new Validation();
+		rule.check(v, step);
+		assertTrue(v.getError().isEmpty());
 		
 		//illegal process
 		step.addStepProcess((Process) conv);
-		try {
-			rule.check(step, false); 
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-			// generate the example OWL
-			Model m = level3.createModel();
-			m.add(step);
-			m.add(conv);
-			m.add(catalysis);
-			writeExample("testBiochemPathwayStepOneConversionRule.owl",m);
-		}
+		
+		v = new Validation();
+		rule.check(v, step); 
+		assertFalse(v.getError().isEmpty());
+		assertEquals(1, v.countErrors(step.getRDFId(), "org.biopax.validator.rules.BiochemPathwayStepOneConversionRule", 
+			"misplaced.step.conversion", null, false, false));
+		
+		// generate the example OWL
+		Model m = level3.createModel();
+		m.add(step);
+		m.add(conv);
+		m.add(catalysis);
+		writeExample("testBiochemPathwayStepOneConversionRule.owl",m);
 	}
 
 	//InteractionParticipantsLocationRule
@@ -145,9 +152,11 @@ public class Level3RulesUnitTest {
 		reaction.addRight(right);
 		
 		// ok
+		Validation v = new Validation();
 		left.setCellularLocation(cl); 
 		right.setCellularLocation(cl); 
-		rule.check(reaction, false);
+		rule.check(v, reaction);
+		assertTrue(v.getError().isEmpty());
 		
 		// test complex (rule cannot use entityReference to match "the same" entity)
 		PhysicalEntity leftc = level3.create(Complex.class, "#complex");
@@ -159,37 +168,37 @@ public class Level3RulesUnitTest {
 		reaction.addRight(rightc);
 		leftc.setCellularLocation(cr);
 		leftc.addComment("location changed without transport?");
-		try {
-			rule.check(reaction, false);
-			fail("must throw BiopaxValidatorException");
-		} catch (BiopaxValidatorException e) {
-		}
+		
+		v = new Validation();
+		rule.check(v, reaction);
+		assertEquals(1, v.countErrors(reaction.getRDFId(), null, "participant.location.changed", null, false, false));
 		
 		// different complex, another location is ok for this rule,
 		// but this is another problem (other rule will catch this)
 		// for complexes, not ER but names are used to match...
 		leftc.removeName("cplx1");
 		leftc.addName("cplx2");
-		rule.check(reaction, false);
+		v = new Validation();
+		rule.check(v, reaction);
+		assertTrue(v.getError().isEmpty());
 		
 		right.setCellularLocation(cr); 
 		right.addComment("location changed without transport?");
 		// check for: same entity (names intersection), diff. location
-		try {
-			rule.check(reaction, false); 
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-			// generate the example OWL
-			Model m = level3.createModel();
-			m.add(reaction);
-			m.add(left); m.add(right);
-			m.add(dnaReference);
-			m.add(cl); m.add(cr);
-			m.add(feature);
-			m.add(leftc);
-			m.add(rightc);
-			writeExample("testBiochemReactParticipantsLocationRule.owl",m);
-		}
+		v = new Validation();
+		rule.check(v, reaction);
+		assertEquals(1, v.countErrors(reaction.getRDFId(), null, "participant.location.changed", null, false, false));
+
+		// generate the example OWL
+		Model m = level3.createModel();
+		m.add(reaction);
+		m.add(left); m.add(right);
+		m.add(dnaReference);
+		m.add(cl); m.add(cr);
+		m.add(feature);
+		m.add(leftc);
+		m.add(rightc);
+		writeExample("testBiochemReactParticipantsLocationRule.owl",m);
 		
 		//same locations is ok
 		leftc.removeName("cplx2");
@@ -198,7 +207,9 @@ public class Level3RulesUnitTest {
 		rightc.setCellularLocation(cr);
 		right.setCellularLocation(cr); 
 		left.setCellularLocation(cr); 
-		rule.check(reaction, false);
+		v = new Validation();
+		rule.check(v, reaction);
+		assertTrue(v.getError().isEmpty());
 	}
 	
 	
@@ -235,19 +246,20 @@ public class Level3RulesUnitTest {
 		left.setCellularLocation(cl); 
 		right.setCellularLocation(cr); 
 		// make sure it's valid
-		rule.check(reaction, false);
+		Validation v = new Validation();
+		rule.check(v, reaction);
+		assertTrue(v.getError().isEmpty());
 		
 		// now set the same location on both sides and check	
 		right.setCellularLocation(cl); 
-		try {
-			rule.check(reaction, false); 
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-			m.add(left); m.add(right);
-			m.add(rnaReference);
-			m.add(cl); m.add(cr);
-			m.add(feature);
-		}
+		v = new Validation();
+		rule.check(v, reaction); 
+		assertEquals(1, v.countErrors(reaction.getRDFId(), null, "transport.location.same", null, false, false));
+		
+		m.add(left); m.add(right);
+		m.add(rnaReference);
+		m.add(cl); m.add(cr);
+		m.add(feature);
 		
 		// Now check with location is null on one side
 		right = level3.create(Rna.class, "#Rna2");
@@ -274,7 +286,9 @@ public class Level3RulesUnitTest {
 		right.setCellularLocation(cr);
 		
 		// check again
-		rule.check(reaction, false);
+		v = new Validation();
+		rule.check(v, reaction);
+		assertTrue(v.getError().isEmpty());
 	}
 	
 	
@@ -285,21 +299,20 @@ public class Level3RulesUnitTest {
 		Level3Element bpe = level3.create(UnificationXref.class, 
 				"http://www.biopax.org/UnificationXref#Taxonomy_40674");
 		bpe.addComment("This is a valid ID");
-		rule.check(bpe, false);
+		Validation v = new Validation();
+		rule.check(v, bpe);
+		assertTrue(v.getError().isEmpty());
 		
 		Model m = level3.createModel(); // to later generate examples
 		m.add(bpe);
 		
 		bpe = level3.create(UnificationXref.class, "Taxonomy UnificationXref_40674");
 		bpe.addComment("Invalid ID (has a space)");
-		try { 
-			rule.check(bpe, false); 
-			fail("must throw BiopaxValidatorException");
-		} catch (BiopaxValidatorException e) 
-		{
-			m.add(bpe);
-		}
-		
+		v = new Validation();
+		rule.check(v, bpe); 
+		assertEquals(1, v.countErrors(bpe.getRDFId(), null, "invalid.rdf.id", null, false, false));
+
+		m.add(bpe);		
 		writeExample("testBiopaxElementIdRule.owl", m);
 		
 		// weird but legal URIs:
@@ -343,20 +356,21 @@ public class Level3RulesUnitTest {
     	pr.setDisplayName("ProteinReference1");
     	pr.addComment("No value is set for the 'organism' property (must be exactly one)!");
     	
-    	try {
-    		rule.check(pr, false);
-    		fail("must throw BiopaxValidatorException");
-    	} catch (Exception e) {
-        	// write the example
-        	Model m = level3.createModel();
-        	m.add(taxonXref);
-        	m.add(bioSource);
-        	m.add(pr);
-        	writeExample("testProteinReferenceOrganismCRRule", m);
-		}
+    	Validation v = new Validation();
+    	rule.check(v, pr);
+    	assertEquals(1, v.countErrors(pr.getRDFId(), null, "cardinality.violated", null, false, false));
+
+       	// write the example
+       	Model m = level3.createModel();
+       	m.add(taxonXref);
+       	m.add(bioSource);
+       	m.add(pr);
+       	writeExample("testProteinReferenceOrganismCRRule", m);
     	
     	pr.setOrganism(bioSource);
-    	rule.check(pr, false); // should pass now
+    	v = new Validation();
+    	rule.check(v, pr); // should pass now
+    	assertTrue(v.getError().isEmpty());
     }
     
 
@@ -365,27 +379,29 @@ public class Level3RulesUnitTest {
 	{
 		Rule rule = new ControlTypeRule();	
 		Catalysis ca = level3.create(Catalysis.class, "catalysis1");
-		rule.check(ca, false); // controlType==null, no error expected
+		Validation v = new Validation();
+		rule.check(v, ca); // controlType==null, no error expected
+		assertTrue(v.getError().isEmpty());
 		ca.setControlType(ControlType.ACTIVATION);
-		rule.check(ca, false); // no error expected
+		v = new Validation();
+		rule.check(v, ca); // no error expected
+		assertTrue(v.getError().isEmpty());
 		ca.setControlType(ControlType.INHIBITION);
 		ca.addComment("error: illegal controlType");
-		try {
-			rule.check(ca, false); 
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-		}
+		v = new Validation();
+		rule.check(v, ca); 
+		assertEquals(1, v.countErrors(ca.getRDFId(), null, "range.violated", null, false, false));
 		
 		TemplateReactionRegulation tr = level3.create(TemplateReactionRegulation.class, "regulation1");
 		tr.setControlType(ControlType.INHIBITION);
-		rule.check(tr, false); // no error...
+		v = new Validation();
+		rule.check(v, tr); // no error...
+		assertTrue(v.getError().isEmpty());
 		tr.setControlType(ControlType.ACTIVATION_ALLOSTERIC);
 		tr.addComment("error: illegal controlType");
-		try {
-			rule.check(tr, false); 
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-		}
+		v = new Validation();
+		rule.check(v, tr); 
+		assertEquals(1, v.countErrors(tr.getRDFId(), null, "range.violated", null, false, false));
 		
 		// write the example XML
 		Model m = level3.createModel();
@@ -402,14 +418,14 @@ public class Level3RulesUnitTest {
 	{
 		Rule rule = new DegradationConversionDirectionRule();
 		Conversion dg = level3.create(Degradation.class, "degradation-conversion-1");
-		rule.check(dg, false); // direction is null, no error
+		Validation v = new Validation();
+		rule.check(v, dg); // direction is null, no error
+		assertTrue(v.getError().isEmpty());
 		dg.setConversionDirection(ConversionDirectionType.REVERSIBLE);
 		dg.addComment("error: illegal conversionDirection");
-		try {
-			rule.check(dg, false); 
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-		}
+		v = new Validation();
+		rule.check(v, dg); 
+		assertEquals(1, v.countErrors(dg.getRDFId(), null, "range.violated", null, false, false));
 		
 		// write the example
 		Model m = level3.createModel();
@@ -449,7 +465,10 @@ public class Level3RulesUnitTest {
     	p.setCellularLocation(cv);
 		
     	Rule<EntityReference> rule = new EntityReferenceSamePhysicalEntitiesRule();
-    	rule.check(pr, false);
+    	Validation v = new Validation();
+    	rule.check(v, pr);
+    	// no err: different location
+    	assertTrue(v.getError().isEmpty());
 	}
 	
 	@Test
@@ -492,16 +511,20 @@ public class Level3RulesUnitTest {
 		assertTrue(rule.canCheck(model));
 		
 		// check
-		try {
-			rule.check(model, false); 
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-		}
+		Validation v = new Validation();
+		rule.check(v, model); 
+		assertEquals(1, v.countErrors(null, null, "cloned.utility.class", null, false, false));
+
 		// write the example
 		writeExample("testClonedUtilityClassRule.owl", model);	
 		
 		// now -fix!
-		rule.check(model, true); 
+		v = new Validation("auto-fix-it", true, null, 0, null);
+		rule.check(v, model);
+		//there is one error case, but -
+		assertEquals(1, v.countErrors(null, null, "cloned.utility.class", null, false, false));
+		// - it is fixed
+		assertEquals(0, v.countErrors(null, null, "cloned.utility.class", null, false, true));
 		// write the example
 		writeExample("testClonedUtilityClassRuleFixed.owl", model);	
 	}
@@ -513,14 +536,12 @@ public class Level3RulesUnitTest {
 		Model m = level3.createModel();
 		m.addNew(UnificationXref.class, "some_id");
 		m.addNew(RelationshipXref.class, "Some_ID");
-		try { 
-			rule.check(m, false); 
-			fail("must throw BiopaxValidatorException");
-		} catch (BiopaxValidatorException e) 
-		{
-		}
+		Validation v = new Validation(); 
+		rule.check(v, m); 
+		assertEquals(1, v.countErrors(null, null, "duplicate.id.ignoringcase", null, false, false));
 	}
 
+	
     @Test
     public void testConversionStoichiometryCheckRule() {
         Rule<Conversion> rule = new ConversionStoichiometryCheckRule();
@@ -559,11 +580,9 @@ public class Level3RulesUnitTest {
         assertFalse(rule.canCheck(c1));
         assertTrue(rule.canCheck(c2));
 
-        try {
-			rule.check(c2, false);
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-		}
+        Validation v = new Validation();
+		rule.check(v, c2);
+		assertEquals(1, v.countErrors("biochem_reaction", null, "stoichiometry.mismatch", null, false, false));
 
         writeExample("testConversionStoichiometryCheckRule.owl", m);
     }
@@ -594,11 +613,9 @@ public class Level3RulesUnitTest {
         assertFalse(rule.canCheck(c1));
         assertTrue(rule.canCheck(c2));
 
-        try {
-			rule.check(c2, false);
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-		}
+        Validation v = new Validation();
+		rule.check(v, c2);
+		assertEquals(1, v.countErrors(c2.getRDFId(), null, "wrong.conversion.class", null, false, false));
 
         writeExample("testConversionToComplexAssemblyRule.owl", m);
     }
@@ -607,27 +624,23 @@ public class Level3RulesUnitTest {
     public void testPhysicalEntityAmbiguousFeatureRule() {
         Rule<PhysicalEntity> rule = new PhysicalEntityAmbiguousFeatureRule();
         Model m = level3.createModel();
-
         Conversion c = m.addNew(Degradation.class, "degradation");
-
         PhysicalEntity p1 = m.addNew(Protein.class, "protein1");
         PhysicalEntity p2 = m.addNew(Protein.class, "protein2");
         Complex complex = m.addNew(Complex.class, "complex");
 
         complex.addComponent(p1);
         complex.addComponent(p2);
-
         c.addLeft(p1);
 
-        try {
-			rule.check(p1, false);
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-		}
+        Validation v = new Validation();
+		rule.check(v, p1);
+		assertEquals(1, v.countErrors(p1.getRDFId(), null, "ambiguous.feature", null, false, false));
 
         writeExample("testPhysicalEntityAmbiguousFeatureRule.owl", m);
     }
 
+    
     @Test
     public void testSimplePhysicalEntityFeaturesRule() {
         Rule<SimplePhysicalEntity> rule = new SimplePhysicalEntityFeaturesRule();
@@ -641,15 +654,17 @@ public class Level3RulesUnitTest {
         p.addFeature(ef);
         p.addNotFeature(ef2);
 
-        try {
-			rule.check(p, false);
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-		}
+        Validation v = new Validation();
+		rule.check(v, p);
+		assertEquals(1, v.countErrors(p.getRDFId(), null, "improper.feature.use", null, false, false));
 
         writeExample("testSimplePhysicalEntityFeaturesRule.owl", m);
 
-        rule.check(p, true);
+        v = new Validation("",true,null,0,null);
+        rule.check(v, p);
+		assertEquals(1, v.countErrors(p.getRDFId(), null, "improper.feature.use", null, false, false));
+		assertEquals(0, v.countErrors(p.getRDFId(), null, "improper.feature.use", null, false, true));
+        
         writeExample("testSimplePhysicalEntityFeaturesRuleFixed.owl", m);
     }
     
@@ -668,12 +683,10 @@ public class Level3RulesUnitTest {
 
         assertTrue(rule.canCheck(complex));
 
-        try {
-			rule.check(complex, false);
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
+        Validation v = new Validation(); //default is: no auto-fix 
+		rule.check(v, complex);
+		assertEquals(1, v.countErrors(complex.getRDFId(), null, "cyclic.inclusion", null, false, true));
 //			System.out.println(e + " " + Arrays.toString(e.getMsgArgs()));
-		}
 
         writeExample("testAcyclicComplexRule.owl", m);
     }
@@ -693,13 +706,10 @@ public class Level3RulesUnitTest {
         ev2.addXref(x);
         ev2.addXref(ux2);
 
-        try {
-			rule.check(x, false);
-			fail("must throw BiopaxValidatorException");
-		} catch(BiopaxValidatorException e) {
-		}
+        Validation v = new Validation();
+		rule.check(v, x);
+		assertEquals(1, v.countErrors(x.getRDFId(), null, "shared.unification.xref", null, false, true));
 
-        writeExample("testSharedUnificationXrefRule.owl", m);
-// this rule cannot fix the issue (safely, reliably)        
+        writeExample("testSharedUnificationXrefRule.owl", m);       
     }
 }

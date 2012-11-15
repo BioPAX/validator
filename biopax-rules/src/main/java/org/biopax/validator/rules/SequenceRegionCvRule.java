@@ -1,9 +1,9 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.SequenceRegionVocabulary;
-import org.biopax.validator.impl.CvTermRestriction;
+import org.biopax.validator.CvRestriction;
+import org.biopax.validator.CvRestriction.UseChildTerms;
 import org.biopax.validator.impl.Level3CvTermsRule;
-import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,7 +20,7 @@ public class SequenceRegionCvRule extends Level3CvTermsRule<SequenceRegionVocabu
 
 	public SequenceRegionCvRule() {
 		super(SequenceRegionVocabulary.class, null, 
-				new CvTermRestriction("SO:0000001","SO", false, 
+				new CvRestriction("SO:0000001","SO", false, 
 						UseChildTerms.DIRECT, false)); // OntologyManagerImpl bug: this fails to init when using 'ALL'!
 	}
 	

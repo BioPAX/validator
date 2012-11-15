@@ -14,13 +14,12 @@ import org.biopax.paxtools.model.BioPAXFactory;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
-import org.biopax.validator.result.Behavior;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.rules.CellularLocationCvRule;
 import org.biopax.validator.rules.InteractionTypeCvRule;
 import org.biopax.validator.rules.ProteinModificationFeatureCvRule;
 import org.biopax.validator.rules.XrefRule;
 import org.biopax.validator.rules.XrefSynonymDbRule;
-import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.utils.XrefHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,12 +134,12 @@ public class IntegrationTest {
  	   //XrefRule is trying to match 'GO:0005737'
  	   xref.setDb("GO");
  	   xref.setId("GO:0005737");
-	   r.check(xref, false);
+	   r.check(null, xref);
 
  	   // XrefRule is trying to match 'XP_001075834'
  	   xref.setDb("RefSeq");
  	   xref.setId("XP_001075834");
-	   r.check(xref, false);
+	   r.check(null, xref);
     }
     
     /*
@@ -162,74 +161,65 @@ public class IntegrationTest {
     	ux.setDb("MI");
     	ux.setId("MI:0217");
     	v.addXref(ux);
-        rule.check(v, false);
+        rule.check(null, v);
     	
     	// what a surprise, the following used to fail (before it's been fixed)
         simpleIO.mergeDuplicates(true);
     	Model m = simpleIO.convertFromOWL(getClass().getResourceAsStream("InteractionVocabulary-Phosphorylation.xml"));
     	InteractionVocabulary vv = (InteractionVocabulary) m.getByID("Interaction_Phosphorylation");
-        rule.check(vv, false);
+        rule.check(null, vv);
     }
     
     
     @Test
     public void testCellularLocationRuleWrong() {
         CellularLocationCvRule instance =  
-                (CellularLocationCvRule) context.getBean("cellularLocationCvRule");
-        instance.setBehavior(Behavior.ERROR);  
+                (CellularLocationCvRule) context.getBean("cellularLocationCvRule"); 
         CellularLocationVocabulary lcv = factory3.create(CellularLocationVocabulary.class, "badTerm");
         lcv.addTerm("LOCATION?");    
         assertTrue(instance.canCheck(lcv));
-        try {
-        	instance.check(lcv, false);
-        	fail("Expected BiopaxValidatorException!");
-        } catch (BiopaxValidatorException e) {
-		}
+        Validation v = new Validation();
+		instance.check(v, lcv);
+		assertEquals(1, v.countErrors(lcv.getRDFId(), null, null, null, false, false));
     }
     
     @Test
     public void testCellularLocationRule() {
         CellularLocationCvRule instance =  
-                (CellularLocationCvRule) context.getBean("cellularLocationCvRule");
-        instance.setBehavior(Behavior.ERROR);     
+                (CellularLocationCvRule) context.getBean("cellularLocationCvRule");   
         CellularLocationVocabulary cl = factory3.create(CellularLocationVocabulary.class, "cytoplasm");
         cl.addTerm("cytoplasm");
         UnificationXref ux = factory3.create(UnificationXref.class, "UnificationXref_GO_0005737");
     	ux.setDb("GO");
     	ux.setId("GO:0005737");
     	cl.addXref(ux);
-        instance.check(cl, false);
+    	
+    	Validation v = new Validation();
+        instance.check(v, cl);
+        assertTrue(v.getError().isEmpty());
     }
 
 
     @Test
     public void testXrefRuleWrong() {
         XrefRule instance =  (XrefRule) context.getBean("xrefRule");
-        instance.setBehavior(Behavior.ERROR);
         UnificationXref x = factory3.create(UnificationXref.class, "1");
         x.setDb("ILLEGAL DB NAME");
-        try {
-        	instance.check(x, false);
-        	fail("Must throw BiopaxValidatorException!");
-        } catch (BiopaxValidatorException e) {
-			//ok
-		}
+        Validation v = new Validation();
+		instance.check(v,x);
+		assertEquals(1, v.countErrors(x.getRDFId(), null, "unknown.db", null, false, false));
     }
     
 
     @Test
     public void testXrefRule() {
         XrefRule instance =  (XrefRule) context.getBean("xrefRule");
-        instance.setBehavior(Behavior.ERROR);
         UnificationXref x = factory3.create(UnificationXref.class, "1");
         x.setDb("reactome");
         x.setId("0000000");
-        try {
-        	instance.check(x, false);
-        	fail("Must throw BiopaxValidatorException!");
-        } catch (BiopaxValidatorException e) {
-			//ok
-		}
+        Validation v = new Validation();
+		instance.check(v, x);
+		assertEquals(1, v.countErrors(x.getRDFId(), null, "invalid.id.format", null, false, false));
     }
     
     /*
@@ -238,11 +228,12 @@ public class IntegrationTest {
     @Test
     public void testXrefRuleEntezGene() {
         XrefRule instance =  (XrefRule) context.getBean("xrefRule");
-        instance.setBehavior(Behavior.ERROR);
         UnificationXref x = factory3.create(UnificationXref.class, "1");
         x.setDb("EntrezGene");
         x.setId("0000000");
-        instance.check(x, false);
+        Validation v = new Validation();
+        instance.check(v, x);
+        assertTrue(v.getError().isEmpty());
     }
     
    
@@ -264,21 +255,30 @@ public class IntegrationTest {
     	
         m.add(ux);
         m.add(iv);
-        instance.check(iv, false);
+        
+        Validation v = new Validation();
+        instance.check(v, iv);
+        assertTrue(v.getError().isEmpty());
         
         iv = factory3.create(InteractionVocabulary.class, "synonymCVTerm");
         iv.addTerm("phosphorylation");
         iv.addComment("Valid term");
         m.add(iv);
         iv.addXref(ux);
-        instance.check(iv, false);
+        
+        v = new Validation();
+        instance.check(v, iv);
+        assertTrue(v.getError().isEmpty());
         
         iv = factory3.create(InteractionVocabulary.class, "okCVTerm");
         iv.addTerm("Phosphorylation");
         iv.addComment("Ok term: upper or lower case letters do not matter.");
         m.add(iv);
         iv.addXref(ux);
-        instance.check(iv, false);
+        
+        v = new Validation();
+        instance.check(v, iv);
+        assertTrue(v.getError().isEmpty());
         
         iv = factory3.create(InteractionVocabulary.class, "invalidCVTerm");
         iv.addTerm("phosphorylated residue");
@@ -292,11 +292,10 @@ public class IntegrationTest {
     	iv.addXref(ux);
     	m.add(ux);
         m.add(iv);
-        try {
-        	instance.check(iv, false);
-        	fail("Must be a BiopaxValidatorException!");
-        } catch (BiopaxValidatorException e) {
-		}
+        
+        v = new Validation();
+		instance.check(v, iv);
+		assertEquals(1, v.countErrors(iv.getRDFId(), null, "illegal.cv.term", null, false, false));
         
         writeExample("testInteractionTypeRule.owl", m);
     } 
@@ -320,46 +319,45 @@ public class IntegrationTest {
     	ux.setId("MOD:00036");
     	cv.addXref(ux);
     	
-   		rule.check(mf, false); // should not fail
+    	Validation v = new Validation();
+   		rule.check(v, mf); // should not fail
+   		assertTrue(v.getError().isEmpty());
 	}
     
     
     @Test
     public void testXrefSynonymDbRule() {
     	XrefSynonymDbRule instance =  (XrefSynonymDbRule) context.getBean("xrefSynonymDbRule");
-        instance.setBehavior(Behavior.ERROR);
+//        instance.setBehavior(Behavior.ERROR);
         UnificationXref x = factory3.create(UnificationXref.class, "1");
         //use an unofficial/misspelled name
         x.setDb("entrez_gene");
         x.setId("0000000");
-        try {
-        	instance.check(x, false);
-        	fail("Must throw BiopaxValidatorException!");
-        } catch (BiopaxValidatorException e) {
-			//ok
-		}
+        Validation v = new Validation();
+		instance.check(v, x);
+		assertEquals(1, v.countErrors(x.getRDFId(), null, "db.name.spelling", null, false, false));
+		
         // use one of its official synonyms
         x.setDb("entre-zgene");
         x.setId("0000000");
-        instance.check(x, false);
+        v = new Validation();
+        instance.check(v, x);
+        assertTrue(v.getError().isEmpty());
         
         //use an unofficial/misspelled name
         x.setDb("gene_ontology");
         x.setId("0000000");
-        try {
-        	instance.check(x, false);
-        	fail("Must throw BiopaxValidatorException!");
-        } catch (BiopaxValidatorException e) {
-			//ok
-		}
+        v = new Validation();
+		instance.check(v, x);
+		assertEquals(1, v.countErrors(x.getRDFId(), null, null, null, false, false));
         // use one of its official synonyms
         x.setDb("go");
         x.setId("0000000");
-        instance.check(x, false);
+        v = new Validation();
+        instance.check(v, x);
+        assertTrue(v.getError().isEmpty());
     }
-    
-    
-    
+      
     
     private void writeExample(String file, Model model) {
     	try {

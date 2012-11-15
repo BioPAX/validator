@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class ComplexComponentsMultipleLocationRule extends
 		AbstractRule<Complex> {
 
-	public void check(Complex thing, boolean fix) {
+	public void check(final Validation validation, Complex thing) {
 		Set<PhysicalEntity> ents = thing.getComponent();
 		if (ents != null) {
 			Collection<String> diffLocs = new HashSet<String>();
@@ -39,8 +40,8 @@ public class ComplexComponentsMultipleLocationRule extends
 			}
 			
 			if(!diffLocs.isEmpty()) {
-				error(thing, "component.different.location", 
-						false, thing.getCellularLocation() + "", diffLocs);
+				error(validation, thing, 
+						"component.different.location", false, thing.getCellularLocation() + "", diffLocs);
 			}
 		}
 	}

@@ -156,6 +156,8 @@ public class MiriamLink
      * 
      * @param datatypeKey - ID, name, synonym, or (incl. deprecated) URI (URN or URL) of a data type (examples: "UniProt")
      * @return unique URI of the data type
+     * 
+     * @throws IllegalArgumentException when datatype not found
      */
     public static String getDataTypeURI(String datatypeKey)
     {
@@ -170,6 +172,8 @@ public class MiriamLink
      * 
      * @param datatypeKey name (or synonym), ID, or URI (URN or URL) of the data type (examples: "ChEBI", "UniProt")
      * @return all the URIs of a data type (including the deprecated ones)
+     * 
+     * @throws IllegalArgumentException when datatype not found
      */
     public static String[] getDataTypeURIs(String datatypeKey)
     {
@@ -216,6 +220,8 @@ public class MiriamLink
      * @param name - name, URI/URL, or ID of a data type (examples: "ChEBI", "MIR:00000005")
      * @param id identifier of an entity within the data type (examples: "GO:0045202", "P62158")
      * @return unique standard MIRIAM URI of a given entity
+     * 
+     * @throws IllegalArgumentException when datatype not found
      */
     public static String getURI(String name, String id)
     {
@@ -239,6 +245,8 @@ public class MiriamLink
 	 * 
 	 * @param datatypeKey - ID, name or URI (URN or URL) of a data type
 	 * @return definition of the data type
+	 * 
+	 * @throws IllegalArgumentException when datatype not found
 	 */
     public static String getDataTypeDef(String datatypeKey)
     {
@@ -253,6 +261,8 @@ public class MiriamLink
      * @param datatypeKey name (can be a synonym), ID, or URI of a data type (examples: "Gene Ontology", "UniProt")
      * @param entityId identifier of an entity within the given data type (examples: "GO:0045202", "P62158")
      * @return physical locationS (URL templates) of web pageS providing knowledge about the given entity
+     * 
+     * @throws IllegalArgumentException when datatype not found
      */
     public static String[] getLocations(String datatypeKey, String entityId)
     {
@@ -272,6 +282,8 @@ public class MiriamLink
      * 
      * @param datatypeKey - name (can be a synonym), ID, or URI (URL or URN) of a data type
      * @return array of strings containing all the address of the main page of the resources of the data type
+     * 
+     * @throws IllegalArgumentException when datatype not found
 	 */
     public static String[] getDataResources(String datatypeKey)
     {
@@ -304,6 +316,8 @@ public class MiriamLink
      * 
      * @param datatypeKey data type ID, name (or synonym), or URI (URL or URN)
      * @return pattern of the data type
+     * 
+     * @throws IllegalArgumentException when datatype not found
 	 */
     public static String getDataTypePattern(String datatypeKey)
     {
@@ -317,6 +331,8 @@ public class MiriamLink
 	 * 
 	 * @param datatypeKey URI (URL or URN), ID, or nickname of a data type
 	 * @return the common name of the data type
+	 * 
+	 * @throws IllegalArgumentException when not found
 	 */
     public static String getName(String datatypeKey)
     {
@@ -397,6 +413,8 @@ public class MiriamLink
      * @param identifier internal identifier used by the data type
      * @param datatype name, synonym or URI of a data type
      * @return "true" if the identifier follows the regular expression, "false" otherwise
+     * 
+     * @throws IllegalArgumentException when datatype not found
      */
     public static boolean checkRegExp(String identifier, String datatype)
     {
@@ -439,6 +457,8 @@ public class MiriamLink
      * 
      * @param datatypeKey - a datatype ID, name, synonym, or URI
      * @return
+     * 
+	 * @throws IllegalArgumentException when not found
      */
 	public static Datatype getDatatype(String datatypeKey) 
 	{	
@@ -553,10 +573,12 @@ public class MiriamLink
      * Converts a MIRIAM URN into its equivalent Identifiers.org URL.
      * 
      * @see #getURI(String, String) - use this to get the URN
-     * @see #getIdentifiersOrgURI(String, String) - better
+     * @see #getIdentifiersOrgURI(String, String) - prefered URI
      * 
      * @param urn - an existing Miriam URN, e.g., "urn:miriam:obo.go:GO%3A0045202"
      * @return the Identifiers.org URL corresponding to the data URN, e.g., "http://identifiers.org/obo.go/GO:0045202"
+     * 
+     * @deprecated this method applies {@link URLDecoder#decode(String)} to the last part of the URN, which may not always work as expected (test yours!) 
      */
     public static String convertUrn(String urn) {
     	String[] tokens = urn.split(":");
@@ -571,6 +593,8 @@ public class MiriamLink
      * @param name - name, URI/URL, or ID of a data type (examples: "ChEBI", "MIR:00000005")
      * @param id identifier of an entity within the data type (examples: "GO:0045202", "P62158")
      * @return Identifiers.org URL for the id
+     * 
+     * @throws IllegalArgumentException when datatype not found
      */
     public static String getIdentifiersOrgURI(String name, String id)
     {

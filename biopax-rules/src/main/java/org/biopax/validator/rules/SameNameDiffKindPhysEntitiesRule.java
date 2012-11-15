@@ -6,6 +6,7 @@ import java.util.Set;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.biopax.validator.utils.Cluster;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class SameNameDiffKindPhysEntitiesRule extends
 		AbstractRule<Model> {
 
-	public void check(Model model, boolean fix) {
+	public void check(final Validation validation, Model model) {
 			Set<SimplePhysicalEntity> peers = new HashSet<SimplePhysicalEntity>(
 				model.getObjects(SimplePhysicalEntity.class));
 			
@@ -47,8 +48,8 @@ public class SameNameDiffKindPhysEntitiesRule extends
 			{
 				if(sharedNames.size() > 1) {
 					SimplePhysicalEntity a = sharedNames.iterator().next();
-					error(a, "diff.kind.same.name", false, 
-						BiopaxValidatorUtils.getIdListAsString(sharedNames));
+					error(validation, a, "diff.kind.same.name", 
+						false, BiopaxValidatorUtils.getIdListAsString(sharedNames));
 				}
 			}
 	}

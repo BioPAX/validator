@@ -9,6 +9,7 @@ import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Pathway;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class DanglingElementRule extends AbstractRule<Model> {
 		return thing instanceof Model;
 	}
 
-	public void check(Model model, boolean fix) {
+	public void check(final Validation validation, Model model) {
 		
 		// get all the root elements
 		final Collection<BioPAXElement> rootElements = 
@@ -50,7 +51,7 @@ public class DanglingElementRule extends AbstractRule<Model> {
 		// those left are in fact dangling!
 		for(BioPAXElement thing : rootElements) {
 			if(!(thing instanceof Pathway))
-				error(thing, "dangling.element", false);
+				error(validation, thing, "dangling.element", false);
 		}
 		
 	}

@@ -3,6 +3,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.RelationshipXref;
 import org.biopax.paxtools.model.level3.UnificationXref;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.stereotype.Component;
@@ -39,10 +40,10 @@ public class SharedUnificationXrefRule extends AbstractRule<UnificationXref> {
 		return thing instanceof UnificationXref;
 	}
     
-	public void check(UnificationXref x, boolean fix) {
+	public void check(final Validation validation, UnificationXref x) {
         if(x.getXrefOf().size()>1) {
         	final String uriListAsString = BiopaxValidatorUtils.getIdListAsString(x.getXrefOf());
-				error(x, "shared.unification.xref", false, uriListAsString);
+				error(validation, x, "shared.unification.xref", false, uriListAsString);
         }
     }
 

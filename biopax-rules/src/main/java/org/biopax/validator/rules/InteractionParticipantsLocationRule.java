@@ -7,6 +7,7 @@ import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.TemplateReaction;
 import org.biopax.paxtools.model.level3.Transport;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Component;
 public class InteractionParticipantsLocationRule extends
 		AbstractRule<Interaction> {
 
-	public void check(Interaction thing, boolean fix) {
+	public void check(final Validation validation, Interaction thing) {
 		// exclude template reactions (second time, - after canCheck ;))
 		if(thing instanceof TemplateReaction)
 			return;
@@ -49,7 +50,7 @@ public class InteractionParticipantsLocationRule extends
 							}
 						}
 						// report error
-						error(thing, "multiple.location", false, e1, e2);
+						error(validation, thing, "multiple.location", false, e1, e2);
 					  }
 					}
 				}

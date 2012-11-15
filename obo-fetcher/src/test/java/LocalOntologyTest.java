@@ -1,11 +1,11 @@
 import static org.junit.Assert.*;
 
+import org.biopax.psidev.ontology_manager.*;
+import org.biopax.psidev.ontology_manager.impl.*;
 import org.junit.*;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
-import psidev.ontology_manager.*;
-import psidev.ontology_manager.impl.*;
 
 import java.util.*;
 

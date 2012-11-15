@@ -40,57 +40,59 @@
         <br/>
         <label style="color: red;" id="urlMsg">${error}</label>
     </div>
-	<div class="form-row" style="padding-top: 2em;">
-		Options (<a href="javascript:switchit('aboutOptions')">what if it's enabled?</a>):<br/>
-		<ul id="aboutOptions" style="display: none;">
-			<li>errors and warnings are still reported with the reference to the original data 
-			(validator does not re-check, however, users can download and re-submit the modified BioPAX);</li>
-			<li>"dangling" <em>UtilityClass</em> (and sub-classes) individuals will be removed;</li>
-			<li>not all problems can be fixed automatically; some issues are consequence of others; 
-			even new errors may be introduced (see below);</li>
+	<div class="form-row" style="padding-top: 2em;">	
+		<input type="checkbox" id="autofix" name="autofix" value="true" onchange="switchNormalizerOptions();"/>
+		<label>Fix and Normalize (<a href="javascript:switchit('aboutFix')">What does it mean?..</a>)</label>
+		
+		<ul id="aboutFix" style="display: none;">
+			<li>some rules can also auto-fix, e.g., Xref's properties (using MIRIAM), 
+			controlled vocabulary terms (using external ontologies), <em>displayName</em>, or remove duplicates, etc.;</li>
+			<li>Then, the Normalizer replaces URIs, if possible, for such utility class objects
+		as <em>EntityReference</em>, <em>ControlledVocabulary</em>, <em>BioSource</em>, <em>PublicationXref</em>, 
+		with standard URIs (e.g., for a protein reference, it is like <em>http://identifiers.org/uniprot/Q06609</em>),
+		and for the rest of Xrefs - with consistently auto-generated URIs.</li>
+			<li>Normalizer does not re-check rules once again, and so errors are still reported with the reference to the original data (URIs)
+			(although Validator does not re-check, users can still download and re-submit the modified BioPAX);</li>
+			<li>"dangling" <em>UtilityClass</em> individuals will be removed (i.e., if there were no Entity class BioPAX elements at all, the result will be empty model, sorry);</li>
+			<li>not all problems can be fixed automatically; some issues are consequence of others; even new errors may be introduced (see below);</li>
 			<li>it cannot reliably fix such issues as: syntax errors, a <em>UnificationXref</em> shared by different objects, 
 			no unification xrefs attached to important utility objects, such as non-generic EntityReference, etc., 
-			- but you get a rough idea about what unsupervised tools might infer 
-			from this data and whether it is the knowledge one really wanted to share);</li>
+			- but you get a rough idea about what unsupervised tools might infer from this data and whether it is the knowledge one really wanted to share);</li>
 			<li>normalization can be the first step in BioPAX data integration pipeline, which makes next steps easier.</li>
 		</ul>
-		
-		<input type="checkbox" name="autofix" value="true"/>
-		<label>Auto-Fix! (<b>experimental</b>): e.g., some rules can fix xref's <em>db/id</em> properties, 
-		controlled vocabularies (use of external ontologies), fix <em>displayName</em>, remove duplicates, etc.</label>
 		<br/>
 		
-		<input type="checkbox" id="normalize" name="normalize" value="true" onchange="switchNormalizerOptions();" />
-		<label>Normalize! (<b>experimental)</b>: if possible, replaces URIs of <em>EntityReference</em>, 
-		<em>ControlledVocabulary</em>, <em>BioSource</em>, <em>PublicationXref</em>, and <em>Provenance</em> 
-		with MIRIAM standard URNs; e.g., for a protein reference, it can get a URN like <em>urn:miriam:uniprot:Q06609</em>;
-		for other xrefs, - like <em>urn:biopax:UnificationXref:&lt;db&gt;_&lt;id&gt;_&lt;ver&gt;</em>.
-		If required, data are auto-converted to BioPAX Level3 first.</label>
-
+		<div id="normalizerOptions" style="display: none;">
 		<br/>
-		 
-		<ul id="normalizerOptions" style="display: none;">
-			<li><form:checkbox path="options.fixDisplayName"/>&nbsp;<label>fix displayName (from names)</label></li>
-			<li><form:checkbox path="options.inferPropertyOrganism"/>&nbsp;<label>infer property: organism</label></li>
-			<li><form:checkbox path="options.inferPropertyDataSource"/>&nbsp;<label>infer property: dataSource</label></li>
-			<li><form:checkbox path="options.generateRelatioshipToPathwayXrefs"/>&nbsp;<label>generate pathway relationship xrefs</label></li>
-			<li><form:checkbox path="options.generateRelatioshipToInteractionXrefs"/>&nbsp;<label>generate interaction relationship xrefs</label></li>
-			<li><form:checkbox path="options.generateRelatioshipToOrganismXrefs"/>&nbsp;<label>generate organism relationship xrefs</label></li>
+		Options: 
+		<ul title="Options">
+			<li><form:checkbox path="normalizer.fixDisplayName"/>&nbsp;<label>fix property: <em>displayName</em> (from names)</label></li>
+			<li><form:checkbox path="normalizer.inferPropertyOrganism"/>&nbsp;<label>infer property: <em>organism</em></label></li>
+			<li><form:checkbox path="normalizer.inferPropertyDataSource"/>&nbsp;<label>infer property: <em>dataSource</em></label></li>
+			<li><em>xml:base</em> for generated URIs:<form:input path="normalizer.xmlBase"/><label>&nbsp;(leave empty to use a value from the BioPAX RDF/XML header)</label></li>
 		</ul>
+		</div>
 		<br/>
+		
 		<div class="form-row" style="padding-top: 2em;">
+		<label>Choose a validation profile</label><br/>
+		<select name="profile">
+			<option label="Default Profile (Best Practice)" value="" selected="selected">Default Profile (Best Practice)</option>
+			<option label="Alternative Profile (Less Strict)" value="notstrict">Alternative Profile (Less Strict)</option>
+		</select>
+		<br/><br/>		
 		<label>Set the level (do the job, do not report everything)</label><br/>
 		<select name="filter">
-			<option label="Show Warnings and Errors" value="WARNING" selected="selected">Show Warnings and Errors</option>
+			<option label="Show Warnings and Errors (default)" value="WARNING" selected="selected">Show Warnings and Errors (default)</option>
 			<option label="Show Errors Only" value="ERROR">Show Errors Only</option>
-			<option label="Do not Show Me Problems :)" value="IGNORE">Do not Show Me Problems :)</option>
+			<option label="Do Not Show Any Problems" value="IGNORE">Do Not Show Any Problems</option>
 		</select>
-		<br/>
-		<label>Set the limit (of type:ERROR, not fixed cases)</label><br/>
+		<br/><br/>
+		<label>Set the max limit of not fixed ERRORs (not warnings)</label><br/>
 		<select name="maxErrors">
-			<option label="Unlimited" selected="selected">0</option>
-			<option label="'Fail-fast' (after the first serious case)">1</option>
-			<option label="Do up to 10 error cases">10</option>
+			<option label="Unlimited (default)"  value="0" selected="selected">Unlimited (default)</option>
+			<option label="Fail-fast (after the first ERROR)" value="1">Fail-fast (after the first ERROR)</option>
+			<option label="Up to 10 ERROR Cases" value="10">Up to 10 ERROR Cases</option>
 		</select>
 		</div>
 		<br/>

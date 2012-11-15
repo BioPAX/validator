@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.model.level3.XReferrable;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.validator.utils.XrefHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +87,7 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
 		return thing instanceof UnificationXref;
 	}
     
-	public void check(UnificationXref x, boolean fix) {
+	public void check(final Validation validation, UnificationXref x) {
 		if(!ready)
 			initInternalMaps();
 		
@@ -105,16 +106,16 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
 			for (Class<BioPAXElement> c : allow.keySet()) {
 				if (c.isInstance(bpe)) {
 					if (allow.get(c) != null && !allow.get(c).contains(xdb)) {
-						error(x, "not.allowed.xref", false, x.getDb(), bpe, 
-							c.getSimpleName(), allow.get(c).toString());
+						error(validation, x, "not.allowed.xref", false, x.getDb(), 
+							bpe, c.getSimpleName(), allow.get(c).toString());
 					}
 				}
 			}
 			for (Class<BioPAXElement> c : deny.keySet()) {
 				if (c.isInstance(bpe)) {
 					if (deny.get(c) != null && deny.get(c).contains(xdb)) {
-						error(x, "denied.xref", false, x.getDb(), bpe, 
-							c.getSimpleName(), deny.get(c).toString());
+						error(validation, x, "denied.xref", false, x.getDb(), 
+							bpe, c.getSimpleName(), deny.get(c).toString());
 					}
 				}
 			}

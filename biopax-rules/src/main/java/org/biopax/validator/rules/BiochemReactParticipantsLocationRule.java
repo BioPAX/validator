@@ -5,6 +5,7 @@ import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.Transport;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ import java.util.Set;
 public class BiochemReactParticipantsLocationRule extends AbstractRule<BiochemicalReaction>
 {
 
-    public void check(BiochemicalReaction react, boolean fix)
+    public void check(final Validation validation, BiochemicalReaction react)
     {
        Set<PhysicalEntity> left = react.getLeft();
        Set<PhysicalEntity> right = react.getRight();
@@ -51,9 +52,9 @@ public class BiochemReactParticipantsLocationRule extends AbstractRule<Biochemic
             	if(sameComplex || sameSimplePhysicalEntity) {
                 	boolean sameLoc = lefty.hasEquivalentCellularLocation(righty);
                 	if(!sameLoc	&& !(react instanceof Transport)) {
-                		error(react, "participant.location.changed", false, lefty, righty); 
+                		error(validation, react, "participant.location.changed", false, lefty, righty); 
                 	} else if(sameLoc && react instanceof Transport) {
-                		error(react, "transport.location.same", false, lefty, righty); 
+                		error(validation, react, "transport.location.same", false, lefty, righty); 
                 	}
                 } 
             }

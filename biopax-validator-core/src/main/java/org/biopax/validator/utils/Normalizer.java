@@ -28,7 +28,6 @@
 package org.biopax.validator.utils;
 
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.*;
 
 import org.apache.commons.logging.Log;
@@ -40,24 +39,27 @@ import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.paxtools.util.ClassFilterSet;
-import org.biopax.validator.result.*;
 
 /**
  * BioPAX (Level 3) Normalizer, an advanced BioPAX utility 
  * to help pathway data integrating and linking.
  * 
- * @author rodch
+ * @author rodche
  *
  */
 public final class Normalizer {
 	private static final Log log = LogFactory.getLog(Normalizer.class);
 	
 	private SimpleIOHandler biopaxReader;
-	private Validation validation;
 	private ShallowCopy copier;
-	private NormalizerOptions options;
 	private final Map<BioPAXElement,BioPAXElement> subs;
 	private Model subsModel;
+	private String description;
+	private boolean fixDisplayName;
+	private boolean inferPropertyOrganism;
+	private boolean inferPropertyDataSource;
+	private String xmlBase;
+	//TODO add a "remove utility class duplicates/clones" option
 	
 	
 	/**
@@ -67,39 +69,15 @@ public final class Normalizer {
 		biopaxReader = new SimpleIOHandler(BioPAXLevel.L3);
 		biopaxReader.mergeDuplicates(true);
 		copier = new ShallowCopy(BioPAXLevel.L3);
-		options = new NormalizerOptions(); // with default settings
 		subs = new HashMap<BioPAXElement, BioPAXElement>();
 		subsModel = biopaxReader.getFactory().createModel();
+		fixDisplayName = true;
+		inferPropertyOrganism = true;
+		inferPropertyDataSource = true;
+		xmlBase = "";
 	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param validation existing validation errors there can be set fixed=true.
-	 */
-	public Normalizer(Validation validation) {
-		this();
-		this.validation = validation;
-		if(validation.getNormalizerOptions() != null) {
-			options = validation.getNormalizerOptions();
-		}
-	}
-		
 	
-	/**
-	 * @return the options
-	 */
-	public NormalizerOptions getOptions() {
-		return options;
-	}
-
-	/**
-	 * @param options the options to set
-	 */
-	public void setOptions(NormalizerOptions options) {
-		this.options = options;
-	}
-
+	
 	/**
 	 * Normalizes BioPAX OWL data and returns
 	 * the result as BioPAX OWL (string).
@@ -113,13 +91,10 @@ public final class Normalizer {
 	public String normalize(String biopaxOwlData) {
 		
 		if(biopaxOwlData == null || biopaxOwlData.length() == 0) 
-			throw new IllegalArgumentException("no data. " + extraInfo());
+			throw new IllegalArgumentException("no data. " + description);
 		
 		// quick-fix for older BioPAX L3 version (v0.9x) property 'taxonXref' (range: BioSource)
 		biopaxOwlData = biopaxOwlData.replaceAll("taxonXref","xref");
-		
-		// if required, upgrade to L3
-		biopaxOwlData = convertToLevel3(biopaxOwlData);
 		
 		// build the model
 		Model model = null;
@@ -127,12 +102,19 @@ public final class Normalizer {
 			model = biopaxReader.convertFromOWL(
 				new ByteArrayInputStream(biopaxOwlData.getBytes("UTF-8")));
 		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("Failed! " + extraInfo(), e);
+			throw new IllegalArgumentException("Failed! " + description, e);
 		}
 		
-		if(model == null || model.getLevel() != BioPAXLevel.L3) {
+		if(model == null) {
 			throw new IllegalArgumentException("Failed to create Model! " 
-					+ extraInfo());
+					+ description);
+		}
+		
+		// auto-convert to Level3 model
+		if (model.getLevel() != BioPAXLevel.L3) {
+			if (log.isInfoEnabled())
+				log.info("Converting model to BioPAX Level3...");
+			model = (new OneTwoThree()).filter(model);
 		}
 		
 		normalize(model); // L3 only!
@@ -146,102 +128,71 @@ public final class Normalizer {
 		// use a copy of the xrefs set (to avoid concurrent modif. exception)
 		Set<? extends Xref> xrefs = new HashSet<Xref>(model.getObjects(Xref.class));
 		for(Xref ref : xrefs) {
-			// get database official urn
-			String db = ref.getDb();
-			String id = ref.getId();
-			// workaround a null pointer exception
-			if(db == null || "".equals(db)) {
-				log.error(ref.getModelInterface().getSimpleName() 
-					+ " " + ref.getRDFId() + " - 'db' property is empty! "
-					+ extraInfo());
-				continue; // skip it
-			}
-			if(id == null || "".equals(id)) {
-				log.error(ref.getModelInterface().getSimpleName() 
-					+ " - 'id' property is empty! "
-					+ extraInfo());
-				continue; // skip it
-			}
-			
-			//TODO someday,.. get the preferred DB name using XrefHelper!
-			
-			try {// to update name to the primary one
-				db = MiriamLink.getName(db);
-				ref.setDb(db);
-			} catch (IllegalArgumentException e) {
-				if(log.isWarnEnabled())
-					log.warn("Unknown db: " + db +
-						". Cannot replace " + ref.getDb() +
-						" with a standard name! " +
-						ref.getRDFId() + "; " + e + "; " + extraInfo());
-			}	
-			
-			String rdfid = generateURIForXref(db, id, ref.getIdVersion(),
-					(Class<? extends Xref>) ref.getModelInterface());	
-			
-			if(rdfid != null)
-				addToReplacementMap(model, ref, rdfid);
-		}
-		
+			String uri = uriForXref(getXmlBase(model), 
+					ref.getDb(), ref.getId(), ref.getIdVersion(), (Class<? extends Xref>) ref.getModelInterface());				
+			if(uri != null)
+				addToReplacementMap(model, ref, uri);
+		}		
 		// update/replace xrefs now
 		doSubs(model);
 	}	
 
-	
+
 	/**
-	 * Consistently builds a "normalized"
-	 * Xref URI from given parameters. 
-	 * Miriam resource is used to get a standard db name, 
-	 * and if it fails, the initial value is still used. 
+	 * Makes a Xref URI.
 	 * 
-	 * @param db
-	 * @param id
-	 * @param ver
-	 * @param type
-	 * @return new ID (URI); not null (unless it's a bug :))
+	 * Miriam registry is used to get a standard db name
+	 * and the identifiers.org URI, if possible.
 	 * 
+	 * @param xmlBase xml:base (common URI prefix for a BioPAX model)
+	 * @param type Xref (sub-)class name
+	 * @param dbName value for xref.db property
+	 * @param id value for xref.id property
+	 * @param other e.g., idVersion, dbVersion
+	 * @return
 	 */
-	public static String generateURIForXref(String db, String id, String ver, Class<? extends Xref> type) 
+	public static String uriForXref(final String xmlBase, 
+		final String dbName, final String id, final String other, Class<? extends Xref> type) 
 	{
-		if(id == null && "".equals(id.trim())) return null;
-		if(db == null && "".equals(db.trim())) return null;
+		if(type == null)
+			throw new IllegalArgumentException("null xref type");
 		
-		String rdfid = null;
-		
-		// try to use primary standard name if exists -
+		if(dbName == null || id == null)
+			return null; //do not normalize (illegal/fake xref)
+
+		String uri = null;
+		String db = null;
+			
+		// try to find a standard URI, if exists, for a publication xref, 
+		// or at least a standard name:
 		try {
-			db = MiriamLink.getName(db);
-			if(type.equals(PublicationXref.class)
-				&& id != null && !"".equals(id.trim())) 
+			//try to get the preferred name
+			db = MiriamLink.getName(dbName);
+			
+			//a shortcut: try getting standard URI for a PublicationXref
+			if(type.equals(PublicationXref.class)) 
 			{
 				return MiriamLink.getIdentifiersOrgURI(db, id);
 			}
 		} catch (IllegalArgumentException e) {
 			if(log.isDebugEnabled())
-				log.debug("Unknown database name: " + db + ". "  + e);
-			
-		}
-		
-		// consistently build a new, standard id (URI)
-		String prefix = ModelUtils.uriPrefixForGeneratedXref(type);
-		String ending = (ver != null && !"".equals(ver.trim()))
-			? "_" + ver.trim() // add the id version/variant
-			: ""; // no endings
-			
-		// add the local part of the URI encoded -
-		try {
-			rdfid = prefix + URLEncoder
-				.encode(db.trim() + "_" + id.trim() + ending, "UTF-8")
-					.toUpperCase();
-		} catch (UnsupportedEncodingException e) {
-			if(log.isWarnEnabled())
-				log.warn("ID UTF-8 encoding failed! " +
-					"Using the platform default (deprecated method).", e);
-			rdfid = prefix + URLEncoder
-				.encode(db.trim() + "_" + id.trim() + ending).toUpperCase();
+				log.debug("generateURIForXref: Unknown db (not in Miriam collection): " 
+						+ dbName + ". "  + e);
+			db = dbName;
 		}
 
-		return rdfid;
+		// if not returned above this point, then -
+		// let's consistently build a new URI, anyway
+		// (doing so ensures re-using of equivalent xrefs, i.e. no duplicate xrefs, for better data merging)
+		StringBuilder sb = new StringBuilder(type.getSimpleName());
+		sb.append(db).append(id);
+		if(other != null)
+			sb.append(other);
+		
+		
+		uri = ((xmlBase!=null)?xmlBase:"") + ModelUtils.md5hex(sb.toString());
+		
+		return uri;
 	}
 	
 	
@@ -267,50 +218,62 @@ public final class Normalizer {
 	}
 
 	
-	private String extraInfo() {
-		return (validation != null) ? validation.getDescription() : "";
+	/**
+	 * Description of the model to normalize.
+	 * 
+	 * @return
+	 */
+	public String getDescription() {
+		return description;
 	}
 	
 	
 	/**
-	 * Sets Miriam standard URI (if possible) for a utility object 
-	 * (but not for *Xref!); also removes duplicates...
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+	/**
+	 * Sets a new standard URI, if possible, 
+	 * for a utility class object (except for Xref types).
 	 * 
 	 * @param model the BioPAX model
 	 * @param bpe a utility class element, except for xref, to normalize
-	 * @param db official database name or synonym (that of bpe's unification xref)
-	 * @param id identifier (if null, new ID will be that of the Miriam Data Type; this is mainly for Provenance)
+	 * @param uxref a unification xref to create new URI from its properties
+	 * 
 	 */
-	private void normalizeID(Model model, UtilityClass bpe, String db, String id) 
+	private void normalizeID(Model model, UtilityClass bpe, UnificationXref uxref) 
 	{	
 		if(bpe instanceof Xref) {
 			log.error("normalizeID is not supposed to " +
-				"be called for Xrefs (hey, this is a bug!). "
-				+ extraInfo());
+				"be called for Xrefs." + description);
 			return;
 		}
 		
+		final String db = uxref.getDb();
+		final String id = uxref.getId();
+		// not using dbVersion, idVersion prop...
+		
 		// get the standard ID
-		String urn = null;
+		String uri = null;
 		try {
 			// make a new ID for the element
-			if(id != null)
-				urn = MiriamLink.getIdentifiersOrgURI(db, id);
-			else {
-					urn = MiriamLink.getDataTypeURI(db)
-						.replace("urn:miriam:", "http://identifiers.org/") + "/";
-				}
+			uri = MiriamLink.getIdentifiersOrgURI(db, id);
+
 		} catch (Exception e) {
 			log.error("Cannot get a Miriam standard ID for " + bpe 
 				+ " (" + bpe.getModelInterface().getSimpleName()
 				+ ") " + ", using " + db + ":" + id 
-				+ ". " + e + ". " + extraInfo());
+				+ ". " + e + ". " + description);
 			return;
 		}
 		
 		// if different id, edit the element
-		if(urn != null)
-			addToReplacementMap(model, bpe, urn);
+		if(uri != null)
+			addToReplacementMap(model, bpe, uri);
 	}
 	
 	
@@ -324,10 +287,7 @@ public final class Normalizer {
 					e.setDisplayName(e.getStandardName());
 					if (log.isInfoEnabled())
 						log.info(e + " displayName auto-fix: "
-								+ e.getDisplayName() + ". " + extraInfo());
-					if(validation != null)
-						validation.setFixed(BiopaxValidatorUtils.getId(e), 
-								"displayNameRule", "no.display.name", null);
+								+ e.getDisplayName() + ". " + description);
 				} else if (!e.getName().isEmpty()) {
 					String dsp = e.getName().iterator().next();
 					for (String name : e.getName()) {
@@ -337,10 +297,7 @@ public final class Normalizer {
 					e.setDisplayName(dsp);
 					if (log.isInfoEnabled())
 						log.info(e + " displayName auto-fix: " + dsp
-							+ ". " + extraInfo());
-					if(validation != null)
-						validation.setFixed(BiopaxValidatorUtils.getId(e), 
-								"displayNameRule", "no.display.name", null);
+							+ ". " + description);
 				}
 			}
 		}
@@ -350,9 +307,6 @@ public final class Normalizer {
 				if(spe.getDisplayName() == null || spe.getDisplayName().trim().length() == 0) {
 					if(er.getDisplayName() != null && er.getDisplayName().trim().length() > 0) {
 						spe.setDisplayName(er.getDisplayName());
-						if(validation != null)
-							validation.setFixed(BiopaxValidatorUtils.getId(spe), 
-									"displayNameRule", "no.display.name", null);
 					}
 				}
 			}
@@ -378,7 +332,7 @@ public final class Normalizer {
 				// report error, try next xref
 				log.warn("Won't consider the UnificationXref " +
 					"having NULL 'db' or 'id' property: " + 
-					ux + ", " + ux.getRDFId() + ". " + extraInfo());
+					ux + ", " + ux.getRDFId() + ". " + description);
 				urefs.remove(ux);
 			} 
 		}
@@ -445,56 +399,35 @@ public final class Normalizer {
 		return toReturn;
 	}
 
-	/**
-	 * Normalize the BioPAX model in the 
-	 * internal {@link Validation} ({@link #validation}) object.
-	 * 
-	 * @param model
-	 * @see #normalize(Model)
-	 */
-	public void normalize() {
-		normalize(validation.getModel());
-	}
 	
 	/**
 	 * BioPAX normalization 
-	 * (modifies the original Model!)
+	 * (modifies the original Model)
 	 * 
 	 * @param model
-	 * @throws IllegalStateException if {@link #validation} is not null and its {@link Validation#getModel()} is different from this model
 	 * @throws NullPointerException if model is null
+	 * @throws IllegalArgumentException if model is not Level3 BioPAX
 	 */
 	public void normalize(Model model) {
-		if(validation != null && model != validation.getModel())
-			throw new IllegalStateException("'validation' was set, " +
-				"but its model object is not the same as this model; " +
-				"so, you can either use the normalize() method without " +
-				"arguments or - setValidation(null) instead!");
 		
-		/* save curr. state;
-		 * disable error reporting: it generates artifact errors (via AOP)
-		 * during the normalization, because the model is being edited!
-		 */
-		Behavior threshold = null;
-		if(validation != null) {
-			threshold = validation.getThreshold();
-			validation.setThreshold(Behavior.IGNORE);
-		}
+		if(model.getLevel() != BioPAXLevel.L3)
+			throw new IllegalArgumentException("Not Level3 model. " +
+				"Consider converting it first (e.g., with the PaxTools).");
 		
 		// clean/normalize xrefs first, because they gets used next!
 		if(log.isInfoEnabled())
-			log.info("Normalizing xrefs..." + extraInfo());
+			log.info("Normalizing xrefs..." + description);
 		normalizeXrefs(model);
 		
 		// fix displayName where possible
-		if(options.fixDisplayName) {
+		if(fixDisplayName) {
 			if(log.isInfoEnabled())
-				log.info("Normalizing display names..." + extraInfo());
+				log.info("Normalizing display names..." + description);
 			fixDisplayName(model);
 		}
 			
 		if(log.isInfoEnabled())
-			log.info("Normalizing CVs and organisms..." + extraInfo());
+			log.info("Normalizing CVs and organisms..." + description);
 		normalizeCVsAndBioSource(model);
 		
 //		if(log.isInfoEnabled())
@@ -502,38 +435,25 @@ public final class Normalizer {
 //		normalizeProvenance(model);
 		
 		if(log.isInfoEnabled())
-			log.info("Normalizing entity references..." + extraInfo());
+			log.info("Normalizing entity references..." + description);
 		normalizeERs(model);
 		
 		// find/add lost (in replace) children
 		if(log.isInfoEnabled())
-			log.info("Repairing..." + extraInfo());
+			log.info("Repairing..." + description);
 		model.repair(); // it does not remove dangling utility class objects (can be done separately, later, if needed)
 		
 		if(log.isInfoEnabled())
-			log.info("Optional tasks (reasoning)..." + extraInfo());
+			log.info("Optional tasks (reasoning)..." + description);
 		
 		// auto-set dataSource property for all entities (top-down)
-		if(options.inferPropertyDataSource) {
+		if(inferPropertyDataSource) {
 			ModelUtils.inferPropertyFromParent(model, "dataSource");//, Entity.class);
 		}
 		
-		if(options.inferPropertyOrganism) {
+		if(inferPropertyOrganism) {
 			ModelUtils.inferPropertyFromParent(model, "organism");//, Gene.class, SequenceEntityReference.class, Pathway.class);
-		}
-		
-		if(options.generateRelatioshipToPathwayXrefs) {
-			ModelUtils.generateEntityProcessXrefs(model, Pathway.class);
-		} 
-			
-		if(options.generateRelatioshipToInteractionXrefs) {
-			ModelUtils.generateEntityProcessXrefs(model, Interaction.class);
-		} 
-		
-		// the following two tasks better do AFTER inferPropertyOrganism (if enabled)
-		if(options.generateRelatioshipToOrganismXrefs) {
-			ModelUtils.generateEntityOrganismXrefs(model);
-		} 
+		}		 
 		
 		/* 
 		 * We could also "fix" organism property, where it's null,
@@ -544,11 +464,6 @@ public final class Normalizer {
 		 * happens in the CPathMerger (a ProteinReference 
 		 * comes from the Warehouse with organism property already set!)
 		 */
-		
-		// restore validation state, if any -
-		if(validation != null) {
-			validation.setThreshold(threshold);
-		}
 	}
 
 	
@@ -561,12 +476,12 @@ public final class Normalizer {
 				//note: it does not check/fix the CV term name if wrong or missing though...
 				UnificationXref uref = getFirstUnificationXref((XReferrable) bpe);
 				if (uref != null) 
-					normalizeID(model, bpe, uref.getDb(), uref.getId()); // no idVersion for a CV or BS!
+					normalizeID(model, bpe, uref); // no idVersion for a CV or BS!
 				else 
 					if(log.isInfoEnabled())
 						log.info("Cannot normalize " + bpe.getModelInterface().getSimpleName() 
 							+ " : no unification xrefs found in " + bpe.getRDFId()
-							+ ". " + extraInfo());
+							+ ". " + description);
 			} 
 		}
 		
@@ -578,30 +493,18 @@ public final class Normalizer {
 		// process the rest of utility classes (selectively though)
 		for (EntityReference bpe : model.getObjects(EntityReference.class)) {
 			UnificationXref uref = getFirstUnificationXref(bpe);
-			if (uref != null) // not using idVersion!..
-				normalizeID(model, bpe, uref.getDb(), uref.getId()); 
+			if (uref != null)
+				normalizeID(model, bpe, uref);
 			else if (log.isInfoEnabled())
 				log.info("Cannot normalize EntityReference: "
 						+ "no unification xrefs found in " + bpe.getRDFId()
-						+ ". " + extraInfo());
+						+ ". " + description);
 		}
 		
 		// replace/update elements in the model
 		doSubs(model);
 	}
 	
-	@Deprecated //does not worth it (Miriam cannot help with all DBs)
-	private void normalizeProvenance(Model model) {
-		// process the rest of utility classes (selectively though)
-		for(Provenance pro : model.getObjects(Provenance.class)) 
-		{
-			autoName(pro); // throws IAE (from MiriamLink)
-			normalizeID(model, pro, pro.getStandardName(), null);
-		}
-		
-		// replace/update elements in the model
-		doSubs(model);
-	}
 
 	/**
 	 * Executes the batch replace/update 
@@ -617,7 +520,7 @@ public final class Normalizer {
 		try {
 			ModelUtils.replace(model, subs);
 		} catch (Exception e) {
-			log.error("Failed to replace IDs. " + extraInfo(), e);
+			log.error("Failed to replace IDs. " + description, e);
 			return;
 		}
 		
@@ -701,12 +604,12 @@ public final class Normalizer {
 	}
 	
 	/**
-	 * Converts biopax l2 string to biopax l3 if it's required
+	 * Converts BioPAX L1 or L2 RDF/XML string data to BioPAX L3 string.
 	 *
 	 * @param biopaxData String
 	 * @return
 	 */
-	private String convertToLevel3(final String biopaxData) {
+	public static String convertToLevel3(final String biopaxData) {
 		String toReturn = "";
 		
 		try {
@@ -717,7 +620,7 @@ public final class Normalizer {
 			Model model = io.convertFromOWL(is);
 			if (model.getLevel() != BioPAXLevel.L3) {
 				if (log.isInfoEnabled())
-					log.info("Converting to BioPAX Level3... " + extraInfo());
+					log.info("Converting to BioPAX Level3... " + model.getXmlBase());
 				model = (new OneTwoThree()).filter(model);
 				if (model != null) {
 					io.setFactory(model.getLevel().getDefaultFactory());
@@ -729,8 +632,7 @@ public final class Normalizer {
 			}
 		} catch(Exception e) {
 			throw new RuntimeException(
-				"Failed to read data or convert to L3! "
-					+ extraInfo(), e);
+				"Cannot convert to BioPAX Level3", e);
 		}
 
 		return toReturn;
@@ -738,59 +640,49 @@ public final class Normalizer {
 	
 	
 	/**
-	 * This nested class allows to set extra 
-	 * normalization options
-	 * (it follows builder design pattern).
-	 *
+	 * Gets the xml:base to use with newly created BioPAX elements.
+	 * 
+	 * @param modelToNormalize
+	 * @return
 	 */
-	public static class NormalizerOptions{
-		boolean fixDisplayName = true;
-		boolean inferPropertyOrganism = true;
-		boolean inferPropertyDataSource = true;
-		boolean generateRelatioshipToPathwayXrefs = false;
-		boolean generateRelatioshipToInteractionXrefs = false;
-		boolean generateRelatioshipToOrganismXrefs = false;
-		//TODO add a "remove utility class duplicates/clones" option
-		
-		public boolean isFixDisplayName() {
-			return fixDisplayName;
-		}
-		public void setFixDisplayName(boolean fixDisplayName) {
-			this.fixDisplayName = fixDisplayName;
-		}
-		public boolean isInferPropertyOrganism() {
-			return inferPropertyOrganism;
-		}
-		public void setInferPropertyOrganism(boolean inferPropertyOrganism) {
-			this.inferPropertyOrganism = inferPropertyOrganism;
-		}
-		public boolean isInferPropertyDataSource() {
-			return inferPropertyDataSource;
-		}
-		public void setInferPropertyDataSource(boolean inferPropertyDataSource) {
-			this.inferPropertyDataSource = inferPropertyDataSource;
-		}
-		public boolean isGenerateRelatioshipToPathwayXrefs() {
-			return generateRelatioshipToPathwayXrefs;
-		}
-		public void setGenerateRelatioshipToPathwayXrefs(
-				boolean generateRelatioshipToPathwayXrefs) {
-			this.generateRelatioshipToPathwayXrefs = generateRelatioshipToPathwayXrefs;
-		}
-		public boolean isGenerateRelatioshipToInteractionXrefs() {
-			return generateRelatioshipToInteractionXrefs;
-		}
-		public void setGenerateRelatioshipToInteractionXrefs(
-				boolean generateRelatioshipToInteractionXrefs) {
-			this.generateRelatioshipToInteractionXrefs = generateRelatioshipToInteractionXrefs;
-		}
-		public boolean isGenerateRelatioshipToOrganismXrefs() {
-			return generateRelatioshipToOrganismXrefs;
-		}
-		public void setGenerateRelatioshipToOrganismXrefs(
-				boolean generateRelatioshipToOrganismXrefs) {
-			this.generateRelatioshipToOrganismXrefs = generateRelatioshipToOrganismXrefs;
-		}
+	private String getXmlBase(Model modelToNormalize) {
+		if(xmlBase != null && !xmlBase.isEmpty())
+			return xmlBase; //this one is preferred
+		else
+			return 
+				(modelToNormalize.getXmlBase() != null) 
+					? modelToNormalize.getXmlBase() : "";
 	}
 	
+	
+	public boolean isFixDisplayName() {
+		return fixDisplayName;
+	}
+	public void setFixDisplayName(boolean fixDisplayName) {
+		this.fixDisplayName = fixDisplayName;
+	}
+	
+	
+	public boolean isInferPropertyOrganism() {
+		return inferPropertyOrganism;
+	}
+	public void setInferPropertyOrganism(boolean inferPropertyOrganism) {
+		this.inferPropertyOrganism = inferPropertyOrganism;
+	}
+	
+	
+	public boolean isInferPropertyDataSource() {
+		return inferPropertyDataSource;
+	}
+	public void setInferPropertyDataSource(boolean inferPropertyDataSource) {
+		this.inferPropertyDataSource = inferPropertyDataSource;
+	}
+	
+	
+	public String getXmlBase() {
+		return xmlBase;
+	}
+	public void setXmlBase(String xmlBase) {
+		this.xmlBase = xmlBase;
+	}
 }

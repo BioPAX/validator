@@ -3,6 +3,7 @@ package org.biopax.validator.rules;
 import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.BiochemicalPathwayStep;
 import org.biopax.paxtools.model.level3.Process;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +22,11 @@ public class BiochemPathwayStepOneConversionRule extends AbstractRule<Biochemica
 		return thing instanceof BiochemicalPathwayStep;
 	}
 
-	public void check(BiochemicalPathwayStep step, boolean fix) {
+	public void check(final Validation validation, BiochemicalPathwayStep step) {
 		if (step.getStepProcess() != null) {
 			for (Process process : step.getStepProcess()) {
 				if (process instanceof Conversion) {
-					error(step, "misplaced.step.conversion", false, process);
+					error(validation, step, "misplaced.step.conversion", false, process);
 				}
 			}
 		}

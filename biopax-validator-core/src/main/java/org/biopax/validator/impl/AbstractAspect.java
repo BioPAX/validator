@@ -1,18 +1,15 @@
 package org.biopax.validator.impl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import org.biopax.paxtools.io.SimpleIOHandler;
-import org.biopax.validator.result.Behavior;
 import org.biopax.validator.Validator;
-import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 
@@ -37,21 +34,16 @@ abstract class AbstractAspect {
     /**
      * Registers the error in the validator.
      * 
-     * @param obj associated with a validation result objects (can be even InputStream, during import, but usually is a BioPAX element)
-     * @param objectName
+     * @param object a model element or parser/reader (e.g., InputStream) associated with the issue
      * @param errorCode
-     * @param ruleName
-     * @param warnOrErr
+     * @param reportedBy validation rule class name
      * @param setFixed
      * @param msgArgs
-     * @param error
      */
-    public void report(Object obj, String objectName, 
-    		String errorCode, String ruleName, Behavior warnOrErr, 
-    		boolean setFixed, Object... msgArgs) 
+    public void report(Object object, String errorCode, 
+    		String reportedBy, boolean setFixed, Object... msgArgs) 
     {	
-    	ErrorType error = utils.createError(objectName, errorCode, ruleName, warnOrErr, msgArgs);
-    	validator.report(obj, error, setFixed);
+    	validator.report(object, errorCode, reportedBy, setFixed, msgArgs);
 	}
     
     
@@ -67,47 +59,43 @@ abstract class AbstractAspect {
 	 * 
 	 * @param t
 	 * @param obj model, element, or another related to the BioPAX data object
+	 * @param errorCode
+	 * @param reportedBy 
 	 * @param args optional message arguments (to be added as text at the end of the original error message)
 	 */
-    public void reportException(Throwable t, Object obj, Object... args) {
-    	final String rule = "interceptor";
-		String msg = 
-			(t.getMessage()==null || "".equalsIgnoreCase(t.getMessage()))
-				? t.getClass().getSimpleName() : t.getMessage();
-
-		String id;
-		if(obj instanceof SimpleIOHandler)
-		{
-			SimpleIOHandler r = (SimpleIOHandler) obj;
-			id = ""; 
-	    	try {
-	    		id = r.getId();
-	    	} catch (Throwable e) {
-	    		id = "reader";
-			}
-		} else 
-		{
-			id = BiopaxValidatorUtils.getId(obj);
-		}
+    public void reportException(Throwable t, Object obj, String errorCode, String reportedBy, Object... args) {
+    	
+		StringBuilder msg = new StringBuilder(
+				(t.getMessage()==null || "".equalsIgnoreCase(t.getMessage()))
+					? t.getClass().getSimpleName() 
+						: t.getMessage()
+				);
 		
 		if(t instanceof XMLStreamException) {
 			XMLStreamException ex = (XMLStreamException) t;
-			msg += "; "  + ex.getLocation().toString();
+			msg.append("; ").append(ex.getLocation().toString());
 		} else if(t instanceof BiopaxValidatorException) {
-			msg += "; " + 
-				((BiopaxValidatorException)t).getMsgArgs().toString();
+			msg.append("; ").append(((BiopaxValidatorException)t).getMsgArgs().toString());
+		} else {
+   			msg.append(" - stack:").append(getStackTrace(t)).append(" - ");
 		}
 		
-		if (utils != null) {
-			if(args.length>0) msg += "; " + BiopaxValidatorUtils.toString(args);
-			ErrorType error = utils.createError(id, "syntax.error", rule, Behavior.ERROR, msg);
-			validator.report(obj, error, false);
-		}
+		if(args.length>0) msg.append("; ").append(BiopaxValidatorUtils.toString(args));
 		
-		if(log.isTraceEnabled()) {
-			log.trace("reportException (validator bean= "
-					+ validator	+"): " + msg, t);
+		if (validator != null) {
+			validator.report(obj, errorCode, reportedBy, false, msg.toString());
+		} else {
+			log.error("utils is null (not initialized?); skipping " +
+					"an intercepted 'syntax.error': " + msg.toString() 
+					+ " reported by: " + reportedBy);
 		}
 
 	}
+    
+    private static String getStackTrace(Throwable aThrowable) {
+    	StringWriter strw = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(strw);
+        aThrowable.printStackTrace(printWriter);
+        return strw.toString();
+    }
 }

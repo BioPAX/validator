@@ -1,9 +1,6 @@
 package org.biopax.validator.impl;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,10 +17,8 @@ import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.io.SimpleIOHandler.Triple;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
-import org.biopax.paxtools.model.level3.Named;
-import org.biopax.validator.result.Behavior;
 import org.biopax.validator.Rule;
-import org.biopax.validator.utils.BiopaxValidatorException;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 
 /**
@@ -38,63 +33,11 @@ import org.biopax.validator.utils.BiopaxValidatorUtils;
  *
  * @author rodche
  */
-//@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Configurable
 @Aspect
 @Order(50)
 public class ExceptionsAspect extends AbstractAspect {
 	private static final Log log = LogFactory.getLog(ExceptionsAspect.class);
-
-	/**
-	 * Registers all the BioPAX errors and warnings 
-	 * found by the validation rules. 
-	 *
-	 * The BioPAX element RDFId and rule name
-	 * are reported along with error cases.
-	 * 
-	 * @param jp AOP Proceeding Joint Point
-	 * @param rule validation rule that found the error case
-	 * @param thing object associated with the error case
-	 * @param code error code
-	 * @param args extra parameters of the error message
-	 * @throws Throwable
-	 */
-    @Around("execution(void org.biopax.validator.Messenger*+.sendErrorCase(..)) && args(rule, thing, code, fixed, args)")
-    public void adviseSendErrorCase(ProceedingJoinPoint jp, Rule<?> rule, Object thing,
-    		String code, boolean fixed, Object... args) throws Throwable 
-    {    	    	
-    	assert(thing != null); // works when assertions are enabled (-ea JVM opt.)
-    	
-    	String ruleName = rule.getName();
-    	
-    	if (log.isTraceEnabled()) 
-    		log.trace("advising sendErrorCase called by " + ruleName 
-    			+ " that found a problem : " + code);
-    			
-    	// get object's ID
-    	String thingId = BiopaxValidatorUtils.getId(thing);
-    	
-    	if(thing == null) {
-    		if (log.isWarnEnabled()) 
-    			log.warn("The 'thing' (the error is about) is NULL! Skipping.");
-    		return;
-    	}
-    	
-    	if(thing == null || thingId == null) {
-    		if (log.isTraceEnabled()) 
-    			log.trace("RDFId is not set yet; skipping.");
-    		return;
-    	}
-    		
-    	report(thing, thingId, code, ruleName, rule.getBehavior(), fixed, args);
-    		
-		try {
-			jp.proceed(); // in fact, dummy
-		} catch (BiopaxValidatorException e) {
-			// just ignore the (above processed) exception
-		}
-    }
-	
 	
 	/**
 	 * This is the central method to register 
@@ -108,46 +51,34 @@ public class ExceptionsAspect extends AbstractAspect {
 	 * @param thing a BioPAX element
 	 * @throws Throwable
 	 */
-    @Around("execution(public void org.biopax.validator.Rule*+.check(..)) && args(thing, fix)")
-    public void adviseRuleExceptions(ProceedingJoinPoint jp, Object thing, boolean fix) {
+    @Around("execution(public void org.biopax.validator.Rule*+.check(..)) && args(validation, thing, fix)")
+    public void adviseRuleExceptions(ProceedingJoinPoint jp, Validation validation, Object thing, boolean fix) {
     	// get the rule that checks now
     	Rule<?> rule = (Rule<?>) jp.getThis();
-    	
-    	if (log.isTraceEnabled()) log.trace(rule.getName() + " checks ");
     			
-    	// get object's ID
+    	// ?
     	String thingId = BiopaxValidatorUtils.getId(thing);
-    	
     	if(thingId == null) {
-    		if (log.isTraceEnabled()) log.trace("Id is not set yet; skipping.");
-    		return;
+    		log.warn("Id is not set yet; skipping.");
+//    		return;
     	}
     	
     	/*
-    	 * Rule may throw other exceptions
-    	 * to be caught and reported accurately 
-    	 * to fix what's probably a bug
+    	 * Rule may eventually throw other exceptions
+    	 * (e.g., due to yet unknown bugs).
+    	 * These are to be caught and reported accurately 
+    	 * by the validation framework too.
     	 */
     	try {
     		jp.proceed(); // go ahead validating the 'thing'
     	} catch (Throwable t) {
-   			log.fatal(rule.getName() + ".check(" + thingId 
+   			log.fatal(rule + ".check(" + thingId 
     			+ ") threw the exception: " + t.toString(), t);
-   			String msg = t.toString() + " - " + getStackTrace(t) + " - ";
-   			if(t instanceof BiopaxValidatorException)
-   				msg = msg + Arrays.toString(((BiopaxValidatorException)t).getMsgArgs());
    			
-    		// report the exception using rule's behavior mode
-   			report(thing, thingId, t.getClass().getSimpleName(), 
-    				rule.getName(), rule.getBehavior(), false, msg);
+   			reportException(t, thing, "exception", rule.getClass().getName() + ".check interceptor");
     	}
     }
     
-    private static String getStackTrace(Throwable aThrowable) {
-        final PrintWriter printWriter = new PrintWriter(new StringWriter());
-        aThrowable.printStackTrace(printWriter);
-        return printWriter.toString();
-    }
     
     /**
      * This captures the exceptions that occur 
@@ -162,7 +93,6 @@ public class ExceptionsAspect extends AbstractAspect {
     		"&& args(model)")
     public void adviseCreateAndBind(ProceedingJoinPoint jp, Model model) {
     	SimpleIOHandler reader = (SimpleIOHandler) jp.getTarget();
-    	String bpeId = null;
     	
     	// associate the model with the reader (and validation results)
     	validator.indirectlyAssociate(reader, model);
@@ -170,13 +100,7 @@ public class ExceptionsAspect extends AbstractAspect {
         try {
             jp.proceed();
         } catch (Throwable ex) {
-        	// try to get current element ID
-        	try {
-        		bpeId = reader.getId();
-        	} catch (NullPointerException e) {
-        		bpeId = reader.getXmlStreamInfo();
-    		}
-        	reportException(ex, reader, bpeId);
+        	reportException(ex, reader, "syntax.error", "SimpleIOHandler.createAndBind interceptor");
         }
     }
     
@@ -186,17 +110,11 @@ public class ExceptionsAspect extends AbstractAspect {
     public String adviseProcessIndividual(ProceedingJoinPoint jp, Model model) {  
     	String id = null;
     	SimpleIOHandler reader = (SimpleIOHandler) jp.getThis();
-    	String bpeId = null;
-    	try {
-    		bpeId = reader.getId();
-    	} catch (NullPointerException e) {
-    		bpeId = reader.getXmlStreamInfo();
-		}
     	
         try {
             id = (String) jp.proceed();
         } catch (Throwable ex) {
-        	reportException(ex, reader, bpeId);
+        	reportException(ex, reader, "syntax.error", "SimpleIOHandler.processIndividual interceptor");
         }
         return id;
     }
@@ -211,18 +129,20 @@ public class ExceptionsAspect extends AbstractAspect {
     	BioPAXElement el = model.getByID(triple.domain);
     	if(el != null) {
     		o =  el;
-			PropertyEditor editor = reader.getEditorMap()
+			PropertyEditor<?,?> editor = reader.getEditorMap()
 				.getEditorForProperty(triple.property, el.getModelInterface());
 			if (editor == null) {
 				// auto-fix (for some)
 				if(triple.property.equals("taxonXref")) {
-					report(el, BiopaxValidatorUtils.getId(el), "unknown.property", 
-							"reader", Behavior.ERROR, true, triple.property + 
+					report(el, "unknown.property", 
+							"SimpleIOHandler.bindValue interceptor", 
+							true, triple.property + 
 							" - replaced with 'xref'");
 					triple.property = "xref";
 				} else {
-					report(el, BiopaxValidatorUtils.getId(el), "unknown.property", 
-							"reader", Behavior.ERROR, false, triple.property + 
+					report(el, "unknown.property", 
+							"SimpleIOHandler.bindValue interceptor", 
+							false, triple.property + 
 							" - skipped");
 				}
 			}
@@ -231,7 +151,7 @@ public class ExceptionsAspect extends AbstractAspect {
 		try {
 			jp.proceed();
 		} catch (Throwable t) {
-			reportException(t, o); // , triple);
+			reportException(t, o, "syntax.error", "SimpleIOHandler.bindValue interceptor"); // , triple);
 		}
     }
     
@@ -241,7 +161,7 @@ public class ExceptionsAspect extends AbstractAspect {
     	try {
     		jp.proceed();
     	} catch (Throwable ex) {
-    		reportException(ex, bean, value);
+    		reportException(ex, bean, "syntax.error", "PropertyEditor.checkRestrictions interceptor", value);
     	}
 	}    
     
@@ -252,7 +172,7 @@ public class ExceptionsAspect extends AbstractAspect {
     	try {
     		jp.proceed();
     	} catch (Throwable ex) {
-    		reportException(ex, bean, "method: "+ method + ", value: " + value);
+    		reportException(ex, bean, "syntax.error", "PropertyEditor.invokeMethod interceptor", "method: "+ method + ", value: " + value);
     	}
 	}
     
@@ -263,7 +183,7 @@ public class ExceptionsAspect extends AbstractAspect {
     	try {
     		model = jp.proceed();
     	} catch (Throwable ex) {
-    		reportException(ex, jp.getTarget()); // the second argument will be SimpleIOHandler
+    		reportException(ex, jp.getTarget(), "syntax.error", "BioPAXIOHandler.convertFromOWL interceptor"); // the second argument will be SimpleIOHandler
     	}
     	
     	return model;
@@ -274,32 +194,7 @@ public class ExceptionsAspect extends AbstractAspect {
 	public void adviseUnknownClass(JoinPoint jp) {
     	SimpleIOHandler reader = (SimpleIOHandler) jp.getTarget();
     	String loc = reader.getXmlStreamInfo();
-		report(reader, loc, "unknown.class", 
-			"reader", Behavior.ERROR, false, loc);	
-	}
-    
-	/**
-	 * Duplicate names syntax rule: 
-	 * if a value is set either for the standardName 
-	 * or displayName, adding it to the name is not necessary
-	 * (best practices)
-	 * 
-	 * @param jp
-	 * @param name
-	 */
-	@Before("target(org.biopax.paxtools.model.level3.Named) " +
-			"&& ( execution(public void addName(*)) || execution(public void set*(*)) ) " +
-			"&& args(name)")
-	public void adviseAddName(JoinPoint jp, String name) {
-		Named bpe = (Named) jp.getTarget();
-		if (log.isDebugEnabled()) {
-			log.debug("duplicateNamesControl rule checks: " + bpe
-					+ " gets name " + name);
-		}
-		if (bpe.getName().contains(name)) {
-			report(bpe, BiopaxValidatorUtils.getId(bpe), "duplicate.names",
-					"duplicateNamesAdvice", Behavior.WARNING, true, name);
-		}
+		report(reader, "unknown.class", "SimpleIOHandler.skip interceptor", false, loc);	
 	}
 	
 }

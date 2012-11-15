@@ -1,8 +1,8 @@
 package org.biopax.validator.result;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -10,17 +10,19 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import javax.xml.bind.annotation.*;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.util.AbstractFilterSet;
-import org.biopax.validator.utils.BiopaxValidatorException;
-import org.biopax.validator.utils.Normalizer.NormalizerOptions;
+import org.biopax.validator.Rule;
 
 
 @XmlType(name="Validation", namespace="http://biopax.org/validator/2.0/schema")
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class Validation implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private static final Log log = LogFactory.getLog(Validation.class);
 	
 	private Model model;
 	private String modelSerialized;
@@ -33,30 +35,69 @@ public class Validation implements Serializable {
 	
 	private boolean fix = false;
 	private Behavior threshold;
-	private boolean normalize = false;
 	
-	private int maxErrors; // limits the num. of not fixed error cases (1 means "fal-fast" mode, i.e., stop after the first serious and not fixed error)
+	// limit not fixed error cases (1 means "fall-fast" mode, i.e., stop after the first serious and not fixed error)
+	private int maxErrors;
 	
-	// extra options for the normalizer (optional)
-	private NormalizerOptions normalizerOptions;
+	// extra/optional settings
+	private final Properties properties;
+
+	private String profile;
+
 	
-	// Default Constructor (this is mainly for OXM)
+	/** 
+	 * Default Constructor (this is mainly for OXM)
+	 */
 	public Validation() {
 		this.error = new ConcurrentSkipListSet<ErrorType>();
 		this.objects = Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>());
 		this.description = "unknown";
 		this.comment = new HashSet<String>();
 		this.fix = false;
-		this.normalize = false;
 		this.threshold = Behavior.WARNING;
 		this.maxErrors = Integer.MAX_VALUE;
+		this.profile = null;
+		this.properties = new Properties();
 	}
-
-	// Constructor that is used in the Validator
+	
+	/**
+	 * Constructor with the description and default error settings
+	 * 
+	 * @param name a description; when null or empty, the default 'unknown' is used.
+	 */
 	public Validation(String name) {
 		this();
-		description = name;
+		if(name != null && !name.isEmpty())
+			description = name;
 	}	
+
+	/**
+	 * Non-default settings Constructor. 
+	 * Default values will be used if null or zero values were provided.
+	 * 
+	 * @param description default is "unknown"
+	 * @param autoFix default is false
+	 * @param errorLevel default is WARNING
+	 * @param maxErrors default is 0 (means unlimited, actually it's {@link Integer#MAX_VALUE, but the effect is same})
+	 * @param profile validation profile name (if null, the default is used)
+	 * @throws IllegalArgumentException when maxErrors < 0
+	 */
+	public Validation(String description, boolean autoFix, Behavior errorLevel, int maxErrors, String profile) {
+		this(description);
+		
+		this.fix = autoFix;
+		
+		if(errorLevel != null)
+			this.threshold = errorLevel;
+		
+		if(maxErrors < 0)
+			throw new IllegalArgumentException("Illegal value for maxErrors: " + maxErrors);
+		this.maxErrors = maxErrors;
+		
+		if(profile != null && !profile.isEmpty())
+			this.profile = profile;
+	}
+
 	
 	/**
 	 * Gets the current Model.
@@ -64,9 +105,10 @@ public class Validation implements Serializable {
 	 * @return
 	 */
 	@XmlTransient
-	public Model getModel() {
+	public Object getModel() {
 		return model;
 	}
+
 	
 	/**
 	 * Set Model (to check or report about)
@@ -79,11 +121,11 @@ public class Validation implements Serializable {
 	 * 
 	 * @param model
 	 */
-	public void setModel(Model model) {
-		this.model = model;
+	public void setModel(Object model) {
+		this.model = (Model) model;
 	}
 
-	
+
 	/**
 	 * List of error types; each item has unique code.
 	 * 
@@ -96,6 +138,7 @@ public class Validation implements Serializable {
 		return error;
 	}
 
+
 	/**
 	 * This method should never be used
 	 * (this is for OXM frameworks only)!
@@ -107,26 +150,34 @@ public class Validation implements Serializable {
 		error.addAll(errors);
 	}
 
-	
+
 	/**
-	 * This is to refresh 'modelSerialized' property: 
-	 * 	generates BioPAX OWL from current model.
+	 * Generates a new BioPAX OWL from given model
+	 * and sets the {@link #modelSerialized} property
+	 * using the setter {@link #setModelSerialized(String)}.
+	 * 
+	 * But it does not update {@link #model} property 
+	 * ({@link #getModelSerialized()} won't change after this method is called).
+	 * 
+	 * @param model
+	 * @throws IllegalArgumentException if model is null
 	 */
-	public void updateModelSerialized() {
-		Model model = getModel();
-		if (model != null) {
-			try {
-				// export to OWL
-				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				(new SimpleIOHandler(model.getLevel())).convertToOWL(model, outputStream);
-				this.modelSerialized = outputStream.toString("UTF-8");
-			} catch (IOException e) {
-				throw new BiopaxValidatorException(
-						"Failed to export modified model!", e);
-			}
+	public void updateModelSerialized(Model model) {
+		if (model == null) 
+			throw new IllegalArgumentException();
+		
+		// export to OWL
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		(new SimpleIOHandler(model.getLevel())).convertToOWL(model, outputStream);
+			
+		try {
+			setModelSerialized(outputStream.toString("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			log.error(e);
+			setModelSerialized(outputStream.toString());
 		}
 	}
-	
+
 	
 	/**
 	 * Returns current BioPAX OWL
@@ -138,6 +189,7 @@ public class Validation implements Serializable {
 	{
 		return modelSerialized;
 	}
+
 	
 	/**
 	 * This method should never be used
@@ -149,6 +201,7 @@ public class Validation implements Serializable {
 		this.modelSerialized = modelSerialized;
 	}
 
+
 	/**
 	 * Returns current BioPAX OWL in 
 	 * the HTML-escaped form (to show on pages).
@@ -157,10 +210,12 @@ public class Validation implements Serializable {
 	 */
 	@XmlTransient
 	public String getModelSerializedHtmlEscaped() {
-		return StringEscapeUtils.escapeHtml(getModelSerialized())
-		.replaceAll(System.getProperty("line.separator"), 
-				System.getProperty("line.separator")+"<br/>");
+		return (modelSerialized != null)
+				? StringEscapeUtils.escapeHtml(getModelSerialized()).replaceAll(System.getProperty("line.separator"), 
+						System.getProperty("line.separator")+"<br/>")
+				: null;
 	}
+
 
 	/**
 	 * Returns current BioPAX OWL in 
@@ -171,10 +226,12 @@ public class Validation implements Serializable {
 	 */
 	@XmlTransient
 	public String getModelSerializedXmlEscaped() {
-		return StringEscapeUtils.escapeXml(getModelSerialized());
+		return (modelSerialized != null) 
+			? StringEscapeUtils.escapeXml(getModelSerialized())
+				: null;
 	}
 
-	
+
 	/**
 	 * Adds or updates the error (with cases) to the errors collection.
 	 * This is the primary method to save or update a just discovered or 
@@ -197,6 +254,14 @@ public class Validation implements Serializable {
 	 * @param e Error type
 	 */
 	public void addError(ErrorType e) {	
+		
+		if(isMaxErrorsSet() && getNotFixedErrors() >= getMaxErrors())
+		{
+			log.info("Won't save the case: max. errors " +
+				"limit exceeded for " + getDescription());
+			return;
+		}	
+		
 		switch (threshold) {
 		case IGNORE:
 			break; // do nothing
@@ -204,8 +269,7 @@ public class Validation implements Serializable {
 			if(e.getType() == Behavior.WARNING) {
 				break; // do not add (only errors pass)
 			}
-		default: // WARNING and ERROR==ERROR
-			// add error with all cases
+		default: // add error with all cases
 			if (error.contains(e)) {
 				for (ErrorType et : error) {
 					if (et.equals(e)) {
@@ -220,18 +284,36 @@ public class Validation implements Serializable {
 		}
 	}
 	
+
+	/**
+	 * Removes the error type and all cases.
+	 * @param e
+	 */
 	public void removeError(ErrorType e) {
 		error.remove(e);
 	}
 		
+
+	/**
+	 * Sets the information about this validation task. 
+	 * 
+	 * @param description
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 	
+
+	/**
+	 * Information about this validation task. 
+	 * 
+	 * @return
+	 */
 	@XmlAttribute(required=false)
 	public String getDescription() {
 		return description;
 	}
+
 	
 	/**
 	 * This method should never be used
@@ -244,15 +326,30 @@ public class Validation implements Serializable {
 		this.comment.addAll(comments);
 	}
 	
+
+	/**
+	 * Adds a comment, e.g., counts, regarding this validation task.
+	 * @param comment
+	 */
 	public void addComment(String comment) {
 		this.comment.add(comment);
 	}
 	
+
+	/**
+	 * Comments (e.g., counts) about this validation task.
+	 * @return
+	 */
 	public Collection<String> getComment() {
 		return comment;
 	}
 	
 	
+	/**
+	 * Validation results summary.
+	 * 
+	 * @return
+	 */
 	@XmlAttribute
 	public String getSummary() {
 		StringBuffer result = new StringBuffer();
@@ -263,15 +360,23 @@ public class Validation implements Serializable {
 		return result.toString();
 	}
 	
+	
+	/**
+	 * String representation of this validation settings and results:
+	 * {@link #getDescription()} plus {@link #getSummary()}
+	 * 
+	 */
 	@Override
 	public String toString() {
 		return super.toString() + 
 		" (" + getDescription() + "; "
 		+ getSummary() + ")";
 	}
+
 	
 	/**
 	 * Searches for existing (registered) error type.
+	 * This is mostly for testing.
 	 * 
 	 * @param code
 	 * @param type
@@ -291,7 +396,7 @@ public class Validation implements Serializable {
 	 * @param errorType
 	 * @return
 	 */
-	public ErrorType findErrorType(ErrorType errorType) {
+	private ErrorType findErrorType(ErrorType errorType) {
 		if(getError().contains(errorType)) {
 			for(ErrorType et: getError()) {
 				if(et.equals(errorType)) {
@@ -314,14 +419,16 @@ public class Validation implements Serializable {
 	 * @param errorType
 	 * @return
 	 */
-	public ErrorCaseType findErrorCase(ErrorType errorType, ErrorCaseType errCase) {
+	private ErrorCaseType findErrorCase(ErrorType errorType, ErrorCaseType errCase) {
 		ErrorType etype = findErrorType(errorType);
 		if (etype != null) {
 			ErrorCaseType ecase = etype.findErrorCase(errCase);
+			return ecase; //bug fixed ('return' was missing)
 		}
 		return null;
 	}
 	
+
 	/**
 	 * Counts the number of errors/warnings.
 	 * Extra parameters are used to exclude 
@@ -361,13 +468,30 @@ public class Validation implements Serializable {
 		return count;
 	}
 
-	
+
+	/**
+	 * Objects associated with this validation by the Validator,
+	 * usually - indirectly, during I/O operations. 
+	 * Any object O can be potentially linked to the Validation object 
+	 * if it makes sense, and if there is a {@link Rule} or some method
+	 * (such as in AOP Aspects) which is about to register errors about O.
+	 * 
+	 * @return
+	 */
 	@XmlTransient
 	public Set<Object> getObjects() {
 		return objects;
 	}
 	
 
+	/**
+	 * Objects of a specific class, associated with this validation.
+	 * 
+	 * @see #getObjects()
+	 * 
+	 * @param filterBy
+	 * @return
+	 */
 	public <T> Collection<T> getObjects(final Class<T> filterBy) {
 		return new AbstractFilterSet<Object,T>(objects) {
 			public boolean filter(Object value) {
@@ -376,31 +500,46 @@ public class Validation implements Serializable {
 		};
 	}
 
+
+	/**
+	 * @return true if auto-fix is enabled; otherwise - false
+	 */
 	@XmlAttribute
 	public boolean isFix() {
 		return fix;
 	}
 
-	public void setFix(boolean fix) {
+
+	/**
+	 * @param fix true when auto-fix is enabled
+	 */
+	protected void setFix(boolean fix) {
 		this.fix = fix;
 	}
 
+
+	/**
+	 * Gets the error reporting level/threshold, i.e., 
+	 * this is to ignore issues reported with a level
+	 * less than desired; e.g., to hide warnings (similar to logging).
+	 * 
+	 * @return
+	 */
 	@XmlAttribute(required=false)
 	public Behavior getThreshold() {
 		return threshold;
 	}
 
-	public void setThreshold(Behavior threshold) {
+
+	/**
+	 * Sets the errors reporting level.
+	 * 
+	 * @see #getThreshold()
+	 * 
+	 * @param threshold
+	 */
+	protected void setThreshold(Behavior threshold) {
 		this.threshold = threshold;
-	}
-	
-	@XmlAttribute
-	public boolean isNormalize() {
-		return normalize;
-	}
-	
-	public void setNormalize(boolean normalize) {
-		this.normalize = normalize;
 	}
 	
 	/**
@@ -414,6 +553,7 @@ public class Validation implements Serializable {
 		return countErrors(null, null, null, null, false, false);
 	}
 
+
 	/**
 	 * Total number of {@link Behavior#ERROR} and 
 	 * {@link Behavior#WARNING} cases, NOT fixed.
@@ -425,6 +565,7 @@ public class Validation implements Serializable {
 		return countErrors(null, null, null, null, false, true);
 	}
 	
+
 	/** 
 	 * Total number of NOT fixed {@link Behavior#ERROR} cases.
 	 * 
@@ -435,7 +576,7 @@ public class Validation implements Serializable {
 		return countErrors(null, null, null, null, true, true);
 	}
 
-	
+
 	/** 
 	 * Finds the previously reported
 	 * by the rule error case and marks it as fixed.
@@ -448,7 +589,7 @@ public class Validation implements Serializable {
 	 * @param rule a BioPAX validation rule ID (that reports with the error code)
 	 * @param errCode specific error code
 	 * @param newMsg a message, if not null/empty, to replace the original one
-	 */
+	 */	
 	public void setFixed(String objectId, String rule, String errCode, String newMsg) 
 	{
 		Behavior type = Behavior.WARNING;
@@ -469,30 +610,69 @@ public class Validation implements Serializable {
 	}
 
 	
+	/**
+	 * Errors limit. After this value is reached, the validator stops registering new error cases
+	 * with this validation object (though rules continue to check and report). 
+	 * If this method returns 0 that actually means "not set", which also means 'unlimited'
+	 * (this is to avoid generating unnecessary XML attribute value, such as {@link Integer#MAX_VALUE}).
+	 * 
+	 * @return the max no. errors to be collected, or 0 if {@link #isMaxErrorsSet()} returns 'false'
+	 */
 	@XmlAttribute(required=false)
 	public int getMaxErrors() {
 		return (isMaxErrorsSet()) ? maxErrors : 0;
 	}
 
-	public void setMaxErrors(int maxErrors) {
+	
+	/**
+	 * Sets the errors threshold (max no. errors to collect/report),
+	 * an integer value between 0 and {@link Integer#MAX_VALUE}, otherwise
+	 * it has no effect ({@link #isMaxErrorsSet()} will return 'false').
+	 * 
+	 * @param maxErrors
+	 */
+	protected void setMaxErrors(int maxErrors) {
 		this.maxErrors = maxErrors;
 	}
 	
+
+	/**
+	 * @return true iif {@link #maxErrors} is greater than 0 and less than {@link Integer#MAX_VALUE}
+	 */
 	@XmlTransient
 	public boolean isMaxErrorsSet() {
 		return this.maxErrors > 0 
 			&& this.maxErrors < Integer.MAX_VALUE;
 	}
 
+	
+	/**
+	 * Gets normalizer settings.
+	 * @return
+	 */
 	@XmlTransient
-	public NormalizerOptions getNormalizerOptions() {
-		return normalizerOptions;
+	public Properties getProperties() {
+		return properties;
 	}
 
+
 	/**
-	 * @param normalizerOptions the normalizerOptions to set
+	 * Validation profile to used when checking/reporting issues.
+	 * 
+	 * @return the profile
 	 */
-	public void setNormalizerOptions(NormalizerOptions normalizerOptions) {
-		this.normalizerOptions = normalizerOptions;
+	@XmlAttribute(required=false)
+	public String getProfile() {
+		return profile;
+	}
+
+
+	/**
+	 * Sets the validation profile to use when checking/reporting issues.
+	 * 
+	 * @param profile the profile name
+	 */
+	protected void setProfile(String profile) {
+		this.profile = profile;
 	}
 } 
