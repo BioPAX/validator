@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.biopax.validator</groupId>
-	<artifactId>biopax-validator</artifactId>
+	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
 	<name>BioPAX Validator Parent Project</name>
 	<version>3.0.0-SNAPSHOT</version>
@@ -44,14 +44,13 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<spring.version>3.0.5.RELEASE</spring.version>
-		<paxtools.version>4.1.5-SNAPSHOT</paxtools.version>
-		<miriam-lib.version>2.2.0-SNAPSHOT</miriam-lib.version>
+		<paxtools.version>4.1.5b2</paxtools.version>
+		<miriam-lib.version>2.2.0</miriam-lib.version>
 	</properties>
 	
 	<modules>
 		<module>biopax-validator-web</module>
-		<module>biopax-validator-core</module>
-		<module>biopax-rules</module>
+		<module>biopax-validator</module>
 		<module>distr</module>
 		<module>obo-fetcher</module>
 		<module>miriam-lib</module>
@@ -116,7 +115,6 @@
 		</plugins>
 	</build>
 
-	<!-- this is actually for maven 2.x only; ignored by Maven 3 -->
 	<reporting>
 		<plugins>
 			<plugin>

@@ -1,0 +1,11 @@
+<!DOCTYPE aspectj PUBLIC "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+	<weaver options="-verbose -showWeaveInfo -XmessageHandlerClass:org.springframework.aop.aspectj.AspectJWeaverMessageHandler -Xreweavable">
+        <!-- only weave classes within packages that match listed -->
+        <include within="org.biopax.paxtools..*" />
+        <include within="org.biopax.validator.impl.*" />    
+    </weaver>
+    <aspects>
+        <aspect name="org.biopax.validator.impl.ExceptionsAspect" />
+    </aspects>
+</aspectj>

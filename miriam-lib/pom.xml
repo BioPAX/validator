@@ -98,7 +98,6 @@
 		</extensions>
 	</build>
 	
-	<!-- this is actually for maven 2.x only; ignored by Maven 3 -->
 	<reporting>
 		<plugins>
 			<plugin>

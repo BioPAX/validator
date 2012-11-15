@@ -1,6 +1,7 @@
-/** BioPAX Validator, Version 2.0.0
- **
- ** Copyright (c) 2009-2011 University of Toronto (UofT)
+/** BioPAX Validator, Version 3
+ ** www.biopax.org
+ ** 
+ ** Copyright (c) 2009-2012 University of Toronto (UofT)
  ** and Memorial Sloan-Kettering Cancer Center (MSKCC).
  **
  ** This is free software; you can redistribute it and/or modify it
@@ -26,18 +27,16 @@
  ** or find it at http://www.fsf.org/ or http://www.gnu.org.
  **/
 
-An open source validation framework for BioPAX (www.biopax.org).
+An open source rule-based object validation framework and the BioPAX Validator application.
+It is to check various BioPAX Level3 syntax and semantic rules (constraints and best practices).
+It can also process Level1 and Level2 data, which are first auto-converted to the Level3, and then 
+Level3 rules apply. Data can be optionally "fixed" (some rules can do, but not all) and "normalized".
 
-This application was created with Java 6, Paxtools, Spring Framework (AOP,
-MVC), and many other open source java libraries. This implementation targets the 
-BioPAX Level 3, but also has some support for the previous levels: Level 1 is auto-
-converted to L2, and L2 is validated alike the L3, but not all L2 rules have 
-been implemented. Optionally (when 'normalize' flag is set), L2 data is also 
-converted to the L3, first, and then the result is validated or normalized.
-
-Project URL: 
-http://sourceforge.net/projects/biopax/
+Project URLs: 
+http://www.biopax.org/
 http://www.biopax.org/validation
+http://sourceforge.net/projects/biopax/
+
 
 ******************************************************************************
  INSTALL
@@ -59,9 +58,9 @@ Execute:
 
 $sh path/to/validate.sh [args]
 
-It prints a brief help message when no arguments provided; otherwise, use as, e.g: 
+- it prints a brief help message when no arguments provided; otherwise, use as, e.g: 
 
-sh validate.sh input_dir_or_file output[.html] --auto-fix --normalize
+sh validate.sh input_dir_or_file output[.html] --auto-fix --profile=notstrict
 
 Validation result is saved to the output file. When the '.html' file extension is used,
 the XML validation response is auto-transformed to HTML with Javascript (similar to 
@@ -135,46 +134,44 @@ DESIGN
 
 I. Framework
 
- 1. Uses Paxtools library, the BioPAX API.
- 2. Spring Framework (3.0) - to report errors (AOP), wire different modules,
+ 1. Uses Paxtools Java library, the BioPAX API.
+ 2. Spring Framework v3 - to report errors (AOP), wire different modules,
     internationalize, and build web services (MVC).
  3. Java 6 (or 5): VarArgs, generics, annotations, AOP load-time weaving (LTW),
  	@Resource and @PostConstruct annotations.
  4. @AspectJ AOP, LTW are very powerful things that much simplify 
  	intercepting the exceptions in paxtools.jar and other external
     libraries (e.g., in Jena RDF parser). 
+ 5. Many popular free libraries.
 
 II. Validation
 
- 1. Rules are java classes implementing Rule<E> interface, basically,
-    by extending AbstractRule<E> or its abstract sub-class.
-
-    Controlled vocabulary rule classes depend on a modified "Ontology Manager" 
-    (derived from one of PSIDEV software modules, thank you!)
-    and its configuration file (obo.properties) to check 
-    controlled vocabulary terms.
- 
-    Rules may call other rules, but usually it is not required/desired, 
-    and they are better keep simple and independent.
+ 1. Rules are java classes implementing Rule<E> interface and 
+    extending AbstractRule<E>, where E is usually either a BioPAX 
+    class or Model.
+    Controlled Vocabulary class rules extend AbstractCvRule and use 
+    CvRestriction and OBO Ontology Manager (derived from PSIDEV EBI sources, thank you)
+    to lookup for valid ontology terms and synonyms.
+    (Rules may call other rules, but usually it is not recommended, 
+    for they are better keep simple and independent.)
     
- 2. Post-model validation mode
-    - read a BioPAX file, build the model, and check all the rules.
-     
- 3. Real-time (AOP) validation mode
-    - catch/log all the "external" errors
-    - catch/log syntax and BioPAX errors during the model is being read/built
-    - check before/after any BioPAX element is modified or added to the model.
- 4. Fail-fast mode (the number of not fixed errors per validation/report is limited)
+ 2. Post-model validation mode means:
+    - check all the rules/objects after the BioPAX model is built (created in memory or read from a file).
+         
+ 3. Fail-fast mode means two things:
+    - catch critical BioPAX and/or RDF/XML syntax errors during the model is being read/built (parser)
+    - the number of not fixed errors per validation/report is limited;
 
 III. Errors, Logging, Behavior (actions to undertake)
  1. Logging 
     - commons-logging and log4j
  2. Errors 
     - Spring AOP, MessageSource, resource bundles, and OXM (JAXB)
-    are used to collect errors, translate into messages, and create the validation report.
+    are used to collect errors, translate into human-readable messages, and create the validation report.
  3. Configuring
-    - behavior (i.e. level), mode, error categories and messages are configured in properties files
- 4. Some of errors can be ignored during the model import (e.g. cardinality constraints).
+    - behavior (level), error types (code, category), and message templates 
+    are configured via resource bundles: rules.properties, codes.properties, profiles.properties
+    (in theory, one can have, e.g., /rules_fr_CA.properties on the app classpath to see messages in the other language)
 
 
 ******************************************************************************
@@ -184,19 +181,17 @@ III. Errors, Logging, Behavior (actions to undertake)
 The most important thing is to make sure the validator 
 starts using Java 6 with, e.g., the following JVM options:
 
--javaagent:spring-instrument.jar -Xmx2048m -Xms256m -Dfile.encoding=UTF-8
+-javaagent:path/to/spring-instrument.jar -Xmx2048m -Xms256m -Dfile.encoding=UTF-8
 
-(one may have to provide the full path to the spring-instrument.jar)
+(one have to provide the full path to the spring-instrument.jar instead of 'path/to/')
 
-All the needed jars are in the /lib folder.
-
-Package net.biomolecules.miriam (and classes in it) is xjc-generated.
+All the needed jars are in the /lib folder. Package net.biomolecules.miriam (and classes in it) is xjc-generated.
 
 Debugging tips:
 - to disable LTW AOP, set <context:load-time-weaver aspectj-weaving="off"/> 
   in the applicationContext.xml; or edit the META-INF/aop.xml
 - to "physically" exclude any rule from being checked - in java source file
-   comment out the @Component annotation (the bean won't be auto-created).
-- set "<ruleName>.behavior=ignore" in the messages.properties file
+   comment out the @Component annotation (the corresponding singleton rule 
+   won't be automatically created nor added to the validator bean).
+- set "<ruleClass>.behavior=ignore" in the profiles.properties file
    (good to test AOP and configuration without doing real validation).
-- disable BehaviorAspect in order all rules to always check

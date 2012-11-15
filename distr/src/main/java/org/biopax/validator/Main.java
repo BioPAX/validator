@@ -31,7 +31,6 @@ public class Main {
 	static final Log log = LogFactory.getLog(Main.class);
 	static ApplicationContext ctx;
 	static boolean autofix = false;
-	static boolean normalize = false;
 	static int maxErrors = 0;
 	static final String EXT = ".modified.owl";
 	static String profile = null;
@@ -66,8 +65,6 @@ public class Main {
 			for (int i = 1; i < args.length; i++) {
 				if("--auto-fix".equalsIgnoreCase(args[i])) {
 					autofix = true;
-				} else if("--normalize".equalsIgnoreCase(args[i])) {
-					normalize = true;
 				} else if(args[i].startsWith("--max-errors=")) {
 					String n = args[i].substring(13);
 					maxErrors = Integer.parseInt(n);
@@ -91,7 +88,7 @@ public class Main {
 					getResourcesToValidate(input));
 			
 			// save modified BioPAX data
-			if (autofix || normalize) {
+			if (autofix) {
 				for (Validation result : validatorResponse.getValidationResult()) 
 				{
 					String out = result.getDescription();
@@ -134,8 +131,7 @@ public class Main {
 
         // Read from the batch and validate from file, id or url, line-by-line (stops on first empty line)
         for (Resource resource: resources) {
-        	Validation result = new Validation(resource.getDescription(), 
-        			autofix, null, maxErrors, profile);
+        	Validation result = new Validation(resource.getDescription(), autofix, null, maxErrors, profile);
         	result.setDescription(resource.getDescription());
         	if(log.isInfoEnabled())
         		log.info("BioPAX DATA IMPORT FROM: " 
@@ -144,8 +140,8 @@ public class Main {
 				validator.importModel(result, resource.getInputStream());
 				validator.validate(result);
 				
-				//normalize if needed
-				if(normalize) {
+				//if autofix is enabled, then do normalize too
+				if(autofix) {
 					Model model = (Model) result.getModel();
 					Normalizer normalizer = new Normalizer();
 					normalizer.normalize(model);

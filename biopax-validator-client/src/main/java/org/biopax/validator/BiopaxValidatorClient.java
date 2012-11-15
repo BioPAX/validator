@@ -88,7 +88,8 @@ public class BiopaxValidatorClient {
         if(autofix) {
         	parts.add(new StringPart("autofix", "true"));
         }
-        //TODO add extra options (normalizer, xml:base)?
+        
+        //TODO add extra options (normalizer.fixDisplayName, normalizer.inferPropertyOrganism, normalizer.inferPropertyDataSource, normalizer.xmlBase)?
               
         if(profile != null && !profile.isEmpty()) {
         	parts.add(new StringPart("profile", profile));

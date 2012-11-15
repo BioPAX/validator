@@ -4,7 +4,7 @@
   <artifactId>obo-fetcher</artifactId>
 
   <parent>
-	<artifactId>biopax-validator</artifactId>
+	<artifactId>parent</artifactId>
 	<groupId>org.biopax.validator</groupId>
 	<version>3.0.0-SNAPSHOT</version>
   </parent>
