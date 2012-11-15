@@ -34,7 +34,6 @@ import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.utils.Normalizer;
-import org.biopax.validator.utils.Normalizer.NormalizerOptions;
 import org.junit.Test;
 
 /**
@@ -71,7 +70,7 @@ public class NormalizerTest {
     	ref.setDb("uniprotkb"); // will be converted to 'uniprot'
     	/* The following ID is the secondary accession of P68250, 
     	 * but Normalizer won't complain (it's Validator's and - later - Merger's job)!
-    	 * However, it it were P68250 here again, the normalize(model) would throw exception
+    	 * However, if it were P68250, the normalize(model) would throw exception
     	 * (because ProteinReference1 becomes ProteinReference2, both get RDFId= urn:miriam:uniprot:P68250!)
     	 */
     	ref.setId("Q0VCL1"); 
@@ -133,15 +132,16 @@ public class NormalizerTest {
 		
 		// go normalize!	
 		Normalizer normalizer = new Normalizer();
-		normalizer.normalize(model);
+		normalizer.normalize(model); 
 		
-		String xml = null;
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		simpleIO.convertToOWL(model, out);
-		xml = out.toString();
+//		String xml = null;
+//		ByteArrayOutputStream out = new ByteArrayOutputStream();
+//		simpleIO.convertToOWL(model, out);
+//		xml = out.toString();
 		
 		// check Xref
-		BioPAXElement bpe = model.getByID("urn:biopax:UnificationXref:UNIPROT_P68250");
+		String normUri = Normalizer.uriForXref(model.getXmlBase(), "uniprot", "P68250", null, UnificationXref.class);
+		BioPAXElement bpe = model.getByID(normUri);
 		assertTrue(bpe instanceof UnificationXref);
 		
 		// check PR
@@ -149,23 +149,22 @@ public class NormalizerTest {
 		assertTrue(bpe instanceof ProteinReference);
 		
 		//check xref's ID gets normalized
-		bpe = model.getByID("urn:biopax:RelationshipXref:REFSEQ_NP_001734");
+		normUri = Normalizer.uriForXref(model.getXmlBase(), "REFSEQ", "NP_001734", null, RelationshipXref.class);
+		bpe = model.getByID(normUri);
 		assertEquals(1, ((Xref)bpe).getXrefOf().size());
 
 		// almost the same xref (was different idVersion)
-		bpe = model.getByID("urn:biopax:RelationshipXref:REFSEQ_NP_001734_1");
+		normUri = Normalizer.uriForXref(model.getXmlBase(), "REFSEQ", "NP_001734", "1", RelationshipXref.class);
+		bpe = model.getByID(normUri);
 		assertEquals(1, ((Xref)bpe).getXrefOf().size());
-		
-    	//TODO test when uniprot's is not the first xref
-    	//TODO test illegal 'id', 'db', etc.
-    	//TODO add to test CV (and use a MI term)
 		
 		//test BioSource
 		assertFalse(model.containsID("Xref7"));
 		assertFalse(model.containsID("BioSource_Mouse_Tissue"));
 		bpe = model.getByID("http://identifiers.org/taxonomy/10090");
 		assertTrue(bpe instanceof BioSource);
-		bpe = model.getByID("urn:biopax:UnificationXref:TAXONOMY_10090");
+		normUri = Normalizer.uriForXref(model.getXmlBase(), "TAXONOMY", "10090", null, UnificationXref.class);
+		bpe = model.getByID(normUri);
 		assertTrue(bpe instanceof UnificationXref);
 		
 		// test that one of ProteinReference (2nd or 3rd) is removed
@@ -269,16 +268,12 @@ public class NormalizerTest {
 		assertNotNull(e);	
 		assertEquals(1, e.getXref().size());
 		
-		ref = (UnificationXref) model.getByID("urn:biopax:UnificationXref:UNIPROT_Q0VCL1");
+		String normUri = Normalizer.uriForXref(model.getXmlBase(), "UNIPROT", "Q0VCL1", null, UnificationXref.class);
+		ref = (UnificationXref) model.getByID(normUri);
+		assertNotNull(ref);
 		assertEquals(1, ref.getXrefOf().size());
 		
 		print(e, model);
-	}
-	
-	//@Test
-	public final void testNormalizerOptions() {
-		NormalizerOptions options = new NormalizerOptions();
-		//TODO
 	}
 	
 	

@@ -127,7 +127,6 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	@Override
 	public String toString() {
 		return type + " " + code; 
-		//enough! (by design, to use in hashCode and equals)
 	}
 	
 	@Override

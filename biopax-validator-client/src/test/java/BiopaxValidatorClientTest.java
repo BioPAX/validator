@@ -13,8 +13,7 @@ public class BiopaxValidatorClientTest {
 
 	@Test
 	public void testClientHtml() throws IOException {
-		//BiopaxValidatorClient client = new BiopaxValidatorClient();
-		
+		//BiopaxValidatorClient client = new BiopaxValidatorClient();	
 		BiopaxValidatorClient client = new BiopaxValidatorClient("http://localhost:8080/biopax-validator/check.html");
 		
 		File[] files = new File[] {
@@ -23,7 +22,7 @@ public class BiopaxValidatorClientTest {
 		};
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		client.validate(false, false, RetFormat.HTML, null, null, null, files, baos);
+		client.validate(false, null, RetFormat.HTML, null, null, null, files, baos);
 		
 		System.out.println(baos.toString());
     }
@@ -40,7 +39,7 @@ public class BiopaxValidatorClientTest {
 		};
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		client.validate(true, true, RetFormat.XML, null, null, null, files, baos);
+		client.validate(true, null, RetFormat.XML, null, null, null, files, baos);
 		
 		//System.out.println(baos.toString());
 		
@@ -49,10 +48,10 @@ public class BiopaxValidatorClientTest {
 		ValidatorResponse resp = client.unmarshal(baos.toString());
 		
 		Assert.assertNotNull(resp);
-		Assert.assertFalse(resp.getValidationResult().isEmpty());
+		Assert.assertFalse(resp.getValidation().isEmpty());
 		
-		System.out.println(resp.getValidationResult().get(0).getSummary()
-				+ "; cases: " + resp.getValidationResult().get(0).getTotalProblemsFound());
+		System.out.println(resp.getValidation().get(0).getSummary()
+				+ "; cases: " + resp.getValidation().get(0).getTotalProblemsFound());
     }
 	
 }

@@ -21,7 +21,7 @@
 			}
 		}
 	</script>
-	<title>Additional Configuration</title>
+	<title>Additional Configuration Info</title>
 </head>
 <body>
 
@@ -65,7 +65,8 @@ Auto-recognized "illegal" values (perhaps, the property should be empty instead)
 <hr />
 
 <h3>For UnificationXrefLimitedRule rule</h3>
-Allowed unif. xref.db values (synonyms are also ok), by parent class:
+For the following BioPAX types, a unification xref should have
+one of the specified 'db' property values (standard synonyms are also allowed):
   <table border>
   	<tr><th>class</th><th>db names (&apos;:&apos; separated)</th></tr>
 	<c:forEach var="entry" items="${dbAllow}">
@@ -73,7 +74,8 @@ Allowed unif. xref.db values (synonyms are also ok), by parent class:
 	</c:forEach>
   </table>
   <br />
-Not recommended unif. xref.db values (synonyms are not ok either), by parent class:
+For the following BioPAX types, a unification xref should neither have
+any of the 'db' property values nor official synonyms of those listed:
   <table border>
   <tr><th>class</th><th>db names (&apos;:&apos; separated)</th></tr>
 	<c:forEach var="entry" items="${dbDeny}">
@@ -84,7 +86,8 @@ Not recommended unif. xref.db values (synonyms are not ok either), by parent cla
 <hr />
 
 <h3>For DisplayNameRule rule</h3>
-Recommended max display name length by class:
+Recommended maximal length of the display name, by class
+(if different from the default max.):
   <table border>
     <tr><th>class</th><th>max displayName</th></tr>
 	<c:forEach var="entry" items="${maxDisplayNameLengths}">

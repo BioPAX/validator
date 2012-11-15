@@ -1,5 +1,6 @@
 package org.biopax.validator.rules;
 
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 import org.biopax.paxtools.model.*;
@@ -48,8 +49,8 @@ public class NotAllowedInstancesRule extends AbstractRule<BioPAXElement> {
 		}
 	}
 
-	public void check(BioPAXElement thing, boolean fix) {
-		error(thing, "not.allowed.element", false, thing.getModelInterface().getSimpleName());
+	public void check(final Validation validation, BioPAXElement thing) {
+		error(validation, thing, "not.allowed.element", false, thing.getModelInterface().getSimpleName());
 	}
     
 }

@@ -7,6 +7,7 @@ import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.ConversionDirectionType;
 import org.biopax.paxtools.model.level3.Process;
 import org.biopax.paxtools.model.level3.StepDirection;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRul
 		return thing instanceof BiochemicalPathwayStep;
 	}
 
-	public void check(BiochemicalPathwayStep step, boolean fix) {
+	public void check(final Validation validation, BiochemicalPathwayStep step) {
 		if(step.getStepDirection() != null) 
 		{
 			final CatalysisDirectionType correctDir = (step.getStepDirection() == StepDirection.LEFT_TO_RIGHT) 
@@ -48,10 +49,10 @@ public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRul
 				{
 					CatalysisDirectionType cdir = ((Catalysis) proc).getCatalysisDirection();
 					if(cdir != null && cdir != correctDir) {
-						error(step, "direction.conflict", fix, 
-						"stepDirection=" + step.getStepDirection(), proc, 
-						"catalysisDirection=" + cdir);
-						if(fix) {
+						error(validation, step, "direction.conflict", 
+								validation.isFix(), "stepDirection=" + step.getStepDirection(), 
+						proc, "catalysisDirection=" + cdir);
+						if(validation.isFix()) {
 							fix(step, proc, null);
 						}
 					}
@@ -63,15 +64,15 @@ public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRul
 				&& con.getConversionDirection() != null
 				&& con.getConversionDirection() != ConversionDirectionType.REVERSIBLE) 
 			{
-				error(step, "direction.conflict", fix, 
-					"stepDirection=" + step.getStepDirection(), con, "conversionDirection=" 
+				error(validation, step, "direction.conflict", 
+						validation.isFix(), "stepDirection=" + step.getStepDirection(), con, "conversionDirection=" 
 						+ con.getConversionDirection() + ", must be REVERSIBLE or empty");
-				if(fix) {
+				if(validation.isFix()) {
 					fix(step, con, null);
 				}
 			}
 		} else {
-			error(step, "direction.conflict", false, "'stepDirection' is null");
+			error(validation, step, "direction.conflict", false, "'stepDirection' is null");
 		}
 		
 	}

@@ -2,6 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.biopax.validator.utils.Cluster;
@@ -33,7 +34,7 @@ public class EntityReferenceSamePhysicalEntitiesRule extends
 	};
 	
 	
-	public void check(EntityReference eref, boolean fix) 
+	public void check(final Validation validation, EntityReference eref) 
 	{
 
 		Set<Set<SimplePhysicalEntity>> clasters 
@@ -45,8 +46,8 @@ public class EntityReferenceSamePhysicalEntitiesRule extends
 			if(col.size() > 1) {
 				SimplePhysicalEntity u = col.iterator().next();
 				col.remove(u);
-				error(eref, "same.state.entity", false, u,
-					BiopaxValidatorUtils.getIdListAsString(col));
+				error(validation, eref, "same.state.entity", false,
+					u, BiopaxValidatorUtils.getIdListAsString(col));
 			}
 		}
 

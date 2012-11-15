@@ -8,7 +8,9 @@ import javax.annotation.PostConstruct;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.validator.CvRule;
-import org.biopax.validator.utils.CvValidator;
+import org.biopax.validator.CvRestriction;
+import org.biopax.validator.CvValidator;
+import org.biopax.validator.impl.AbstractRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -28,7 +30,7 @@ public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRu
     
     protected final Class<D> domain;
     protected final String property; // helps validate generic ControlledVocabulary instances
-    protected final Set<CvTermRestriction> restrictions;
+    protected final Set<CvRestriction> restrictions;
 	private Set<String> validTerms;
 	protected PropertyEditor<? super D, ?> editor;
   
@@ -40,19 +42,18 @@ public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRu
      * @param restrictions a list of beans, each defining names (a subtree of an ontology) that 
      * is either to include or exclude (when 'not' flag is set) from the valid names set.
      */
-    public AbstractCvRule(Class<D> domain, String property, CvTermRestriction... restrictions)
+    public AbstractCvRule(Class<D> domain, String property, CvRestriction... restrictions)
     {
     	this.domain = domain;
     	this.property = property;
-        this.restrictions = new HashSet<CvTermRestriction>(restrictions.length);
-    	for(CvTermRestriction c: restrictions) {
+        this.restrictions = new HashSet<CvRestriction>(restrictions.length);
+    	for(CvRestriction c: restrictions) {
         	this.restrictions.add(c);
         }    	
     }
 	
     @PostConstruct
     public void init() {
-    	super.init();
     	if(ontologyManager != null) {
     		setValidTerms(ontologyManager.getValidTermNames(this));
     	} else {
@@ -84,7 +85,7 @@ public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRu
 	/* (non-Javadoc)
 	 * @see org.biopax.validator.impl.CvRule#getRestrictions()
 	 */
-	public Set<CvTermRestriction> getRestrictions() {
+	public Set<CvRestriction> getRestrictions() {
 		return restrictions;
 	}
 	

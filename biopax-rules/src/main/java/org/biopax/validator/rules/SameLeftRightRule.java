@@ -4,6 +4,7 @@ import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ import java.util.Set;
 public class SameLeftRightRule extends AbstractRule<Conversion>
 {
 
-    public void check(Conversion conversion, boolean fix)
+    public void check(final Validation validation, Conversion conversion)
     {
        Set<PhysicalEntity> left = conversion.getLeft();
        Set<PhysicalEntity> right = conversion.getRight();
@@ -47,7 +48,7 @@ public class SameLeftRightRule extends AbstractRule<Conversion>
             		}
 
             		if(isSame)	
-            			error(conversion, "same.state.participant", false, lefty, righty);
+            			error(validation, conversion, "same.state.participant", false, lefty, righty);
                 }
             }
         }

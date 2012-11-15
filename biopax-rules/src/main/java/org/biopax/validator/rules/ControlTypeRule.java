@@ -4,6 +4,7 @@ import org.biopax.paxtools.model.level3.Catalysis;
 import org.biopax.paxtools.model.level3.Control;
 import org.biopax.paxtools.model.level3.ControlType;
 import org.biopax.paxtools.model.level3.TemplateReactionRegulation;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -42,17 +43,17 @@ public class ControlTypeRule extends AbstractRule<Control> {
 		return thing instanceof Control;
 	}
 
-	public void check(Control thing, boolean fix) {
+	public void check(final Validation validation, Control thing) {
 		if(thing.getControlType() != null) 
 		{			
 			if(thing instanceof Catalysis) {
 				Catalysis cat = (Catalysis) thing;
 				if(cat.getControlType() != ControlType.ACTIVATION) {
-					error(thing, "range.violated", fix, 
-							"controlType", cat.getControlType().name(),
-							"", ControlType.ACTIVATION.name()
+					error(validation, thing, "range.violated", 
+							validation.isFix(), "controlType",
+							cat.getControlType().name(), "", ControlType.ACTIVATION.name()
 							+ " (or empty)");
-					if(fix) {
+					if(validation.isFix()) {
 						fix(thing);
 					}
 				}
@@ -61,12 +62,12 @@ public class ControlTypeRule extends AbstractRule<Control> {
 				if(! (trr.getControlType() == ControlType.ACTIVATION
 						|| trr.getControlType() == ControlType.INHIBITION) ) 
 				{
-					error(thing, "range.violated", fix, 
-							"controlType", trr.getControlType().name(),
-							"", ControlType.ACTIVATION.name() + " or " 
+					error(validation, thing, "range.violated", 
+							validation.isFix(), "controlType",
+							trr.getControlType().name(), "", ControlType.ACTIVATION.name() + " or " 
 							+ ControlType.INHIBITION.name()
 							+ " (or empty)");
-					if(fix) {
+					if(validation.isFix()) {
 						fix(thing);
 					}
 				}

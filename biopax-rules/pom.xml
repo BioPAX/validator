@@ -2,10 +2,9 @@
 	<parent>
 		<artifactId>biopax-validator</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>2.2.0</version>
+		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.biopax.validator</groupId>
 	<artifactId>biopax-rules</artifactId>
 	<name>BioPAX Rules</name>
 	<description>BioPAX Rules and Best Practices Implementation</description>

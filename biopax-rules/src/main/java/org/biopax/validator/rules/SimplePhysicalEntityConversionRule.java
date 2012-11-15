@@ -9,6 +9,7 @@ import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.util.ClassFilterSet;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ import java.util.Set;
 public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysicalEntity>
 {
 	
-    public void check(SimplePhysicalEntity spe, boolean fix)
+    public void check(final Validation validation, SimplePhysicalEntity spe)
     {    	
     	Set<Conversion> conversions = new HashSet<Conversion>(
 			new ClassFilterSet<Interaction,Conversion>(
@@ -42,7 +43,7 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
     		   side = conversion.getRight();
   
     	   if(!sameKindEntityExists(spe, side))
-    		   error(spe, "illegal.conversion", false, conversion);
+    		   error(validation, spe, "illegal.conversion", false, conversion);
     	}
     }
     

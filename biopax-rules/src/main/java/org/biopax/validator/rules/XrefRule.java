@@ -1,6 +1,7 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.Xref;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.validator.utils.XrefHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +23,13 @@ public class XrefRule extends AbstractRule<Xref>{
 		return (thing instanceof Xref);
 	}
 	
-    public void check(Xref x, boolean fix) {
+    public void check(final Validation validation, Xref x) {
         String db = x.getDb();
 		if (db != null) { 
 			// check db
 			String preferedDbName = xrefHelper.getPrimaryDbName(db);
 			if (preferedDbName == null) {
-				error(x, "unknown.db", false, db);
+				error(validation, x, "unknown.db", false, db);
 				return;
 			} 
 
@@ -43,9 +44,9 @@ public class XrefRule extends AbstractRule<Xref>{
 				} else if (!xrefHelper.checkIdFormat(preferedDbName, id)) {
 					String regxp = xrefHelper.getRegexpString(preferedDbName);
 					// report error with fixed=false 
-					error(x, "invalid.id.format", false, db, preferedDbName, id, regxp);
+					error(validation, x, "invalid.id.format", false, db, preferedDbName, id, regxp);
 					// now try to correct (only for some...)
-					if(fix) {
+					if(validation.isFix()) {
 						// guess, it's like id_ver or id-ver
 						int i = id.lastIndexOf('-');
 						if(i<0) 
@@ -61,7 +62,7 @@ public class XrefRule extends AbstractRule<Xref>{
 									logger.debug("auto-fix: split id and idVersion for xref: "
 											+ x + " " + x.getRDFId());
 								// update the error case, set fixed=true there
-								error(x, "invalid.id.format", true);
+								error(validation, x, "invalid.id.format", true);
 							}
 						}
 						
@@ -82,7 +83,7 @@ public class XrefRule extends AbstractRule<Xref>{
 								String newId = prefix + ':' + id;
 								if (xrefHelper.checkIdFormat(preferedDbName, newId)) {
 									x.setId(newId);
-									error(x, "invalid.id.format", true);
+									error(validation, x, "invalid.id.format", true);
 									if (logger.isDebugEnabled())
 										logger.debug(x.getModelInterface()
 											.getSimpleName() + " " + x

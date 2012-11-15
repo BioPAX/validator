@@ -17,17 +17,15 @@
 	
     <bean id="validator" class="org.biopax.validator.impl.ValidatorImpl" />
     
-    <bean id="messenger" class="org.biopax.validator.impl.SimplyThrowExceptionMessenger"/>
-    
 	<!-- BiopaxValidatorUtils configuration -->
 
 	<bean id="rulesMessageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">
 			<list>
-				<value>rule-descriptions</value>
-				<value>error-codes</value>
-				<value>rule-behaviors</value>
+				<value>rules</value>
+				<value>codes</value>
+				<value>profiles</value>
 			</list>
 		</property>
 	</bean>

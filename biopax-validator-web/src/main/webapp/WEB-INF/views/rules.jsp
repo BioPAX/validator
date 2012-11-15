@@ -23,24 +23,24 @@
 <h2>Loaded BioPAX Rules</h2>
 <table border title="BioPAX Rules">
     <tr>
+        <th colspan="2">BioPAX Validation Rule</th>
+        <th colspan="2">Behavior (reports as)</th>
+    </tr>
+    <tr>
         <th>Name</th>
-        <th>Behavior</th>
-        <th>Tip</th>
+        <th>Description</th>
+        <th>Default Profile</th>
+        <th>Not Strict Profile</th>
     </tr>
   <c:forEach var="rule" items="${rules}">
     <tr title="Name&Behavior">
-        <c:url var="editUrl" value="/rule.html">
-            <c:param name="name" value="${rule.name}" />
-        </c:url>
         <td  title="${rule.tip}">${rule.name}</td>
-        <td style="font-size: small; font-style: italic">
-        	<a href='<c:out value="${editUrl}"/>'>${rule.behavior}</a>
-        </td>
         <td style="font-size: small">${rule.tip}</td>
+        <td style="font-size: small; font-style: italic">${rule.stdProfile}</td>
+		<td style="font-size: small; font-style: italic">${rule.altProfile}</td>
     </tr>
   </c:forEach>
 </table>
-
 	
   </div>
     <div id="right">

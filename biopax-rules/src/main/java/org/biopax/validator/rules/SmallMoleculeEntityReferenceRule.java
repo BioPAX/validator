@@ -1,6 +1,7 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.SmallMolecule;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +18,10 @@ public class SmallMoleculeEntityReferenceRule extends AbstractRule<SmallMolecule
 	}
 
 	@Override
-	public void check(SmallMolecule sm, boolean fix) {
+	public void check(final Validation validation, SmallMolecule sm) {
 		if(sm.getEntityReference() == null) {
 			if(sm.getMemberPhysicalEntity().isEmpty()) {
-				error(sm, "null.entity.reference", false, "SmallMoleculeReference");
+				error(validation, sm, "null.entity.reference", false, "SmallMoleculeReference");
 			} 
 		}
 	} 

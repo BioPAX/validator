@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ public class ComplexComponentsSameLocationRule extends AbstractRule<Complex> {
 		return thing instanceof Complex;
 	}
 
-	public void check(Complex thing, boolean fix) {
+	public void check(final Validation validation, Complex thing) {
 		if(thing.getCellularLocation() != null) {
 			Set<PhysicalEntity> ents = thing.getComponent();
 			if (ents != null) {
@@ -38,8 +39,8 @@ public class ComplexComponentsSameLocationRule extends AbstractRule<Complex> {
 				}
 				
 				if(!comps.isEmpty()) {
-					error(thing, "component.no.location", 
-							false, thing.getCellularLocation().toString(), comps);
+					error(validation, thing, 
+							"component.no.location", false, thing.getCellularLocation().toString(), comps);
 				}
 			}
 		}

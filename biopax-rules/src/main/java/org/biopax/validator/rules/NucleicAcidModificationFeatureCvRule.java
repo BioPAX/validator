@@ -4,9 +4,9 @@ import org.biopax.paxtools.model.level3.Dna;
 import org.biopax.paxtools.model.level3.ModificationFeature;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.Rna;
-import org.biopax.validator.impl.CvTermRestriction;
+import org.biopax.validator.CvRestriction;
+import org.biopax.validator.CvRestriction.UseChildTerms;
 import org.biopax.validator.impl.Level3CvTermsRule;
-import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,9 +20,9 @@ public class NucleicAcidModificationFeatureCvRule extends Level3CvTermsRule<Modi
 		
 	public NucleicAcidModificationFeatureCvRule() {
 		super(ModificationFeature.class, "modificationType", 
-				new CvTermRestriction("SO:1000132","SO", true, 
+				new CvRestriction("SO:1000132","SO", true, 
 						UseChildTerms.ALL, false),
-				new CvTermRestriction("SO:0001059","SO", true, 
+				new CvRestriction("SO:0001059","SO", true, 
 						UseChildTerms.ALL, false));
 	}
 	

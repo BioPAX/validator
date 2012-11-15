@@ -6,6 +6,7 @@ import java.util.Set;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.BindingFeature;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.biopax.validator.utils.Cluster;
@@ -25,7 +26,7 @@ public class BindingFeatureExtraRules extends AbstractRule<Model> {
 			&& ((Model)thing).getLevel() == BioPAXLevel.L3;
 	}
 
-	public void check(Model model, boolean fix) {
+	public void check(final Validation validation, Model model) {
 		Set<BindingFeature> bfs = new HashSet<BindingFeature>(
 				model.getObjects(BindingFeature.class));
 
@@ -47,8 +48,8 @@ public class BindingFeatureExtraRules extends AbstractRule<Model> {
 		for (Set<BindingFeature> s : violations) {
 			if(violations.size() > 1) {
 				BindingFeature a = s.iterator().next();
-				error(a, "inverse.functional.violated", false,	"bindsTo", 
-					a.getBindsTo(), BiopaxValidatorUtils.getIdListAsString(s));
+				error(validation, a, "inverse.functional.violated",	false, 
+					"bindsTo", a.getBindsTo(), BiopaxValidatorUtils.getIdListAsString(s));
 			}
 		}
 

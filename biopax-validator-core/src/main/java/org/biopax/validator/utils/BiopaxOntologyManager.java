@@ -6,15 +6,16 @@ import java.util.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biopax.psidev.ontology_manager.Ontology;
+import org.biopax.psidev.ontology_manager.OntologyTermI;
+import org.biopax.psidev.ontology_manager.impl.OntologyManagerContext;
+import org.biopax.psidev.ontology_manager.impl.OntologyManagerImpl;
+import org.biopax.psidev.ontology_manager.impl.OntologyUtils;
 import org.biopax.validator.CvRule;
-import org.biopax.validator.impl.CvTermRestriction;
-import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
+import org.biopax.validator.CvRestriction;
+import org.biopax.validator.CvValidator;
+import org.biopax.validator.CvRestriction.UseChildTerms;
 
-import psidev.ontology_manager.Ontology;
-import psidev.ontology_manager.OntologyTermI;
-import psidev.ontology_manager.impl.OntologyManagerContext;
-import psidev.ontology_manager.impl.OntologyManagerImpl;
-import psidev.ontology_manager.impl.OntologyUtils;
 
 /**
  * Access to BioPAX controlled vocabularies.
@@ -79,7 +80,7 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	/* (non-Javadoc)
 	 * @see org.biopax.validator.utils.CvValidator#getValidTermNames(java.util.Collection)
 	 */
-	public Set<String> getValidTermNames(Collection<CvTermRestriction> restrictions) {
+	public Set<String> getValidTermNames(Collection<CvRestriction> restrictions) {
 		Set<String> names = new HashSet<String>();
 		Set<OntologyTermI> terms = getValidTerms(restrictions);
 		names.addAll(OntologyUtils.getTermNames(terms));
@@ -90,7 +91,7 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	/* (non-Javadoc)
 	 * @see org.biopax.validator.utils.CvValidator#getValidTermNamesLowerCase(java.util.Collection)
 	 */
-	public Set<String> getValidTermNamesLowerCase(Collection<CvTermRestriction> restrictions) {
+	public Set<String> getValidTermNamesLowerCase(Collection<CvRestriction> restrictions) {
 		Set<String> names = new HashSet<String>();
 		for(String name : getValidTermNames(restrictions)) {
 			names.add(name.toLowerCase());
@@ -102,7 +103,7 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	/* (non-Javadoc)
 	 * @see org.biopax.validator.utils.CvValidator#getTermNames(org.biopax.validator.impl.CvTermRestriction)
 	 */
-	public Set<String> getTermNames(CvTermRestriction restriction) {
+	public Set<String> getTermNames(CvRestriction restriction) {
 		Set<OntologyTermI> terms = getTerms(restriction);
 		Set<String> names = new HashSet<String>();
 		names.addAll(OntologyUtils.getTermNames(terms));
@@ -114,18 +115,18 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	/* (non-Javadoc)
 	 * @see org.biopax.validator.utils.CvValidator#getValidTerms(java.util.Collection)
 	 */
-	public Set<OntologyTermI> getValidTerms(Collection<CvTermRestriction> restrictions) {
+	public Set<OntologyTermI> getValidTerms(Collection<CvRestriction> restrictions) {
 		Set<OntologyTermI> terms = new HashSet<OntologyTermI>();
 		
 		// first, collect all the valid terms
-		for(CvTermRestriction restriction : restrictions) {
+		for(CvRestriction restriction : restrictions) {
 			if(!restriction.isNot()) {
 				terms.addAll(getTerms(restriction));
 			}
 		}
 		
 		// now remove all those where restriction 'not' property set to true
-		for(CvTermRestriction restriction : restrictions) {
+		for(CvRestriction restriction : restrictions) {
 			if(restriction.isNot()) {
 				terms.removeAll(getTerms(restriction));
 			}
@@ -138,7 +139,7 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	/* (non-Javadoc)
 	 * @see org.biopax.validator.utils.CvValidator#getTerms(org.biopax.validator.impl.CvTermRestriction)
 	 */
-	public Set<OntologyTermI> getTerms(CvTermRestriction restriction) {
+	public Set<OntologyTermI> getTerms(CvRestriction restriction) {
 		Set<OntologyTermI> terms = new HashSet<OntologyTermI>();
 		Ontology ontologyAccess = getOntology(restriction.getOntologyId());
 		if(ontologyAccess == null) {

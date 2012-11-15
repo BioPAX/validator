@@ -11,6 +11,7 @@ import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PathwayStep;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.Process;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +33,7 @@ public class NextStepShareParticipantsRule extends AbstractRule<PathwayStep>
 			&& !((PathwayStep) thing).getNextStepOf().isEmpty();
 	}
 
-	public void check(PathwayStep step, boolean fix) {
+	public void check(final Validation validation, PathwayStep step) {
 		if(step.getNextStepOf().isEmpty())
 			return;
 		
@@ -45,7 +46,7 @@ public class NextStepShareParticipantsRule extends AbstractRule<PathwayStep>
 			// first set becomes the intersection of the two:
 			participants.retainAll(thisStepParticipants);
 			if (participants.isEmpty()) {
-				error(step, "empty.participants.intersection", false, prevStep);
+				error(validation, step, "empty.participants.intersection", false, prevStep);
 			}
 		}
 	}

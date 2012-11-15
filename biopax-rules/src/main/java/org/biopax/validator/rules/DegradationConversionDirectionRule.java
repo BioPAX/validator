@@ -2,6 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.ConversionDirectionType;
 import org.biopax.paxtools.model.level3.Degradation;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -17,15 +18,15 @@ public class DegradationConversionDirectionRule extends AbstractRule<Degradation
 		return thing instanceof Degradation;
 	}
 
-	public void check(Degradation thing, boolean fix) {
+	public void check(final Validation validation, Degradation thing) {
 		if(thing.getConversionDirection() != null 
 			&& thing.getConversionDirection() != ConversionDirectionType.LEFT_TO_RIGHT) 
 		{	
-			error(thing, "range.violated", fix, 
-						"conversionDirection", thing.getConversionDirection().name(),
-					"", ConversionDirectionType.LEFT_TO_RIGHT.name()
+			error(validation, thing, "range.violated", 
+						validation.isFix(), "conversionDirection",
+					thing.getConversionDirection().name(), "", ConversionDirectionType.LEFT_TO_RIGHT.name()
 					+ " (or empty)");
-			if(fix) {
+			if(validation.isFix()) {
 				thing.setConversionDirection(ConversionDirectionType.LEFT_TO_RIGHT);
 			}
 		}

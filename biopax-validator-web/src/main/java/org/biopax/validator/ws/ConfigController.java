@@ -2,8 +2,6 @@ package org.biopax.validator.ws;
 
 import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.validator.result.Behavior;
@@ -11,12 +9,9 @@ import org.biopax.validator.result.Category;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 import org.biopax.validator.Rule;
 import org.biopax.validator.Validator;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 
@@ -60,28 +55,67 @@ public class ConfigController {
     }
          
 	@RequestMapping(value="/rules")
-    public @ModelAttribute("rules") Collection<Rule<?>> rules() {
-  		return validator.getRules();
+    public @ModelAttribute("rules") Collection<AboutRule> rules() {
+		
+		Set<AboutRule> rules = new TreeSet<AboutRule>();
+		
+  		for(Rule r: validator.getRules()) {
+  			String name = r.getClass().getName();
+  			rules.add(new AboutRule(name, utils.getRuleDescription(name), 
+  				utils.getRuleBehavior(name, null), utils.getRuleBehavior(name, "notstrict")));
+  		}
+  		
+  		return rules;
     }
 	
-	@Secured("ROLE_ADMIN")
-    @RequestMapping(value="/rule", method=RequestMethod.POST)
-    public String rule(HttpServletRequest request) {
-    	Rule r = validator.findRuleByName(request.getParameter("name"));
-    	r.setBehavior(Behavior.valueOf(request.getParameter("behavior")));
-    	return "redirect:rules.html";
-    }    
+	
+	public final static class AboutRule implements Comparable<AboutRule>{
+		String name;
+		String tip;
+		Behavior stdProfile;
+		Behavior altProfile;
+			
+		public AboutRule(String name, String tip, Behavior stdProfile,
+				Behavior altProfile) {
+			this.name = name;
+			this.tip = tip;
+			this.stdProfile = stdProfile;
+			this.altProfile = altProfile;
+		}
 
-    @RequestMapping(value="/rule", method=RequestMethod.GET)
-    public @ModelAttribute("rule") Rule rule(@RequestParam(required=true) String name) {
-    	Rule r = validator.findRuleByName(name);
-        return r;
-    } 
-        
-   /* 
-    @RequestMapping("/admin")
-    public void adminPage() {}
-    */
+
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getTip() {
+			return tip;
+		}
+		public void setTip(String tip) {
+			this.tip = tip;
+		}
+
+		public Behavior getStdProfile() {
+			return stdProfile;
+		}
+		public void setStdProfile(Behavior stdProfile) {
+			this.stdProfile = stdProfile;
+		}
+
+		public Behavior getAltProfile() {
+			return altProfile;
+		}
+		public void setAltProfile(Behavior altProfile) {
+			this.altProfile = altProfile;
+		}
+
+		@Override
+		public int compareTo(AboutRule r) {return name.compareTo(r.name);};
+	};
+	
     
     @ModelAttribute("categories")
     public Category[] errorCategories() {
@@ -187,5 +221,5 @@ public class ConfigController {
     
 
     @RequestMapping("/extraCfg")
-    public void extraCfg() {} // the view knows what to do
+    public void extraCfg() {} // the view knows what to do (using here defined @ModelAttribute methods)
 }

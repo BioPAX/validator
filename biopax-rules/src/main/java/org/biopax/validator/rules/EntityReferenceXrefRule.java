@@ -4,6 +4,7 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.model.level3.Xref;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.springframework.stereotype.Component;
 
@@ -15,10 +16,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class EntityReferenceXrefRule extends AbstractRule<EntityReference> {
 
-   public void check(EntityReference er, boolean fix) {
+   public void check(final Validation validation, EntityReference er) {
 	   if(er.getMemberEntityReference().isEmpty()) { // for non-generic ERs only
         if (er.getXref().isEmpty()) {
-            error(er, "no.xrefs", false);
+            error(validation, er, "no.xrefs", false);
         } else {
             boolean present = false;
             for (Xref x : er.getXref()) {
@@ -28,7 +29,7 @@ public class EntityReferenceXrefRule extends AbstractRule<EntityReference> {
                 }
             }
             if (!present) {
-                error(er, "no.unification.xref", false);
+                error(validation, er, "no.unification.xref", false);
             }
         }
 	   }

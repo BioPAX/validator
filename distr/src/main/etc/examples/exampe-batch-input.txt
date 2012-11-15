@@ -4,7 +4,6 @@ file:examples/biopax3-genetic-interaction.owl
 file:examples/biopax3-short-metabolic-pathway.owl
 file:examples/biopax3-phosphorylation-reaction.owl
 file:examples/testDegradationConversionDirectionRule.owl
-file:examples/testDuplicateNamesImport.owl
 file:examples/testBiochemicalPathwayStepProcessOnlyControlCRRule.owl
 file:examples/testProteinReferenceOrganismCRRule.owl
 file:examples/testBiochemReactParticipantsLocationRule_Transport.owl

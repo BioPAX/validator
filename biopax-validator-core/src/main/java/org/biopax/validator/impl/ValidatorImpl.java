@@ -14,21 +14,17 @@ import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
-import org.biopax.paxtools.model.level2.interaction;
-import org.biopax.paxtools.model.level2.pathway;
-import org.biopax.paxtools.model.level2.physicalEntityParticipant;
 import org.biopax.paxtools.model.level3.Gene;
 import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.UtilityClass;
 import org.biopax.validator.Rule;
-import org.biopax.validator.result.ErrorCaseType;
+import org.biopax.validator.result.Behavior;
 import org.biopax.validator.result.ErrorType;
 import org.biopax.validator.result.Validation;
 import org.biopax.validator.utils.BiopaxValidatorException;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
-import org.biopax.validator.utils.Normalizer;
 import org.biopax.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -54,6 +50,9 @@ public class ValidatorImpl implements Validator {
     
 	private final Set<Validation> results;
     
+	@Autowired
+	private BiopaxValidatorUtils utils;
+	
 	
     public ValidatorImpl() {
 		results = new HashSet<Validation>();
@@ -89,26 +88,30 @@ public class ValidatorImpl implements Validator {
 			getResults().add(validation); 
 		}
 		
-		Model model = validation.getModel();
+		Model model = (Model) validation.getModel();
 
 		if (log.isDebugEnabled()) {
 			log.debug("validating model: " + model + " that has "
 					+ model.getObjects().size() + " objects");
 		}
-
-		// if normalize==true, convert to the L3 first (before rules check)
-		if (model.getLevel() != BioPAXLevel.L3 && validation.isNormalize()) {
-			if (log.isInfoEnabled())
-				log.info("Converting model to BioPAX Level3...");
-			model = (new OneTwoThree()).filter(model);
-			validation.setModel(model); // not sure if this is necessarily...
-		}
+				
+		if(model.getLevel() != BioPAXLevel.L3) {
+   			model = (new OneTwoThree()).filter(model);
+   			validation.setModel(model);
+   			log.info("Upgraded to BioPAX Level3 model: " + validation.getDescription());			
+   		}
+		
+		assert(model != null && model.getLevel() == BioPAXLevel.L3);
 
 		//we'll check rules concurrently
 		ExecutorService exec = Executors.newFixedThreadPool(30);
 
 		//First, check/fix individual objects
-		for (final Rule<?> rule : rules) {
+		for (final Rule<?> rule : rules) 
+		{	
+			Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
+	        if (behavior == Behavior.IGNORE) continue; // skip		
+			
 			// rules can check/fix specific elements
 			// copy the elements collection to avoid concurrent modification
 			// (rules can add/remove objects)!
@@ -128,7 +131,7 @@ public class ValidatorImpl implements Validator {
 					exec.submit(new Runnable() {
 						@Override
 						public void run() {
-							r.check(el, validation.isFix());
+							r.check(validation, el);
 						}
 					});
 
@@ -145,10 +148,14 @@ public class ValidatorImpl implements Validator {
 		exec = Executors.newFixedThreadPool(30);
 		//Second, check/fix <Model> rules
 		final Model m = model;
-		for (Rule<?> rule : rules) {
+		for (Rule<?> rule : rules) 
+		{
+			Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
+	        if (behavior == Behavior.IGNORE) continue; // skip
+	        
 			if (rule.canCheck(model)) {
 				if (log.isDebugEnabled())
-					log.debug("Current rule is: " + rule.getName());
+					log.debug("Current rule is: " + rule);
 				
 				@SuppressWarnings("unchecked")
 				final Rule<Model> r = (Rule<Model>) rule;
@@ -156,7 +163,7 @@ public class ValidatorImpl implements Validator {
 				exec.submit(new Runnable() {
 					@Override
 					public void run() {
-						r.check(m, validation.isFix());
+						r.check(null, m);
 					}
 				});
 				
@@ -171,15 +178,8 @@ public class ValidatorImpl implements Validator {
 		
 		if (log.isDebugEnabled())
 			log.debug("All rules checked!");
-		
-		// normalize?
-		if (validation.isNormalize()) {
-			Normalizer normalizer = new Normalizer(validation);
-			normalizer.normalize();
-			model = validation.getModel(); // reset the ref. (less worry...)
-		}
-		
-		if (validation.isFix() || validation.isNormalize()) {
+				
+		if (validation.isFix()) {
 			// discover, explicitly add child elements to the model
 			model.repair();
 			// remove all dangling utility class objects
@@ -187,38 +187,17 @@ public class ValidatorImpl implements Validator {
 		}
 
 		// add comments and some statistics
-		if (model.getLevel() == BioPAXLevel.L3) {
-			validation.addComment("number of interactions : "
-					+ model.getObjects(Interaction.class).size());
-			validation.addComment("number of physical entities : "
-					+ model.getObjects(PhysicalEntity.class).size());
-			validation.addComment("number of genes : "
-					+ model.getObjects(Gene.class).size());
-			validation.addComment("number of pathways : "
-					+ model.getObjects(Pathway.class).size());
-		} else {
-			validation.addComment("number of interactions : "
-					+ model.getObjects(interaction.class).size());
-			validation.addComment("number of participants : "
-					+ model.getObjects(physicalEntityParticipant.class).size());
-			validation.addComment("number of pathways : "
-					+ model.getObjects(pathway.class).size());
-		}
-
-	}
-
-
-	public Rule<?> findRuleByName(String name) {
-		Rule<?> found = null;
-		if (name != null || !"".equals(name)) {
-			for (Rule<?> r : rules) {
-				if (name.equals(r.getName())) {
-					found = r;
-					break;
-				}
-			}
-		}
-		return found;
+		validation.addComment("number of interactions : "
+				+ model.getObjects(Interaction.class).size());
+		validation.addComment("number of physical entities : "
+				+ model.getObjects(PhysicalEntity.class).size());
+		validation.addComment("number of genes : "
+				+ model.getObjects(Gene.class).size());
+		validation.addComment("number of pathways : "
+				+ model.getObjects(Pathway.class).size());
+		
+		//Refresh 'modelSerialized' property: 
+		validation.updateModelSerialized(model);
 	}
 
 
@@ -282,7 +261,7 @@ public class ValidatorImpl implements Validator {
 			{
 				// associate using member models
 				BioPAXElement bpe = (BioPAXElement) o;
-				Model m = r.getModel();
+				Model m = (Model) r.getModel();
 				if (m != null && m.contains(bpe)) {
 					keys.add(r);
 				}
@@ -321,73 +300,47 @@ public class ValidatorImpl implements Validator {
 		}
 	}
 
-		
-    /**
-     * Saves or updates the information about a error/warning case
-     * with all the {@link Validation} jobs known to this validator
-     * object. 
-     * 
-     * This is one of most important SPI methods used, e.g., 
-     * indirectly by all the AOP advices (objects) which intercept, analyze,
-     * and properly register all problems (messages) sent from independent
-     * validation rules (taking into account rules configuration, threshold,
-     * where a BioPAX element or other troubled object belongs to, etc.)
-     * 
-     * NOTE: in the current implementation, this method is normally (in fact, always) 
-     * called with the error type ('err') having only ONE error case!
-     * @see {@link BiopaxValidatorUtils#createError(String, String, String, org.biopax.validator.result.Behavior, Object...)}
-     * 
-     * @param obj
-     * @param err
-     * @param setFixed
-     * 	
-     */
-    public void report(Object obj, ErrorType err, boolean setFixed) 
-    {	
-		if(err.getErrorCase().isEmpty()) {
-			log.error("Attempted to registed an error " +
-				"without any error cases in it: " + err);
-			return;
-		}
-		
+   
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Saves or updates an error/warning case, found by an external tool, in all
+	 * {@link Validation} tasks known to this validator instance. 
+	 * This method is used by, e.g., AOP interceptors, which sense, catch, and
+	 * register problems that occur in external modules, such as Paxtools,
+	 * during the data read and/or modify.
+	 *  
+	 */
+	@Override
+	public void report(Object obj, String errorCode, String reportedBy, boolean isFixed, Object... args) 
+	{		
 		if(obj == null) {
 			log.error("Attempted to registed an error " +
-					"with NULL object: " + err);
+					errorCode + " by " + reportedBy + " with NULL object");
 			return;
 		}
 		
-		if(log.isDebugEnabled())
-			log.debug("Registering the error: " + err 
-				+ " for object: " + obj + " as: " + setFixed);
 		
     	Collection<Validation> validations = findValidation(obj);			
 		if(validations.isEmpty()) {
 			// the object is not associated neither with parser nor model
-			if(log.isInfoEnabled())
-				log.info("No validations are associated with the object: " 
-				+ obj + "; user won't receive this message: " 
-				+ err);
+			log.warn("No validations are associated with the object: " 
+				+ obj + "; user won't receive this message: " + errorCode 
+				+ "(fixed=" + isFixed + ") by " + reportedBy + "; " + args );
 		}
 		
 		// add to the corresponding validation result
-		for(Validation v: validations) { 
-			assert v != null : "The list of available validations contains NULL!";
-					
-			if(v.isMaxErrorsSet() && v.getNotFixedErrors() >= v.getMaxErrors())
-			{
-				log.info("Won't save the case: max. errors " +
-					"limit exceeded for " + v.getDescription());
-				continue;
-			}
-			
-			// update 'fixed' flag
-			for(ErrorCaseType ect : err.getErrorCase()) {
-				ect.setFixed(setFixed); 
-			}
+		for(Validation v: validations) { 	
+			ErrorType err = utils.createError(BiopaxValidatorUtils.getId(obj), 
+					errorCode, reportedBy, v.getProfile(), isFixed, args);			
 
-			// add or update the error case(s), i.e., if there was same type error,
-			// this will add or update existing error cases (- no duplicate type-object pair cases)
+			// add or update: if there was the same type error,
+			// this will update/add to existing error cases (unique type-object-reporter combinations) 
 			v.addError(err);
-		}		
+			
+			if(log.isDebugEnabled())
+				log.debug(v.getDescription() + " - added/updated " + err + " for " + obj + " as: " + isFixed);
+		}	
+
 	}
 }

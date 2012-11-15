@@ -1,16 +1,16 @@
 import static org.junit.Assert.*;
 
+import org.biopax.psidev.ontology_manager.Ontology;
+import org.biopax.psidev.ontology_manager.OntologyManager;
+import org.biopax.psidev.ontology_manager.OntologyTermI;
+import org.biopax.psidev.ontology_manager.impl.OntologyImpl;
+import org.biopax.psidev.ontology_manager.impl.OntologyLoaderException;
+import org.biopax.psidev.ontology_manager.impl.OntologyManagerContext;
+import org.biopax.psidev.ontology_manager.impl.OntologyManagerImpl;
 import org.junit.*;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
-import psidev.ontology_manager.Ontology;
-import psidev.ontology_manager.OntologyManager;
-import psidev.ontology_manager.OntologyTermI;
-import psidev.ontology_manager.impl.OntologyImpl;
-import psidev.ontology_manager.impl.OntologyLoaderException;
-import psidev.ontology_manager.impl.OntologyManagerContext;
-import psidev.ontology_manager.impl.OntologyManagerImpl;
 
 import java.util.Collection;
 import java.util.Properties;

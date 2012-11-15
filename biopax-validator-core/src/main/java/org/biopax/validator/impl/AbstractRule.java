@@ -1,20 +1,14 @@
 package org.biopax.validator.impl;
 
-import org.biopax.validator.result.Behavior;
-import org.biopax.validator.Messenger;
 import org.biopax.validator.Rule;
-import org.biopax.validator.utils.BiopaxValidatorException;
+import org.biopax.validator.result.ErrorType;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.utils.BiopaxValidatorUtils;
 
-import java.util.Locale;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.MessageSource;
 
 /**
  * Abstract validation rule.
@@ -27,145 +21,45 @@ import org.springframework.context.MessageSource;
 public abstract class AbstractRule<T> implements Rule<T> {
 
     protected Log logger = LogFactory.getLog(AbstractRule.class);
-    protected Behavior behavior;
-    private String tip;
-	private boolean postModelOnly = true;
+
+    @Autowired
+    private BiopaxValidatorUtils utils;
     
-    @Resource
-    private MessageSource rulesMessageSource;
-    
-    @Resource
-    private Messenger messenger;
     
     public AbstractRule() {
         logger = LogFactory.getLog(this.getClass()); // concrete class
-        postModelOnly = true;
-        behavior = Behavior.ERROR;
     }
-           
+
+    
     /**
-     * Rule setup.
+     * {@inheritDoc}
      * 
-     * This @PostConstruct initialization method, which
-     * can be also called directly, makes to 
-     * assign Behavior and Tip properties values using 
-     * those found in the properties file, or defaults,
-     * if none found.
+     * Implementation of the interface method.
      * 
-     */
-	@PostConstruct
-	public void init() {
-		/*
-		 * set value as specified in the properties file, or use the default
-		 * value (it doesn't throw exceptions or return null)
-		 */
-		if (rulesMessageSource != null) {
-			// behavior
-			String value = rulesMessageSource.getMessage(getName()
-					+ ".behavior", null, "ERROR", Locale.getDefault());
-			setBehavior(Behavior.valueOf(value.toUpperCase()));
-
-			// description
-			this.tip = rulesMessageSource.getMessage(getName(), null, "",
-					Locale.getDefault());
-			if (tip == null || "".equals(tip)) {
-				tip = "description is not found in the messages.properties file";
-			} else {
-				tip = StringEscapeUtils.escapeHtml(tip);
-			}
-
-			// set isPostModelOnly
-			String pmo = rulesMessageSource.getMessage(getName()
-					+ ".postmodelonly", null, "true", Locale.getDefault());
-			setPostModelOnly(Boolean.parseBoolean(pmo));
-		} else {
-			logger.warn("messageSource is null; " +
-				"using default configuration: behavior=error, no tip/description message" +
-				" (is rule created outside the Validator AOP context?)");
-		}
-	}
-
-    /**
-     * Rule's (Spring bean) name.
-     * 
-     * This is also used for the error reporting.
-     * 
-     * @return bean name
-     */
-	public final String getName() {
-        if (getClass().getCanonicalName() != null) {
-        	String s = getClass().getSimpleName();
-			return s.substring(0, 1).toLowerCase() + s.substring(1);
-		} else {
-			String s = getClass().getName();
-			int i = s.lastIndexOf('.');
-			return s.substring(i+1);
-		}
-    }
-
-	/**
-	 * Rule description (or 'tip')
-	 * 
-	 * @return a tip
+     * @throws NullPointerException when validation is null
 	 */
-    public final String getTip() {
-		return tip;
-	}
- 
-    public final Behavior getBehavior() {
-        return behavior;
-    }
+    @Override
+    public void error(final Validation validation, Object object, String code, boolean setFixed, Object... args) {
 
-    public final void setBehavior(Behavior behavior) {
-        this.behavior = behavior;
-    }
-             
-
-	/**
-	 * A Rule should not call this method using the same error 'code' 
-	 * and 'object' (regardless of other arguments) more than once!
-	 */
-    public void error(Object object, String code, boolean setFixed, Object... args) {
-    	Messenger m = getMessenger();
-    	if(m != null) {
-    		m.sendErrorCase(this, object, code, setFixed, args); // to be processed...
-    	} else { // - running outside the framework (tests?)
-    		String event = ((setFixed) ? "FIXED " : "") 
-    			+ this.getBehavior() + " " + code + " in "
-    			+ BiopaxValidatorUtils.getId(object);
-    		
-    		if(logger.isWarnEnabled())
-    			logger.warn(this.getName() + 
-    			" won't register the event: '" + event + "' (Messenger is null)");
-    		
-    		if(!setFixed)
-    			throw new BiopaxValidatorException(event, args);
+    	if(object == null) {
+   			logger.warn("The 'thing' (the error is about) is NULL! Skipping.");
+    		return;
     	}
+    	
+    	// get object's ID
+    	String thingId = BiopaxValidatorUtils.getId(object);
+  	    	
+    	// create and add/update the error case using current validation profile
+    	ErrorType error = (utils != null) 
+    			? utils.createError(thingId, code, getClass().getName(), validation.getProfile(), setFixed, args)
+    			// when - no config. available (JUnit tests?); it will be 'ERROR' type with default messages:
+    			: BiopaxValidatorUtils.createError(null, null,
+    				thingId, code, getClass().getName(), null, setFixed, args);
+    	
+    	validation.addError(error);
+
+    	if(logger.isDebugEnabled())
+    		logger.debug( ((setFixed) ? "FIXED " : "") + " " + code + " in " + thingId);
     }
-       
-    public boolean isPostModelOnly() {
-    	return postModelOnly;
-    }
-    
-    public void setPostModelOnly(boolean postModelOnly) {
-		this.postModelOnly = postModelOnly;
-	}
-    
-    
-    public MessageSource getRulesMessageSource() {
-		return rulesMessageSource;
-	}
-    
-    public void setRulesMessageSource(MessageSource rulesMessageSource) {
-		this.rulesMessageSource = rulesMessageSource;
-	}
-    
-    public Messenger getMessenger() {
-		return messenger;
-	}
-    
-    public void setMessenger(Messenger messenger) {
-		this.messenger = messenger;
-	}
 
 }

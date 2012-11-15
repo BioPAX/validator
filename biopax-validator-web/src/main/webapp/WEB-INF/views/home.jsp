@@ -19,29 +19,45 @@
   <div id="content">
     <div id="left">
 
-<h2>Welcome!</h2>
+<h2>Welcome</h2>
 <div style="width: 90%">
 BioPAX is a standard for communicating the knowledge about biochemical processes.  
 The BioPAX Validator is to help detect and fix syntax and non-trivial semantic issues 
 introduced in the course of biological pathway data modeling, mapping, and exporting to BioPAX. 
-"Valid" pathway knowledge is easier to analyze and merge at a much greater level of detail and with more generic, standard tools. 
-The BioPAX Validator has dozens of custom rules defined, some of which cannot be expressed in OWL or related rule definition languages.
-These rules come from the BioPAX specification and community best practices, are expressed in plain Java and embraced by the 
+High quality pathway knowledge is easier to analyze and merge at a much greater level of detail and with more generic, standard tools. 
+The BioPAX Validator contains dozens of custom rules, some of which cannot be expressed in OWL or other rule definition languages.
+These rules come from BioPAX Level3 specification and the community best practice, are expressed in plain Java and embraced by the 
 validator's original cross-cutting error reporting framework. The rules are, basically, generic Java classes 
-built around Paxtools API. They can check across several BioPAX entities, check entire BioPAX model, 
-can be nested, can overlap in their subjects, can check "real-time" (on a property change). 
-The BioPAX Validator can run on the web, command line, or - integrated into other java applications.
-
+built around Paxtools API. The BioPAX Validator can run online, from command line, or integrated into other java applications as a library.
+The Validator always converst BioPAX Level1, Level2 to Level3 internally, before it checks Level3 rules; and one can get the Level3 result back
+along with errors and warnings.
 </div>
-&nbsp;
+
+	<h2>See Also:</h2>
+	<div>
+		<a href='<c:url value="/ws.html"/>'>About Webservice</a> (and paremeters)
+	</div>
+	<br/>		
+	<div>
+		<a href='<c:url value="/rules.html"/>'>Validation Rules</a> (description and configurations)
+	</div>
+	<br/>
+	<div>
+		<a href='<c:url value="/errorTypes.html"/>'>Validation Errors</a> (codes, categories, messages)
+	</div>
+	<br/>
+	<div>
+		<a href='<c:url value="/extraCfg.html"/>'>Extra Properties</a> (a couple of rules use XML configuration too)
+	</div>
+<br/>
+
 <div>
 Please feel free to post your comments, suggestions, and issues at the 
 <a href="http://sourceforge.net/apps/mediawiki/biopax/index.php?title=BioPAXValidator">Validator Wiki</a> and 
 <a href="http://sf.net/tracker/?group_id=85345">BioPAX issue tracker</a>.
 </div>
 &nbsp;
-
- 	
+	
     </div>
     <div id="right">
       <jsp:include page="/templates/menu.jsp"/>

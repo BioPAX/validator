@@ -1,9 +1,9 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.CellularLocationVocabulary;
-import org.biopax.validator.impl.CvTermRestriction;
+import org.biopax.validator.CvRestriction;
+import org.biopax.validator.CvRestriction.UseChildTerms;
 import org.biopax.validator.impl.Level3CvTermsRule;
-import org.biopax.validator.impl.CvTermRestriction.UseChildTerms;
 import org.springframework.stereotype.Component;
 
 
@@ -19,7 +19,7 @@ public class CellularLocationCvRule extends Level3CvTermsRule<CellularLocationVo
 
 	public CellularLocationCvRule() {
 		super(CellularLocationVocabulary.class, null, 
-				new CvTermRestriction("GO:0005575","GO", false,
+				new CvRestriction("GO:0005575","GO", false,
 						UseChildTerms.ALL, false));
 	}
 

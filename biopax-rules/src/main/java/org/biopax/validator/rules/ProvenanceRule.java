@@ -3,6 +3,7 @@ package org.biopax.validator.rules;
 import org.biopax.paxtools.model.level3.Provenance;
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.model.level3.Xref;
+import org.biopax.validator.result.Validation;
 import org.biopax.validator.impl.AbstractRule;
 import org.biopax.validator.utils.XrefHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class ProvenanceRule extends AbstractRule<Provenance> {
 		return thing instanceof Provenance;
 	}  
     
-	public void check(Provenance p, boolean fix) {
+	public void check(final Validation validation, Provenance p) {
 		// check standardName or displayName is valid
 		String db = null;
 		if(p.getStandardName() != null)
@@ -35,21 +36,21 @@ public class ProvenanceRule extends AbstractRule<Provenance> {
 			if(p.getDisplayName() != null) {
 				db = xrefHelper.getPrimaryDbName(p.getDisplayName());
 				if (db == null) {
-					error(p, "unknown.db", false, p.getDisplayName() 
+					error(validation, p, "unknown.db", false, p.getDisplayName() 
 							+ " or " + p.getStandardName());
 				}
 			} else {
-				error(p, "cardinality.violated", false, "standardName or displayName", 1);
+				error(validation, p, "cardinality.violated", false, "standardName or displayName", 1);
 			}
 		}
 		
 		// check unif.xrefs
 		for (Xref x : p.getXref()) {
 			if (x instanceof UnificationXref) {
-				error(x, "not.allowed.xref", 
-					false, x.getDb(), p, "Provenance", "- Miriam or PubMed but not a bioentities db!");
+				error(validation, x, 
+					"not.allowed.xref", false, x.getDb(), p, "Provenance", "- Miriam or PubMed but not a bioentities db!");
 						/*
-						if(fix) {
+						if(validation.isFix()) {
 							p.removeXref(x);
 						}
 						*/

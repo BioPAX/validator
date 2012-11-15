@@ -27,18 +27,18 @@
 <div>
 
 <h3>Check</h3>
-To validate and, optionally, auto-fix and normalize BioPAX files or data (at some URL), 
+To validate and, optionally, auto-fix and normalize local or remote BioPAX file(s), 
 submit a multipart/form-data HTTP POST request to <a href="<c:url value='/check.html'/>">this page</a>
 
 <h4>Parameters:</h4>
 <ul>
 <li><em>file</em> (actually, parameter name does not matter here, - simply submit an array of files) OR <em>url</em> (value: a URL to data in BioPAX format)</li>
 <li><em>retDesired</em> - output format; values: "html" (default), "xml", or "owl" (modified BioPAX only, no error messages)</li>
-<li><em>autofix</em> - false/true; try to fix some errors automatically (a new experimental feature; default is "false")</li>
-<li><em>normalize</em> - false/true; return "normalized" BioPAX (a new experimental feature; default is "false")</li>
+<li><em>autofix</em> - false/true; try to fix BioPAX errors automatically and then normalize (default is "false")</li>
 <li><em>filter</em> - set log level; values: "WARNING" (default, get both errors and warnings), "ERROR", and "IGNORE" (no problems at all ;))</li>
 <li><em>maxErrors</em> - set the max. number of not fixed ERROR type cases to collect (some, but not all, warning and fixed cases will be also reported);
 value: a positive integer; "0" (default) means "unlimited", "1" - fail-fast mode, i.e., stop after the first serious issue, "10" - collect up to ten error cases, etc.</li>
+<li><em>profile</em> - use an alternative, pre-configured validation profile; currently, there is only one value available: "notstrict" (for particular rules to report 'warning' or nothing instead of 'error' - in the default configuration)</li>
 </ul>
 
 <h4>Output Formats:</h4>

@@ -5,7 +5,7 @@
 	<artifactId>biopax-validator</artifactId>
 	<packaging>pom</packaging>
 	<name>BioPAX Validator Parent Project</name>
-	<version>2.2.0</version>
+	<version>3.0.0-SNAPSHOT</version>
 	<description>BioPAX Validator Multi-module (Parent) Project</description>
 
 	<licenses>
@@ -44,7 +44,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<spring.version>3.0.5.RELEASE</spring.version>
-		<paxtools.version>4.1.5b</paxtools.version>
+		<paxtools.version>4.1.5-SNAPSHOT</paxtools.version>
+		<miriam-lib.version>2.2.0-SNAPSHOT</miriam-lib.version>
 	</properties>
 	
 	<modules>
@@ -56,6 +57,7 @@
 		<module>miriam-lib</module>
 		<module>biopax-validator-test</module>
 		<module>biopax-validator-client</module>
+		
 	</modules>
 
 	<build>
@@ -215,17 +217,14 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-		<repository>
-			<id>ebi-repo</id>
-			<name>The EBI internal repository</name>
-			<url>http://www.ebi.ac.uk/~maven/m2repo</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
 	</repositories>
 
 	<dependencies>
+	    <dependency>
+        	<groupId>commons-lang</groupId>
+        	<artifactId>commons-lang</artifactId>
+        	<version>2.4</version>
+        </dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
