@@ -19,13 +19,13 @@ import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.UtilityClass;
-import org.biopax.validator.Rule;
-import org.biopax.validator.result.Behavior;
-import org.biopax.validator.result.ErrorType;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.utils.BiopaxValidatorException;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
-import org.biopax.validator.Validator;
+import org.biopax.validator.api.ValidatorException;
+import org.biopax.validator.api.ValidatorUtils;
+import org.biopax.validator.api.Rule;
+import org.biopax.validator.api.Validator;
+import org.biopax.validator.api.beans.Behavior;
+import org.biopax.validator.api.beans.ErrorType;
+import org.biopax.validator.api.beans.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
@@ -51,7 +51,7 @@ public class ValidatorImpl implements Validator {
 	private final Set<Validation> results;
     
 	@Autowired
-	private BiopaxValidatorUtils utils;
+	private ValidatorUtils utils;
 	
 	
     public ValidatorImpl() {
@@ -78,7 +78,7 @@ public class ValidatorImpl implements Validator {
 		assert(validation != null);
 		
 		if (validation == null || validation.getModel() == null) {
-			throw new BiopaxValidatorException(
+			throw new ValidatorException(
 				"Failed: no BioPAX model to validate " +
 				"(have you successfully imported or created one already?)");
 		}
@@ -138,7 +138,7 @@ public class ValidatorImpl implements Validator {
 		try {
 			exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			throw new BiopaxValidatorException("Interrupted unexpectedly!");
+			throw new ValidatorException("Interrupted unexpectedly!");
 		}
 		
 		exec = Executors.newFixedThreadPool(30);
@@ -157,7 +157,7 @@ public class ValidatorImpl implements Validator {
 		try {
 			exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			throw new BiopaxValidatorException("Interrupted unexpectedly!");
+			throw new ValidatorException("Interrupted unexpectedly!");
 		}
 		
 		if (log.isDebugEnabled())
@@ -180,8 +180,8 @@ public class ValidatorImpl implements Validator {
 		validation.addComment("number of pathways : "
 				+ model.getObjects(Pathway.class).size());
 		
-		//Refresh 'modelSerialized' property: 
-		validation.updateModelSerialized(model);
+		//Refresh 'modelData' property: 		
+		validation.setModelData(SimpleIOHandler.convertToOwl(model));
 	}
 
 
@@ -196,7 +196,7 @@ public class ValidatorImpl implements Validator {
 					rule.check(validation, obj);
 				} catch (Throwable t) { 
 					//if we're here, there is probably a bug in the rule or validator!
-					String id = utils.getId(obj);
+					String id = validation.identify(obj);
 		   			log.fatal(rule + ".check(" + id 
 		    			+ ") threw the exception: " + t.toString(), t);
 		   			// anyway, report it almost normally (for a user to see this in the results too)
@@ -221,7 +221,7 @@ public class ValidatorImpl implements Validator {
 		Model model = simpleReader.convertFromOWL(inputStream); 
 		
 		if(model == null)
-			throw new BiopaxValidatorException(
+			throw new ValidatorException(
 				"Failed importing a BioPAX model!");
 		
 		associate(model, validation);
@@ -338,7 +338,7 @@ public class ValidatorImpl implements Validator {
 		
 		// add to the corresponding validation result
 		for(Validation v: validations) { 	
-			ErrorType err = utils.createError(utils.getId(obj), 
+			ErrorType err = utils.createError(v.identify(obj), 
 					errorCode, reportedBy, v.getProfile(), isFixed, args);			
 
 			// add or update: if there was the same type error,

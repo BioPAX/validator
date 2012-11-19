@@ -14,7 +14,8 @@ import org.biopax.paxtools.model.BioPAXFactory;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
-import org.biopax.validator.result.Validation;
+import org.biopax.validator.api.beans.Validation;
+import org.biopax.validator.impl.IdentifierImpl;
 import org.biopax.validator.rules.CellularLocationCvRule;
 import org.biopax.validator.rules.InteractionTypeCvRule;
 import org.biopax.validator.rules.ProteinModificationFeatureCvRule;
@@ -178,7 +179,7 @@ public class IntegrationTest {
         CellularLocationVocabulary lcv = factory3.create(CellularLocationVocabulary.class, "badTerm");
         lcv.addTerm("LOCATION?");    
         assertTrue(instance.canCheck(lcv));
-        Validation v = new Validation();
+        Validation v = new Validation(new IdentifierImpl());
 		instance.check(v, lcv);
 		assertEquals(1, v.countErrors(lcv.getRDFId(), null, null, null, false, false));
     }
@@ -194,7 +195,7 @@ public class IntegrationTest {
     	ux.setId("GO:0005737");
     	cl.addXref(ux);
     	
-    	Validation v = new Validation();
+    	Validation v = new Validation(new IdentifierImpl());
         instance.check(v, cl);
         assertTrue(v.getError().isEmpty());
     }
@@ -205,7 +206,7 @@ public class IntegrationTest {
         XrefRule instance =  (XrefRule) context.getBean("xrefRule");
         UnificationXref x = factory3.create(UnificationXref.class, "1");
         x.setDb("ILLEGAL DB NAME");
-        Validation v = new Validation();
+        Validation v = new Validation(new IdentifierImpl());
 		instance.check(v,x);
 		assertEquals(1, v.countErrors(x.getRDFId(), null, "unknown.db", null, false, false));
     }
@@ -217,7 +218,7 @@ public class IntegrationTest {
         UnificationXref x = factory3.create(UnificationXref.class, "1");
         x.setDb("reactome");
         x.setId("0000000");
-        Validation v = new Validation();
+        Validation v = new Validation(new IdentifierImpl());
 		instance.check(v, x);
 		assertEquals(1, v.countErrors(x.getRDFId(), null, "invalid.id.format", null, false, false));
     }
@@ -231,7 +232,7 @@ public class IntegrationTest {
         UnificationXref x = factory3.create(UnificationXref.class, "1");
         x.setDb("EntrezGene");
         x.setId("0000000");
-        Validation v = new Validation();
+        Validation v = new Validation(new IdentifierImpl());
         instance.check(v, x);
         assertTrue(v.getError().isEmpty());
     }
@@ -256,7 +257,7 @@ public class IntegrationTest {
         m.add(ux);
         m.add(iv);
         
-        Validation v = new Validation();
+        Validation v = new Validation(new IdentifierImpl());
         instance.check(v, iv);
         assertTrue(v.getError().isEmpty());
         
@@ -266,7 +267,7 @@ public class IntegrationTest {
         m.add(iv);
         iv.addXref(ux);
         
-        v = new Validation();
+        v = new Validation(new IdentifierImpl());
         instance.check(v, iv);
         assertTrue(v.getError().isEmpty());
         
@@ -276,7 +277,7 @@ public class IntegrationTest {
         m.add(iv);
         iv.addXref(ux);
         
-        v = new Validation();
+        v = new Validation(new IdentifierImpl());
         instance.check(v, iv);
         assertTrue(v.getError().isEmpty());
         
@@ -293,7 +294,7 @@ public class IntegrationTest {
     	m.add(ux);
         m.add(iv);
         
-        v = new Validation();
+        v = new Validation(new IdentifierImpl());
 		instance.check(v, iv);
 		assertEquals(1, v.countErrors(iv.getRDFId(), null, "illegal.cv.term", null, false, false));
         
@@ -319,7 +320,7 @@ public class IntegrationTest {
     	ux.setId("MOD:00036");
     	cv.addXref(ux);
     	
-    	Validation v = new Validation();
+    	Validation v = new Validation(new IdentifierImpl());
    		rule.check(v, mf); // should not fail
    		assertTrue(v.getError().isEmpty());
 	}
@@ -333,27 +334,27 @@ public class IntegrationTest {
         //use an unofficial/misspelled name
         x.setDb("entrez_gene");
         x.setId("0000000");
-        Validation v = new Validation();
+        Validation v = new Validation(new IdentifierImpl());
 		instance.check(v, x);
 		assertEquals(1, v.countErrors(x.getRDFId(), null, "db.name.spelling", null, false, false));
 		
         // use one of its official synonyms
         x.setDb("entre-zgene");
         x.setId("0000000");
-        v = new Validation();
+        v = new Validation(new IdentifierImpl());
         instance.check(v, x);
         assertTrue(v.getError().isEmpty());
         
         //use an unofficial/misspelled name
         x.setDb("gene_ontology");
         x.setId("0000000");
-        v = new Validation();
+        v = new Validation(new IdentifierImpl());
 		instance.check(v, x);
 		assertEquals(1, v.countErrors(x.getRDFId(), null, null, null, false, false));
         // use one of its official synonyms
         x.setDb("go");
         x.setId("0000000");
-        v = new Validation();
+        v = new Validation(new IdentifierImpl());
         instance.check(v, x);
         assertTrue(v.getError().isEmpty());
     }

@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.BioSource;
 import org.biopax.paxtools.model.level3.UnificationXref;
-import org.biopax.validator.impl.Level3CardinalityAndRangeRule;
+import org.biopax.validator.impl.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class BioSourceTaxonXrefCRRule extends Level3CardinalityAndRangeRule<BioSource> {
+public class BioSourceTaxonXrefCRRule extends CardinalityAndRangeRule<BioSource> {
 	public BioSourceTaxonXrefCRRule() {
 		super(BioSource.class, "xref", 0, 1, UnificationXref.class);
 	}

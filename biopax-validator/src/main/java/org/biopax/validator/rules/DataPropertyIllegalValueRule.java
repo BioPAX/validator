@@ -4,8 +4,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.beans.Validation;
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.EditorMap;

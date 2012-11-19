@@ -7,10 +7,10 @@ import javax.annotation.PostConstruct;
 
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
-import org.biopax.validator.CvRule;
-import org.biopax.validator.CvRestriction;
-import org.biopax.validator.CvValidator;
-import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.CvRestriction;
+import org.biopax.validator.api.CvRule;
+import org.biopax.validator.api.CvValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 

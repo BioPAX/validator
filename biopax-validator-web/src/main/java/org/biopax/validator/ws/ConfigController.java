@@ -4,11 +4,11 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.validator.result.Behavior;
-import org.biopax.validator.result.Category;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
-import org.biopax.validator.Rule;
-import org.biopax.validator.Validator;
+import org.biopax.validator.api.ValidatorUtils;
+import org.biopax.validator.api.Rule;
+import org.biopax.validator.api.Validator;
+import org.biopax.validator.api.beans.Behavior;
+import org.biopax.validator.api.beans.Category;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +24,7 @@ public class ConfigController {
 	final static Log log = LogFactory.getLog(ConfigController.class);
 
 	private Validator validator;
-	private BiopaxValidatorUtils utils;
+	private ValidatorUtils utils;
 	private Properties errorTypes;
 	private Map maxDisplayNameLengths;
 	private Set warnOnDataPropertyValues;
@@ -35,7 +35,7 @@ public class ConfigController {
 	public ConfigController() {
 	}
 
-	public ConfigController(Validator validator, BiopaxValidatorUtils utils, 
+	public ConfigController(Validator validator, ValidatorUtils utils, 
 			Properties errorTypes, Map maxDisplayNameLengths, 
 			Set warnOnDataPropertyValues, Map dbAllow, 
 			Set extraDbSynonyms, Map dbDeny) {

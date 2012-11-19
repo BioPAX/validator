@@ -1,4 +1,4 @@
-package org.biopax.validator.impl;
+package org.biopax.validator.api;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -9,9 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.biopax.validator.Validator;
-import org.biopax.validator.utils.BiopaxValidatorException;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
 
 /**
  * Basic class for the framework classes 
@@ -21,14 +18,14 @@ import org.biopax.validator.utils.BiopaxValidatorUtils;
  * @author rodche
  */
 @Configurable
-abstract class AbstractAspect {
+public abstract class AbstractAspect {
 	private static final Log log = LogFactory.getLog(AbstractAspect.class);
 	
 	@Autowired
 	protected Validator validator;
 
 	@Autowired
-	protected BiopaxValidatorUtils utils;
+	protected ValidatorUtils utils;
 	
 	
     /**
@@ -61,27 +58,22 @@ abstract class AbstractAspect {
 	 * @param obj model, element, or another related to the BioPAX data object
 	 * @param errorCode
 	 * @param reportedBy 
-	 * @param args optional message arguments (to be added as text at the end of the original error message)
+	 * @param details extra message to be added at the end of the original error message if not null
 	 */
-    public void reportException(Throwable t, Object obj, String errorCode, String reportedBy, Object... args) {
+    public void reportException(Throwable t, Object obj, String errorCode, String reportedBy, String details) {
     	
-		StringBuilder msg = new StringBuilder(
-				(t.getMessage()==null || "".equalsIgnoreCase(t.getMessage()))
-					? t.getClass().getSimpleName() 
-						: t.getMessage()
-				);
+		StringBuilder msg = new StringBuilder(t.toString());
 		
 		if(t instanceof XMLStreamException) {
 			XMLStreamException ex = (XMLStreamException) t;
 			msg.append("; ").append(ex.getLocation().toString());
-		} else if(t instanceof BiopaxValidatorException) {
-			msg.append("; ").append(((BiopaxValidatorException)t).getMsgArgs().toString());
 		} else {
-   			msg.append(" - stack:").append(getStackTrace(t)).append(" - ");
+			if(log.isDebugEnabled())
+				msg.append(" - stack:").append(getStackTrace(t)).append(" - ");
 		}
 		
-		if(args.length>0) 
-			msg.append("; ").append(BiopaxValidatorUtils.errorMsgArgument(args));
+		if(details != null) 
+			msg.append("; ").append(details);
 		
 		if (validator != null) {
 			validator.report(obj, errorCode, reportedBy, false, msg.toString());
@@ -90,7 +82,6 @@ abstract class AbstractAspect {
 					"an intercepted 'syntax.error': " + msg.toString() 
 					+ " reported by: " + reportedBy);
 		}
-
 	}
     
     private static String getStackTrace(Throwable aThrowable) {

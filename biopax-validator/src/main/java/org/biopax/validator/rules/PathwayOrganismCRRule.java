@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.BioSource;
-import org.biopax.validator.impl.Level3CardinalityAndRangeRule;
+import org.biopax.validator.impl.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class PathwayOrganismCRRule extends Level3CardinalityAndRangeRule<Pathway> {
+public class PathwayOrganismCRRule extends CardinalityAndRangeRule<Pathway> {
 	public PathwayOrganismCRRule() {
 		super(Pathway.class, "organism", 0, 1, BioSource.class);
 	}

@@ -1,9 +1,9 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.TissueVocabulary;
-import org.biopax.validator.CvRestriction;
-import org.biopax.validator.CvRestriction.UseChildTerms;
-import org.biopax.validator.impl.Level3CvTermsRule;
+import org.biopax.validator.api.CvRestriction;
+import org.biopax.validator.api.CvRestriction.UseChildTerms;
+import org.biopax.validator.impl.CvTermsRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class BioSourceTissueCvRule extends Level3CvTermsRule<TissueVocabulary> {
+public class BioSourceTissueCvRule extends CvTermsRule<TissueVocabulary> {
 	public BioSourceTissueCvRule() {
 		super(TissueVocabulary.class, null, 
 				new CvRestriction("BTO:0000000","BTO", 

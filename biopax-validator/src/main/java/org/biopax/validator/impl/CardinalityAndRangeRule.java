@@ -12,11 +12,11 @@ import org.springframework.beans.factory.annotation.Configurable;
  */
 
 @Configurable
-public abstract class Level3CardinalityAndRangeRule<E extends Level3Element> 
+public abstract class CardinalityAndRangeRule<E extends Level3Element> 
 	extends AbstractCardinalityAndRangeRule<E>
 {
 	// Constructor with arguments
-	public Level3CardinalityAndRangeRule(Class<E> domain, String property,
+	public CardinalityAndRangeRule(Class<E> domain, String property,
 			int min, int max, Class<?>... ranges) {
 		super(domain, property, min, max, ranges);
 		this.editorMap = SimpleEditorMap.L3;

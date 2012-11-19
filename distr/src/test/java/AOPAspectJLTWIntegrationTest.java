@@ -10,10 +10,11 @@ import org.biopax.paxtools.model.BioPAXFactory;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
-import org.biopax.validator.result.*;
-import org.biopax.validator.Validator;
+import org.biopax.validator.api.ValidatorUtils;
+import org.biopax.validator.api.Validator;
+import org.biopax.validator.api.beans.Validation;
+import org.biopax.validator.impl.IdentifierImpl;
 import org.biopax.validator.rules.XrefRule;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -50,7 +51,7 @@ public class AOPAspectJLTWIntegrationTest {
     Validator validator;
     
     @Autowired
-    BiopaxValidatorUtils utils;
+    ValidatorUtils utils;
     
     @Autowired
     ApplicationContext context;
@@ -61,7 +62,7 @@ public class AOPAspectJLTWIntegrationTest {
     public void testValidator() throws IOException {
     	Resource resource = context
     		.getResource("classpath:biopax3-short-metabolic-pathway.owl");
-    	Validation result = new Validation();
+    	Validation result = new Validation(new IdentifierImpl());
     	result.setDescription(resource.getDescription());
     	validator.importModel(result, resource.getInputStream());
         validator.validate(result); // check all rules
@@ -73,7 +74,7 @@ public class AOPAspectJLTWIntegrationTest {
     
     @Test
     public void testSyntaxErrors() throws IOException {
-    	Validation validation = new Validation();
+    	Validation validation = new Validation(new IdentifierImpl());
     	//validation.setFix(true);
     	validator.importModel(validation, getClass()
     			.getResourceAsStream("testSyntaxErrors.xml")); 
@@ -83,7 +84,7 @@ public class AOPAspectJLTWIntegrationTest {
     
     @Test
     public void testClonedUtilityClass() throws IOException {
-    	Validation validation = new Validation();
+    	Validation validation = new Validation(new IdentifierImpl());
     	validator.importModel(validation, getClass().getResourceAsStream("testEvidenceEquivalence.xml")); 
     	validator.validate(validation);
     	validator.getResults().clear(); // clean after itself
@@ -96,7 +97,7 @@ public class AOPAspectJLTWIntegrationTest {
     
     @Test
     public void testMemberPhysicalEntityRange() throws IOException {
-    	Validation validation = new Validation();
+    	Validation validation = new Validation(new IdentifierImpl());
     	validator.importModel(validation, getClass()
     			.getResourceAsStream("testMemberPhysicalEntityRange.xml")); 
     	validator.validate(validation);

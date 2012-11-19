@@ -30,7 +30,7 @@
 		</property>
 	</bean>
 
-	<bean id="utils" class="org.biopax.validator.utils.BiopaxValidatorUtils">
+	<bean id="utils" class="org.biopax.validator.api.ValidatorUtils">
 		<property name="messageSource" ref="rulesMessageSource" />
 		<property name="locale" value="en" />
 		<property name="maxErrors" value="10000" />

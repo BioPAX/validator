@@ -12,8 +12,8 @@ import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.paxtools.util.ClassFilterSet;
 import org.biopax.psidev.ontology_manager.*;
-import org.biopax.validator.CvRestriction;
-import org.biopax.validator.result.Validation;
+import org.biopax.validator.api.CvRestriction;
+import org.biopax.validator.api.beans.Validation;
 import org.springframework.beans.factory.annotation.Configurable;
 
 
@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Configurable;
  * @author rodch
  */
 @Configurable
-public abstract class Level3CvTermsRule<T extends Level3Element> 
+public abstract class CvTermsRule<T extends Level3Element> 
 	extends AbstractCvRule<T> {
   
     /**
@@ -36,7 +36,7 @@ public abstract class Level3CvTermsRule<T extends Level3Element>
      * @param property
      * @param restrictions
      */
-    public Level3CvTermsRule(Class<T> domain, String property, CvRestriction... restrictions)
+    public CvTermsRule(Class<T> domain, String property, CvRestriction... restrictions)
     {
     	super(domain, property, restrictions);
     }

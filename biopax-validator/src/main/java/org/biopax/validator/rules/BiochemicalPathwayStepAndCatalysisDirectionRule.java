@@ -7,8 +7,8 @@ import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.ConversionDirectionType;
 import org.biopax.paxtools.model.level3.Process;
 import org.biopax.paxtools.model.level3.StepDirection;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
 
 /**

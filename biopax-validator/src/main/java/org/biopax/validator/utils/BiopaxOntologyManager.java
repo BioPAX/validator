@@ -11,10 +11,10 @@ import org.biopax.psidev.ontology_manager.OntologyTermI;
 import org.biopax.psidev.ontology_manager.impl.OntologyManagerContext;
 import org.biopax.psidev.ontology_manager.impl.OntologyManagerImpl;
 import org.biopax.psidev.ontology_manager.impl.OntologyUtils;
-import org.biopax.validator.CvRule;
-import org.biopax.validator.CvRestriction;
-import org.biopax.validator.CvValidator;
-import org.biopax.validator.CvRestriction.UseChildTerms;
+import org.biopax.validator.api.CvRestriction;
+import org.biopax.validator.api.CvRule;
+import org.biopax.validator.api.CvValidator;
+import org.biopax.validator.api.CvRestriction.UseChildTerms;
 
 
 /**

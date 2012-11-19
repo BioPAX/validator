@@ -7,8 +7,8 @@ import org.apache.commons.collections15.CollectionUtils;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.utils.Cluster;
 import org.springframework.stereotype.Component;
 
@@ -48,8 +48,7 @@ public class SameNameDiffKindPhysEntitiesRule extends
 			{
 				if(sharedNames.size() > 1) {
 					SimplePhysicalEntity a = sharedNames.iterator().next();
-					error(validation, a, "diff.kind.same.name", 
-						false, utils.errorMsgArgument(sharedNames.toArray()));
+					error(validation, a, "diff.kind.same.name",	false, sharedNames);
 				}
 			}
 	}

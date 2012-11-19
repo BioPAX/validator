@@ -1,6 +1,6 @@
-package org.biopax.validator;
+package org.biopax.validator.api;
 
-import org.biopax.validator.result.Validation;
+import org.biopax.validator.api.beans.Validation;
 
 
 /**

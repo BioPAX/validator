@@ -1,7 +1,7 @@
 package org.biopax.validator.rules;
 
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.beans.Validation;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.Control;
 import org.biopax.paxtools.model.level3.Conversion;

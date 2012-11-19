@@ -16,6 +16,7 @@ import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.io.SimpleIOHandler.Triple;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
+import org.biopax.validator.api.AbstractAspect;
 
 /**
  * This is the central aspect to report 
@@ -55,7 +56,7 @@ public class ExceptionsAspect extends AbstractAspect {
         try {
             jp.proceed();
         } catch (Throwable ex) {
-        	reportException(ex, reader, "syntax.error", "SimpleIOHandler.createAndBind interceptor");
+        	reportException(ex, reader, "syntax.error", "SimpleIOHandler.createAndBind interceptor", null);
         }
     }
     
@@ -69,7 +70,7 @@ public class ExceptionsAspect extends AbstractAspect {
         try {
             id = (String) jp.proceed();
         } catch (Throwable ex) {
-        	reportException(ex, reader, "syntax.error", "SimpleIOHandler.processIndividual interceptor");
+        	reportException(ex, reader, "syntax.error", "SimpleIOHandler.processIndividual interceptor", null);
         }
         return id;
     }
@@ -106,7 +107,7 @@ public class ExceptionsAspect extends AbstractAspect {
 		try {
 			jp.proceed();
 		} catch (Throwable t) {
-			reportException(t, o, "syntax.error", "SimpleIOHandler.bindValue interceptor"); // , triple);
+			reportException(t, o, "syntax.error", "SimpleIOHandler.bindValue interceptor", triple.toString());
 		}
     }
     
@@ -116,7 +117,7 @@ public class ExceptionsAspect extends AbstractAspect {
     	try {
     		jp.proceed();
     	} catch (Throwable ex) {
-    		reportException(ex, bean, "syntax.error", "PropertyEditor.checkRestrictions interceptor", value);
+    		reportException(ex, bean, "syntax.error", "PropertyEditor.checkRestrictions interceptor", String.valueOf(value));
     	}
 	}    
     
@@ -138,7 +139,7 @@ public class ExceptionsAspect extends AbstractAspect {
     	try {
     		model = jp.proceed();
     	} catch (Throwable ex) {
-    		reportException(ex, jp.getTarget(), "syntax.error", "BioPAXIOHandler.convertFromOWL interceptor"); // the second argument will be SimpleIOHandler
+    		reportException(ex, jp.getTarget(), "syntax.error", "BioPAXIOHandler.convertFromOWL interceptor", null);
     	}
     	
     	return model;

@@ -1,10 +1,10 @@
-package org.biopax.validator;
+package org.biopax.validator.api;
 
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Set;
 
-import org.biopax.validator.result.Validation;
+import org.biopax.validator.api.beans.Validation;
 
 /**
  * BioPAX Validator interface

@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.ExperimentalForm;
 import org.biopax.paxtools.model.level3.ExperimentalFormVocabulary;
-import org.biopax.validator.impl.Level3CardinalityAndRangeRule;
+import org.biopax.validator.impl.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class ExperimentalFormDescriptionCRRule extends Level3CardinalityAndRangeRule<ExperimentalForm> {
+public class ExperimentalFormDescriptionCRRule extends CardinalityAndRangeRule<ExperimentalForm> {
     public ExperimentalFormDescriptionCRRule() {
 		super(ExperimentalForm.class, "experimentalFormDescription", 1, 0, ExperimentalFormVocabulary.class);
 	}

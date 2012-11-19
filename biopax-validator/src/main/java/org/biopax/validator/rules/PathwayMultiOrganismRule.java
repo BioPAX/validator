@@ -10,8 +10,8 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.BioSource;
 import org.biopax.paxtools.model.level3.Pathway;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.beans.Validation;
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.springframework.stereotype.Component;
 
@@ -62,7 +62,7 @@ public class PathwayMultiOrganismRule extends AbstractRule<Pathway>
    		
 		if(organisms.size()>0) {
 			error(validation, pathway, "multi.organism.pathway",
-				false, organism, utils.errorMsgArgument(organisms));
+				false, organism, organisms);
 		}
     }
 

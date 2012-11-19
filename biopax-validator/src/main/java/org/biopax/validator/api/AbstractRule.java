@@ -1,11 +1,9 @@
-package org.biopax.validator.impl;
+package org.biopax.validator.api;
 
 import java.util.Arrays;
 
-import org.biopax.validator.Rule;
-import org.biopax.validator.result.ErrorType;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
+import org.biopax.validator.api.beans.ErrorType;
+import org.biopax.validator.api.beans.Validation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,7 +23,7 @@ public abstract class AbstractRule<T> implements Rule<T> {
     protected Log logger = LogFactory.getLog(AbstractRule.class);
 
     @Autowired
-    protected BiopaxValidatorUtils utils;
+    protected ValidatorUtils utils;
     
     
     public AbstractRule() {
@@ -49,7 +47,11 @@ public abstract class AbstractRule<T> implements Rule<T> {
     	}
     	
     	// get object's ID
-    	String thingId = utils.getId(object);
+    	String thingId = validation.identify(object);
+    	
+    	// resolve/escape extra message args to IDs
+    	args = fixMessageArgs(validation, args);
+    	
     	
 		if (validation.isMaxErrorsSet() 
 				&& validation.getNotFixedErrors() > validation.getMaxErrors()) 
@@ -65,9 +67,10 @@ public abstract class AbstractRule<T> implements Rule<T> {
   	    	
     	// create and add/update the error case using current validation profile
     	ErrorType error = (utils != null) 
-    			? utils.createError(thingId, code, getClass().getName(), validation.getProfile(), setFixed, args)
+    			? utils.createError(
+    				thingId, code, getClass().getName(), validation.getProfile(), setFixed, args)
     			// when - no config. available (JUnit tests?); it will be 'ERROR' type with default messages:
-    			: BiopaxValidatorUtils.createError(null, null,
+    			: ValidatorUtils.createError(null, null,
     				thingId, code, getClass().getName(), null, setFixed, args);
     	
     	validation.addError(error);
@@ -75,5 +78,35 @@ public abstract class AbstractRule<T> implements Rule<T> {
     	if(logger.isDebugEnabled())
     		logger.debug( ((setFixed) ? "FIXED " : "") + " " + code + " in " + thingId);
     }
+    
+    
+    /**
+     * This is mainly to remove the curly braces 
+     * that may cause an exception during 
+     * MessageSource resolves the arguments.
+     * 
+     * @param args
+     * @return
+     */
+    private String[] fixMessageArgs(Validation v, Object... args) {
+    	String[] newArgs = new String[args.length];
+    	int i=0;
+    	for(Object a: args) {
+    		if(a != null) {
+    			String s = (a instanceof String) 
+        			? (String)a : v.identify(a);
+    			if (s.contains("{") || s.contains("}")) {
+    				s.replaceAll("\\}", ")");
+    				newArgs[i] = s.replaceAll("\\{", "(");
+    			} else {
+    				newArgs[i] = s;
+    			}
+    		} else {
+    			newArgs[i] = "N/A";
+    		}
+    		i++;
+    	}
+    	return newArgs;
+	}
 
 }

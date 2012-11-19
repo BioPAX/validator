@@ -2,7 +2,7 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.Dna;
 import org.biopax.paxtools.model.level3.DnaReference;
-import org.biopax.validator.impl.Level3CardinalityAndRangeRule;
+import org.biopax.validator.impl.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class DnaEntityReferenceCRRule extends Level3CardinalityAndRangeRule<Dna> {
+public class DnaEntityReferenceCRRule extends CardinalityAndRangeRule<Dna> {
 	public DnaEntityReferenceCRRule() {
 		super(Dna.class, "entityReference", 0, 1, DnaReference.class);
 	}

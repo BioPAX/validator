@@ -1,9 +1,9 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.InteractionVocabulary;
-import org.biopax.validator.CvRestriction;
-import org.biopax.validator.CvRestriction.UseChildTerms;
-import org.biopax.validator.impl.Level3CvTermsRule;
+import org.biopax.validator.api.CvRestriction;
+import org.biopax.validator.api.CvRestriction.UseChildTerms;
+import org.biopax.validator.impl.CvTermsRule;
 import org.springframework.stereotype.Component;
 
 
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class InteractionTypeCvRule extends Level3CvTermsRule<InteractionVocabulary> {
+public class InteractionTypeCvRule extends CvTermsRule<InteractionVocabulary> {
 
 	public InteractionTypeCvRule() {
 		super(InteractionVocabulary.class, null,

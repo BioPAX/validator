@@ -1,7 +1,7 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.Xref;
-import org.biopax.validator.impl.Level3CardinalityAndRangeRule;
+import org.biopax.validator.impl.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class XrefDbCRRule extends Level3CardinalityAndRangeRule<Xref> {
+public class XrefDbCRRule extends CardinalityAndRangeRule<Xref> {
 	public XrefDbCRRule() {
 		super(Xref.class, "db", 1, 1, String.class);
 	}

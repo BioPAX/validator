@@ -2,8 +2,8 @@ package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.utils.Cluster;
 import org.springframework.stereotype.Component;
 
@@ -45,8 +45,7 @@ public class EntityReferenceSamePhysicalEntitiesRule extends
 			if(col.size() > 1) {
 				SimplePhysicalEntity u = col.iterator().next();
 				col.remove(u);
-				error(validation, eref, "same.state.entity", false,
-					u, utils.errorMsgArgument(col));
+				error(validation, eref, "same.state.entity", false,	u, col);
 			}
 		}
 

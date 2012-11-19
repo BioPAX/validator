@@ -4,8 +4,8 @@ import java.util.Set;
 
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.utils.Cluster;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +34,7 @@ public class DuplicateIdCaseInsensitiveRule extends	AbstractRule<Model> {
 				BioPAXElement u = duplicates.iterator().next();
 				duplicates.remove(u); // keep the first element
 				error(validation, u, "duplicate.id.ignoringcase", false, 
-					utils.errorMsgArgument(duplicates.toArray()), u.getModelInterface().getSimpleName());
+					duplicates, u.getModelInterface().getSimpleName());
 			}
 		}
 	}

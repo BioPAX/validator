@@ -4,8 +4,8 @@ import org.biopax.paxtools.model.level3.Catalysis;
 import org.biopax.paxtools.model.level3.Control;
 import org.biopax.paxtools.model.level3.ControlType;
 import org.biopax.paxtools.model.level3.TemplateReactionRegulation;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
 
 /**

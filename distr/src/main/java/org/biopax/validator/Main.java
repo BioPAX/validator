@@ -8,11 +8,14 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biopax.paxtools.controller.ModelUtils;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.Model;
-import org.biopax.validator.Validator;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.result.ValidatorResponse;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
+import org.biopax.validator.api.ValidatorUtils;
+import org.biopax.validator.api.Validator;
+import org.biopax.validator.api.beans.Validation;
+import org.biopax.validator.api.beans.ValidatorResponse;
+import org.biopax.validator.impl.IdentifierImpl;
 import org.biopax.validator.utils.Normalizer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -101,13 +104,13 @@ public class Main {
 					}
 					out += EXT; // add the file extension
 					PrintWriter bpWriter = new PrintWriter(out);
-					String owl = result.getModelSerialized();
+					String owl = result.getModelData();
 					bpWriter.write(owl, 0, owl.length());
 					bpWriter.write(System.getProperty ( "line.separator" ));
 					bpWriter.flush();
 					// remove now saved BioPAX model from the xml result
 					result.setModel(null);
-					result.setModelSerialized(null);
+					result.setModelData(null);
 				}
 			}
 			
@@ -120,7 +123,7 @@ public class Main {
 			Source xsltSrc = (output != null && output.endsWith(".html"))
 				? new StreamSource(ctx.getResource("classpath:html-result.xsl").getInputStream())
 				: null;
-			BiopaxValidatorUtils.write(validatorResponse, errWriter, xsltSrc);
+			ValidatorUtils.write(validatorResponse, errWriter, xsltSrc);
 		}
 	}
 	
@@ -131,7 +134,7 @@ public class Main {
 
         // Read from the batch and validate from file, id or url, line-by-line (stops on first empty line)
         for (Resource resource: resources) {
-        	Validation result = new Validation(resource.getDescription(), autofix, null, maxErrors, profile);
+        	Validation result = new Validation(new IdentifierImpl(), resource.getDescription(), autofix, null, maxErrors, profile);
         	result.setDescription(resource.getDescription());
         	if(log.isInfoEnabled())
         		log.info("BioPAX DATA IMPORT FROM: " 
@@ -145,7 +148,7 @@ public class Main {
 					Model model = (Model) result.getModel();
 					Normalizer normalizer = new Normalizer();
 					normalizer.normalize(model);
-					result.updateModelSerialized(model);
+					result.setModelData(SimpleIOHandler.convertToOwl(model));
 				}
 				
 			} catch (Exception e) {

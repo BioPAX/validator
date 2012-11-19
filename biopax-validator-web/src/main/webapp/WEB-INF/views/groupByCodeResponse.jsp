@@ -66,7 +66,7 @@
 	<c:if test="${result.fix}">
 	  	<li><a href="javascript:switchit('result${rstatus.index}owl')">Modified BioPAX</a>&nbsp;(HTML-escaped BioPAX RDF/XML)</li>
 		<ul id="result${rstatus.index}owl" style="display: none">
-			<li><div>${result.modelSerializedHtmlEscaped}</div></li>
+			<li><div>${result.modelDataHtmlEscaped}</div></li>
 		</ul>
 	</c:if>
 	</ul>

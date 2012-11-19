@@ -6,8 +6,8 @@ import java.util.Set;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.BindingFeature;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.utils.Cluster;
 import org.springframework.stereotype.Component;
 
@@ -47,8 +47,7 @@ public class BindingFeatureExtraRules extends AbstractRule<Model> {
 		for (Set<BindingFeature> s : violations) {
 			if(violations.size() > 1) {
 				BindingFeature a = s.iterator().next();
-				error(validation, a, "inverse.functional.violated",	false, 
-					"bindsTo", a.getBindsTo(), utils.errorMsgArgument(s.toArray()));
+				error(validation, a, "inverse.functional.violated",	false, "bindsTo", a.getBindsTo(), s);
 			}
 		}
 

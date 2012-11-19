@@ -9,10 +9,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.validator.result.*;
-import org.biopax.validator.Validator;
-import org.biopax.validator.utils.BiopaxValidatorException;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
+import org.biopax.paxtools.io.SimpleIOHandler;
+import org.biopax.validator.api.ValidatorException;
+import org.biopax.validator.api.ValidatorUtils;
+import org.biopax.validator.api.Validator;
+import org.biopax.validator.api.beans.Behavior;
+import org.biopax.validator.api.beans.Validation;
+import org.biopax.validator.api.beans.ValidatorResponse;
+import org.biopax.validator.impl.IdentifierImpl;
 import org.biopax.validator.utils.Normalizer;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -138,9 +142,9 @@ public class ValidatorController {
 		}
 		
     	if("xml".equalsIgnoreCase(retDesired)) {
-        	BiopaxValidatorUtils.write(validatorResponse, writer, null);
+        	ValidatorUtils.write(validatorResponse, writer, null);
     	} else if("html".equalsIgnoreCase(retDesired)) {
-    		/* could also use BiopaxValidatorUtils.write with a xml-to-html xslt source
+    		/* could also use ValidatorUtils.write with a xml-to-html xslt source
     		 but using JSP here makes it easier to keep the same style, header, footer*/
 			mvcModel.addAttribute("response", validatorResponse);
 			return "groupByCodeResponse";
@@ -148,8 +152,8 @@ public class ValidatorController {
 			// write all the OWL results one after another TODO any better solution?
 			for(Validation result : validatorResponse.getValidationResult()) 
 			{
-				if(result.getModelSerialized() != null)
-					writer.write(result.getModelSerialized() + NEWLINE);
+				if(result.getModelData() != null)
+					writer.write(result.getModelData() + NEWLINE);
 				else
 					// empty result
 					writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -173,7 +177,7 @@ public class ValidatorController {
      * @param normalizer
      * @return
      * @throws IOException when cannot get the input stream from the resource
-     * @throws BiopaxValidatorException when there was an exception in the validator/normalizer
+     * @throws ValidatorException when there was an exception in the validator/normalizer
      */
 	private Validation execute(Resource biopaxResource, String resultName, Integer maxErrors,
 			Boolean autofix, Behavior errorLevel, String profile, Normalizer normalizer) 
@@ -186,7 +190,7 @@ public class ValidatorController {
     	}
     
     	boolean isFix = Boolean.TRUE.equals(autofix);
-    	Validation validationResult = new Validation(resultName, isFix, errorLevel, errMax, profile);
+    	Validation validationResult = new Validation(new IdentifierImpl(), resultName, isFix, errorLevel, errMax, profile);
     	
 		validator.importModel(validationResult, biopaxResource.getInputStream());
 		validator.validate(validationResult);
@@ -195,7 +199,7 @@ public class ValidatorController {
        	if(isFix) { // do normalize too
        		org.biopax.paxtools.model.Model m = (org.biopax.paxtools.model.Model) validationResult.getModel();
    			normalizer.normalize(m);
-   			validationResult.updateModelSerialized(m);
+   			validationResult.setModelData(SimpleIOHandler.convertToOwl(m));
        	}
        	
        	return validationResult;

@@ -1,4 +1,4 @@
-package org.biopax.validator.result;
+package org.biopax.validator.api.beans;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;

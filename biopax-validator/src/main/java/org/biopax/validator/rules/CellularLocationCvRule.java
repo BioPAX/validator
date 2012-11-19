@@ -1,9 +1,9 @@
 package org.biopax.validator.rules;
 
 import org.biopax.paxtools.model.level3.CellularLocationVocabulary;
-import org.biopax.validator.CvRestriction;
-import org.biopax.validator.CvRestriction.UseChildTerms;
-import org.biopax.validator.impl.Level3CvTermsRule;
+import org.biopax.validator.api.CvRestriction;
+import org.biopax.validator.api.CvRestriction.UseChildTerms;
+import org.biopax.validator.impl.CvTermsRule;
 import org.springframework.stereotype.Component;
 
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class CellularLocationCvRule extends Level3CvTermsRule<CellularLocationVocabulary> {
+public class CellularLocationCvRule extends CvTermsRule<CellularLocationVocabulary> {
 
 	public CellularLocationCvRule() {
 		super(CellularLocationVocabulary.class, null, 

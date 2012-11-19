@@ -44,19 +44,18 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<spring.version>3.0.5.RELEASE</spring.version>
-		<paxtools.version>4.1.5b2</paxtools.version>
+		<paxtools.version>4.1.5-SNAPSHOT</paxtools.version>
 		<miriam-lib.version>2.2.0</miriam-lib.version>
 	</properties>
 	
 	<modules>
-		<module>biopax-validator-web</module>
-		<module>biopax-validator</module>
-		<module>distr</module>
 		<module>obo-fetcher</module>
-		<module>miriam-lib</module>
+		<module>miriam-lib</module>		
+		<module>biopax-validator</module>
+		<module>biopax-validator-web</module>
 		<module>biopax-validator-test</module>
 		<module>biopax-validator-client</module>
-		
+		<module>distr</module>
 	</modules>
 
 	<build>

@@ -1,4 +1,4 @@
-package org.biopax.validator;
+package org.biopax.validator.api;
 
 /**
  * @author rodch

@@ -12,10 +12,10 @@ import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.Named;
 import org.biopax.paxtools.model.level3.UtilityClass;
 import org.biopax.paxtools.model.level3.Xref;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.impl.AbstractRule;
-import org.biopax.paxtools.controller.SimpleEditorMap;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.utils.Cluster;
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.springframework.stereotype.Component;
 
 /**
@@ -47,7 +47,6 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 			UtilityClass first = clones.iterator().next();
 			boolean ok = clones.remove(first); // pop the first element from the clones collection
 			assert ok;
-			String idListAsString = utils.errorMsgArgument(clones.toArray());
 			if(validation.isFix()) {
 				// use the same value for all corresp. props 
 				fix(model, first, clones);
@@ -63,11 +62,11 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 				
 				// set "fixed", but keep the old message
 				error(validation, first, "cloned.utility.class", 
-					true, idListAsString, first.getModelInterface().getSimpleName());
+					true, clones, first.getModelInterface().getSimpleName());
 			} else {
 				// report the problem (not fixed)
 				error(validation, first, "cloned.utility.class", 
-					false, idListAsString, first.getModelInterface().getSimpleName());
+					false, clones, first.getModelInterface().getSimpleName());
 			}
 		}
 	}

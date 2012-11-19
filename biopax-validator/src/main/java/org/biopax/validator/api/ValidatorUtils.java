@@ -1,10 +1,12 @@
-package org.biopax.validator.utils;
+package org.biopax.validator.api;
 
-import org.biopax.paxtools.io.SimpleIOHandler;
-import org.biopax.paxtools.model.BioPAXElement;
-import org.biopax.paxtools.model.Model;
-import org.biopax.paxtools.model.level3.Named;
-import org.biopax.validator.result.*;
+
+import org.biopax.validator.api.beans.Behavior;
+import org.biopax.validator.api.beans.Category;
+import org.biopax.validator.api.beans.ErrorCaseType;
+import org.biopax.validator.api.beans.ErrorType;
+import org.biopax.validator.api.beans.Validation;
+import org.biopax.validator.api.beans.ValidatorResponse;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -20,6 +22,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,7 +36,7 @@ import org.springframework.util.ResourceUtils;
 import org.w3c.dom.*;
 
 /**
- * A utility class.
+ * Validator Utility Class (not BioPAX specific).
  * 
  * This is injected into other beans, keeps several global settings and objects,
  * e.g., marshaller, and also provides static service methods to register, 
@@ -42,8 +45,8 @@ import org.w3c.dom.*;
  * @author rodche
  */
 @Service
-public class BiopaxValidatorUtils {
-    private static final Log logger  = LogFactory.getLog(BiopaxValidatorUtils.class);
+public class ValidatorUtils {
+    private static final Log logger  = LogFactory.getLog(ValidatorUtils.class);
     
     private Locale locale;
     private MessageSource messageSource; 
@@ -63,7 +66,7 @@ public class BiopaxValidatorUtils {
 		}
     }
     
-    public BiopaxValidatorUtils() {
+    public ValidatorUtils() {
 		this.locale = Locale.getDefault();
 	}
     
@@ -129,60 +132,7 @@ public class BiopaxValidatorUtils {
     public void setMaxErrors(int max) {
         maxErrors = max;
     }
-
-      
-    
-    /**
-     * This is mainly to remove the curly braces 
-     * that may cause an exception during 
-     * MessageSource resolves the arguments.
-     * 
-     * @param args
-     * @return
-     */
-    protected static String[] fixMessageArgs(Object... args) {
-    	String[] newArgs = new String[args.length];
-    	int i=0;
-    	for(Object a: args) {
-    		if(a != null) {
-    			String s = (a instanceof String) 
-        			? (String)a : getId(a);
-    			if (s.contains("{") || s.contains("}")) {
-    				s.replaceAll("\\}", ")");
-    				newArgs[i] = s.replaceAll("\\{", "(");
-    			} else {
-    				newArgs[i] = s;
-    			}
-    		} else {
-    			newArgs[i] = "N/A";
-    		}
-    		i++;
-    	}
-    	return newArgs;
-	}
-    
-    
-    /**
-     * Combines the array of values into a string,
-     * which is <em>safe</em> to use as error case argument;
-     * i.e., the createError(..) method using a {@link MessageSource} 
-     * can then match/replace parameters in the error case template, 
-     * defined in errors.properties).
-     * 
-     * @see BiopaxValidatorUtils#createError(MessageSource, Locale, String, String, String, String, boolean, Object...)
-     * 
-     * @param args
-     * @return
-     */
-    public static String errorMsgArgument(Object... args) {
-    	StringBuilder sb = new StringBuilder();
-		String params[] = fixMessageArgs(args);
-		for (String p : params) {
-			sb.append("\"").append(p).append("\"; ");
-		}
-		return sb.toString();
-    }
-          
+   
 	
 	/**
  	 * Writes the multiple results report.
@@ -322,10 +272,9 @@ public class BiopaxValidatorUtils {
 				: "No description.";
 		error.setMessage(commonMsg);
 		
-		String[] args = fixMessageArgs(msgArgs);
 		String msg = (messageSource != null)
-			? messageSource.getMessage(errorCode, args, errorMsgArgument(msgArgs), locale).replaceAll("\r|\n+", " ")
-				: errorMsgArgument(msgArgs);
+			? messageSource.getMessage(errorCode, msgArgs, StringUtils.join(msgArgs, "; "), locale).replaceAll("\r|\n+", " ")
+				: StringUtils.join(msgArgs, "; ");
 		
 		// resolve/set BioPAX problem category
 		String category = (messageSource != null)
@@ -376,8 +325,8 @@ public class BiopaxValidatorUtils {
      * Gets rule's behavior (mode) during unit testing
      * when messageSource can be null.
      * 
-     * @see BiopaxValidatorUtils#getRuleBehavior(String, String)
-     * @see BiopaxValidatorUtils#createError(MessageSource, Locale, String, String, String, String, boolean, Object...)
+     * @see ValidatorUtils#getRuleBehavior(String, String)
+     * @see ValidatorUtils#createError(MessageSource, Locale, String, String, String, String, boolean, Object...)
      * 
      * @param ruleName validation rule class name, e.g., org.biopax.validator.rules.MyRule
      * @param profile validation profile name or null (default profile)
@@ -414,47 +363,6 @@ public class BiopaxValidatorUtils {
 		}
 		
 		return tip;
-	}
-
-	
-	
-	/*
-	 * TODO move BioPAX-only methods to another class 
-	 * (trying to decouple the framework/api from BioPAX impl.)
-	 * 
-	 */
-	
-	/**
-	 * Gets object's "id" to use in error messages.
-	 * 
-	 * If Object is BioPAXElement - its RDFid suffix (after #),
-     * otherwise - simple class name + hash code.
-     * 
-	 * @param obj
-	 * @return string id
-	 */
-    public static String getId(Object obj) {
-    	String id = "";
-    	
-		if(obj instanceof SimpleIOHandler) {
-			SimpleIOHandler r = (SimpleIOHandler) obj;
-			id = r.getClass().getSimpleName(); 
-	    	try {
-	    		id = r.getId(); //current element URI
-	    	} catch (Throwable e) {
-	    		id = r.getXmlStreamInfo(); //location
-			}
-		} else if (obj instanceof BioPAXElement 
-				&& ((BioPAXElement)obj).getRDFId() != null) {
-			id = ((BioPAXElement) obj).getRDFId().replaceFirst("^.+#", "");	
-			// - strictly spk., does not always get the local part (depends on xml:base) but is OK.
-		} else if(obj instanceof Model) {
-			id = obj + "; xml:base=" + ((Model) obj).getXmlBase();
-		} else {
-			id = "" + obj;
-		}
-		
-		return id;
 	}
     
 }

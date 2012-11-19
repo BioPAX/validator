@@ -1,8 +1,6 @@
-package org.biopax.validator.result;
+package org.biopax.validator.api.beans;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -12,10 +10,8 @@ import javax.xml.bind.annotation.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.paxtools.io.SimpleIOHandler;
-import org.biopax.paxtools.model.Model;
-import org.biopax.paxtools.util.AbstractFilterSet;
-import org.biopax.validator.Rule;
+import org.biopax.validator.api.Identifier;
+import org.biopax.validator.api.Rule;
 
 
 @XmlType(name="Validation", namespace="http://biopax.org/validator/2.0/schema")
@@ -24,8 +20,8 @@ public class Validation implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Log log = LogFactory.getLog(Validation.class);
 	
-	private Model model;
-	private String modelSerialized;
+	private Object model;
+	private String modelData;
 	private final Set<ErrorType> error;
 	private String description;
 	private final Set<String> comment;
@@ -43,12 +39,18 @@ public class Validation implements Serializable {
 	private final Properties properties;
 
 	private String profile;
+	
+	/**
+	 * Concrete strategy impl. to get an object's ID (for error reporting)
+	 */
+	private final Identifier idCalc;
 
 	
 	/** 
 	 * Default Constructor (this is mainly for OXM)
+	 * @param idCalculator a strategy object to get a domain-specific identifier (for reporting)
 	 */
-	public Validation() {
+	public Validation(Identifier idCalculator) {
 		this.error = new ConcurrentSkipListSet<ErrorType>();
 		this.objects = Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>());
 		this.description = "unknown";
@@ -58,32 +60,40 @@ public class Validation implements Serializable {
 		this.maxErrors = Integer.MAX_VALUE;
 		this.profile = null;
 		this.properties = new Properties();
+		this.idCalc = (idCalculator != null) ? idCalculator : new Identifier() {			
+			// fall-back Identifier strategy implementation that uses toString
+			@Override
+			public String identify(Object obj) {
+				return String.valueOf(obj);
+			}
+		} ;
+	}
+
+	
+	/** 
+	 * Default Constructor (this is mainly for OXM)
+	 */
+	public Validation() {
+		this(null);
 	}
 	
-	/**
-	 * Constructor with the description and default error settings
-	 * 
-	 * @param name a description; when null or empty, the default 'unknown' is used.
-	 */
-	public Validation(String name) {
-		this();
-		if(name != null && !name.isEmpty())
-			description = name;
-	}	
 
 	/**
 	 * Non-default settings Constructor. 
 	 * Default values will be used if null or zero values were provided.
-	 * 
+	 * @param idCalculator a strategy object to get a domain-specific identifier (for reporting)
 	 * @param description default is "unknown"
 	 * @param autoFix default is false
 	 * @param errorLevel default is WARNING
 	 * @param maxErrors default is 0 (means unlimited, actually it's {@link Integer#MAX_VALUE, but the effect is same})
 	 * @param profile validation profile name (if null, the default is used)
+	 * 
 	 * @throws IllegalArgumentException when maxErrors < 0
 	 */
-	public Validation(String description, boolean autoFix, Behavior errorLevel, int maxErrors, String profile) {
-		this(description);
+	public Validation(Identifier idCalculator, String description, boolean autoFix, Behavior errorLevel, int maxErrors, String profile) {
+		this(idCalculator);
+		
+		setDescription(description);
 		
 		this.fix = autoFix;
 		
@@ -111,18 +121,18 @@ public class Validation implements Serializable {
 
 	
 	/**
-	 * Set Model (to check or report about)
+	 * Sets Model (to check or report about)
 	 * 
-	 * Note: unsafe, so use with care! 
-	 * ('objects' may still contain elements from 
+	 * Note: use with care, because 
+	 * 'objects' may still contain elements from 
 	 * the old model, which is up to developer to clean them
 	 * or continue working with; different models can share the same 
-	 * objects, etc...)
+	 * objects, etc.
 	 * 
 	 * @param model
 	 */
 	public void setModel(Object model) {
-		this.model = (Model) model;
+		this.model = model;
 	}
 
 
@@ -150,44 +160,11 @@ public class Validation implements Serializable {
 		error.addAll(errors);
 	}
 
-
-	/**
-	 * Generates a new BioPAX OWL from given model
-	 * and sets the {@link #modelSerialized} property
-	 * using the setter {@link #setModelSerialized(String)}.
-	 * 
-	 * But it does not update {@link #model} property 
-	 * ({@link #getModelSerialized()} won't change after this method is called).
-	 * 
-	 * @param model
-	 * @throws IllegalArgumentException if model is null
-	 */
-	public void updateModelSerialized(Model model) {
-		if (model == null) 
-			throw new IllegalArgumentException();
-		
-		// export to OWL
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		(new SimpleIOHandler(model.getLevel())).convertToOWL(model, outputStream);
-			
-		try {
-			setModelSerialized(outputStream.toString("UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			log.error(e);
-			setModelSerialized(outputStream.toString());
-		}
-	}
-
 	
-	/**
-	 * Returns current BioPAX OWL
-	 * 
-	 * @return
-	 */
 	@XmlElement(required = false)
-	public String getModelSerialized() 
+	public String getModelData() 
 	{
-		return modelSerialized;
+		return modelData;
 	}
 
 	
@@ -195,39 +172,39 @@ public class Validation implements Serializable {
 	 * This method should never be used
 	 * (this is for OXM frameworks only)!
 	 *
-	 * @param modelSerialized
+	 * @param modelData
 	 */
-	public void setModelSerialized(String modelSerialized) {
-		this.modelSerialized = modelSerialized;
+	public void setModelData(String modelData) {
+		this.modelData = modelData;
 	}
 
 
 	/**
-	 * Returns current BioPAX OWL in 
-	 * the HTML-escaped form (to show on pages).
+	 * Returns the data as HTML-escaped string 
+	 * (to show on web pages).
 	 * 
 	 * @return
 	 */
 	@XmlTransient
-	public String getModelSerializedHtmlEscaped() {
-		return (modelSerialized != null)
-				? StringEscapeUtils.escapeHtml(getModelSerialized()).replaceAll(System.getProperty("line.separator"), 
+	public String getModelDataHtmlEscaped() {
+		return (modelData != null)
+				? StringEscapeUtils.escapeHtml(getModelData())
+					.replaceAll(System.getProperty("line.separator"), 
 						System.getProperty("line.separator")+"<br/>")
 				: null;
 	}
 
 
 	/**
-	 * Returns current BioPAX OWL in 
-	 * the XML-escaped form 
-	 * (to include inside another XML data).
+	 * Returns the data as XML-escaped string 
+	 * (to embed inside a XML element).
 	 * 
 	 * @return
 	 */
 	@XmlTransient
-	public String getModelSerializedXmlEscaped() {
-		return (modelSerialized != null) 
-			? StringEscapeUtils.escapeXml(getModelSerialized())
+	public String getModelDataXmlEscaped() {
+		return (modelData != null) 
+			? StringEscapeUtils.escapeXml(getModelData())
 				: null;
 	}
 
@@ -482,23 +459,6 @@ public class Validation implements Serializable {
 	public Set<Object> getObjects() {
 		return objects;
 	}
-	
-
-	/**
-	 * Objects of a specific class, associated with this validation.
-	 * 
-	 * @see #getObjects()
-	 * 
-	 * @param filterBy
-	 * @return
-	 */
-	public <T> Collection<T> getObjects(final Class<T> filterBy) {
-		return new AbstractFilterSet<Object,T>(objects) {
-			public boolean filter(Object value) {
-				return filterBy.isInstance(value);
-			}			
-		};
-	}
 
 
 	/**
@@ -585,8 +545,8 @@ public class Validation implements Serializable {
 	 * fixing and reporting as 'fixed' for some error cases 
 	 * previously found by the validator (using this validation instance).
 	 * 
-	 * @param objectId BioPAX element identifier (associated with the error)
-	 * @param rule a BioPAX validation rule ID (that reports with the error code)
+	 * @param objectId model element identifier (associated with the error)
+	 * @param rule a validation rule name (that reports the error code)
 	 * @param errCode specific error code
 	 * @param newMsg a message, if not null/empty, to replace the original one
 	 */	
@@ -674,5 +634,19 @@ public class Validation implements Serializable {
 	 */
 	protected void setProfile(String profile) {
 		this.profile = profile;
+	}
+	
+	
+	/**
+	 * Gets a domain-specific identifier 
+	 * for a model element, stream, parser, etc.
+	 * objects related to this validation.
+	 * (for error reporting)
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	public String identify(Object obj) {
+		return idCalc.identify(obj);
 	}
 } 

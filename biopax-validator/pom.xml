@@ -27,7 +27,7 @@
 				</executions>
 				<configuration>
 					<project>${project}</project>
-					<srcdir>${project.build.sourceDirectory}/org/biopax/validator/result/</srcdir>
+					<srcdir>${project.build.sourceDirectory}/org/biopax/validator/api/beans/</srcdir>
 					<schemas>
 						<schema>
 							<namespace>http://biopax.org/validator/2.0/schema</namespace>

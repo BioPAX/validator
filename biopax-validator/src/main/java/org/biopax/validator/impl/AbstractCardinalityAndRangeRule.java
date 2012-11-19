@@ -7,9 +7,9 @@ import java.util.Collection;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.impl.AbstractRule;
-import org.biopax.validator.utils.BiopaxValidatorException;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.ValidatorException;
+import org.biopax.validator.api.beans.Validation;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -58,7 +58,7 @@ public abstract class AbstractCardinalityAndRangeRule<E extends BioPAXElement>
 			PropertyEditor editor = 
 				editorMap.getEditorForProperty(property, face);
 			if(editor == null) {
-				throw new BiopaxValidatorException(
+				throw new ValidatorException(
 					"Flaw in the " + getClass().getSimpleName()
 					+ " rule definition: no editor for the property: " 
 					+ property + " of " + domain);
@@ -110,10 +110,10 @@ public abstract class AbstractCardinalityAndRangeRule<E extends BioPAXElement>
 			}
 
 		} catch (IllegalAccessException e) {
-			throw new BiopaxValidatorException(e, getProperty(), 
+			throw new ValidatorException(e, getProperty(), 
 					domain.getSimpleName());
 		} catch (InvocationTargetException e) {
-			throw new BiopaxValidatorException(e, getProperty(), 
+			throw new ValidatorException(e, getProperty(), 
 					domain.getSimpleName());
 		} 
 	}

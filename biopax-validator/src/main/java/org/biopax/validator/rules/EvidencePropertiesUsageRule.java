@@ -4,8 +4,8 @@ import org.biopax.paxtools.model.level3.Evidence;
 import org.biopax.paxtools.model.level3.EvidenceCodeVocabulary;
 import org.biopax.paxtools.model.level3.ExperimentalForm;
 import org.biopax.paxtools.model.level3.Score;
-import org.biopax.validator.result.Validation;
-import org.biopax.validator.impl.AbstractRule;
+import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * Evidence properties and cardinality constraints.
  * 
  * This is not a trivial "cardinality and range rule" that
- * cannot simply extend the Level3CardinalityAndRangeRule class.
+ * cannot simply extend the CardinalityAndRangeRule class.
  * 
  * @author rodche
  */
