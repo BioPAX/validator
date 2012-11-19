@@ -30,6 +30,7 @@ package org.biopax.validator.utils;
 import java.io.*;
 import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.miriam.MiriamLink;
@@ -128,10 +129,22 @@ public final class Normalizer {
 		// use a copy of the xrefs set (to avoid concurrent modif. exception)
 		Set<? extends Xref> xrefs = new HashSet<Xref>(model.getObjects(Xref.class));
 		for(Xref ref : xrefs) {
+			String otherId = ref.getIdVersion();
+			
+			//mind that there are can be several RelationshipXref with the same db/id but different rel. type!
+			if(ref instanceof RelationshipXref) {
+				RelationshipTypeVocabulary cv = ((RelationshipXref) ref).getRelationshipType();
+				if(cv != null && !cv.getTerm().isEmpty())
+					otherId = StringUtils.join(
+						((RelationshipXref) ref).getRelationshipType().getTerm(), ',')
+							.toLowerCase();
+			}
+			
 			String uri = uriForXref(getXmlBase(model), 
-					ref.getDb(), ref.getId(), ref.getIdVersion(), (Class<? extends Xref>) ref.getModelInterface());				
+					ref.getDb(), ref.getId(), otherId, (Class<? extends Xref>) ref.getModelInterface());				
 			if(uri != null)
-				addToReplacementMap(model, ref, uri);
+				addToReplacementMap(model, ref, uri);			
+			
 		}		
 		// update/replace xrefs now
 		doSubs(model);

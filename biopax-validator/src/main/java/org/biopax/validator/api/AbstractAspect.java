@@ -68,10 +68,10 @@ public abstract class AbstractAspect {
 			XMLStreamException ex = (XMLStreamException) t;
 			msg.append("; ").append(ex.getLocation().toString());
 		} 
-//		else {
-//			if(log.isDebugEnabled())
-//				msg.append(" - stack:").append(getStackTrace(t)).append(" - ");
-//		}
+		else {
+			if("exception".equals(errorCode)) //catch a bug
+				msg.append(" - stack:").append(getStackTrace(t)).append(" - ");
+		}
 		
 		if(details != null) 
 			msg.append("; ").append(details);
