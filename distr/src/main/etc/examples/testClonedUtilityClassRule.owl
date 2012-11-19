@@ -9,46 +9,46 @@
 </owl:Ontology>
 
 <bp:UnificationXref rdf:about="Xref1">
- <bp:db rdf:datatype = "xsd:string">uniprotkb</bp:db>
- <bp:id rdf:datatype = "xsd:string">P68250</bp:id>
+ <bp:id rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">P68250</bp:id>
+ <bp:db rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">uniprotkb</bp:db>
 </bp:UnificationXref>
 
 <bp:RelationshipXref rdf:about="Xref2">
- <bp:db rdf:datatype = "xsd:string">refseq</bp:db>
- <bp:id rdf:datatype = "xsd:string">NP_001734</bp:id>
- <bp:idVersion rdf:datatype = "xsd:string">1</bp:idVersion>
+ <bp:id rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">NP_001734</bp:id>
+ <bp:db rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">refseq</bp:db>
+ <bp:idVersion rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">1</bp:idVersion>
 </bp:RelationshipXref>
 
 <bp:RelationshipXref rdf:about="Xref5">
- <bp:db rdf:datatype = "xsd:string">refseq</bp:db>
- <bp:id rdf:datatype = "xsd:string">NP_001734</bp:id>
+ <bp:id rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">NP_001734</bp:id>
+ <bp:db rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">refseq</bp:db>
 </bp:RelationshipXref>
 
 <bp:ProteinReference rdf:about="ProteinReference1">
  <bp:xref rdf:resource="Xref1" />
  <bp:xref rdf:resource="Xref2" />
- <bp:displayName rdf:datatype = "xsd:string">ProteinReference1</bp:displayName>
+ <bp:displayName rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">ProteinReference1</bp:displayName>
 </bp:ProteinReference>
 
 <bp:ProteinReference rdf:about="ProteinReference3">
- <bp:xref rdf:resource="Xref5" />
  <bp:xref rdf:resource="Xref3" />
- <bp:displayName rdf:datatype = "xsd:string">ProteinReference3</bp:displayName>
+ <bp:xref rdf:resource="Xref5" />
+ <bp:displayName rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">ProteinReference3</bp:displayName>
 </bp:ProteinReference>
 
 <bp:UnificationXref rdf:about="Xref3">
- <bp:db rdf:datatype = "xsd:string">uniprotkb</bp:db>
- <bp:id rdf:datatype = "xsd:string">Q0VCL1</bp:id>
+ <bp:id rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">Q0VCL1</bp:id>
+ <bp:db rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">uniprotkb</bp:db>
 </bp:UnificationXref>
 
 <bp:RelationshipXref rdf:about="Xref4">
- <bp:db rdf:datatype = "xsd:string">refseq</bp:db>
- <bp:id rdf:datatype = "xsd:string">NP_001734</bp:id>
+ <bp:id rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">NP_001734</bp:id>
+ <bp:db rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">refseq</bp:db>
 </bp:RelationshipXref>
 
 <bp:ProteinReference rdf:about="ProteinReference2">
- <bp:xref rdf:resource="Xref3" />
  <bp:xref rdf:resource="Xref4" />
- <bp:displayName rdf:datatype = "xsd:string">ProteinReference2</bp:displayName>
+ <bp:xref rdf:resource="Xref3" />
+ <bp:displayName rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">ProteinReference2</bp:displayName>
 </bp:ProteinReference>
 </rdf:RDF>

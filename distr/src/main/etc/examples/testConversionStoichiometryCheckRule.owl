@@ -9,15 +9,15 @@
 </owl:Ontology>
 
 <bp:Complex rdf:about="complex">
+ <bp:componentStoichiometry rdf:resource="stoi1" />
  <bp:component rdf:resource="protein1" />
  <bp:component rdf:resource="protein2" />
- <bp:componentStoichiometry rdf:resource="stoi1" />
 </bp:Complex>
 
 <bp:Degradation rdf:about="degradation">
+ <bp:participantStoichiometry rdf:resource="stoi2" />
  <bp:left rdf:resource="protein1" />
  <bp:left rdf:resource="protein2" />
- <bp:participantStoichiometry rdf:resource="stoi2" />
  <bp:right rdf:resource="complex" />
 </bp:Degradation>
 
@@ -28,19 +28,19 @@
 </bp:Protein>
 
 <bp:Stoichiometry rdf:about="stoi1">
- <bp:stoichiometricCoefficient rdf:datatype = "xsd:float">2.0</bp:stoichiometricCoefficient>
  <bp:physicalEntity rdf:resource="protein1" />
+ <bp:stoichiometricCoefficient rdf:datatype = "http://www.w3.org/2001/XMLSchema#float">2.0</bp:stoichiometricCoefficient>
 </bp:Stoichiometry>
 
 <bp:Stoichiometry rdf:about="stoi2">
- <bp:stoichiometricCoefficient rdf:datatype = "xsd:float">1.0</bp:stoichiometricCoefficient>
  <bp:physicalEntity rdf:resource="protein1" />
+ <bp:stoichiometricCoefficient rdf:datatype = "http://www.w3.org/2001/XMLSchema#float">1.0</bp:stoichiometricCoefficient>
 </bp:Stoichiometry>
 
 <bp:BiochemicalReaction rdf:about="biochem_reaction">
+ <bp:participantStoichiometry rdf:resource="stoi2" />
  <bp:left rdf:resource="protein1" />
  <bp:left rdf:resource="protein2" />
- <bp:participantStoichiometry rdf:resource="stoi2" />
  <bp:right rdf:resource="complex" />
 </bp:BiochemicalReaction>
 </rdf:RDF>

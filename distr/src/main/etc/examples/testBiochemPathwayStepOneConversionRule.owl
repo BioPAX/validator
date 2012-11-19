@@ -12,13 +12,13 @@
 </bp:BiochemicalReaction>
 
 <bp:BiochemicalPathwayStep rdf:about="step1">
- <bp:comment rdf:datatype = "xsd:string">error: conversion cannot be a step process (only stepConversion)</bp:comment>
- <bp:stepConversion rdf:resource="conversion1" />
  <bp:stepProcess rdf:resource="conversion1" />
  <bp:stepProcess rdf:resource="catalysis1" />
+ <bp:stepConversion rdf:resource="conversion1" />
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">error: conversion cannot be a step process (only stepConversion)</bp:comment>
 </bp:BiochemicalPathwayStep>
 
 <bp:Catalysis rdf:about="catalysis1">
- <bp:comment rdf:datatype = "xsd:string">valid step process value</bp:comment>
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">valid step process value</bp:comment>
 </bp:Catalysis>
 </rdf:RDF>

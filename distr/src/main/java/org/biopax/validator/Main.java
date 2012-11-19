@@ -8,7 +8,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.paxtools.controller.ModelUtils;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.Model;
 import org.biopax.validator.api.ValidatorUtils;
@@ -42,16 +41,16 @@ public class Main {
         if(args.length < 2) {
         	String usage = 
     			"\n The BioPAX Validator v3, Console Java Application\n\n" +
-    		    "Parameters: <input> <output[.xml|.html]> [--auto-fix] [--normalize] [--max-errors=<n>] [--profile=notstrict]\n" + 
+    		    "Parameters: <input> <output[.xml|.html]> [--auto-fix] [--max-errors=<n>] [--profile=notstrict]\n" + 
     		    "(the second and next arguments are optional and can go in any order).\n" +
     		    "For example:\n" +
     		    "  path/dir errors.xml\n" +
     		    "  list:batch_file.txt errors.xml\n" +
-    		    "  file:biopax.owl errors.xml --auto-fix --normalize\n" +
+    		    "  file:biopax.owl errors.xml --auto-fix\n" +
     		    "  http://www.some.net/data.owl errors.html\n\n" +
     		    "A batch file should list one task (resource) per line, i.e., " +
     		    "file:path/file or URL (to BioPAX data)\n" +
-    		    "If '--auto-fix' or '--normalize' options were used, it " +
+    		    "If '--auto-fix' option was used, it " +
     		    "also creates a new BioPAX file for each input file " +
     		    "in the current working directory (using '.modified.owl' exention). " +
     		    "If the output file extension is '.html', the XML result will " +

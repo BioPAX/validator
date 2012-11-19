@@ -12,7 +12,6 @@ import org.biopax.validator.api.Rule;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.impl.IdentifierImpl;
 import org.biopax.validator.rules.*;
-import org.biopax.validator.utils.*;
 import org.junit.Test;
 
 
@@ -366,7 +365,7 @@ public class Level3RulesUnitTest {
        	m.add(taxonXref);
        	m.add(bioSource);
        	m.add(pr);
-       	writeExample("testProteinReferenceOrganismCRRule", m);
+       	writeExample("testProteinReferenceOrganismCRRule.owl", m);
     	
     	pr.setOrganism(bioSource);
     	v = new Validation(new IdentifierImpl());

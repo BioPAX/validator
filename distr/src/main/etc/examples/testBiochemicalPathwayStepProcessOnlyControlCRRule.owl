@@ -9,11 +9,11 @@
 </owl:Ontology>
 
 <bp:BiochemicalPathwayStep rdf:about="step1">
- <bp:comment rdf:datatype = "xsd:string">error: has not a Control type step process</bp:comment>
  <bp:stepProcess rdf:resource="interaction1" />
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">error: has not a Control type step process</bp:comment>
 </bp:BiochemicalPathwayStep>
 
 <bp:BiochemicalReaction rdf:about="interaction1">
- <bp:comment rdf:datatype = "xsd:string">a conversion reaction (not Control)</bp:comment>
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">a conversion reaction (not Control)</bp:comment>
 </bp:BiochemicalReaction>
 </rdf:RDF>

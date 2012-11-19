@@ -9,7 +9,7 @@
 </owl:Ontology>
 
 <bp:Degradation rdf:about="degradation-conversion-1">
- <bp:conversionDirection rdf:datatype = "xsd:string">REVERSIBLE</bp:conversionDirection>
- <bp:comment rdf:datatype = "xsd:string">error: illegal conversionDirection</bp:comment>
+ <bp:conversionDirection rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">REVERSIBLE</bp:conversionDirection>
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">error: illegal conversionDirection</bp:comment>
 </bp:Degradation>
 </rdf:RDF>

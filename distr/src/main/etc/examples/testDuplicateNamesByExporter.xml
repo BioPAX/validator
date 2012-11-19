@@ -8,9 +8,8 @@
  <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl#" />
 </owl:Ontology>
 
-<bp:Protein rdf:about="Protein1">
- <bp:comment rdf:datatype = "xsd:string">Name-is-duplicated</bp:comment>
- <bp:displayName rdf:datatype = "xsd:string">proteinName</bp:displayName>
- <bp:name rdf:datatype = "xsd:string">proteinName</bp:name>
+<bp:Protein rdf:about="myProtein">
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">Display Name should not be repeated again in the Name property!</bp:comment>
+ <bp:displayName rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">aDisplayName</bp:displayName>
 </bp:Protein>
 </rdf:RDF>

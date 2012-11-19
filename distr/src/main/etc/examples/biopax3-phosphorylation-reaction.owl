@@ -6,12 +6,13 @@
     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
     xmlns:owl="http://www.w3.org/2002/07/owl#"
-  xml:base="http://www.biopax.org/examples/myExample">
+  xml:base="http://www.biopax.org/examples/myExample#">
   <owl:Ontology rdf:about="">
     <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl"/>
   </owl:Ontology>
   <rdf:Property rdf:about="http://www.biopax.org/release/biopax-level3.owl#direction"/>
   <bp:Protein rdf:ID="Protein_5">
+  	<bp:notFeature rdf:resource="#ModificationFeature_17"/>
     <bp:dataSource>
       <bp:Provenance rdf:ID="Provenance_3">
         <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
@@ -75,9 +76,9 @@
               </bp:RelationshipTypeVocabulary>
             </bp:relationshipType>
             <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-            >IUBMB</bp:db>
+            >Enzyme Nomenclature</bp:db>
             <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-            >EC 2.7.1.37</bp:id>
+            >2.7.1.37</bp:id>
           </bp:RelationshipXref>
         </bp:xref>
         <bp:xref>
@@ -92,6 +93,7 @@
         >CHK2</bp:displayName>
         <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
         >CHEK2</bp:name>
+        <bp:entityFeature rdf:resource="#ModificationFeature_17"/>
       </bp:ProteinReference>
     </bp:entityReference>
     <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
@@ -212,13 +214,13 @@
                     <bp:xref>
                       <bp:UnificationXref rdf:ID="UnificationXref_19">
                         <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-                        >PSI-MI</bp:db>
+                        >MOD</bp:db>
                         <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-                        >MI:0176</bp:id>
+                        >MOD:00046</bp:id>
                       </bp:UnificationXref>
                     </bp:xref>
                     <bp:term rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-                    >o-phospho-serine</bp:term>
+                    >O-phospho-L-serine</bp:term>
                   </bp:SequenceModificationVocabulary>
                 </bp:modificationType>
               </bp:ModificationFeature>
@@ -248,7 +250,6 @@
                 <bp:cellularLocation rdf:resource="#CellularLocationVocabulary_6"/>
                 <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
                 >"FUNCTION Involved in signal transduction, cell cycle control and DNA repair. May function as a tumor suppressor. Necessary for activation of ABL1 and SAPK"</bp:comment>
-                <bp:xref rdf:resource="#UnificationXref_28"/>
                 <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
                 >ATM</bp:displayName>
               </bp:Protein>

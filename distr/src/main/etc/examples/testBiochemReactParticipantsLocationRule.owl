@@ -11,36 +11,36 @@
 <bp:BiochemicalReaction rdf:about="#BiochemicalReaction">
  <bp:left rdf:resource="#complex" />
  <bp:left rdf:resource="#dna" />
- <bp:right rdf:resource="#modifiedCmplex" />
  <bp:right rdf:resource="#modifiedDna" />
+ <bp:right rdf:resource="#modifiedCmplex" />
 </bp:BiochemicalReaction>
 
 <bp:Complex rdf:about="#complex">
+ <bp:name rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">cplx2</bp:name>
  <bp:cellularLocation rdf:resource="#cr" />
- <bp:comment rdf:datatype = "xsd:string">location changed without transport?</bp:comment>
- <bp:name rdf:datatype = "xsd:string">cplx2</bp:name>
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">location changed without transport?</bp:comment>
 </bp:Complex>
 
 <bp:Complex rdf:about="#modifiedCmplex">
+ <bp:name rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">cplx1</bp:name>
  <bp:cellularLocation rdf:resource="#cl" />
- <bp:name rdf:datatype = "xsd:string">cplx1</bp:name>
 </bp:Complex>
 
 <bp:CellularLocationVocabulary rdf:about="#cl">
- <bp:term rdf:datatype = "xsd:string">cytoplasm</bp:term>
+ <bp:term rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">cytoplasm</bp:term>
 </bp:CellularLocationVocabulary>
 
 <bp:CellularLocationVocabulary rdf:about="#cr">
- <bp:term rdf:datatype = "xsd:string">membrane</bp:term>
+ <bp:term rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">membrane</bp:term>
 </bp:CellularLocationVocabulary>
 
 <bp:Dna rdf:about="#modifiedDna">
- <bp:cellularLocation rdf:resource="#cr" />
- <bp:comment rdf:datatype = "xsd:string">location changed without transport?</bp:comment>
- <bp:comment rdf:datatype = "xsd:string">modified dna</bp:comment>
  <bp:entityReference rdf:resource="#dnaref" />
- <bp:name rdf:datatype = "xsd:string">dnaRight</bp:name>
+ <bp:name rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">dnaRight</bp:name>
  <bp:feature rdf:resource="feature1" />
+ <bp:cellularLocation rdf:resource="#cr" />
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">location changed without transport?</bp:comment>
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">modified dna</bp:comment>
 </bp:Dna>
 
 <bp:DnaReference rdf:about="#dnaref">
@@ -50,8 +50,8 @@
 </bp:FragmentFeature>
 
 <bp:Dna rdf:about="#dna">
- <bp:cellularLocation rdf:resource="#cl" />
  <bp:entityReference rdf:resource="#dnaref" />
- <bp:name rdf:datatype = "xsd:string">dnaLeft</bp:name>
+ <bp:name rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">dnaLeft</bp:name>
+ <bp:cellularLocation rdf:resource="#cl" />
 </bp:Dna>
 </rdf:RDF>

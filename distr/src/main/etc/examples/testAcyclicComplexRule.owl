@@ -8,9 +8,11 @@
  <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl#" />
 </owl:Ontology>
 
-<bp:Protein rdf:about="Protein1">
- <bp:comment rdf:datatype = "xsd:string">Name-is-duplicated</bp:comment>
- <bp:displayName rdf:datatype = "xsd:string">proteinName</bp:displayName>
- <bp:name rdf:datatype = "xsd:string">proteinName</bp:name>
-</bp:Protein>
+<bp:Complex rdf:about="complex">
+ <bp:component rdf:resource="component" />
+</bp:Complex>
+
+<bp:Complex rdf:about="component">
+ <bp:component rdf:resource="complex" />
+</bp:Complex>
 </rdf:RDF>
