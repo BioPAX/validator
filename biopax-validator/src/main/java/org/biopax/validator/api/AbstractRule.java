@@ -1,6 +1,7 @@
 package org.biopax.validator.api;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import org.biopax.validator.api.beans.ErrorType;
 import org.biopax.validator.api.beans.Validation;
@@ -49,10 +50,10 @@ public abstract class AbstractRule<T> implements Rule<T> {
     	// get object's ID
     	String thingId = validation.identify(object);
     	
-    	// resolve/escape extra message args to IDs
-    	args = fixMessageArgs(validation, args);
-    	
-    	
+    	// properly resolve extra message args to IDs
+    	// w/o changing the no. args
+    	args = parseArgs(validation, args);
+    	   	
 		if (validation.isMaxErrorsSet() 
 				&& validation.getNotFixedErrors() > validation.getMaxErrors()) 
 		{
@@ -81,31 +82,40 @@ public abstract class AbstractRule<T> implements Rule<T> {
     
     
     /**
-     * This is mainly to remove the curly braces 
-     * that may cause an exception during 
-     * MessageSource resolves the arguments.
+     * TODO
      * 
+     * @param v
      * @param args
      * @return
      */
-    private String[] fixMessageArgs(Validation v, Object... args) {
+    private String[] parseArgs(Validation v, Object... args) {
     	String[] newArgs = new String[args.length];
+    	
     	int i=0;
     	for(Object a: args) {
-    		if(a != null) {
-    			String s = (a instanceof String) 
-        			? (String)a : v.identify(a);
-    			if (s.contains("{") || s.contains("}")) {
-    				s.replaceAll("\\}", ")");
-    				newArgs[i] = s.replaceAll("\\{", "(");
-    			} else {
-    				newArgs[i] = s;
+    		final StringBuilder sb = new StringBuilder();
+    		
+    		if(a instanceof Collection) {
+    			for(Object o : (Collection)a) {
+    				sb.append(v.identify(o)).append("; ");
+    			}
+    		} else if(a instanceof Object[]) {
+    			for(Object o : (Object[])a) {
+    				sb.append(v.identify(o)).append("; ");
     			}
     		} else {
-    			newArgs[i] = "N/A";
-    		}
+    			sb.append(v.identify(a));
+    		} 
+    		
+			String s = sb.toString();
+			if (s.contains("{") || s.contains("}")) {
+				s.replaceAll("\\}", ")");
+				s.replaceAll("\\{", "(");
+			}    		
+    		newArgs[i] = s;
     		i++;
     	}
+    	
     	return newArgs;
 	}
 
