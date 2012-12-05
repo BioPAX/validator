@@ -57,12 +57,10 @@ public abstract class AbstractRule<T> implements Rule<T> {
 		if (validation.isMaxErrorsSet() 
 				&& validation.getNotFixedErrors() > validation.getMaxErrors()) 
 		{
-			if(logger.isDebugEnabled()) {
-				logger.debug("Max errors exceeded (" + validation.getMaxErrors() +
-					", " + validation.getDescription() + "); Skipping for " + 
-					code  + ", obj:" + thingId + "(fixed:" + setFixed + 
-					"), args:" + Arrays.toString(args));
-			}
+			logger.info("Max errors exceeded (" + validation.getMaxErrors() +
+				", " + validation.getDescription() + "); Skipping for " + 
+				code  + ", obj:" + thingId + "(fixed:" + setFixed + 
+				"), args:" + Arrays.toString(args));
 			return;	
 		}
   	    	
@@ -76,8 +74,7 @@ public abstract class AbstractRule<T> implements Rule<T> {
     	
     	validation.addError(error);
 
-    	if(logger.isDebugEnabled())
-    		logger.debug( ((setFixed) ? "FIXED " : "") + " " + code + " in " + thingId);
+   		logger.info( ((setFixed) ? "FIXED " : "") + " " + code + " in " + thingId);
     }
     
     

@@ -2,7 +2,6 @@ package org.biopax.validator.api.beans;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.xml.bind.annotation.*;
 
@@ -26,7 +25,7 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	private Category category = Category.INFORMATION; // default
 
 	public ErrorType() {
-		errorCase = new ConcurrentSkipListSet<ErrorCaseType>(); //new TreeSet<ErrorCaseType>();
+		errorCase = new TreeSet<ErrorCaseType>();
 	}
 
 	public ErrorType(String code, Behavior type) {
@@ -44,11 +43,11 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 		this.category = category;
 	}
 	
-	public Collection<ErrorCaseType> getErrorCase() {
+	public synchronized Collection<ErrorCaseType> getErrorCase() {
 		return errorCase;
 	}
 
-	public void setErrorCase(Collection<ErrorCaseType> errorCases) {
+	public synchronized void setErrorCase(Collection<ErrorCaseType> errorCases) {
 		this.errorCase.clear();
 		this.errorCase.addAll(errorCases);
 	}
@@ -86,24 +85,21 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	 */
 	public void addErrorCase(ErrorCaseType newCase) {
 		// errorCase.add(newCase);
-		if (errorCase.contains(newCase)) //
-		{
-			for (ErrorCaseType ect : errorCase) {
-				if(ect.equals(newCase)) {
-					// - found by object and rule id;
-					// update the existing case
-					ect.setFixed(newCase.isFixed());
+		ErrorCaseType ect = findErrorCase(newCase);
+		if(ect != null) {
+			// update the existing case
+			ect.setFixed(newCase.isFixed());
 					
-					if(!newCase.isFixed()) {
-						// new message (error re-occur)
-						ect.setMessage(newCase.getMessage());
-					} else {
-						// message ignored (previous error is being fixed)
-					}
-				}
+			if(!newCase.isFixed()) {
+				// new message (error re-occur)
+				ect.setMessage(newCase.getMessage());
+			} else {
+				// message ignored (previous error is being fixed)
 			}
 		} else {
-			errorCase.add(newCase);
+			synchronized (this) {
+				errorCase.add(newCase);
+			}
 		}
 	}
 	
@@ -120,7 +116,7 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	}
 	
 	
-	public void removeErrorCase(ErrorCaseType eCase) {
+	public synchronized void removeErrorCase(ErrorCaseType eCase) {
 		errorCase.remove(eCase);
 	}
 	
@@ -132,15 +128,18 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	@Override
 	public boolean equals(Object obj) {	
 		if(obj instanceof ErrorType) {
-			ErrorType et = (ErrorType) obj;
-			return et.toString().equalsIgnoreCase(toString());
+			ErrorType that = (ErrorType) obj;
+			return type.equals(that.type)
+					&& code.equals(that.code);
 		} 
 		return false;
 	}
 	
 	@Override
 	public int hashCode() {
-		return toString().hashCode();
+		int result = 31 + (type != null ? type.hashCode() : 0);
+		result = 31 * result + (code != null ? code.hashCode() : 0);
+		return result;
 	}
 	
 	public int compareTo(ErrorType et) {
@@ -186,7 +185,7 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	 * @param ignoreFixed skip fixed if true
 	 * @return
 	 */
-	public int countErrors(String forObject, String reportedBy, boolean ignoreFixed) {
+	public synchronized int countErrors(String forObject, String reportedBy, boolean ignoreFixed) {
 		int count = 0;
 		
 		for(ErrorCaseType ec: errorCase) {
@@ -218,8 +217,8 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	 * @param searchBy
 	 * @return
 	 */
-	public ErrorCaseType findErrorCase(final ErrorCaseType searchBy) {
-		if(getErrorCase().contains(searchBy)) {
+	public synchronized ErrorCaseType findErrorCase(final ErrorCaseType searchBy) {
+		if(errorCase.contains(searchBy)) {
 			for (ErrorCaseType ec : getErrorCase()) {
 				if (ec.equals(searchBy)) {
 					return ec;

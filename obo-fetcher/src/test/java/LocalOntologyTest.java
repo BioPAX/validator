@@ -3,8 +3,6 @@ import static org.junit.Assert.*;
 import org.biopax.psidev.ontology_manager.*;
 import org.biopax.psidev.ontology_manager.impl.*;
 import org.junit.*;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.ResourceLoader;
 
 
 import java.util.*;
@@ -21,7 +19,7 @@ public class LocalOntologyTest {
 		OntologyManagerContext.getInstance().setStoreOntologiesLocally(true);
 		final Properties cfg = new Properties();
 		cfg.put("SO", "http://song.cvs.sourceforge.net/viewvc/song/ontology/so.obo?revision=1.310");
-		cfg.put("MI", "http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mi/rel25/data/psi-mi25.obo?revision=1.58");
+		cfg.put("MI", "http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mi/rel25/data/psi-mi25.obo?revision=1.60");
 		cfg.put("MOD", "http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mod/data/PSI-MOD.obo?revision=1.23");
 		
 		try {
@@ -49,7 +47,7 @@ public class LocalOntologyTest {
 		assertEquals(1, terms.size());
 		final OntologyTermI y2h = terms.iterator().next();
 
-		assertEquals(8, y2h.getNameSynonyms().size());
+		assertEquals(9, y2h.getNameSynonyms().size());
 		assertTrue(y2h.getNameSynonyms().contains("2h"));
 		assertTrue(y2h.getNameSynonyms()
 				.contains("classical two hybrid"));

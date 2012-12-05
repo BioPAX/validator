@@ -8,8 +8,6 @@ import org.biopax.psidev.ontology_manager.impl.OntologyLoaderException;
 import org.biopax.psidev.ontology_manager.impl.OntologyManagerContext;
 import org.biopax.psidev.ontology_manager.impl.OntologyManagerImpl;
 import org.junit.*;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.ResourceLoader;
 
 
 import java.util.Collection;
@@ -23,8 +21,8 @@ public class OntologyParserTest {
 		
 		final Properties cfg = new Properties();
 		cfg.put("SO", "http://song.cvs.sourceforge.net/viewvc/song/ontology/so.obo?revision=1.310");
-		cfg.put("MI", "http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/mi/rel25/data/psi-mi25.obo?revision=1.60");
-		cfg.put("MOD", "http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/mod/data/PSI-MOD.obo?revision=1.24");
+		cfg.put("MI", "http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mi/rel25/data/psi-mi25.obo?revision=1.60");
+		cfg.put("MOD", "http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mod/data/PSI-MOD.obo?revision=1.23");
 		
 		OntologyManager manager = new OntologyManagerImpl(cfg);
 		

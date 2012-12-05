@@ -3,7 +3,6 @@ package org.biopax.validator.api.beans;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.xml.bind.annotation.*;
 
@@ -51,7 +50,7 @@ public class Validation implements Serializable {
 	 * @param idCalculator a strategy object to get a domain-specific identifier (for reporting)
 	 */
 	public Validation(Identifier idCalculator) {
-		this.error = new ConcurrentSkipListSet<ErrorType>();
+		this.error = new TreeSet<ErrorType>();
 		this.objects = Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>());
 		this.description = "unknown";
 		this.comment = new HashSet<String>();
@@ -144,7 +143,7 @@ public class Validation implements Serializable {
 	 * 
 	 * @return
 	 */
-	public Collection<ErrorType> getError() {
+	public synchronized Collection<ErrorType> getError() {
 		return error;
 	}
 
@@ -155,7 +154,7 @@ public class Validation implements Serializable {
 	 * 
 	 * @param errors
 	 */
-	public void setError(Collection<ErrorType> errors) {
+	public synchronized void setError(Collection<ErrorType> errors) {
 		error.clear();
 		error.addAll(errors);
 	}
@@ -247,15 +246,17 @@ public class Validation implements Serializable {
 				break; // do not add (only errors pass)
 			}
 		default: // add error with all cases
-			if (error.contains(e)) {
-				for (ErrorType et : error) {
-					if (et.equals(e)) {
-						et.addCases(e.getErrorCase());
-						break;
+			synchronized (this) {
+				if (error.contains(e)) {
+					for (ErrorType et : error) {
+						if (et.equals(e)) {
+							et.addCases(e.getErrorCase());
+							break;
+						}
 					}
+				} else { // adding a new error type (code)
+					error.add(e);
 				}
-			} else { //adding a new error type (code)
-				error.add(e);
 			}
 			break;
 		}
@@ -266,7 +267,7 @@ public class Validation implements Serializable {
 	 * Removes the error type and all cases.
 	 * @param e
 	 */
-	public void removeError(ErrorType e) {
+	public synchronized void removeError(ErrorType e) {
 		error.remove(e);
 	}
 		
@@ -328,7 +329,7 @@ public class Validation implements Serializable {
 	 * @return
 	 */
 	@XmlAttribute
-	public String getSummary() {
+	public synchronized String getSummary() {
 		StringBuffer result = new StringBuffer();
 		if (error.size()>0) { 
 			result.append("different types of problem: ");

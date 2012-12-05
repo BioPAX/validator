@@ -2,6 +2,7 @@ package org.biopax.validator.impl;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -55,7 +56,7 @@ public class ValidatorImpl implements Validator {
 	
 	
     public ValidatorImpl() {
-		results = new HashSet<Validation>();
+		results = Collections.newSetFromMap(new ConcurrentHashMap<Validation, Boolean>());
 	}
     
     
@@ -285,15 +286,6 @@ public class ValidatorImpl implements Validator {
 		return keys;
 	}
 	
-	
-	public void freeObject(Object o) {
-		for(Validation r : results) {
-			if(r.getObjects().contains(o)) {
-				r.getObjects().remove(o);
-			}
-		}
-	}
-
 	
 	public void indirectlyAssociate(Object parent, Object child) {
 		if (parent == null || child==null 

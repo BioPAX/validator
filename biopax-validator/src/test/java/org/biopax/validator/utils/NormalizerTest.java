@@ -140,7 +140,7 @@ public class NormalizerTest {
 //		xml = out.toString();
 		
 		// check Xref
-		String normUri = Normalizer.uriForXref(model.getXmlBase(), "uniprot", "P68250", null, UnificationXref.class);
+		String normUri = Normalizer.uri(model.getXmlBase(), "uniprot", "P68250", UnificationXref.class);
 		BioPAXElement bpe = model.getByID(normUri);
 		assertTrue(bpe instanceof UnificationXref);
 		
@@ -149,12 +149,12 @@ public class NormalizerTest {
 		assertTrue(bpe instanceof ProteinReference);
 		
 		//check xref's ID gets normalized
-		normUri = Normalizer.uriForXref(model.getXmlBase(), "REFSEQ", "NP_001734", null, RelationshipXref.class);
+		normUri = Normalizer.uri(model.getXmlBase(), "REFSEQ", "NP_001734", RelationshipXref.class);
 		bpe = model.getByID(normUri);
 		assertEquals(1, ((Xref)bpe).getXrefOf().size());
 
 		// almost the same xref (was different idVersion)
-		normUri = Normalizer.uriForXref(model.getXmlBase(), "REFSEQ", "NP_001734", "1", RelationshipXref.class);
+		normUri = Normalizer.uri(model.getXmlBase(), "REFSEQ", "NP_001734", RelationshipXref.class);
 		bpe = model.getByID(normUri);
 		assertEquals(1, ((Xref)bpe).getXrefOf().size());
 		
@@ -163,7 +163,7 @@ public class NormalizerTest {
 		assertFalse(model.containsID("BioSource_Mouse_Tissue"));
 		bpe = model.getByID("http://identifiers.org/taxonomy/10090");
 		assertTrue(bpe instanceof BioSource);
-		normUri = Normalizer.uriForXref(model.getXmlBase(), "TAXONOMY", "10090", null, UnificationXref.class);
+		normUri = Normalizer.uri(model.getXmlBase(), "TAXONOMY", "10090", UnificationXref.class);
 		bpe = model.getByID(normUri);
 		assertTrue(bpe instanceof UnificationXref);
 		
@@ -268,7 +268,7 @@ public class NormalizerTest {
 		assertNotNull(e);	
 		assertEquals(1, e.getXref().size());
 		
-		String normUri = Normalizer.uriForXref(model.getXmlBase(), "UNIPROT", "Q0VCL1", null, UnificationXref.class);
+		String normUri = Normalizer.uri(model.getXmlBase(), "UNIPROT", "Q0VCL1", UnificationXref.class);
 		ref = (UnificationXref) model.getByID(normUri);
 		assertNotNull(ref);
 		assertEquals(1, ref.getXrefOf().size());

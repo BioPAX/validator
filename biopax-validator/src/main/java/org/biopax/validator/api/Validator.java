@@ -68,18 +68,7 @@ public interface Validator {
 	 * @param child value
 	 */
 	void indirectlyAssociate(Object parent, Object child);
-	
-	
-	/**
-	 * Removes the object from all the validations, 
-	 * so that it won't be (directly) associated with any  
-	 * result anymore. However, the element can still be a member 
-	 * of several models that are registered with the validator, 
-	 * and there is no problem to successfully report errors. 
-	 * 
-	 * @param o element to release
-	 */
-	void freeObject(Object o);
+
 	
 	/**
 	 * Given the object, finds

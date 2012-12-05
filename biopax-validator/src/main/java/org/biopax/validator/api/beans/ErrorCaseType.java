@@ -73,8 +73,7 @@ public class ErrorCaseType implements Serializable, Comparable<ErrorCaseType> {
 
 	public int compareTo(ErrorCaseType o) {
 		// preventive NullPointerError error fix:
-		if(getObject()==null) {	this.object = "";}
-		
+		if(getObject()==null) {	this.object = "";}		
 		return getObject().compareToIgnoreCase(o.getObject());
 	}
 	
@@ -82,13 +81,16 @@ public class ErrorCaseType implements Serializable, Comparable<ErrorCaseType> {
 	public boolean equals(Object obj) {
 		if(obj instanceof ErrorCaseType) {
 			ErrorCaseType that = ((ErrorCaseType)obj);
-			return (object+reportedBy).equalsIgnoreCase(that.object+that.reportedBy);
+			return object.equalsIgnoreCase(that.object) 
+					&& reportedBy.equalsIgnoreCase(that.reportedBy);
 		}
 		return false;
 	}
 	
 	@Override
 	public int hashCode() {
-		return (object+reportedBy).hashCode();
+		int result = 31 + (object != null ? object.hashCode() : 0);
+		result = 31 * result + (reportedBy != null ? reportedBy.hashCode() : 0);
+		return result;
 	}
 }

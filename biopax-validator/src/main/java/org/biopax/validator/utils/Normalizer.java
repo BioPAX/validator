@@ -140,11 +140,9 @@ public final class Normalizer {
 							.toLowerCase();
 			}
 			
-			String uri = uriForXref(getXmlBase(model), 
-					ref.getDb(), ref.getId(), otherId, (Class<? extends Xref>) ref.getModelInterface());				
-			if(uri != null)
-				addToReplacementMap(model, ref, uri);			
-			
+			String idPart = ref.getId() + ((otherId != null) ? otherId : "");
+			String uri = uri(getXmlBase(model),	ref.getDb(), idPart, ref.getModelInterface());				
+			addToReplacementMap(model, ref, uri);						
 		}		
 		// update/replace xrefs now
 		doSubs(model);
@@ -152,60 +150,62 @@ public final class Normalizer {
 
 
 	/**
-	 * Makes a Xref URI.
-	 * 
-	 * Miriam registry is used to get a standard db name
-	 * and the identifiers.org URI, if possible.
+	 * Consistently generates a new BioPAX element URI 
+	 * using given URI namespace (xml:base), BioPAX class, 
+	 * and two different identifiers (at least one is required).
+	 * Miriam registry is used to get the standard db name, 
+	 * using the dbName argument, and identifiers.org URI, if possible,
+	 * for controlled vocabulary, publication xref, bio source, and entity
+	 * reference biopax types.
 	 * 
 	 * @param xmlBase xml:base (common URI prefix for a BioPAX model)
-	 * @param type Xref (sub-)class name
-	 * @param dbName value for xref.db property
-	 * @param id value for xref.id property
-	 * @param other e.g., idVersion, dbVersion
+	 * @param dbName
+	 * @param idPart optional (can be null), e.g., xref.id
+	 * @param type BioPAX class
 	 * @return
+	 * @throws IllegalArgumentException if either type is null or both 'dbName' and 'idPart' are all nulls.
 	 */
-	public static String uriForXref(final String xmlBase, 
-		final String dbName, final String id, final String other, Class<? extends Xref> type) 
+	public static String uri(final String xmlBase, 
+		final String dbName, final String idPart, Class<? extends BioPAXElement> type) 
 	{
-		if(type == null)
-			throw new IllegalArgumentException("null xref type");
+		if(type == null || (dbName == null && idPart == null))
+			throw new IllegalArgumentException();		
 		
-		if(dbName == null || id == null)
-			return null; //do not normalize (illegal/fake xref)
-
-		String uri = null;
-		String db = null;
+		String db = dbName;
 			
 		// try to find a standard URI, if exists, for a publication xref, 
 		// or at least a standard name:
-		try {
-			//try to get the preferred name
-			db = MiriamLink.getName(dbName);
-			
-			//a shortcut: try getting standard URI for a PublicationXref
-			if(type.equals(PublicationXref.class)) 
-			{
-				return MiriamLink.getIdentifiersOrgURI(db, id);
+		if (dbName != null) {
+			try {
+				// try to get the preferred name
+				db = MiriamLink.getName(dbName);
+
+				// a shortcut: try getting standard URI for some types
+				if (type.equals(PublicationXref.class) || type.equals(ControlledVocabulary.class)
+						|| type.equals(BioSource.class) || type.equals(EntityReference.class)) {
+					return MiriamLink.getIdentifiersOrgURI(db, idPart);
+				}
+			} catch (IllegalArgumentException e) {
+				if (log.isDebugEnabled())
+					log.debug("generateuri: not Miriam db name: " + dbName
+							+ ". " + e);
 			}
-		} catch (IllegalArgumentException e) {
-			if(log.isDebugEnabled())
-				log.debug("generateURIForXref: Unknown db (not in Miriam collection): " 
-						+ dbName + ". "  + e);
-			db = dbName;
 		}
 
 		// if not returned above this point, then -
 		// let's consistently build a new URI, anyway
 		// (doing so ensures re-using of equivalent xrefs, i.e. no duplicate xrefs, for better data merging)
 		StringBuilder sb = new StringBuilder(type.getSimpleName());
-		sb.append(db).append(id);
-		if(other != null)
-			sb.append(other);
 		
+		if (db != null)
+			sb.append(db);
 		
-		uri = ((xmlBase!=null)?xmlBase:"") + ModelUtils.md5hex(sb.toString());
+		if (idPart != null)
+			sb.append(idPart);
 		
-		return uri;
+		// create URI using the xml:base and digest of other values:
+		return ((xmlBase!=null)?xmlBase:"") + ModelUtils.md5hex(sb.toString());
+		
 	}
 	
 	
