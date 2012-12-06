@@ -158,37 +158,35 @@ public final class Normalizer {
 	 * for controlled vocabulary, publication xref, bio source, and entity
 	 * reference biopax types.
 	 * 
-	 * @param xmlBase xml:base (common URI prefix for a BioPAX model)
-	 * @param dbName
-	 * @param idPart optional (can be null), e.g., xref.id
+	 * @param xmlBase xml:base (common URI prefix for a BioPAX model), case-sensitive
+	 * @param dbName a biodata collection name or synonym, case-insensitive
+	 * @param idPart optional (can be null), e.g., xref.id, case-sensitive
 	 * @param type BioPAX class
 	 * @return
 	 * @throws IllegalArgumentException if either type is null or both 'dbName' and 'idPart' are all nulls.
 	 */
 	public static String uri(final String xmlBase, 
-		final String dbName, final String idPart, Class<? extends BioPAXElement> type) 
+		String dbName, final String idPart, Class<? extends BioPAXElement> type) 
 	{
 		if(type == null || (dbName == null && idPart == null))
 			throw new IllegalArgumentException();		
-		
-		String db = dbName;
 			
 		// try to find a standard URI, if exists, for a publication xref, 
 		// or at least a standard name:
 		if (dbName != null) {
 			try {
 				// try to get the preferred name
-				db = MiriamLink.getName(dbName);
+				dbName = MiriamLink.getName(dbName);
 
 				// a shortcut: try getting standard URI for some types
-				if (type.equals(PublicationXref.class) || type.equals(ControlledVocabulary.class)
-						|| type.equals(BioSource.class) || type.equals(EntityReference.class)) {
-					return MiriamLink.getIdentifiersOrgURI(db, idPart);
+				if (type.equals(PublicationXref.class) || ControlledVocabulary.class.isAssignableFrom(type)
+						|| type.equals(BioSource.class) || EntityReference.class.isAssignableFrom(type)) {
+					return MiriamLink.getIdentifiersOrgURI(dbName, idPart);
 				}
 			} catch (IllegalArgumentException e) {
-				if (log.isDebugEnabled())
-					log.debug("generateuri: not Miriam db name: " + dbName
-							+ ". " + e);
+				if(log.isDebugEnabled())
+					log.debug("uri: not a standard db name or synonym: " + dbName);
+				dbName = dbName.toLowerCase(); //important for data merging (when dbName is not standard)!
 			}
 		}
 
@@ -197,8 +195,8 @@ public final class Normalizer {
 		// (doing so ensures re-using of equivalent xrefs, i.e. no duplicate xrefs, for better data merging)
 		StringBuilder sb = new StringBuilder(type.getSimpleName());
 		
-		if (db != null)
-			sb.append(db);
+		if (dbName != null)
+			sb.append(dbName);
 		
 		if (idPart != null)
 			sb.append(idPart);

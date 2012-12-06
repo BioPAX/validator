@@ -51,6 +51,35 @@ public class NormalizerTest {
 	}
 
 	@Test
+	public final void testUri() {
+		 // using null or non-standard db
+		 assertEquals(Normalizer.uri("test/", "foo", "bar", UnificationXref.class), Normalizer.uri("test/", "FOo", "bar", UnificationXref.class));
+		 //'pubchem' is a ambigous synonym (correct ones are: pubchem-substance, pubchem-compound, etc.)
+		 assertEquals(Normalizer.uri("", "pubchem", "bar", UnificationXref.class), Normalizer.uri("", "PubChem", "bar", UnificationXref.class));
+		 assertEquals(Normalizer.uri("", null, "bar", UnificationXref.class), Normalizer.uri(null, null, "bar", UnificationXref.class));
+		 assertFalse(Normalizer.uri(null, "foo", "bar", UnificationXref.class).equals(Normalizer.uri(null, "foo", "BAR", UnificationXref.class)));
+		 assertFalse(Normalizer.uri(null, "foo", "bar", UnificationXref.class).equals(Normalizer.uri(null, "foo", "bar", PublicationXref.class)));
+		 
+		 // using standard db names (Miriam is used to normalize name and/or get identifiers.org URI) -
+		 assertEquals(Normalizer.uri("test/", "pubmed", "12345", PublicationXref.class), Normalizer.uri("test/", "PubMED", "12345", PublicationXref.class));
+		 assertEquals("http://identifiers.org/pubmed/12345", Normalizer.uri("test/", "PubMED", "12345", PublicationXref.class));
+		 assertFalse("http://identifiers.org/pubmed/12345".equals(Normalizer.uri(null, "PubMED", "12345", RelationshipXref.class))); //- not PublicationXref
+		 
+		 assertEquals("http://identifiers.org/obo.chebi/CHEBI:12345",Normalizer.uri("", "chebi", "CHEBI:12345", SmallMoleculeReference.class));
+		 assertEquals("http://identifiers.org/pubchem.substance/12345",Normalizer.uri("", "pubchem-substance", "12345", SmallMoleculeReference.class));
+		 assertEquals("http://identifiers.org/obo.psi-mod/MOD:12345",Normalizer.uri("", "PSI-mod", "MOD:12345", SequenceModificationVocabulary.class));
+		 assertEquals("http://identifiers.org/obo.psi-mod/MOD:12345",Normalizer.uri("", "MOD", "MOD:12345", ControlledVocabulary.class));
+		 //wrong (4-digit only) id -
+		 assertFalse("http://identifiers.org/obo.psi-mod/MOD:12345".equals(Normalizer.uri("", "MOD", "MOD:1234", ControlledVocabulary.class)));
+		 
+		 //wrong id (case-sens.)
+		 assertFalse("http://identifiers.org/obo.chebi/CHEBI:12345".equals(Normalizer.uri("", "chebi", "chebi:12345", SmallMoleculeReference.class)));
+		 //no 'pubchem' namespace there
+		 assertFalse("http://identifiers.org/pubchem/12345".equals(Normalizer.uri("", "pubchem-substance", "12345", UnificationXref.class))); 
+	}
+	
+	
+	@Test
 	public final void testNormalize() throws UnsupportedEncodingException {
 		Model model = BioPAXLevel.L3.getDefaultFactory().createModel();
     	Xref ref = model.addNew(UnificationXref.class,
