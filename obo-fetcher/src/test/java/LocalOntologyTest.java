@@ -18,9 +18,9 @@ public class LocalOntologyTest {
 	static {
 		OntologyManagerContext.getInstance().setStoreOntologiesLocally(true);
 		final Properties cfg = new Properties();
-		cfg.put("SO", "http://song.cvs.sourceforge.net/viewvc/song/ontology/so.obo?revision=1.310");
-		cfg.put("MI", "http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mi/rel25/data/psi-mi25.obo?revision=1.60");
-		cfg.put("MOD", "http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mod/data/PSI-MOD.obo?revision=1.23");
+		cfg.put("SO", "classpath:so.obo");
+		cfg.put("MI", "classpath:mi.obo");
+		cfg.put("MOD", "classpath:mod.obo");
 		
 		try {
 			manager = new OntologyManagerImpl(cfg);
@@ -131,7 +131,7 @@ public class LocalOntologyTest {
 
 		final Set<OntologyTermI> children = mi.getDirectChildren(term);
 		assertNotNull(children);
-		assertEquals(2, children.size());
+		assertEquals(3, children.size());
 		assertTrue(children.contains(new OntologyTermImpl("MI",
 				"MI:0602", "chemical footprinting")));
 		assertTrue(children.contains(new OntologyTermImpl("MI",
@@ -155,7 +155,7 @@ public class LocalOntologyTest {
 
 		final Set<OntologyTermI> children = mi.getAllChildren(term);
 		assertNotNull(children);
-		assertEquals(children.toString(), 7, children.size());
+		assertEquals(children.toString(), 11, children.size());
 		assertTrue(children.contains(new OntologyTermImpl("MI",
 				"MI:0602", "chemical footprinting")));
 		assertTrue(children.contains(new OntologyTermImpl("MI",
