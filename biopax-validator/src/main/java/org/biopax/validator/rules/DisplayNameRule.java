@@ -1,11 +1,8 @@
 package org.biopax.validator.rules;
 
-import java.util.Map;
 
-import javax.annotation.Resource;
-
-import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.level3.Named;
+import org.biopax.paxtools.model.level3.Provenance;
 import org.biopax.validator.api.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
@@ -17,8 +14,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class DisplayNameRule extends AbstractRule<Named> {
     public static final int MAX_DISPLAYNAME_LEN = 25;
-    @Resource
-    Map<Class<? extends BioPAXElement>, Integer> maxDisplayNameLengths;
 
 	public boolean canCheck(Object thing) {
 		return (thing instanceof Named); 
@@ -52,9 +47,7 @@ public class DisplayNameRule extends AbstractRule<Named> {
     	// check max. length
     	String name = named.getDisplayName();
     	if (name != null) { // if existed or was added above
-        	Class<? extends BioPAXElement> cl = ((BioPAXElement)named).getModelInterface();
-        	Integer max = (maxDisplayNameLengths.containsKey(cl)) 
-        		? maxDisplayNameLengths.get(cl)	: MAX_DISPLAYNAME_LEN;
+        	Integer max = (named instanceof Provenance) ? 50 : MAX_DISPLAYNAME_LEN;
         	if (name.length() > max)
 				error(validation, named, "too.long.display.name", false
 					, name 

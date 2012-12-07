@@ -1,8 +1,7 @@
 package org.biopax.validator.rules;
 
-import java.util.Set;
-
-import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.biopax.validator.api.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
@@ -24,18 +23,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DataPropertyIllegalValueRule extends AbstractRule<BioPAXElement> {
-	/*
-	 * @Autowired, even with @Qualifier, won't work here, 
-	 * because we need to inject a particular bean (<util:set>) 
-	 * of type Set<String>, rather than a set of beans of String type :)
-	 */
-	@Resource
-	private Set<String> warnOnDataPropertyValues;
-    
-	public void setWarnOnDataPropertyValues(Set<String> warnOnDataPropertyValues) 
-	{
-		this.warnOnDataPropertyValues = warnOnDataPropertyValues;
-	}
+
+	private static final Collection<String> warnOnDataPropertyValues = 
+			Arrays.asList("0", "-1", "NULL", "NIL");
 	
 	public boolean canCheck(Object thing) {
 		return thing instanceof BioPAXElement;

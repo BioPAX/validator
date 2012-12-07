@@ -13,49 +13,6 @@
 
 	<!-- additional rule-specific configuration -->
 
-	<!-- DataPropertyIllegalValueRule configuration -->
-	<util:set id="warnOnDataPropertyValues" value-type="java.lang.String">
-		<value>0</value>
-		<value>-1</value>
-		<value>NULL</value>
-		<value>NIL</value>
-	</util:set>
-
-	
-	<!-- UnificationXrefLimitedRule  settings. 
-		only if 'db' value is a valid database name/synonym, 
-		these extra rules apply: -->
-	
-	<!-- allow ONLY listed db names for UnificationXrefs-->
-	<util:map id="dbAllow" key-type="java.lang.Class" value-type="java.lang.String">
-		<entry key="org.biopax.paxtools.model.level3.BioSource" value="taxonomy"/>
-		<entry key="org.biopax.paxtools.model.level3.Provenance" value="miriam"/>
-		<!-- "allow" only recommended xref.db for CVs (synonyms will be added automatically) -->
-		<entry key="org.biopax.paxtools.model.level3.CellVocabulary" value="cl"/>
-		<entry key="org.biopax.paxtools.model.level3.TissueVocabulary" value="bto"/>
-		<entry key="org.biopax.paxtools.model.level3.CellularLocationVocabulary" value="go"/>
-		<entry key="org.biopax.paxtools.model.level3.EvidenceCodeVocabulary" value="mi"/>
-		<entry key="org.biopax.paxtools.model.level3.ExperimentalFormVocabulary" value="mi"/>
-		<entry key="org.biopax.paxtools.model.level3.InteractionVocabulary" value="mi"/>
-		<entry key="org.biopax.paxtools.model.level3.SequenceModificationVocabulary" value="so:mod"/>
-		<entry key="org.biopax.paxtools.model.level3.PhenotypeVocabulary" value="pato"/>
-		<entry key="org.biopax.paxtools.model.level3.RelationshipTypeVocabulary" value="mi"/>
-		<entry key="org.biopax.paxtools.model.level3.SequenceRegionVocabulary" value="so"/>
-	</util:map>
-	
-	<!-- not recommended xref.db names (and all synonyms) for UnificationXrefs of -->
-	<util:map id="dbDeny" key-type="java.lang.Class" value-type="java.lang.String">
-		<entry key="org.biopax.paxtools.model.level3.Dna" value="uniprot:pubmed"/>
-		<entry key="org.biopax.paxtools.model.level3.Rna" value="uniprot"/>
-		<entry key="org.biopax.paxtools.model.level3.DnaReference" value="uniprot:pubmed"/>
-		<entry key="org.biopax.paxtools.model.level3.RnaReference" value="uniprot"/>
-		<entry key="org.biopax.paxtools.model.level3.SmallMoleculeReference" value="uniprot"/>
-		<entry key="org.biopax.paxtools.model.level3.SmallMolecule" value="uniprot"/>
-		<entry key="org.biopax.paxtools.model.level3.PhysicalEntity" value="go"/>
-		<entry key="org.biopax.paxtools.model.level3.ProteinReference" value="OMIM"/>
-		<entry key="org.biopax.paxtools.model.level3.ProteinReference" value="Entrez Gene"/>
-		<entry key="org.biopax.paxtools.model.level3.Interaction" value="PSI-MI"/>
-	</util:map>
 
 	<!-- XrefRule, XrefSynonymDbRule additional (optional) configuration 
 	The following LISTS of DB (biodata source) synonyms and typos will
@@ -84,9 +41,9 @@
 			<value>GI</value>
 		</list>		
 		<list>
-			<value>PUBCHEM-COMPOUND</value>
+			<value>PUBCHEM-SUBSTANCE</value>
 			<value>NCBI PUBCHEM</value>
-			<value>PUBCHEM COMPOUND</value>
+			<value>PUBCHEM SUBSTANCE</value>
 			<value>PUBCHEM</value>
 		</list>
 		<list>
@@ -219,15 +176,15 @@
 			<value>BIOCYC</value>
 			<value>HUMANCYC</value>
 			<value>MOUSECYC</value>
-		</list>			
+		</list>	
+		<list>
+			<value>CL</value>
+			<value>CELL TYPE ONTOLOGY</value>
+			<value>CELL ONTOLOGY</value>
+		</list>		
 	</util:set>
 
 	<!-- end of the XrefRule config. -->
-     
-     <!-- default max. displayName length = 25 symbols for all (Named interface) elements-->
-	<util:map id="maxDisplayNameLengths" key-type="java.lang.Class" value-type="java.lang.Integer">
-		<entry key="org.biopax.paxtools.model.level3.Provenance" value="50"/>
-	</util:map>
 
     <context:component-scan base-package="org.biopax.validator.rules"/>
  
