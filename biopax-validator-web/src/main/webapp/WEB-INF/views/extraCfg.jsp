@@ -53,50 +53,6 @@ the list:<br />
 <p/>
 <hr />
 
-<h3>For DataPropertyIllegalValueRule rule</h3>
-Auto-recognized "illegal" values (perhaps, the property should be empty instead):
-<p/>
-  <ol>
-	<c:forEach var="v" items="${warnOnDataPropertyValues}">
-		<li>${v}</li>
-	</c:forEach>
-  </ol>
-<p/>  
-<hr />
-
-<h3>For UnificationXrefLimitedRule rule</h3>
-For the following BioPAX types, a unification xref should have
-one of the specified 'db' property values (standard synonyms are also allowed):
-  <table border>
-  	<tr><th>class</th><th>db names (&apos;:&apos; separated)</th></tr>
-	<c:forEach var="entry" items="${dbAllow}">
-		<tr><td>${entry.key.simpleName}</td><td>${entry.value}</td></tr>
-	</c:forEach>
-  </table>
-  <br />
-For the following BioPAX types, a unification xref should neither have
-any of the 'db' property values nor official synonyms of those listed:
-  <table border>
-  <tr><th>class</th><th>db names (&apos;:&apos; separated)</th></tr>
-	<c:forEach var="entry" items="${dbDeny}">
-		<tr><td>${entry.key.simpleName}</td><td>${entry.value}</td></tr>
-	</c:forEach>
-  </table>
-<p/>  
-<hr />
-
-<h3>For DisplayNameRule rule</h3>
-Recommended maximal length of the display name, by class
-(if different from the default max.):
-  <table border>
-    <tr><th>class</th><th>max displayName</th></tr>
-	<c:forEach var="entry" items="${maxDisplayNameLengths}">
-		<tr><td>${entry.key.simpleName}</td><td>${entry.value}</td></tr>
-	</c:forEach>
-  </table>
-  <br />
-<p/>  
-
   </div>
     <div id="right">
       <jsp:include page="/templates/menu.jsp"/>

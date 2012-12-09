@@ -26,27 +26,17 @@ public class ConfigController {
 	private Validator validator;
 	private ValidatorUtils utils;
 	private Properties errorTypes;
-	private Map maxDisplayNameLengths;
-	private Set warnOnDataPropertyValues;
-	private Map dbAllow;
 	private Set extraDbSynonyms;
-	private Map dbDeny;
 	
 	public ConfigController() {
 	}
 
 	public ConfigController(Validator validator, ValidatorUtils utils, 
-			Properties errorTypes, Map maxDisplayNameLengths, 
-			Set warnOnDataPropertyValues, Map dbAllow, 
-			Set extraDbSynonyms, Map dbDeny) {
+			Properties errorTypes, Set extraDbSynonyms) {
 		this.validator = validator;
 		this.utils = utils;
 		this.errorTypes = errorTypes;
-		this.maxDisplayNameLengths = maxDisplayNameLengths;
-		this.warnOnDataPropertyValues = warnOnDataPropertyValues;
-		this.dbAllow = dbAllow;
 		this.extraDbSynonyms = extraDbSynonyms;
-		this.dbDeny = dbDeny;
 	}
 	
     @ModelAttribute("behaviors")
@@ -193,32 +183,11 @@ public class ConfigController {
 			this.category = category;
 		}
 	}
-	
-    @ModelAttribute("maxDisplayNameLengths")
-    public Map maxDisplayNameLengths() {
-        return maxDisplayNameLengths;
-    }
-    
-    @ModelAttribute("warnOnDataPropertyValues")
-    public Set warnOnDataPropertyValues() {
-        return warnOnDataPropertyValues;
-    }
-    
-    @ModelAttribute("dbAllow")
-    public Map dbAllow() {
-        return dbAllow;
-    }
     
     @ModelAttribute("extraDbSynonyms")
     public Set extraDbSynonyms() {
         return extraDbSynonyms;
     }
-    
-    @ModelAttribute("dbDeny")
-    public Map dbDeny() {
-        return dbDeny;
-    }
-    
 
     @RequestMapping("/extraCfg")
     public void extraCfg() {} // the view knows what to do (using here defined @ModelAttribute methods)

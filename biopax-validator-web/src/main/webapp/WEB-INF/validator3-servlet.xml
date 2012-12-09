@@ -54,11 +54,7 @@
 		<constructor-arg>
 		 	<util:properties local-override="false" location="classpath:codes.properties"/>
 		</constructor-arg>
-		<constructor-arg ref="maxDisplayNameLengths"/>
-		<constructor-arg ref="warnOnDataPropertyValues"/>
-		<constructor-arg ref="dbAllow"/>
 		<constructor-arg ref="extraDbSynonyms"/>
-		<constructor-arg ref="dbDeny"/>
 	</bean>   
 
 	<mvc:annotation-driven/>
