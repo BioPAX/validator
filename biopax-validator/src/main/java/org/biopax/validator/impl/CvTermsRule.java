@@ -14,6 +14,7 @@ import org.biopax.paxtools.util.ClassFilterSet;
 import org.biopax.psidev.ontology_manager.*;
 import org.biopax.validator.api.CvRestriction;
 import org.biopax.validator.api.beans.Validation;
+import org.biopax.validator.utils.Normalizer;
 import org.springframework.beans.factory.annotation.Configurable;
 
 
@@ -165,19 +166,24 @@ public abstract class CvTermsRule<T extends Level3Element>
 									}
 								}
 							}
+							Set<String> added = new HashSet<String>();
 							for (OntologyTermI term : topvalids) {								
 								String ontId = term.getOntologyId();
 								String db = ((OntologyManager) ontologyManager).getOntology(ontId).getName();
 								String id = term.getTermAccession();
 								// auto-create and add the xref to the cv;
-								// generate some URI in the same namespace (Normalizer may be called later to fix all xrefs's URIs)
-								String rdfid = cv.getRDFId() + "_UnificationXref_" + db + "_" + id;								
-								UnificationXref ux = BioPAXLevel.L3.getDefaultFactory().create(UnificationXref.class, rdfid);
-								ux.setDb(db);
-								ux.setId(id);
-								cv.addXref(ux);
-								fixed = true; // 99% true ;-)
-								noXrefTermsInfo += "; " + id + " added!";
+								// generate an URI in the same namespace
+								String uri = Normalizer.uri(cv.getRDFId()+"_", db, id, UnificationXref.class);
+								if(!added.contains(uri)) {
+									added.add(uri);
+									UnificationXref ux = BioPAXLevel.L3.getDefaultFactory()
+											.create(UnificationXref.class, uri);
+									ux.setDb(db);
+									ux.setId(id);
+									cv.addXref(ux);
+									fixed = true; // 99% true ;-)
+									noXrefTermsInfo += "; " + id + " added!";
+								}	
 							}
 						}
 					}
