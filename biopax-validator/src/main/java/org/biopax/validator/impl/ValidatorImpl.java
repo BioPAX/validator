@@ -117,17 +117,19 @@ public class ValidatorImpl implements Validator {
 		ExecutorService exec = Executors.newFixedThreadPool(30);
 
 		//First, check/fix individual objects
-		for (final Rule<?> rule : rules) 
+		// copy the elements collection to avoid concurrent modification
+		// (rules can add/remove objects)!
+		final Set<BioPAXElement> elements = Collections
+				.unmodifiableSet(new HashSet<BioPAXElement>(model.getObjects()));
+		
+		for (BioPAXElement el : elements) 
 		{	
-			Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
-	        if (behavior == Behavior.IGNORE) continue; // skip		
-			
 			// rules can check/fix specific elements
-			// copy the elements collection to avoid concurrent modification
-			// (rules can add/remove objects)!
-			Set<BioPAXElement> elements = new HashSet<BioPAXElement>(
-					model.getObjects());
-			for (BioPAXElement el : elements) {
+			for (final Rule<?> rule : rules) {
+				
+				Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
+		        if (behavior == Behavior.IGNORE) continue; // skip					
+				
 				// skip if cannot check
 				if (rule.canCheck(el)) {				
 					execute(exec, rule, validation, (Object) el);
@@ -146,10 +148,10 @@ public class ValidatorImpl implements Validator {
 		//Second, check/fix <Model> rules
 		for (Rule<?> rule : rules) 
 		{
-			Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
-	        if (behavior == Behavior.IGNORE) continue; // skip
-	        
-			if (rule.canCheck(model)) {		
+			if (rule.canCheck(model)) {
+				Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
+		        if (behavior == Behavior.IGNORE) continue; // skip
+		        
 				execute(exec, rule, validation, model);
 			}
 		}

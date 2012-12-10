@@ -85,8 +85,11 @@ public abstract class CvTermsRule<T extends Level3Element>
 				final Set<String> badTerms = new HashSet<String>(); // initially - none
 				final Map<String, Set<OntologyTermI>> noXrefTerms = new HashMap<String, Set<OntologyTermI>>();
 				
+				//original terms set to iterate over (to avoid concurrent modification exceptions - other rules can modify the set simultaneously)
+				final Set<String> terms = Collections.unmodifiableSet(new HashSet<String>(cv.getTerm()));
+				
 				// first, check terms (names) are valid
-				for(String name : cv.getTerm()) 
+				for(String name : terms) 
 				{
 					if(!getValidTerms().contains(name.toLowerCase())) {
 						// save to report/delete/replace the invalid term later
@@ -95,7 +98,7 @@ public abstract class CvTermsRule<T extends Level3Element>
 				}
 				
 				// second, check valid terms have uni.xrefs
-				for(String name : cv.getTerm()) 
+				for(String name : terms) 
 				{
 					// only for valid terms
 					if(getValidTerms().contains(name.toLowerCase())) {

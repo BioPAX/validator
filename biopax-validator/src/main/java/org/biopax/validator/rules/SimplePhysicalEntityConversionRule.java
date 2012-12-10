@@ -60,7 +60,7 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
 					&& that.getEntityReference() != null
 					&& that.getEntityReference().isEquivalent(spe.getEntityReference())) 
 					return true;
-			} else { // Complex
+			} else if(value instanceof Complex){ // Complex
 				if(sameKindEntityExists(spe, ((Complex)value).getComponent()))
 					return true;
 			}
