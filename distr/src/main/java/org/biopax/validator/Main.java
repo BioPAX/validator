@@ -37,32 +37,21 @@ public class Main {
 	static final String EXT = ".modified.owl";
 	static String profile = null;
 
-	public static void main(String[] args) throws Exception {				
-        if(args.length < 2) {
-        	String usage = 
-    			"\n The BioPAX Validator v3, Console Java Application\n\n" +
-    		    "Parameters: <input> <output[.xml|.html]> [--auto-fix] [--max-errors=<n>] [--profile=notstrict]\n" + 
-    		    "(the second and next arguments are optional and can go in any order).\n" +
-    		    "For example:\n" +
-    		    "  path/dir errors.xml\n" +
-    		    "  list:batch_file.txt errors.xml\n" +
-    		    "  file:biopax.owl errors.xml --auto-fix\n" +
-    		    "  http://www.some.net/data.owl errors.html\n\n" +
-    		    "A batch file should list one task (resource) per line, i.e., " +
-    		    "file:path/file or URL (to BioPAX data)\n" +
-    		    "If '--auto-fix' option was used, it " +
-    		    "also creates a new BioPAX file for each input file " +
-    		    "in the current working directory (using '.modified.owl' exention). " +
-    		    "If the output file extension is '.html', the XML result will " +
-    		    "be auto-transformed to a stand-alone HTML/javascript page, " +
-    		    "which is very similar to what the online version returns.";
-            System.out.println(usage);
-            System.exit(-1);
+	public static void main(String[] args) throws Exception {
+		
+        if(args == null || args.length < 2) {
+        	log.warn("At least input and output parameters must be specified.");
+        	printHelpAndQuit();
         }
-        
+
 		String input = args[0];
 		String output = args[1];
-
+		if(input == null || input.isEmpty() || output == null || output.isEmpty()) {
+			log.warn("At least input and output parameters must be specified.");
+			printHelpAndQuit();
+		}
+        
+		// match optional parameters
 		if (args.length > 2) {
 			for (int i = 1; i < args.length; i++) {
 				if("--auto-fix".equalsIgnoreCase(args[i])) {
@@ -83,50 +72,66 @@ public class Main {
         // get the beans to work with
         Validator validator = (Validator) ctx.getBean("validator");
 		
-		// go!
-		if (input != null && !"".equals(input)) {
-			// validate all
-			ValidatorResponse validatorResponse = runBatch(validator,
-					getResourcesToValidate(input));
-			
-			// save modified BioPAX data
-			if (autofix) {
-				for (Validation result : validatorResponse.getValidationResult()) 
-				{
-					String out = result.getDescription();
-					// if was URL, create a shorter name;
-					out = out.replaceAll("\\[|\\]","").replaceFirst("/&", ""); // remove ']', '[', and ending '/', if any
-					int idx = out.lastIndexOf('/');
-					if(idx >= 0) {
-						if(idx < out.length() - 1)
-							out = out.substring(idx+1);
-					}
-					out += EXT; // add the file extension
-					PrintWriter bpWriter = new PrintWriter(out);
-					String owl = result.getModelData();
-					bpWriter.write(owl, 0, owl.length());
-					bpWriter.write(System.getProperty ( "line.separator" ));
-					bpWriter.flush();
-					// remove now saved BioPAX model from the xml result
-					result.setModel(null);
-					result.setModelData(null);
+		// go validate all
+		ValidatorResponse validatorResponse = runBatch(validator,
+				getResourcesToValidate(input));
+		
+		// save modified BioPAX data
+		if (autofix) {
+			for (Validation result : validatorResponse.getValidationResult()) 
+			{
+				String out = result.getDescription();
+				// if was URL, create a shorter name;
+				out = out.replaceAll("\\[|\\]","").replaceFirst("/&", ""); // remove ']', '[', and ending '/', if any
+				int idx = out.lastIndexOf('/');
+				if(idx >= 0) {
+					if(idx < out.length() - 1)
+						out = out.substring(idx+1);
 				}
+				out += EXT; // add the file extension
+				PrintWriter bpWriter = new PrintWriter(out);
+				String owl = result.getModelData();
+				bpWriter.write(owl, 0, owl.length());
+				bpWriter.write(System.getProperty ( "line.separator" ));
+				bpWriter.flush();
+				// remove now saved BioPAX model from the xml result
+				result.setModel(null);
+				result.setModelData(null);
 			}
-			
-			// init errors writer
-			PrintWriter errWriter = (output == null) 
-				? new PrintWriter(System.out)
-					: new PrintWriter(output);
-				
-			// save the validation result either as XML or HTML
-			Source xsltSrc = (output != null && output.endsWith(".html"))
-				? new StreamSource(ctx.getResource("classpath:html-result.xsl").getInputStream())
-				: null;
-			ValidatorUtils.write(validatorResponse, errWriter, xsltSrc);
 		}
+			
+		// save the validation result either as XML or HTML
+		PrintWriter errWriter = new PrintWriter(output);
+		Source xsltSrc = (output.endsWith(".html"))
+			? new StreamSource(ctx.getResource("classpath:html-result.xsl").getInputStream())
+				: null;
+		ValidatorUtils.write(validatorResponse, errWriter, xsltSrc);
 	}
 	
 	
+	private static void printHelpAndQuit() {
+    	final String usage = 
+			"\n The BioPAX Validator v3, Console Java Application\n\n" +
+		    "Parameters: <input> <output[.xml|.html]> [--auto-fix] [--max-errors=<n>] [--profile=notstrict]\n" + 
+		    "(the second and next arguments are optional and can go in any order).\n" +
+		    "For example:\n" +
+		    "  path/dir errors.xml\n" +
+		    "  list:batch_file.txt errors.xml\n" +
+		    "  file:biopax.owl errors.xml --auto-fix\n" +
+		    "  http://www.some.net/data.owl errors.html\n\n" +
+		    "A batch file should list one task (resource) per line, i.e., " +
+		    "file:path/file or URL (to BioPAX data)\n" +
+		    "If '--auto-fix' option was used, it " +
+		    "also creates a new BioPAX file for each input file " +
+		    "in the current working directory (using '.modified.owl' exention). " +
+		    "If the output file extension is '.html', the XML result will " +
+		    "be auto-transformed to a stand-alone HTML/javascript page, " +
+		    "which is very similar to what the online version returns.";
+        System.out.println(usage);
+        System.exit(-1);
+	}
+
+
 	protected static ValidatorResponse runBatch(Validator validator, 
 			Collection<Resource> resources) throws IOException {					
 		ValidatorResponse response = new ValidatorResponse();       
