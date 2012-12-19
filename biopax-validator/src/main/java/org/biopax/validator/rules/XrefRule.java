@@ -27,11 +27,14 @@ public class XrefRule extends AbstractRule<Xref>{
         String db = x.getDb();
 		if (db != null) { 
 			// check db
-			String preferedDbName = xrefHelper.getPrimaryDbName(db);
+			String preferedDbName = xrefHelper.getPrimaryDbName(db); 
 			if (preferedDbName == null) {
 				error(validation, x, "unknown.db", false, db);
 				return;
-			} 
+			}
+			
+			//it's always in uppercase (by XrefHelper design)!
+			assert preferedDbName.equals(preferedDbName.toUpperCase());
 
 			// check id
 			String id = x.getId();
@@ -42,20 +45,22 @@ public class XrefRule extends AbstractRule<Xref>{
 								+ db + " (" + preferedDbName + ")");
 					}
 				} else if (!xrefHelper.checkIdFormat(preferedDbName, id)) {
+					
 					String regxp = xrefHelper.getRegexpString(preferedDbName);
 					// report error with fixed=false 
 					error(validation, x, "invalid.id.format", false, db, preferedDbName, id, regxp);
 					
-					// now - try to fix (in some cases...) 
+					// Now - try to fix (in some cases...) 
 					while(validation.isFix()) { //- no worries - will use 'break' to escape the infinite loop
-						// FIRST, guess if it's probably a "UniProt Isoform" ID -					
+						// hack for a "UniProt Isoform" IDs -	
+						// (we do this before trying to split id into id and idVersion parts a few lines below)
 						if (preferedDbName.startsWith("UNIPROT")) {
 							if (xrefHelper.checkIdFormat("UniProt Isoform", id)
 								|| xrefHelper.checkIdFormat("UniProt Isoform",id.toUpperCase())) 
 							{
 								x.setDb("UniProt Isoform");
 								x.setId(id.toUpperCase());
-								// update the error case, set fixed=true there
+								// update the error case, set fixed=true
 								error(validation, x, "invalid.id.format", true);
 								break;
 							} 

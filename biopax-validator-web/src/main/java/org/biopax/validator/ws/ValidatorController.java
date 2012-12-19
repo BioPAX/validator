@@ -69,7 +69,6 @@ public class ValidatorController {
      * @param url
      * @param retDesired
      * @param autofix
-     * @param normalize
      * @param filter
      * @param maxErrors
      * @param profile
@@ -190,13 +189,14 @@ public class ValidatorController {
     	}
     
     	boolean isFix = Boolean.TRUE.equals(autofix);
-    	Validation validationResult = new Validation(new IdentifierImpl(), resultName, isFix, errorLevel, errMax, profile);
+    	Validation validationResult = 
+    		new Validation(new IdentifierImpl(), resultName, isFix, errorLevel, errMax, profile);
     	
 		validator.importModel(validationResult, biopaxResource.getInputStream());
 		validator.validate(validationResult);
     	validator.getResults().remove(validationResult);   	    	
 	
-       	if(isFix) { // do normalize too
+       	if(isFix && normalizer != null) { // do normalize too
        		org.biopax.paxtools.model.Model m = (org.biopax.paxtools.model.Model) validationResult.getModel();
    			normalizer.normalize(m);
    			validationResult.setModelData(SimpleIOHandler.convertToOwl(m));

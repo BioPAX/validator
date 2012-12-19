@@ -84,7 +84,7 @@ public class NormalizerTest {
 		Model model = BioPAXLevel.L3.getDefaultFactory().createModel();
     	Xref ref = model.addNew(UnificationXref.class,
     			"http://www.pathwaycommons.org/import#Xref1");
-    	ref.setDb("uniprotkb"); // normalizer should convert this to 'uniprot'
+    	ref.setDb("uniprotkb");
     	ref.setId("P68250");
     	ProteinReference pr = model.addNew(ProteinReference.class,
     			"http://www.pathwaycommons.org/import#ProteinReference1");
@@ -159,14 +159,34 @@ public class NormalizerTest {
 		pw2.addDataSource(pro2);
 		pw1.addPathwayComponent(pw2);
 		
+		// add data to test uniprot isoform xref and PR normalization
+    	ref = model.addNew(UnificationXref.class, "http://www.pathwaycommons.org/import#Xref8");
+    	ref.setDb("UniProt"); // normalizer will detect/change to "UniProt Isoform"
+    	ref.setId("P68250-2");
+    	pr = model.addNew(ProteinReference.class, "ProteinReference4");
+    	pr.setDisplayName("ProteinReference1isoformA");
+    	pr.addXref(ref);
+    	
+    	// next ones are to test normalizer can auto-fix 'uniprot' to 'uniprot isoform' xref, 
+    	// and also merge xrefs #8,#9 and PRs #4,#5 into one PR with one xref
+    	//below, uniprot xref's idVersion='2' will be moved back to the id value, and db set to "UniProt Isoform" -
+    	ref = model.addNew(UnificationXref.class, "http://www.pathwaycommons.org/import#Xref9");
+    	ref.setDb("UniProtKb");
+    	ref.setId("P68250");
+    	ref.setIdVersion("2");
+    	pr = model.addNew(ProteinReference.class, "ProteinReference5");
+    	pr.setDisplayName("ProteinReference1isoformB");
+    	pr.addXref(ref);
+    	
+		model.setXmlBase("test/");
+    	
 		// go normalize!	
 		Normalizer normalizer = new Normalizer();
 		normalizer.normalize(model); 
 		
-//		String xml = null;
 //		ByteArrayOutputStream out = new ByteArrayOutputStream();
 //		simpleIO.convertToOWL(model, out);
-//		xml = out.toString();
+//		System.out.println(out.toString());
 		
 		// check Xref
 		String normUri = Normalizer.uri(model.getXmlBase(), "uniprot", "P68250", UnificationXref.class);
@@ -178,12 +198,14 @@ public class NormalizerTest {
 		assertTrue(bpe instanceof ProteinReference);
 		
 		//check xref's ID gets normalized
+		// get the expected xref URI first
 		normUri = Normalizer.uri(model.getXmlBase(), "REFSEQ", "NP_001734", RelationshipXref.class);
 		bpe = model.getByID(normUri);
 		assertEquals(1, ((Xref)bpe).getXrefOf().size());
 
-		// almost the same xref (was different idVersion)
-		normUri = Normalizer.uri(model.getXmlBase(), "REFSEQ", "NP_001734", RelationshipXref.class);
+		// same xref.id but different xref.idVersion=1 should be still a different URI xref
+		// get the expected xref URI first
+		normUri = Normalizer.uri(model.getXmlBase(), "REFSEQ", "NP_001734"+"1", RelationshipXref.class);
 		bpe = model.getByID(normUri);
 		assertEquals(1, ((Xref)bpe).getXrefOf().size());
 		
@@ -196,8 +218,8 @@ public class NormalizerTest {
 		bpe = model.getByID(normUri);
 		assertTrue(bpe instanceof UnificationXref);
 		
-		// test that one of ProteinReference (2nd or 3rd) is removed
-		assertEquals(2, model.getObjects(ProteinReference.class).size());
+		// test that one of each pair ProteinReference, 2nd,3rd and 4th,5th is removed/merged:
+		assertEquals(3, model.getObjects(ProteinReference.class).size());
 		
 		// Provenance is no more normalized (Miriam is not enough for this task)!
 		assertEquals(2, model.getObjects(Provenance.class).size());
@@ -216,6 +238,12 @@ public class NormalizerTest {
 		assertEquals(2, pw2.getDataSource().size());
 		pw1 = (Pathway) model.getByID("pathway");
 		assertEquals(1, pw1.getDataSource().size());
+		
+		//test uniprot isoform xrefs are detected and normalized the same way
+		// get the expected xref URI first
+		normUri = Normalizer.uri(model.getXmlBase(), "uniprot isoform", "P68250-2", UnificationXref.class);
+		bpe = model.getByID(normUri);
+		assertEquals(1, ((Xref)bpe).getXrefOf().size()); //of two PRs
 	}
 
 	

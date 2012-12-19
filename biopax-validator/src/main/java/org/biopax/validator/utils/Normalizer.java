@@ -124,29 +124,73 @@ public final class Normalizer {
 	}
 	
 
+	/**
+	 * Normalizes all xrefs (not unification xrefs only) to help normalizing/merging other objects, 
+	 * and also because some of the original xref URIs (might have already been "normalized")
+	 * are in fact to be used for other biopax types (e.g., CV or ProteinReference); therefore
+	 * this method will replace URI also for "bad" xrefs, i.e., those with empty/illegal 'db' or 'id' values.
+	 * 
+	 * @param model
+	 */
 	private void normalizeXrefs(Model model) {
 		// use a copy of the xrefs set (to avoid concurrent modif. exception)
 		Set<? extends Xref> xrefs = new HashSet<Xref>(model.getObjects(Xref.class));
 		for(Xref ref : xrefs) {
-			String otherId = null;		
-			//mind that there are can be several RelationshipXref with the same db/id but different rel. type!
+			String otherId = ref.getIdVersion();
+			
+			//there can be several RelationshipXref with the same db/id but different rel. type!
 			if(ref instanceof RelationshipXref) {
-				RelationshipTypeVocabulary cv = ((RelationshipXref) ref).getRelationshipType();
+				RelationshipTypeVocabulary cv = ((RelationshipXref) ref)
+						.getRelationshipType();
 				if(cv != null && !cv.getTerm().isEmpty())
-					otherId = StringUtils.join(
-						((RelationshipXref) ref).getRelationshipType().getTerm(), ',')
-							.toLowerCase();
-			} else {
-				otherId = ref.getIdVersion();
+					otherId = StringUtils.join(cv.getTerm(), ',')
+						.toLowerCase();
 			}
 			
-				
+			// More good we can do for valid unification xrefs -
+			if(ref instanceof UnificationXref // and -
+					&& ref.getDb() != null && ref.getId() != null) 
+			{
+				// try to normalize db name (if known in Miriam)
+				String db = ref.getDb();
+				try {
+					db = MiriamLink.getName(ref.getDb());
+					if(db != null) // be safe
+						ref.setDb(db);
+				} catch (IllegalArgumentException e) {
+				}
+			
+				// a hack for uniprot isoform unif. xrefs that were previously "fixed" by cutting off the isoform part...
+				if (db.toUpperCase().startsWith("UNIPROT") && ref.getId() != null) {
+					if (ref.getIdVersion() != null) {
+						final String isoformId = ref.getId().toUpperCase() + "-" + ref.getIdVersion();
+						String testUri = Normalizer.uri(getXmlBase(model),
+							"UniProt Isoform", isoformId, ProteinReference.class);
+						if (testUri.startsWith("http://identifiers.org/uniprot.isoform/")) {
+							ref.setDb("UniProt Isoform");
+							ref.setId(isoformId);
+							ref.setIdVersion(null);
+							otherId = null;
+						}
+					} else { //fix for possibly incorrect db 
+						//(this is not required if the data were already validated by the latest validator with auto-fix=true option)
+						if (!Normalizer.uri(getXmlBase(model), "UniProt", ref.getId(), ProteinReference.class)
+									.startsWith("http://identifiers.org/uniprot/") &&
+							Normalizer.uri(getXmlBase(model), "UniProt Isoform", ref.getId(), ProteinReference.class)
+									.startsWith("http://identifiers.org/uniprot.isoform/")
+								) {
+							// update db name
+							ref.setDb("UniProt Isoform");
+						}
+					}
+				}
+			
+			}
 			
 			
 			String idPart = ref.getId() + ((otherId != null) ? otherId : "");
 			String uri = Normalizer.uri(getXmlBase(model),	ref.getDb(), idPart, ref.getModelInterface());	
-			
-			
+						
 			// mark for replacing
 			addToReplacementMap(model, ref, uri);						
 		}
@@ -193,7 +237,7 @@ public final class Normalizer {
 			} catch (IllegalArgumentException e) {
 				if(log.isDebugEnabled())
 					log.debug("uri: not a standard db name or synonym: " + dbName);
-				dbName = dbName.toLowerCase(); //important for data merging (when dbName is not standard)!
+				dbName = dbName.toLowerCase(); //setting same Case is important for data merging (only when dbName is not standard!)
 			}
 		}
 
@@ -432,7 +476,9 @@ public final class Normalizer {
 			throw new IllegalArgumentException("Not Level3 model. " +
 				"Consider converting it first (e.g., with the PaxTools).");
 		
-		// clean/normalize xrefs first, because they gets used next!
+		// clean/normalize xrefs first, because they gets used next;
+		// also, - because some of original xrefs might have already "normalized" URIs 
+		// that are, in fact, supposed to be used for other biopax types (e.g., CV or ProteinReference)
 		if(log.isInfoEnabled())
 			log.info("Normalizing xrefs..." + description);
 		normalizeXrefs(model);
