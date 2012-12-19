@@ -60,7 +60,6 @@ public final class Normalizer {
 	private boolean inferPropertyOrganism;
 	private boolean inferPropertyDataSource;
 	private String xmlBase;
-	//TODO add a "remove utility class duplicates/clones" option
 	
 	
 	/**
@@ -129,8 +128,7 @@ public final class Normalizer {
 		// use a copy of the xrefs set (to avoid concurrent modif. exception)
 		Set<? extends Xref> xrefs = new HashSet<Xref>(model.getObjects(Xref.class));
 		for(Xref ref : xrefs) {
-			String otherId = ref.getIdVersion();
-			
+			String otherId = null;		
 			//mind that there are can be several RelationshipXref with the same db/id but different rel. type!
 			if(ref instanceof RelationshipXref) {
 				RelationshipTypeVocabulary cv = ((RelationshipXref) ref).getRelationshipType();
@@ -138,12 +136,21 @@ public final class Normalizer {
 					otherId = StringUtils.join(
 						((RelationshipXref) ref).getRelationshipType().getTerm(), ',')
 							.toLowerCase();
+			} else {
+				otherId = ref.getIdVersion();
 			}
 			
+				
+			
+			
 			String idPart = ref.getId() + ((otherId != null) ? otherId : "");
-			String uri = uri(getXmlBase(model),	ref.getDb(), idPart, ref.getModelInterface());				
+			String uri = Normalizer.uri(getXmlBase(model),	ref.getDb(), idPart, ref.getModelInterface());	
+			
+			
+			// mark for replacing
 			addToReplacementMap(model, ref, uri);						
-		}		
+		}
+		
 		// update/replace xrefs now
 		doSubs(model);
 	}	

@@ -114,7 +114,7 @@ public class IntegrationTest {
     @Test
     public void testPrimarySynonym() {
     	//not in Miriam: PIR
-    	assertEquals("UNIPROT", xrefHelper.getSynonymsForDbName("pir").get(0));
+    	assertEquals("UNIPROT KNOWLEDGEBASE", xrefHelper.getSynonymsForDbName("pir").get(0));
     	//Miriam: Gene Ontology
     	assertEquals("GENE ONTOLOGY", xrefHelper.getSynonymsForDbName("go").get(0));
     }

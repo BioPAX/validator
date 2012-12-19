@@ -46,10 +46,22 @@ public class XrefRule extends AbstractRule<Xref>{
 					// report error with fixed=false 
 					error(validation, x, "invalid.id.format", false, db, preferedDbName, id, regxp);
 					
-					// now - try to fix (in some cases...)
+					// now - try to fix (in some cases...) 
 					while(validation.isFix()) { //- no worries - will use 'break' to escape the infinite loop
-						
-						// guess, it's like id_ver or id-ver
+						// FIRST, guess if it's probably a "UniProt Isoform" ID -					
+						if (preferedDbName.startsWith("UNIPROT")) {
+							if (xrefHelper.checkIdFormat("UniProt Isoform", id)
+								|| xrefHelper.checkIdFormat("UniProt Isoform",id.toUpperCase())) 
+							{
+								x.setDb("UniProt Isoform");
+								x.setId(id.toUpperCase());
+								// update the error case, set fixed=true there
+								error(validation, x, "invalid.id.format", true);
+								break;
+							} 
+						}
+							
+						// guess, the illegal id is like 'id_ver' or 'id-ver' - split and try then
 						int i = id.lastIndexOf('-');
 						if(i<0) 
 							i = id.lastIndexOf('_');
@@ -60,9 +72,6 @@ public class XrefRule extends AbstractRule<Xref>{
 							if (xrefHelper.checkIdFormat(preferedDbName, newId)) {
 								x.setId(newId);
 								x.setIdVersion(id.substring(i + 1));
-								if (logger.isDebugEnabled())
-									logger.debug("auto-fix: split id and idVersion for xref: "
-											+ x + " " + x.getRDFId());
 								// update the error case, set fixed=true there
 								error(validation, x, "invalid.id.format", true);
 								break;
