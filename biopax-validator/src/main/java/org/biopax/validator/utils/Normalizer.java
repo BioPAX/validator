@@ -160,7 +160,7 @@ public final class Normalizer {
 				} catch (IllegalArgumentException e) {
 				}
 			
-				// a hack for uniprot isoform unif. xrefs that were previously "fixed" by cutting off the isoform part...
+				// a hack for uniprot isoform xrefs that were previously cut off the isoform part...
 				if (db.toUpperCase().startsWith("UNIPROT") && ref.getId() != null) {
 					if (ref.getIdVersion() != null) {
 						final String isoformId = ref.getId().toUpperCase() + "-" + ref.getIdVersion();
@@ -172,7 +172,7 @@ public final class Normalizer {
 							ref.setIdVersion(null);
 							otherId = null;
 						}
-					} else { //fix for possibly incorrect db 
+					} else { //fix for possibly incorrect db name
 						//(this is not required if the data were already validated by the latest validator with auto-fix=true option)
 						if (!Normalizer.uri(getXmlBase(model), "UniProt", ref.getId(), ProteinReference.class)
 									.startsWith("http://identifiers.org/uniprot/") &&

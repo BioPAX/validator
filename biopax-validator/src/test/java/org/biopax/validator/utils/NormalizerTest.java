@@ -82,12 +82,10 @@ public class NormalizerTest {
 	@Test
 	public final void testNormalize() throws UnsupportedEncodingException {
 		Model model = BioPAXLevel.L3.getDefaultFactory().createModel();
-    	Xref ref = model.addNew(UnificationXref.class,
-    			"http://www.pathwaycommons.org/import#Xref1");
+    	Xref ref = model.addNew(UnificationXref.class, "Xref1");
     	ref.setDb("uniprotkb");
     	ref.setId("P68250");
-    	ProteinReference pr = model.addNew(ProteinReference.class,
-    			"http://www.pathwaycommons.org/import#ProteinReference1");
+    	ProteinReference pr = model.addNew(ProteinReference.class, "ProteinReference1");
     	pr.setDisplayName("ProteinReference1");
     	pr.addXref(ref);
     	ref = model.addNew(RelationshipXref.class, "Xref2");
@@ -123,25 +121,21 @@ public class NormalizerTest {
 		pr.addXref(ref);
 		
 		// normalizer won't merge diff. types of xref with the same db:id
-	   	ref = model.addNew(PublicationXref.class, "http://biopax.org/Xref5");
+	   	ref = model.addNew(PublicationXref.class, "Xref6");
     	ref.setDb("pubmed");
     	ref.setId("2549346"); // the same id
     	pr.addXref(ref);
-	   	ref = model.addNew(RelationshipXref.class,
-	   			"http://www.pathwaycommons.org/import#Xref6");
+	   	ref = model.addNew(RelationshipXref.class,"Xref7");
     	ref.setDb("pubmed"); 
     	ref.setId("2549346"); // the same id
     	pr.addXref(ref);
 
 		// add biosource
-	   	ref = model.addNew(UnificationXref.class, "Xref7");
+	   	ref = model.addNew(UnificationXref.class, "Xref8");
     	ref.setDb("taxonomy"); 
     	ref.setId("10090"); // the same id
 		BioSource bioSource = model.addNew(BioSource.class, "BioSource_Mouse_Tissue");
 		bioSource.addXref((UnificationXref)ref);
-		
-		model.getNameSpacePrefixMap().put("", "http://www.pathwaycommons.org/import#");
-		model.getNameSpacePrefixMap().put("biopax", "http://biopax.org/");
 
 		// Provenance (must set ID and standard names from a name)
 		Provenance pro1 = model.addNew(Provenance.class, "pid");
@@ -160,7 +154,7 @@ public class NormalizerTest {
 		pw1.addPathwayComponent(pw2);
 		
 		// add data to test uniprot isoform xref and PR normalization
-    	ref = model.addNew(UnificationXref.class, "http://www.pathwaycommons.org/import#Xref8");
+    	ref = model.addNew(UnificationXref.class, "Xref9");
     	ref.setDb("UniProt"); // normalizer will detect/change to "UniProt Isoform"
     	ref.setId("P68250-2");
     	pr = model.addNew(ProteinReference.class, "ProteinReference4");
@@ -168,17 +162,35 @@ public class NormalizerTest {
     	pr.addXref(ref);
     	
     	// next ones are to test normalizer can auto-fix 'uniprot' to 'uniprot isoform' xref, 
-    	// and also merge xrefs #8,#9 and PRs #4,#5 into one PR with one xref
+    	// and also merge xrefs #9,#10 and PRs #4,#5 into one PR with one xref
     	//below, uniprot xref's idVersion='2' will be moved back to the id value, and db set to "UniProt Isoform" -
-    	ref = model.addNew(UnificationXref.class, "http://www.pathwaycommons.org/import#Xref9");
+    	ref = model.addNew(UnificationXref.class, "Xref10");
     	ref.setDb("UniProtKb");
     	ref.setId("P68250");
     	ref.setIdVersion("2");
     	pr = model.addNew(ProteinReference.class, "ProteinReference5");
     	pr.setDisplayName("ProteinReference1isoformB");
+    	pr.addXref(ref);   	
+    	
+		// All following three Xrefs and PRs must be normalized to uniprot.isoform:P68250-1 and merged into one!
+    	ref = model.addNew(UnificationXref.class, "Xref11");
+    	ref.setDb("UniProt Isoform");
+    	ref.setId("P68250-1"); //- same as the canonical P68250
+    	pr = model.addNew(ProteinReference.class, "ProteinReference6");
+    	pr.addXref(ref);
+    	ref = model.addNew(UnificationXref.class, "Xref12");
+    	ref.setDb("UniProt");
+    	ref.setId("P68250");
+    	ref.setIdVersion("1");
+    	pr = model.addNew(ProteinReference.class, "ProteinReference7");
+    	pr.addXref(ref);   	
+    	ref = model.addNew(UnificationXref.class, "Xref13");
+    	ref.setDb("UniProt Isoform");
+    	ref.setId("P68250-1");
+    	pr = model.addNew(ProteinReference.class, "ProteinReference8");
     	pr.addXref(ref);
     	
-		model.setXmlBase("test/");
+		//model.setXmlBase(null); //default
     	
 		// go normalize!	
 		Normalizer normalizer = new Normalizer();
@@ -219,7 +231,7 @@ public class NormalizerTest {
 		assertTrue(bpe instanceof UnificationXref);
 		
 		// test that one of each pair ProteinReference, 2nd,3rd and 4th,5th is removed/merged:
-		assertEquals(3, model.getObjects(ProteinReference.class).size());
+		assertEquals(4, model.getObjects(ProteinReference.class).size());
 		
 		// Provenance is no more normalized (Miriam is not enough for this task)!
 		assertEquals(2, model.getObjects(Provenance.class).size());

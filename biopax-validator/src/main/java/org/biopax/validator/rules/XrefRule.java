@@ -52,11 +52,11 @@ public class XrefRule extends AbstractRule<Xref>{
 					
 					// Now - try to fix (in some cases...) 
 					while(validation.isFix()) { //- no worries - will use 'break' to escape the infinite loop
-						// hack for a "UniProt Isoform" IDs -	
-						// (we do this before trying to split id into id and idVersion parts a few lines below)
+						// guess it's a "UniProt Isoform" ID -	
+						// (do before we next will try splitting it into id and idVersion parts)
 						if (preferedDbName.startsWith("UNIPROT")) {
-							if (xrefHelper.checkIdFormat("UniProt Isoform", id)
-								|| xrefHelper.checkIdFormat("UniProt Isoform",id.toUpperCase())) 
+							if (id.contains("-")
+								&& xrefHelper.checkIdFormat("UniProt Isoform",id.toUpperCase())) 
 							{
 								x.setDb("UniProt Isoform");
 								x.setId(id.toUpperCase());
@@ -66,7 +66,7 @@ public class XrefRule extends AbstractRule<Xref>{
 							} 
 						}
 							
-						// guess, the illegal id is like 'id_ver' or 'id-ver' - split and try then
+						// guess, the illegal id is like 'id_ver' and split then -
 						int i = id.lastIndexOf('-');
 						if(i<0) 
 							i = id.lastIndexOf('_');
