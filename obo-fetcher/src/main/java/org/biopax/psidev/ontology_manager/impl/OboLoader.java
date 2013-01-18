@@ -5,16 +5,39 @@
  */
 package org.biopax.psidev.ontology_manager.impl;
 
+/*
+ * #%L
+ * Ontologies Access
+ * %%
+ * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
+
 //import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biopax.ols.TermRelationship;
+import org.biopax.ols.TermSynonym;
+import org.biopax.ols.impl.BaseOBO2AbstractLoader;
+import org.biopax.ols.impl.OBO2FormatParser;
+import org.biopax.ols.impl.TermBean;
 import org.biopax.psidev.ontology_manager.Ontology;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
-import org.biopax.uk.ac.ebi.ols.TermRelationship;
-import org.biopax.uk.ac.ebi.ols.TermSynonym;
-import org.biopax.uk.ac.ebi.ols.impl.BaseOBO2AbstractLoader;
-import org.biopax.uk.ac.ebi.ols.impl.OBO2FormatParser;
-import org.biopax.uk.ac.ebi.ols.impl.TermBean;
 
 
 
@@ -70,7 +93,7 @@ public class OboLoader extends BaseOBO2AbstractLoader {
             		term.getName() );
 // the "unescape" workaround is not required anymore - after obo-fetcher internal implementation changed!
 //            		StringEscapeUtils.unescapeXml(term.getName()) ); 
-//            //- unescapeXml above and below is a workaround the bug in ols-1.18 OBO parser (org.biopax.uk.ac.ebi.ols.loader..), 
+//            //- unescapeXml above and below is a workaround the bug in ols-1.18 OBO parser (org.biopax.ols.loader..), 
 //            // which returns, e.g., "O4&;apos;-phospho-L-tyrosine" instead "O4'-phospho-L-tyrosine")
             
             final Collection<TermSynonym> synonyms = (Collection<TermSynonym>) term.getSynonyms();

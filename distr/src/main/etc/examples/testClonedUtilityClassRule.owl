@@ -25,8 +25,8 @@
 </bp:RelationshipXref>
 
 <bp:ProteinReference rdf:about="ProteinReference1">
- <bp:xref rdf:resource="Xref1" />
  <bp:xref rdf:resource="Xref2" />
+ <bp:xref rdf:resource="Xref1" />
  <bp:displayName rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">ProteinReference1</bp:displayName>
 </bp:ProteinReference>
 
@@ -47,8 +47,8 @@
 </bp:RelationshipXref>
 
 <bp:ProteinReference rdf:about="ProteinReference2">
- <bp:xref rdf:resource="Xref4" />
  <bp:xref rdf:resource="Xref3" />
+ <bp:xref rdf:resource="Xref4" />
  <bp:displayName rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">ProteinReference2</bp:displayName>
 </bp:ProteinReference>
 </rdf:RDF>

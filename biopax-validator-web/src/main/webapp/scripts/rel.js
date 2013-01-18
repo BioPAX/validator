@@ -1,3 +1,24 @@
+/*
+ * #%L
+ * BioPAX Validator Web Application
+ * %%
+ * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 function externalLinks() {
  if (!document.getElementsByTagName) return;
  var anchors = document.getElementsByTagName("a");
@@ -9,7 +30,7 @@ function externalLinks() {
  }
 }
 
-window.onload = function init() { externalLinks; switchNormalizerOptions()};
+window.onload = function init() { externalLinks; switchNormalizerOptions();};
 
 function switchInput() {
 	  var f = document.getElementById('file');
@@ -40,13 +61,18 @@ function validate() {
 	  }
 };
 
-function switchNormalizerOptions() {
+function updateValidatorOptions() {
 		var style = document.getElementById("normalizerOptions").style;
 		var cb = document.getElementById("autofix");
-		if (cb.checked == false) { //changed to 'checked'
+		var retOwl = document.getElementById("retOwl");
+		if (cb.checked == false) {
 			style.display = "none";
+			retOwl.checked = false;
+			retOwl.disabled = true;
+			document.getElementById("retHtml").checked = true;
 		} else {
-			style.display = "block";
+			style.display = "block"; 
+			retOwl.disabled = false;
 		}
 };
 

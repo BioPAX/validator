@@ -1,5 +1,27 @@
 package org.biopax.validator;
 
+/*
+ * #%L
+ * BioPAX Validator Assembly
+ * %%
+ * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
 import java.io.*;
 import java.util.*;
 
@@ -77,9 +99,10 @@ public class Main {
 				getResourcesToValidate(input));
 		
 		// save modified BioPAX data
-		if (autofix) {
-			for (Validation result : validatorResponse.getValidationResult()) 
-			{
+		
+		for (Validation result : validatorResponse.getValidationResult()) 
+		{
+			if (autofix) {
 				String out = result.getDescription();
 				// if was URL, create a shorter name;
 				out = out.replaceAll("\\[|\\]","").replaceFirst("/&", ""); // remove ']', '[', and ending '/', if any
@@ -94,11 +117,13 @@ public class Main {
 				bpWriter.write(owl, 0, owl.length());
 				bpWriter.write(System.getProperty ( "line.separator" ));
 				bpWriter.flush();
-				// remove now saved BioPAX model from the xml result
-				result.setModel(null);
-				result.setModelData(null);
 			}
+			
+			// remove the BioPAX model data before printing results
+			result.setModel(null);
+			result.setModelData(null);
 		}
+
 			
 		// save the validation result either as XML or HTML
 		PrintWriter errWriter = new PrintWriter(output);

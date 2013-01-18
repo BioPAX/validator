@@ -3,7 +3,9 @@
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
 		<version>3.0.0-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
 	</parent>
+	
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>distr</artifactId>
 	<name>BioPAX Validator Assembly</name>
@@ -27,7 +29,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-<!-- 				<version>2.2-beta-5</version> -->
 				<configuration>
 					<finalName>biopax-validator-${project.version}</finalName>
 					<descriptors>
@@ -39,7 +40,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<argLine>-ea -Xmx1536m -javaagent:${project.basedir}/src/main/etc/spring-instrument.jar</argLine>
+					<forkMode>once</forkMode>
+					<argLine>-ea -Xmx1536m -javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</argLine>
 					<useSystemClassLoader>true</useSystemClassLoader>
 				</configuration>
 			</plugin>
@@ -63,6 +65,22 @@
 			<artifactId>biopax-validator-web</artifactId>
 			<version>${project.version}</version>
 			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-instrument</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-instrument-tomcat</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.biopax</groupId>
+			<artifactId>miriam-lib</artifactId>
+			<version>${miriam-lib.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

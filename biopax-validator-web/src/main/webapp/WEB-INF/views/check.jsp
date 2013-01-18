@@ -1,7 +1,29 @@
+<%--
+  #%L
+  BioPAX Validator Web Application
+  %%
+  Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as 
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -41,7 +63,7 @@
         <label style="color: red;" id="urlMsg">${error}</label>
     </div>
 	<div class="form-row" style="padding-top: 2em;">	
-		<input type="checkbox" id="autofix" name="autofix" value="true" onchange="switchNormalizerOptions();"/>
+		<input type="checkbox" id="autofix" name="autofix" value="true" onchange="updateValidatorOptions();"/>
 		<label>Fix and Normalize (<a href="javascript:switchit('aboutFix')">What does it mean?..</a>)</label>
 		
 		<ul id="aboutFix" style="display: none;">
@@ -75,24 +97,25 @@
 		<br/>
 		
 		<div class="form-row" style="padding-top: 2em;">
-		<label>Choose a validation profile</label><br/>
+		<label>Validation Profile:</label><br/>
 		<select name="profile">
-			<option label="Default Profile (Best Practice)" value="" selected="selected">Default Profile (Best Practice)</option>
-			<option label="Alternative Profile (Less Strict)" value="notstrict">Alternative Profile (Less Strict)</option>
+			<option label="Default (Best Practice)" value="" selected="selected">Default (Best Practice)</option>
+			<option label="Alternative (Less Strict)" value="notstrict">Alternative (Less Strict)</option>
 		</select>
 		<br/><br/>		
-		<label>Set the level (do the job, do not report everything)</label><br/>
+		<label>Error Case Filter (Level):</label><br/>
 		<select name="filter">
-			<option label="Show Warnings and Errors (default)" value="WARNING" selected="selected">Show Warnings and Errors (default)</option>
-			<option label="Show Errors Only" value="ERROR">Show Errors Only</option>
-			<option label="Do Not Show Any Problems" value="IGNORE">Do Not Show Any Problems</option>
+			<option label="Warnings and Errors (default)" value="WARNING" selected="selected">Warnings and Errors (default)</option>
+			<option label="Only Errors" value="ERROR">Only Errors</option>
+<!-- 			<option label="No Problems" value="IGNORE">No Problems</option> -->
 		</select>
 		<br/><br/>
-		<label>Set the max limit of not fixed ERRORs (not warnings)</label><br/>
+		<label>Stop and Return When:</label><br/>
 		<select name="maxErrors">
-			<option label="Unlimited (default)"  value="0" selected="selected">Unlimited (default)</option>
-			<option label="Fail-fast (after the first ERROR)" value="1">Fail-fast (after the first ERROR)</option>
-			<option label="Up to 10 ERROR Cases" value="10">Up to 10 ERROR Cases</option>
+			<option label="All checked (default)"  value="0" selected="selected">All checked (default)</option>
+			<option label="An ERROR found and not fixed (fail-fast)" value="1">An ERROR found and not fixed (fail-fast)</option>
+			<option label="10 (unfixed) ERROR cases found" value="10">10 (unfixed) ERROR cases found</option>
+			<option label="25 (unfixed) ERROR cases found" value="25">25 (unfixed) ERROR cases found</option>
 		</select>
 		</div>
 		<br/>
@@ -100,14 +123,14 @@
 		<div class="form-row" style="padding-top: 2em;">
 		Report as:
 		<br/>
-		<input type="radio" name="retDesired" value="html" checked="checked"/>
+		<input type="radio" name="retDesired" value="html" id="retHtml" checked="checked"/>
 		<label>HTML</label>
 		<br/>
 		<input type="radio" name="retDesired" value="xml"/>
 		<label>XML (<a href="<c:url value='/ws.html'/>">unmarshalable</a>)</label>
 		<br/>
-		<input type="radio" name="retDesired" value="owl"/>
-		<label>Modified BioPAX (only)</label>
+		<input type="radio" name="retDesired" value="owl" id="retOwl" disabled="disabled"/>
+		<label>BioPAX (if modified)</label>
 	</div>
 	<div class="form-buttons" style="padding-top: 2em;">
         <div class="button"><input name="submit" type="submit" value="Submit"/></div>

@@ -1,3 +1,24 @@
+/*
+ * #%L
+ * BioPAX Validator
+ * %%
+ * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 import static org.junit.Assert.*;
 
 import java.io.*;
@@ -71,29 +92,24 @@ public class Level3RulesUnitTest {
 	
 	
 	@Test
-	public void testCanCheckBiochemPathwayStepOneConversionRule() {
-		Rule rule = new BiochemPathwayStepOneConversionRule();		
-		BiochemicalPathwayStep bpstep = level3.create(BiochemicalPathwayStep.class, "1");
-		BioPAXElement bpstepElement = level3.create(BiochemicalPathwayStep.class, "2");
-		PathwayStep pstep = level3.create(PathwayStep.class, "3");
-		// in real data, a subclass of Conversion should be used! 
-		BioPAXElement bpe = level3.create(Conversion.class, "4"); 
+	public void testBiochemPathwayStepOneConversionRule() throws IOException {
+		Rule rule = new BiochemPathwayStepOneConversionRule();
+		
+		// assertions for the canCheck(..) -
+		// in reality, a subclass of Conversion should be used 
 		assertFalse(rule.canCheck(null));
 		assertFalse(rule.canCheck(new Object()));
-		assertFalse(rule.canCheck(pstep));
-		assertFalse(rule.canCheck(bpe));
-		assertTrue(rule.canCheck(bpstep));
-		assertTrue(rule.canCheck(bpstepElement));
-	}
-
-	
-	@Test
-	public void testBiochemPathwayStepOneConversionRule() throws IOException {
-		Rule rule = new BiochemPathwayStepOneConversionRule();	
+		assertFalse(rule.canCheck(level3.create(PathwayStep.class, "3")));
+		assertFalse(rule.canCheck(level3.create(Conversion.class, "4")));
+		assertTrue(rule.canCheck(level3.create(BiochemicalPathwayStep.class, "1")));
+			
+		
+		// assertions for BioPAX constraints
+		
 		BiochemicalPathwayStep step = level3.create(BiochemicalPathwayStep.class, "step1");
 		step.addComment("error: conversion cannot be a step process (only stepConversion)");
 		
-		//ok
+		//ok -
 		Conversion conv = level3.create(BiochemicalReaction.class, "conversion1");
 		step.setStepConversion(conv);
 		Validation v = new Validation(new IdentifierImpl());
@@ -125,25 +141,24 @@ public class Level3RulesUnitTest {
 		writeExample("testBiochemPathwayStepOneConversionRule.owl",m);
 	}
 
-	//InteractionParticipantsLocationRule
 	
 	@Test
 	public void testBiochemReactParticipantsLocationRule() throws IOException {
 		Rule rule = new BiochemReactParticipantsLocationRule();
-		BiochemicalReaction reaction = level3.create(BiochemicalReaction.class, "#BiochemicalReaction");	
-		Dna left = level3.create(Dna.class, "#dna");
-		Dna right = level3.create(Dna.class, "#modifiedDna");
+		BiochemicalReaction reaction = level3.create(BiochemicalReaction.class, "BiochemicalReaction");	
+		Dna left = level3.create(Dna.class, "dna");
+		Dna right = level3.create(Dna.class, "modifiedDna");
 		EntityFeature feature = level3.create(FragmentFeature.class, "feature1");
 		right.addFeature(feature);
 		right.addComment("modified dna");
 		
-		DnaReference dnaReference = level3.create(DnaReference.class, "#dnaref");
+		DnaReference dnaReference = level3.create(DnaReference.class, "dnaref");
 		// set the same type (entity reference)
 		left.setEntityReference(dnaReference);
 		right.setEntityReference(dnaReference);
 
-		CellularLocationVocabulary cl = level3.create(CellularLocationVocabulary.class, "#cl");
-		CellularLocationVocabulary cr = level3.create(CellularLocationVocabulary.class, "#cr");
+		CellularLocationVocabulary cl = level3.create(CellularLocationVocabulary.class, "cl");
+		CellularLocationVocabulary cr = level3.create(CellularLocationVocabulary.class, "cr");
 		cl.addTerm("cytoplasm");
 		cr.addTerm("membrane");
 		left.addName("dnaLeft");
@@ -159,8 +174,8 @@ public class Level3RulesUnitTest {
 		assertTrue(v.getError().isEmpty());
 		
 		// test complex (rule cannot use entityReference to match "the same" entity)
-		PhysicalEntity leftc = level3.create(Complex.class, "#complex");
-		PhysicalEntity rightc = level3.create(Complex.class, "#modifiedCmplex");
+		PhysicalEntity leftc = level3.create(Complex.class, "complex");
+		PhysicalEntity rightc = level3.create(Complex.class, "modifiedCmplex");
 		leftc.addName("cplx1");
 		rightc.addName("cplx1"); 
 		rightc.setCellularLocation(cl);
@@ -216,7 +231,7 @@ public class Level3RulesUnitTest {
 	@Test
 	public void testBiochemReactParticipantsLocationRule_Transport() throws IOException {
 		Rule rule = new BiochemReactParticipantsLocationRule();
-		BiochemicalReaction reaction = level3.create(TransportWithBiochemicalReaction.class, "#transportWithBiochemicalReaction");
+		BiochemicalReaction reaction = level3.create(TransportWithBiochemicalReaction.class, "transportWithBiochemicalReaction");
 		reaction.addComment("This Transport contains one Rna that did not change its " +
 			"cellular location (error!) and another one that did not have any (which is now ok)");
 		
@@ -224,17 +239,17 @@ public class Level3RulesUnitTest {
 		Model m = level3.createModel();
 		m.add(reaction);
 		
-		Rna left = level3.create(Rna.class, "#Rna1");
-		Rna right = level3.create(Rna.class, "#modRna1");
+		Rna left = level3.create(Rna.class, "Rna1");
+		Rna right = level3.create(Rna.class, "modRna1");
 		EntityFeature feature = level3.create(ModificationFeature.class, "feature1");
 		right.addFeature(feature);
 		right.addComment("modified");
-		RnaReference rnaReference = level3.create(RnaReference.class, "#rnaRef");
+		RnaReference rnaReference = level3.create(RnaReference.class, "rnaRef");
 		// set the same type (entity reference)
 		left.setEntityReference(rnaReference);
 		right.setEntityReference(rnaReference);
-		CellularLocationVocabulary cl = level3.create(CellularLocationVocabulary.class, "#cl");
-		CellularLocationVocabulary cr = level3.create(CellularLocationVocabulary.class, "#cr");
+		CellularLocationVocabulary cl = level3.create(CellularLocationVocabulary.class, "cl");
+		CellularLocationVocabulary cr = level3.create(CellularLocationVocabulary.class, "cr");
 		cl.addTerm("nucleus");
 		cr.addTerm("cytoplasm");
 		left.setDisplayName("rnaLeft1");
@@ -262,8 +277,8 @@ public class Level3RulesUnitTest {
 		m.add(feature);
 		
 		// Now check with location is null on one side
-		right = level3.create(Rna.class, "#Rna2");
-		left = level3.create(Rna.class, "#modRna2");
+		right = level3.create(Rna.class, "Rna2");
+		left = level3.create(Rna.class, "modRna2");
 		left.addFeature(feature);
 		left.addComment("modified");
 		
@@ -282,7 +297,7 @@ public class Level3RulesUnitTest {
 		writeExample("testBiochemReactParticipantsLocationRule_Transport.owl", m);
 
 		// fix the error for the first Rna:
-		right = (Rna) m.getByID("#modRna1");
+		right = (Rna) m.getByID("modRna1");
 		right.setCellularLocation(cr);
 		
 		// check again
@@ -316,7 +331,7 @@ public class Level3RulesUnitTest {
 		writeExample("testBiopaxElementIdRule.owl", m);
 		
 		// weird but legal URIs:
-		URI.create("#a");
+		URI.create("a");
 		URI.create("a,b,c");
 		//URI.create("a[b"); // will fail
 	}

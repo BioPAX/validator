@@ -12,8 +12,8 @@
 </bp:BiochemicalReaction>
 
 <bp:BiochemicalPathwayStep rdf:about="step1">
- <bp:stepProcess rdf:resource="conversion1" />
  <bp:stepProcess rdf:resource="catalysis1" />
+ <bp:stepProcess rdf:resource="conversion1" />
  <bp:stepConversion rdf:resource="conversion1" />
  <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">error: conversion cannot be a step process (only stepConversion)</bp:comment>
 </bp:BiochemicalPathwayStep>

@@ -18,8 +18,8 @@
 </bp:UnificationXref>
 
 <bp:Evidence rdf:about="evidence2">
- <bp:xref rdf:resource="unique2" />
  <bp:xref rdf:resource="shared" />
+ <bp:xref rdf:resource="unique2" />
 </bp:Evidence>
 
 <bp:Evidence rdf:about="evidence1">

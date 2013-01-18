@@ -3,37 +3,86 @@
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
 		<version>3.0.0-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
 	</parent>
+	
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>biopax-validator-web</artifactId>
 	<packaging>war</packaging>
 	<name>BioPAX Validator Web Application</name>
 	<description>BioPAX Validator Web Application (UI and Web Service)</description>
-		
+
 	<build>
 		<finalName>biopax-validator</finalName>
 		<plugins>
-		<plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <version>2.2</version>
-            <configuration>
-                <webResources>
-                    <resource>
-                        <filtering>true</filtering>
-                        <targetPath>templates</targetPath>
-                        <directory>src/main/webapp/templates</directory>
-                        <includes>
-                            <include>*.jsp</include>
-                        </includes>
-                    </resource>
-                </webResources>
-            </configuration>
-        </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<webResources>
+						<resource>
+							<filtering>true</filtering>
+							<targetPath>templates</targetPath>
+							<directory>src/main/webapp/templates</directory>
+							<includes>
+								<include>*.jsp</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
 		</plugins>
-        
 	</build>
 
+
+	<profiles>
+		<profile>
+			<id>tomcat</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<webResources>
+								<resource>
+									<targetPath>META-INF</targetPath>
+									<directory>src/main/config</directory>
+									<includes>
+										<include>context.xml</include>
+									</includes>
+								</resource>
+							</webResources>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.tomcat.maven</groupId>
+						<artifactId>tomcat6-maven-plugin</artifactId>
+						<version>2.0</version>
+						<configuration>
+<!-- 							<port>8078</port> -->
+							<path>/biopax-validator</path>
+							<!-- <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader> -->
+							<!-- <update>true</update> -->
+							<classLoaderClass>org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader</classLoaderClass>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>org.springframework</groupId>
+								<artifactId>spring-instrument-tomcat</artifactId>
+								<version>${spring.version}</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>
@@ -44,16 +93,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
@@ -100,22 +139,10 @@
 			<version>1.2.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.4</version>
 			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-instrument</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

@@ -1,5 +1,27 @@
 package org.biopax.validator.rules;
 
+/*
+ * #%L
+ * BioPAX Validator
+ * %%
+ * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
 import org.biopax.paxtools.model.level3.BiochemicalPathwayStep;
 import org.biopax.paxtools.model.level3.Catalysis;
 import org.biopax.paxtools.model.level3.CatalysisDirectionType;
@@ -49,9 +71,9 @@ public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRul
 				{
 					CatalysisDirectionType cdir = ((Catalysis) proc).getCatalysisDirection();
 					if(cdir != null && cdir != correctDir) {
-						error(validation, step, "direction.conflict", 
-								validation.isFix(), "stepDirection=" + step.getStepDirection(), 
-						proc, "catalysisDirection=" + cdir);
+						error(validation, step, "direction.conflict", validation.isFix(), 
+								"stepDirection=" + step.getStepDirection()  
+								+ ", but " + proc.getRDFId() + " has catalysisDirection=" + cdir);
 						if(validation.isFix()) {
 							fix(step, proc, null);
 						}
@@ -64,15 +86,16 @@ public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRul
 				&& con.getConversionDirection() != null
 				&& con.getConversionDirection() != ConversionDirectionType.REVERSIBLE) 
 			{
-				error(validation, step, "direction.conflict", 
-						validation.isFix(), "stepDirection=" + step.getStepDirection(), con, "conversionDirection=" 
-						+ con.getConversionDirection() + ", must be REVERSIBLE or empty");
+				error(validation, step, "direction.conflict", validation.isFix(), 
+						"stepDirection=" + step.getStepDirection() 
+						+ ", but  " + con.getRDFId() + " has conversionDirection=" 
+						+ con.getConversionDirection() + " (must be REVERSIBLE or empty)");
 				if(validation.isFix()) {
 					fix(step, con, null);
 				}
 			}
 		} else {
-			error(validation, step, "direction.conflict", false, "'stepDirection' is null");
+			error(validation, step, "direction.conflict", false, "BiochemicalPathwayStep: stepDirection is unknown");
 		}
 		
 	}

@@ -22,4 +22,4 @@
  <bp:displayName rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">ProteinReference1</bp:displayName>
  <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">No value is set for the &apos;organism&apos; property (must be exactly one)!</bp:comment>
 </bp:ProteinReference>
-</rdf:RDF>F>
+</rdf:RDF>

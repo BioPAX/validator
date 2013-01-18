@@ -2,19 +2,39 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.biopax.validator</groupId>
-	<artifactId>parent</artifactId>
-	<packaging>pom</packaging>
-	<name>BioPAX Validator Parent Project</name>
+	<artifactId>project</artifactId>
 	<version>3.0.0-SNAPSHOT</version>
-	<description>BioPAX Validator Multi-module (Parent) Project</description>
+	<packaging>pom</packaging>
+	
+	<name>The Validator Project</name>
+	
+	<modules>
+		<module>parent</module>
+		<module>validator-core</module>
+		<module>obo-fetcher</module>
+		<module>miriam-lib</module>		
+		<module>biopax-validator</module>
+		<module>biopax-validator-web</module>
+		<module>biopax-validator-test</module>
+		<module>biopax-validator-client</module>
+		<module>distr</module>
+	</modules>
 
-	<licenses>
-		<license>
-			<name>LGPL 3.0 license</name>
-			<url>http://www.opensource.org/licenses/lgpl-3.0.html</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+	<description>Object Model Validator Multi-module Project</description>
+	
+	<inceptionYear>2008</inceptionYear>
+
+    <organization>
+        <name>University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)</name>
+        <url>http://www.biopax.org</url>
+    </organization>
+
+    <mailingLists>
+     <mailingList>
+       <name>BioPAX Discussion Group</name>
+      <post>biopax-discuss@googlegroups.com</post>
+     </mailingList>
+    </mailingLists>
 
 	<url>http://biopax.sourceforge.net/validator</url>
 	<issueManagement>
@@ -28,99 +48,14 @@
         <url>http://biopax.hg.sourceforge.net/hgweb/biopax/validator</url>
     </scm>
 
-    <organization>
-        <name>BioPAX</name>
-        <url>http://www.biopax.org</url>
-    </organization>
-
-    <mailingLists>
-     <mailingList>
-       <name>BioPAX Discussion Group</name>
-      <post>biopax-discuss@googlegroups.com</post>
-     </mailingList>
-    </mailingLists>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<spring.version>3.0.5.RELEASE</spring.version>
-		<paxtools.version>4.1.5-SNAPSHOT</paxtools.version>
-		<miriam-lib.version>2.2.0</miriam-lib.version>
-	</properties>
-	
-	<modules>
-		<module>obo-fetcher</module>
-		<module>miriam-lib</module>		
-		<module>biopax-validator</module>
-		<module>biopax-validator-web</module>
-		<module>biopax-validator-test</module>
-		<module>biopax-validator-client</module>
-		<module>distr</module>
-		<module>validator-core</module>
-	</modules>
-
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
-					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<configuration>
-						<testFailureIgnore>false</testFailureIgnore>
-						<argLine>-Dfile.encoding=UTF-8 -Xmx1536M -Xms128M -ea</argLine>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.2</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>test-jar</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>2.0</version>
-			</extension>
-		</extensions>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
+<!-- in theory, works (and is recommended config.) both for maven2 and maven3; 
+in fact, it depends on plugin versions... it may generate no pages for modules or broken links -->
 	<reporting>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8</version>
+				<version>2.9</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -130,26 +65,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.6</version>
 			</plugin>
 		</plugins>
 	</reporting>
 
 	<profiles>
-		<profile>
-			<id>sourceforge</id>
-			<properties>
-				<biopax.site.url>
-					scp://shell.sourceforge.net/home/project-web/biopax/htdocs/
-				</biopax.site.url>
-				<biopax.snapshot.url>
-					scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/snapshots
-				</biopax.snapshot.url>
-				<biopax.release.url>
-					scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/releases
-				</biopax.release.url>
-			</properties>
-		</profile>
 		<profile>
 			<id>maven-3</id>
 			<activation>
@@ -160,6 +81,15 @@
 				</file>
 			</activation>
 			<build>
+				<pluginManagement>
+          			<plugins>
+            			<plugin>
+              				<groupId>org.apache.maven.plugins</groupId>
+              				<artifactId>maven-site-plugin</artifactId>
+              				<version>3.1</version> <!-- 3.2. has more bugs; e.g., fails site:run starts jetty on port 0 :/ -->
+            			</plugin>
+          			</plugins>
+        		</pluginManagement>
 				<plugins>
 					<plugin>
 						<artifactId>maven-site-plugin</artifactId>
@@ -174,139 +104,15 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>
+		</profile>	
 	</profiles>
 
 	<distributionManagement>
 		<site>
 			<id>biopax.sf.net</id>
 			<name>BioPAX Sourceforge site</name>
-			<url>${biopax.site.url}/validator-${project.version}</url>
+			<url>http://biopax.sourceforge.net/validator-${project.version}</url>
 		</site>
-		<snapshotRepository>
-			<id>biopax.snapshots</id>
-			<name>BioPAX Snapshots Repository</name>
-			<url>${biopax.snapshot.url}</url>
-		</snapshotRepository>
-		<repository>
-			<id>biopax.releases</id>
-			<name>BioPAX Releases Repository</name>
-			<url>${biopax.release.url}</url>
-		</repository>
 	</distributionManagement>
-
-
-	<repositories>
-		<repository>
-			<id>biopax.snapshots</id>
-			<name>BioPAX Snapshots Repository at Sourceforge</name>
-			<url>http://biopax.sourceforge.net/m2repo/snapshots/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>biopax.releases</id>
-			<name>BioPAX Repository at Sourceforge</name>
-			<url>http://biopax.sourceforge.net/m2repo/releases/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
-	<dependencies>
-	    <dependency>
-        	<groupId>commons-lang</groupId>
-        	<artifactId>commons-lang</artifactId>
-        	<version>2.4</version>
-        </dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.7</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.13</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-oxm</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>runtime</scope>
-		</dependency>
-	</dependencies>
-	
-	<developers>
-		<developer>
-			<id>rodche</id>
-			<name>Igor Rodchenkov</name>
-			<organization>University of Toronto</organization>
-			    <roles>
-                	<role>architect</role>
-                	<role>developer</role>
-            	</roles>
-		</developer>
-	</developers>
-
-	<contributors>
-		<contributor>
-			<name>Gary Bader</name>
-			<organization>University of Toronto</organization>
-			<roles>
-				<role>leader</role>
-			</roles>
-		</contributor>
-		<contributor>
-			<name>Emek Demir</name>
-			<organization>CBIO MSKCC</organization>
-			<roles>
-				<role>architect</role>
-			</roles>
-		</contributor>
-	</contributors>
 	
 </project>
