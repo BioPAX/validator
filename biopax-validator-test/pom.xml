@@ -33,4 +33,12 @@
 		</dependency>
 	</dependencies>
 
+	<distributionManagement>
+		<site>
+			<id>biopax.sf.net</id>
+			<name>BioPAX Sourceforge site</name>
+			<url>${biopax.site.url}/validator-${parent.version}/${artifactId}</url>
+		</site>
+	</distributionManagement>
+
 </project>

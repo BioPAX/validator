@@ -41,12 +41,10 @@
 <links>
 <item name="Javadoc" href="apidocs/index.html"/>
 <item name="BioPAX" href="http://www.biopax.org/" />
-<item name="Docs" href="http://www.biopax.org/validation" />
 <item name="Changelog" href="http://biopax.hg.sourceforge.net/hgweb/biopax/validator/shortlog/tip" />
 </links>
 
 <menu ref="reports" />
-<menu ref="modules" />
 
 </body>
 

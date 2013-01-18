@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>	
+	
 	<groupId>org.biopax.validator</groupId>
 	<artifactId>parent</artifactId>
 	<version>3.0.0-SNAPSHOT</version>	
 	<packaging>pom</packaging>
 	
 	<name>The Validator - Parent</name>
-	
 	<description>Base POM Configuration for the Validator Project</description>
+	
+	<url>http://biopax.sourceforge.net/validator-${project.version}/parent</url>
 	
 	<inceptionYear>2008</inceptionYear>
 
@@ -31,7 +33,6 @@
 		</license>
 	</licenses>
 
-	<url>http://biopax.sourceforge.net/validator</url>
 	<issueManagement>
 		<system>Sourceforge.net Tracker</system>
 		<url>https://sourceforge.net/tracker/?group_id=85345</url>
@@ -42,6 +43,34 @@
 		<developerConnection>scm:hg:ssh://${scm.username}@biopax.hg.sourceforge.net/hgroot/biopax/validator</developerConnection>
 		<url>http://biopax.hg.sourceforge.net/hgweb/biopax/validator</url>
     </scm>
+
+	<developers>
+		<developer>
+			<id>rodche</id>
+			<name>Igor Rodchenkov</name>
+			<organization>University of Toronto</organization>
+			    <roles>
+                	<role>architect</role>
+                	<role>developer</role>
+            	</roles>
+		</developer>
+		<developer>
+			<name>Gary Bader</name>
+			<organization>University of Toronto</organization>
+			<roles>
+				<role>leader</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>emekdemir</id>
+			<name>Emek Demir</name>
+			<organization>CBIO MSKCC</organization>
+			<roles>
+				<role>architect</role>
+			</roles>
+		</developer>
+	</developers>
+
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -109,19 +138,22 @@
         		</configuration>
       		</plugin>		
 			</plugins>	
-		</pluginManagement>
-		
+		</pluginManagement>		
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh</artifactId>
 				<version>2.0</version>
 			</extension>
-		</extensions>
-		
+		</extensions>		
 	</build>
 
 	<distributionManagement>
+		<site>
+			<id>biopax.sf.net</id>
+			<name>BioPAX Sourceforge site</name>
+			<url>${biopax.site.url}/validator-${project.version}/${artifactId}</url>
+		</site>
 		<snapshotRepository>
 			<id>biopax.snapshots</id>
 			<name>BioPAX Snapshots Repository</name>
@@ -276,33 +308,4 @@
 		</dependency>
 	</dependencies>
 	
-	<developers>
-		<developer>
-			<id>rodche</id>
-			<name>Igor Rodchenkov</name>
-			<organization>University of Toronto</organization>
-			    <roles>
-                	<role>architect</role>
-                	<role>developer</role>
-            	</roles>
-		</developer>
-	</developers>
-
-	<contributors>
-		<contributor>
-			<name>Gary Bader</name>
-			<organization>University of Toronto</organization>
-			<roles>
-				<role>manager</role>
-			</roles>
-		</contributor>
-		<contributor>
-			<name>Emek Demir</name>
-			<organization>CBIO MSKCC</organization>
-			<roles>
-				<role>architect</role>
-			</roles>
-		</contributor>
-	</contributors>
-
 </project>

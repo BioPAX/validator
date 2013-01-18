@@ -6,7 +6,6 @@
 	
 	<name>Off-line MiriamLink</name>
 	<description>Re-factored MiriamLink (EBI-OLS), which loads the Miriam XML data once instead of hitting MIRIAM web service</description>
-	<url>http://www.biopax.org</url>
 	
 	<inceptionYear>2009</inceptionYear>
 	
@@ -46,5 +45,13 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<site>
+			<id>biopax.sf.net</id>
+			<name>BioPAX Sourceforge site</name>
+			<url>${biopax.site.url}/validator-${parent.version}/${artifactId}</url>
+		</site>
+	</distributionManagement>
 
 </project>

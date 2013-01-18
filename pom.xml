@@ -24,6 +24,13 @@
 	
 	<inceptionYear>2008</inceptionYear>
 
+	<licenses>
+		<license>
+			<name>lgpl_v3</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.html</url>
+		</license>
+	</licenses>
+
     <organization>
         <name>University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)</name>
         <url>http://www.biopax.org</url>
@@ -36,7 +43,8 @@
      </mailingList>
     </mailingLists>
 
-	<url>http://biopax.sourceforge.net/validator</url>
+	<url>http://biopax.sourceforge.net/validator-${project.version}</url>	
+	
 	<issueManagement>
 		<system>Sourceforge.net Tracker</system>
 		<url>https://sourceforge.net/tracker/?group_id=85345</url>
@@ -72,6 +80,20 @@ in fact, it depends on plugin versions... it may generate no pages for modules o
 
 	<profiles>
 		<profile>
+			<id>sourceforge</id>
+			<properties>
+				<biopax.site.url>
+					scp://shell.sourceforge.net/home/project-web/biopax/htdocs/
+				</biopax.site.url>
+				<biopax.snapshot.url>
+					scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/snapshots
+				</biopax.snapshot.url>
+				<biopax.release.url>
+					scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/releases
+				</biopax.release.url>
+			</properties>
+		</profile>
+		<profile>
 			<id>maven-3</id>
 			<activation>
 				<file>
@@ -86,7 +108,7 @@ in fact, it depends on plugin versions... it may generate no pages for modules o
             			<plugin>
               				<groupId>org.apache.maven.plugins</groupId>
               				<artifactId>maven-site-plugin</artifactId>
-              				<version>3.1</version> <!-- 3.2. has more bugs; e.g., fails site:run starts jetty on port 0 :/ -->
+              				<version>3.2</version> <!-- 3.2. has more bugs; e.g., fails site:run starts jetty on port 0 :/ -->
             			</plugin>
           			</plugins>
         		</pluginManagement>
@@ -100,7 +122,7 @@ in fact, it depends on plugin versions... it may generate no pages for modules o
 									<goal>attach-descriptor</goal>
 								</goals>
 							</execution>
-						</executions>
+						</executions>	
 					</plugin>
 				</plugins>
 			</build>
@@ -111,8 +133,35 @@ in fact, it depends on plugin versions... it may generate no pages for modules o
 		<site>
 			<id>biopax.sf.net</id>
 			<name>BioPAX Sourceforge site</name>
-			<url>http://biopax.sourceforge.net/validator-${project.version}</url>
+			<url>${biopax.site.url}/validator-${project.version}</url>
 		</site>
 	</distributionManagement>
+
+	<developers>
+		<developer>
+			<id>rodche</id>
+			<name>Igor Rodchenkov</name>
+			<organization>University of Toronto</organization>
+			    <roles>
+                	<role>architect</role>
+                	<role>developer</role>
+            	</roles>
+		</developer>
+		<developer>
+			<name>Gary Bader</name>
+			<organization>University of Toronto</organization>
+			<roles>
+				<role>leader</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>emekdemir</id>
+			<name>Emek Demir</name>
+			<organization>CBIO MSKCC</organization>
+			<roles>
+				<role>architect</role>
+			</roles>
+		</developer>
+	</developers>
 	
 </project>
