@@ -135,6 +135,16 @@ in fact, it depends on plugin versions... it may generate no pages for modules o
 			<name>BioPAX Sourceforge site</name>
 			<url>${biopax.site.url}/validator-${project.version}</url>
 		</site>
+		<snapshotRepository>
+			<id>biopax.snapshots</id>
+			<name>BioPAX Snapshots Repository</name>
+			<url>${biopax.snapshot.url}</url>
+		</snapshotRepository>
+		<repository>
+			<id>biopax.releases</id>
+			<name>BioPAX Releases Repository</name>
+			<url>${biopax.release.url}</url>
+		</repository>		
 	</distributionManagement>
 
 	<developers>

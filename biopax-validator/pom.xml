@@ -72,7 +72,7 @@
 		<site>
 			<id>biopax.sf.net</id>
 			<name>BioPAX Sourceforge site</name>
-			<url>${biopax.site.url}/validator-${parent.version}/${artifactId}</url>
+			<url>${biopax.site.url}/validator-${parent.version}/${project.artifactId}</url>
 		</site>
 	</distributionManagement>
 

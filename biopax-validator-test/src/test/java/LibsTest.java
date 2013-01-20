@@ -23,7 +23,6 @@ import org.junit.*;
 import static org.junit.Assert.*;
 import java.io.*;
 
-import org.biopax.paxtools.impl.level3.*;
 import org.biopax.paxtools.io.*;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
@@ -67,17 +66,17 @@ public class LibsTest {
         assertNotNull(model);
         assertFalse(model.getObjects().isEmpty());
         
-        for(BioPAXElement e: model.getObjects()) {
-        	if(e instanceof Named) {
-        		System.out.println(e + " " + e.getModelInterface().getSimpleName() + 
-        				" name:"+ ((Named)e).getStandardName()
-        				+ ", displayName: " + ((Named)e).getDisplayName());
-        	} else if(e instanceof Xref) {
-        		System.out.println(e + " " + e.getModelInterface().getSimpleName() + 
-        				" db:"+ ((Xref)e).getDb()
-        				+ ", id: " + ((Xref)e).getId());
-        	}
-        }
+//        for(BioPAXElement e: model.getObjects()) {
+//        	if(e instanceof Named) {
+//        		System.out.println(e + " " + e.getModelInterface().getSimpleName() + 
+//        				" name:"+ ((Named)e).getStandardName()
+//        				+ ", displayName: " + ((Named)e).getDisplayName());
+//        	} else if(e instanceof Xref) {
+//        		System.out.println(e + " " + e.getModelInterface().getSimpleName() + 
+//        				" db:"+ ((Xref)e).getDb()
+//        				+ ", id: " + ((Xref)e).getId());
+//        	}
+//        }
         
     }
     

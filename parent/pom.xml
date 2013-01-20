@@ -152,7 +152,7 @@
 		<site>
 			<id>biopax.sf.net</id>
 			<name>BioPAX Sourceforge site</name>
-			<url>${biopax.site.url}/validator-${project.version}/${artifactId}</url>
+			<url>${biopax.site.url}/validator-${project.version}/${project.artifactId}</url>
 		</site>
 		<snapshotRepository>
 			<id>biopax.snapshots</id>
