@@ -283,8 +283,7 @@ public abstract class CvTermsRule<T extends Level3Element>
 				inferred.add(ot.getPreferredName());
 			} 
 			else {
-				if (logger.isWarnEnabled())
-					logger.warn("Could not find a term by the xref.id: " + x.getId());
+				logger.warn("Could not find a term by the xref.id: " + x.getId());
 			}
 		}
 		

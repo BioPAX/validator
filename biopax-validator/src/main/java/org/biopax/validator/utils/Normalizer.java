@@ -107,8 +107,7 @@ public final class Normalizer {
 		
 		// auto-convert to Level3 model
 		if (model.getLevel() != BioPAXLevel.L3) {
-			if (log.isInfoEnabled())
-				log.info("Converting model to BioPAX Level3...");
+			log.info("Converting model to BioPAX Level3...");
 			model = (new OneTwoThree()).filter(model);
 		}
 		
@@ -230,8 +229,7 @@ public final class Normalizer {
 					return MiriamLink.getIdentifiersOrgURI(dbName, idPart);
 				}
 			} catch (IllegalArgumentException e) {
-				if(log.isDebugEnabled())
-					log.debug("uri: not a standard db name or synonym: " + dbName);
+				log.debug("uri: not a standard db name or synonym: " + dbName);
 				dbName = dbName.toLowerCase(); //setting same Case is important for data merging (only when dbName is not standard!)
 			}
 		}
@@ -335,16 +333,14 @@ public final class Normalizer {
 	
 	
 	private void fixDisplayName(Model model) {
-		if (log.isInfoEnabled())
-			log.info("Trying to auto-fix 'null' displayName...");
+		log.info("Trying to auto-fix 'null' displayName...");
 		// where it's null, set to the shortest name if possible
 		for (Named e : model.getObjects(Named.class)) {
 			if (e.getDisplayName() == null) {
 				if (e.getStandardName() != null) {
 					e.setDisplayName(e.getStandardName());
-					if (log.isInfoEnabled())
-						log.info(e + " displayName auto-fix: "
-								+ e.getDisplayName() + ". " + description);
+					log.info(e + " displayName auto-fix: "
+							+ e.getDisplayName() + ". " + description);
 				} else if (!e.getName().isEmpty()) {
 					String dsp = e.getName().iterator().next();
 					for (String name : e.getName()) {
@@ -352,9 +348,8 @@ public final class Normalizer {
 							dsp = name;
 					}
 					e.setDisplayName(dsp);
-					if (log.isInfoEnabled())
-						log.info(e + " displayName auto-fix: " + dsp
-							+ ". " + description);
+					log.info(e + " displayName auto-fix: " + dsp
+						+ ". " + description);
 				}
 			}
 		}
@@ -474,36 +469,29 @@ public final class Normalizer {
 		// clean/normalize xrefs first, because they gets used next;
 		// also, - because some of original xrefs might have already "normalized" URIs 
 		// that are, in fact, supposed to be used for other biopax types (e.g., CV or ProteinReference)
-		if(log.isInfoEnabled())
-			log.info("Normalizing xrefs..." + description);
+		log.info("Normalizing xrefs..." + description);
 		normalizeXrefs(model);
 		
 		// fix displayName where possible
 		if(fixDisplayName) {
-			if(log.isInfoEnabled())
-				log.info("Normalizing display names..." + description);
+			log.info("Normalizing display names..." + description);
 			fixDisplayName(model);
 		}
 			
-		if(log.isInfoEnabled())
-			log.info("Normalizing CVs and organisms..." + description);
+		log.info("Normalizing CVs and organisms..." + description);
 		normalizeCVsAndBioSource(model);
 		
-//		if(log.isInfoEnabled())
-//			log.info("Normalizing data sources (Provenance)..." + extraInfo());
+//		log.info("Normalizing data sources (Provenance)..." + extraInfo());
 //		normalizeProvenance(model);
 		
-		if(log.isInfoEnabled())
-			log.info("Normalizing entity references..." + description);
+		log.info("Normalizing entity references..." + description);
 		normalizeERs(model);
 		
 		// find/add lost (in replace) children
-		if(log.isInfoEnabled())
-			log.info("Repairing..." + description);
+		log.info("Repairing..." + description);
 		model.repair(); // it does not remove dangling utility class objects (can be done separately, later, if needed)
 		
-		if(log.isInfoEnabled())
-			log.info("Optional tasks (reasoning)..." + description);
+		log.info("Optional tasks (reasoning)..." + description);
 		
 		// auto-set dataSource property for all entities (top-down)
 		if(inferPropertyDataSource) {
@@ -537,10 +525,9 @@ public final class Normalizer {
 				if (uref != null) 
 					normalizeID(model, bpe, uref); // no idVersion for a CV or BS!
 				else 
-					if(log.isInfoEnabled())
-						log.info("Cannot normalize " + bpe.getModelInterface().getSimpleName() 
-							+ " : no unification xrefs found in " + bpe.getRDFId()
-							+ ". " + description);
+					log.info("Cannot normalize " + bpe.getModelInterface().getSimpleName() 
+						+ " : no unification xrefs found in " + bpe.getRDFId()
+						+ ". " + description);
 			} 
 		}
 		
@@ -554,10 +541,10 @@ public final class Normalizer {
 			UnificationXref uref = getFirstUnificationXref(bpe);
 			if (uref != null)
 				normalizeID(model, bpe, uref);
-			else if (log.isInfoEnabled())
+			else
 				log.info("Cannot normalize EntityReference: "
-						+ "no unification xrefs found in " + bpe.getRDFId()
-						+ ". " + description);
+					+ "no unification xrefs found in " + bpe.getRDFId()
+					+ ". " + description);
 		}
 		
 		// replace/update elements in the model
@@ -608,9 +595,7 @@ public final class Normalizer {
 	public static void autoName(Provenance pro) {
 		if(!(pro.getRDFId().startsWith("urn:miriam:") || pro.getRDFId().startsWith("http://identifiers.org/"))
 				&& pro.getName().isEmpty()) {
-			if(log.isInfoEnabled())
-				log.info("Skipping: cannot normalize Provenance: " + pro.getRDFId());
-			
+			log.info("Skipping: cannot normalize Provenance: " + pro.getRDFId());
 		}
 		else { // i.e., 'name' is not empty or ID is the URN
 			final SortedSet<String> names = new TreeSet<String>();
@@ -678,8 +663,7 @@ public final class Normalizer {
 			io.mergeDuplicates(true);
 			Model model = io.convertFromOWL(is);
 			if (model.getLevel() != BioPAXLevel.L3) {
-				if (log.isInfoEnabled())
-					log.info("Converting to BioPAX Level3... " + model.getXmlBase());
+				log.info("Converting to BioPAX Level3... " + model.getXmlBase());
 				model = (new OneTwoThree()).filter(model);
 				if (model != null) {
 					io.setFactory(model.getLevel().getDefaultFactory());

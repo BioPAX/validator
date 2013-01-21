@@ -74,14 +74,13 @@ public class OntologyManagerImpl implements OntologyManager {
 	{
 		this();
 		loadOntologies(cfg);
-		if (log.isDebugEnabled())
-			log.debug("Successfully created and configured new OntologyManagerImpl.");
+		log.debug("Successfully created and configured new OntologyManagerImpl.");
 	}
 
 
     public Ontology putOntology( String ontologyID, Ontology ontology ) {
         if ( ontologies.containsKey( ontologyID ) ) {
-            if ( log.isWarnEnabled() )log.warn( "Ontology with the ID '" + ontologyID + "' already exists. Overwriting!" );
+            log.warn( "Ontology with the ID '" + ontologyID + "' already exists. Overwriting!" );
         }
         return ontologies.put( ontologyID, ontology );
     }
@@ -116,10 +115,7 @@ public class OntologyManagerImpl implements OntologyManager {
             	String key = (String) ontId;
             	try {
                 	URI uri = LOADER.getResource(config.getProperty(key)).getURI();
-                	if ( log.isInfoEnabled() ) {
-                		log.info( "Loading ontology: ID= " + 
-                			ontId + ", uri=" + uri);
-                	}
+               		log.info( "Loading ontology: ID= " + ontId + ", uri=" + uri);
 
                     Ontology oa = fetchOntology( key, "OBO", uri );
                     putOntology(key, oa);
@@ -153,9 +149,7 @@ public class OntologyManagerImpl implements OntologyManager {
                 // parse the URL and load the ontology
                 OboLoader loader = new OboLoader( );
                 try {
-                    if ( log.isDebugEnabled() )
-                        log.debug( "Parsing URL: " + url );
-                    
+                    log.debug( "Parsing URL: " + url );
                     oa = loader.parseOboFile( url, ontologyID );
                     oa.setName(ontologyID);
                 } catch ( Exception e ) {
@@ -166,10 +160,8 @@ public class OntologyManagerImpl implements OntologyManager {
             throw new OntologyLoaderException( "Unsupported ontology format: " + format );
         }
 
-        if ( log.isInfoEnabled() ) {
-            log.info( "Successfully created OntologyImpl from values: ontology="
-                      + ontologyID + " format=" + format + " location=" + uri );
-        }
+        log.info( "Successfully created OntologyImpl from values: ontology="
+              + ontologyID + " format=" + format + " location=" + uri );
         
         return oa;
     }

@@ -80,7 +80,6 @@
 			<groupId>org.biopax</groupId>
 			<artifactId>miriam-lib</artifactId>
 			<version>${miriam-lib.version}</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	
@@ -88,7 +87,7 @@
 		<site>
 			<id>biopax.sf.net</id>
 			<name>BioPAX Sourceforge site</name>
-			<url>${biopax.site.url}/validator-${parent.version}/${project.artifactId}</url>
+			<url>${biopax.site.url}/validator-${project.parent.version}/${project.artifactId}</url>
 		</site>
 	</distributionManagement>	
 </project>

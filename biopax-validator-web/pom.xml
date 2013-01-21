@@ -1,11 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
 		<version>3.0.0-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
-	
+
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>biopax-validator-web</artifactId>
 	<packaging>war</packaging>
@@ -52,7 +53,7 @@
 							<webResources>
 								<resource>
 									<targetPath>META-INF</targetPath>
-									<directory>src/main/config</directory>
+									<directory>src/main/tomcat/conf</directory>
 									<includes>
 										<include>context.xml</include>
 									</includes>
@@ -60,25 +61,26 @@
 							</webResources>
 						</configuration>
 					</plugin>
-					<plugin>
-						<groupId>org.apache.tomcat.maven</groupId>
-						<artifactId>tomcat6-maven-plugin</artifactId>
-						<version>2.0</version>
-						<configuration>
-<!-- 							<port>8078</port> -->
-							<path>/biopax-validator</path>
-							<!-- <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader> -->
-							<!-- <update>true</update> -->
-							<classLoaderClass>org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader</classLoaderClass>
-						</configuration>
-						<dependencies>
-							<dependency>
-								<groupId>org.springframework</groupId>
-								<artifactId>spring-instrument-tomcat</artifactId>
-								<version>${spring.version}</version>
-							</dependency>
-						</dependencies>
-					</plugin>
+<!-- with some effort, tomcat6:run worked 
+	and AOP LTW was activated with the built-in tomcat, 
+	BUT it did not catch exceptions in Paxtools! -->
+<!-- 					<plugin> -->
+<!-- 						<groupId>org.apache.tomcat.maven</groupId> -->
+<!-- 						<artifactId>tomcat6-maven-plugin</artifactId> -->
+<!-- 						<version>2.0</version> -->
+<!-- 						<configuration> -->
+<!-- 							<path>/biopax-validator</path> -->
+<!-- 							<useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader> -->
+<!-- 							<classLoaderClass>org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader</classLoaderClass> -->
+<!-- 						</configuration> -->
+<!-- 						<dependencies> -->
+<!-- 							<dependency> -->
+<!-- 								<groupId>org.springframework</groupId> -->
+<!-- 								<artifactId>spring-instrument-tomcat</artifactId> -->
+<!-- 								<version>${spring.version}</version> -->
+<!-- 							</dependency> -->
+<!-- 						</dependencies> -->
+<!-- 					</plugin> -->
 				</plugins>
 			</build>
 		</profile>
@@ -88,12 +90,10 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>taglibs</groupId>
@@ -105,7 +105,7 @@
 			<groupId>org.biopax.validator</groupId>
 			<artifactId>biopax-validator</artifactId>
 			<version>${project.version}</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
@@ -147,7 +147,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -155,7 +154,7 @@
 		<site>
 			<id>biopax.sf.net</id>
 			<name>BioPAX Sourceforge site</name>
-			<url>${biopax.site.url}/validator-${parent.version}/${project.artifactId}</url>
+			<url>${biopax.site.url}/validator-${project.parent.version}/${project.artifactId}</url>
 		</site>
 	</distributionManagement>
 

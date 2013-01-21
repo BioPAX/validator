@@ -46,8 +46,7 @@ public class OntologyImpl implements Ontology {
     private String name;
 
     public OntologyImpl() {
-    	if(log.isInfoEnabled())
-    		log.info( "Creating new OntologyImpl..." );
+   		log.info( "Creating new OntologyImpl..." );
     }
 
     public void setName(String name) {
@@ -239,9 +238,9 @@ public class OntologyImpl implements Ontology {
         if ( term == null ) {
             throw new IllegalArgumentException( "You must give a non null term" );
         }
-        if ( log.isDebugEnabled() ) {
-            log.debug( "Adding obsolete term: " + term.getTermAccession() + " " + term.getPreferredName() );
-        }
+
+        log.debug( "Adding obsolete term: " + term.getTermAccession() + " " + term.getPreferredName() );
+        
         obsoleteTerms.add( term );
     }
 
@@ -321,9 +320,9 @@ public class OntologyImpl implements Ontology {
     public void print() {
         log.info( ontologyTerms.size() + " terms to display." );
         final Collection<OntologyTermI> roots = getRoots();
-        if ( log.isDebugEnabled() ) {
-            log.info( this.roots.size() + " root(s) found." );
-        }
+
+        log.info( this.roots.size() + " root(s) found." );
+
         for ( OntologyTermI root : roots ) {
             print( root );
         }

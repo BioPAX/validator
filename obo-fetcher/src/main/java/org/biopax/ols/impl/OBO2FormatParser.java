@@ -176,8 +176,7 @@ public class OBO2FormatParser implements Parser {
                     throw new IllegalStateException(e);
                 }
 //            } else {
-//                if (logger.isDebugEnabled()){
-//                    logger.debug("reltype is:" + trm.getType().getID() + " but expected :" + relationshipType);
+//                logger.debug("reltype is:" + trm.getType().getID() + " but expected :" + relationshipType);
 //                }
             }
         }

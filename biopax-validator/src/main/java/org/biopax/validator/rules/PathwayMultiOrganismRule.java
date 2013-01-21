@@ -72,9 +72,8 @@ public class PathwayMultiOrganismRule extends AbstractRule<Pathway>
 					}
 				} 
 				else if (value instanceof BioPAXElement) {
-					if (log.isTraceEnabled())
-						log.trace("Traverse into " + value + " "
-								+ value.getClass().getSimpleName());
+					log.trace("Traverse into " + value + " "
+							+ value.getClass().getSimpleName());
 					traverse((BioPAXElement) value, model);
 				}
 			}

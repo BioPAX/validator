@@ -122,10 +122,8 @@ public class ValidatorImpl implements Validator {
 		
 		Model model = (Model) validation.getModel();
 
-		if (log.isDebugEnabled()) {
-			log.debug("validating model: " + model + " that has "
+		log.debug("validating model: " + model + " that has "
 					+ model.getObjects().size() + " objects");
-		}
 				
 		if(model.getLevel() != BioPAXLevel.L3) {
    			model = (new OneTwoThree()).filter(model);
@@ -185,8 +183,7 @@ public class ValidatorImpl implements Validator {
 			throw new ValidatorException("Interrupted unexpectedly!");
 		}
 		
-		if (log.isDebugEnabled())
-			log.debug("All rules checked!");
+		log.debug("All rules checked!");
 				
 		if (validation.isFix()) {
 			// discover, explicitly add child elements to the model
@@ -259,7 +256,7 @@ public class ValidatorImpl implements Validator {
 		if (!getResults().contains(validation)) {
 			if(validation != null)
 				getResults().add(validation); // registered a new one
-			else if(log.isWarnEnabled())
+			else 
 				log.warn("Object " + obj + 
 					" is being associated with NULL (Validation)!");
 		}
@@ -300,12 +297,9 @@ public class ValidatorImpl implements Validator {
 			}
 		}
 
-		if (keys.isEmpty()) {
-			if (log.isDebugEnabled()) {
-				log.debug("findKey: no result keys found "
+		if (keys.isEmpty()) 
+			log.debug("findKey: no result keys found "
 						+ "for the object : " + o);
-			}
-		}
 		
 		return keys;
 	}
@@ -361,8 +355,7 @@ public class ValidatorImpl implements Validator {
 			// this will update/add to existing error cases (unique type-object-reporter combinations) 
 			v.addError(err);
 			
-			if(log.isDebugEnabled())
-				log.debug(v.getDescription() + " - added/updated " + err + " for " + obj + " as: " + isFixed);
+			log.debug(v.getDescription() + " - added/updated " + err + " for " + obj + " as: " + isFixed);
 		}	
 
 	}

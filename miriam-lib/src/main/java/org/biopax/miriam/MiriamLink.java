@@ -100,15 +100,11 @@ public class MiriamLink
             //mir = (Miriam) unmarshaller.unmarshal(conn.getInputStream());
             try {
             	mir = (Miriam) unmarshaller.unmarshal(url.openStream());
-        		if(log.isInfoEnabled()) {
-        			log.info("Got the latest Miriam XML db from " 
-        				+ XML_LOCATION);
-        		}
+       			log.info("Got the latest Miriam XML db from " + XML_LOCATION);
             } catch (IOException e) {
             	// fall-back (to using local Miriam.xml)
-            	if(log.isWarnEnabled())
-            		log.warn("Cannot connect to Miriam resource: " + e
-            			+ "; now trying to find/use Miriam.xml from classpath...");
+            	log.warn("Cannot connect to Miriam resource: " + e
+            		+ "; now trying to find/use Miriam.xml from classpath...");
             	InputStream is = MiriamLink.class.getResourceAsStream("/Miriam.xml");
             	if(is != null) {
             		mir = (Miriam) unmarshaller.unmarshal(is);
@@ -121,11 +117,9 @@ public class MiriamLink
             
             miriam = mir;
             
-            if (log.isInfoEnabled()) {
-	            log.info("MIRIAM XML imported, version: "
+            log.info("MIRIAM XML imported, version: "
 	                + miriam.getDataVersion() + ", datatypes: "
 	                + miriam.getDatatype().size());
-	        }
 	    }
 	    catch (JAXBException e) {
 	        throw new RuntimeException(e);

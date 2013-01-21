@@ -67,9 +67,8 @@ public class AcyclicPathwayRule extends AbstractRule<Pathway> {
 								"cyclic.inclusion", false, getVisited().toString());
 					} 
 					else {
-						if (log.isTraceEnabled())
-							log.trace("Traverse into " + value + " "
-									+ value.getClass().getSimpleName());
+						log.trace("Traverse into " + value + " "
+								+ value.getClass().getSimpleName());
 
 						traverse((BioPAXElement) value, model);
 					}

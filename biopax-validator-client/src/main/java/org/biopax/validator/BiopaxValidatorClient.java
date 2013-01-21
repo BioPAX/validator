@@ -150,8 +150,7 @@ public class BiopaxValidatorClient {
         		);
         int status = httpClient.executeMethod(post);
 		
-        if(log.isInfoEnabled()) log.info("HTTP Status Text>>>" 
-				+ HttpStatus.getStatusText(status));
+        log.info("HTTP Status Text>>>" + HttpStatus.getStatusText(status));
 		
 		BufferedReader res = new BufferedReader(
 				new InputStreamReader(post.getResponseBodyAsStream())

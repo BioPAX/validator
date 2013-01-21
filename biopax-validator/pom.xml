@@ -18,12 +18,14 @@
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -34,11 +36,6 @@
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
 			<version>1.6.9</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aspects</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.biopax.validator</groupId>
@@ -72,7 +69,7 @@
 		<site>
 			<id>biopax.sf.net</id>
 			<name>BioPAX Sourceforge site</name>
-			<url>${biopax.site.url}/validator-${parent.version}/${project.artifactId}</url>
+			<url>${biopax.site.url}/validator-${project.parent.version}/${project.artifactId}</url>
 		</site>
 	</distributionManagement>
 

@@ -74,7 +74,10 @@ public class ValidatorController {
       
     @RequestMapping(value="/check", method=RequestMethod.GET)
     public void check(Model model) {
-    	model.addAttribute("normalizer", new Normalizer());
+    	Normalizer normalizer = new Normalizer();
+    	normalizer.setInferPropertyDataSource(false);
+    	normalizer.setInferPropertyOrganism(false);
+    	model.addAttribute("normalizer", normalizer);
     }   
     
     
@@ -116,7 +119,7 @@ public class ValidatorController {
     	ValidatorResponse validatorResponse = new ValidatorResponse();
     	
     	if(url != null && url.length()>0) {
-        	if(log.isInfoEnabled() && url != null) 
+        	if(url != null) 
         		log.info("url : " + url);
         	try {
         		resource = new UrlResource(url);
@@ -144,8 +147,7 @@ public class ValidatorController {
 				if(file.getBytes().length==0 || filename==null || "".equals(filename)) 
 					continue;
 
-				if(log.isInfoEnabled()) 
-					log.info("check : " + filename);
+				log.info("check : " + filename);
 				
 				resource = new ByteArrayResource(file.getBytes());				
 				
@@ -245,8 +247,7 @@ public class ValidatorController {
     public void getSchema(Writer writer, HttpServletResponse response) 
     		throws IOException 
     {
-    	if(log.isDebugEnabled())
-    		log.debug("XML Schema requested.");
+   		log.debug("XML Schema requested.");
     	
     	BufferedReader bis = new BufferedReader(new InputStreamReader(
     		LOADER.getResource("classpath:validator-response-2.0.xsd")

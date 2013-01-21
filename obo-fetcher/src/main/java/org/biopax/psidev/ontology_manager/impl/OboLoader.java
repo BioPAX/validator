@@ -141,9 +141,8 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                     	ontology.addLink( relation.getObjectTerm().getIdentifier(),
                     					  relation.getSubjectTerm().getIdentifier() );
                     } catch (NullPointerException e) {
-                    	if(log.isWarnEnabled())
-                    		log.warn("Skipping terms relationship "  
-                    			+ relation + "; " + e);
+                   		log.warn("Skipping terms relationship "  
+                   			+ relation + "; " + e);
 					}
                 }
             }
@@ -240,11 +239,9 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                 		ontologyDirectory.getPath() + " must be writeable" );
             }
 
-            if ( log.isInfoEnabled() ) {
-                log.info( "User work directory: " + ontologyDirectory.getAbsolutePath() );
-                log.info( "keepTemporaryFile: " + OntologyManagerContext.getInstance().isStoreOntologiesLocally() );
-            }
-
+            log.info( "User work directory: " + ontologyDirectory.getAbsolutePath() );
+            log.info( "keepTemporaryFile: " + OntologyManagerContext.getInstance().isStoreOntologiesLocally() );
+ 
             File registryFile = getRegistryFile();
 
             if ( null != registryFile ) {
@@ -261,16 +258,10 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                                 ontologyFile = new File( ( String ) registryMap.get( url ) );
 
                                 if ( ontologyFile.exists() && ontologyFile.canRead() ) {
-
                                     // Cool, find it ! use it instead of the provided URL
-                                    if ( log.isInfoEnabled() )
-                                        log.info( "Reuse existing cache: " + ontologyFile.getAbsolutePath() );
-
+                                    log.info( "Reuse existing cache: " + ontologyFile.getAbsolutePath() );
                                 } else {
-
-                                    if ( log.isInfoEnabled() )
-                                        log.info( "Could not find " + ontologyFile.getAbsolutePath() );
-
+                                    log.info( "Could not find " + ontologyFile.getAbsolutePath() );
                                     // cleanup map
                                     registryMap.remove( url );
 
@@ -306,12 +297,12 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                 // if it is not defined, not there or not readable...
 
                 // Read URL content
-                if ( log.isInfoEnabled() ) log.info( "Loading URL: " + url );
+                log.info( "Loading URL: " + url );
 
                 URLConnection con = url.openConnection();
                 long size = con.getContentLength();        // -1 if not stat available
 
-                if ( log.isInfoEnabled() ) log.info( "size = " + size );
+                log.info( "size = " + size );
 
                 InputStream is = url.openStream();
 
@@ -340,8 +331,7 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                     ontologyFile.deleteOnExit();
                 }
 
-                if ( log.isDebugEnabled() )
-                    log.debug( "The OBO file will be temporary stored as: " + ontologyFile.getAbsolutePath() );
+                log.debug( "The OBO file will be temporary stored as: " + ontologyFile.getAbsolutePath() );
 
                 FileOutputStream out = new FileOutputStream( ontologyFile );
 
@@ -354,20 +344,16 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                 while ( ( length = is.read( buf ) ) != -1 ) {
                     current += length;
                     out.write( buf, 0, length );
-                    if ( log.isInfoEnabled() ) {
-                        log.info( "length = " + current );
-                        if(size > 0)
-                        	log.info( "Percent: " 
-                        		+ ( ( current / ( float ) size ) * 100 ) + "%" );
-                    }
+                    log.info( "length = " + current );
+                    if(size > 0)
+                   		log.info( "Percent: " + ( ( current / ( float ) size ) * 100 ) + "%" );
                 }
                 */
                 
                 if(size == -1) size = 1024 * 1024 * 1024; //Integer.MAX_VALUE;
                 ReadableByteChannel source = Channels.newChannel(is);
 				size = out.getChannel().transferFrom(source, 0, size);
-				if(log.isInfoEnabled())
-					log.info(size + " bytes downloaded");
+				log.info(size + " bytes downloaded");
 
                 is.close();
                 out.flush();
@@ -382,7 +368,7 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                     registryMap.put( url, ontologyFile.getAbsolutePath() );
 
                     // serialize the map
-                    if ( log.isInfoEnabled() ) log.info( "Serializing Map" );
+                    log.info( "Serializing Map" );
                     File f = getRegistryFile();
                     ObjectOutputStream oos = new ObjectOutputStream( new FileOutputStream( f ) );
                     oos.writeObject( registryMap );

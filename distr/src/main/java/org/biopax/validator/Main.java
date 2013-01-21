@@ -165,9 +165,7 @@ public class Main {
         for (Resource resource: resources) {
         	Validation result = new Validation(new IdentifierImpl(), resource.getDescription(), autofix, null, maxErrors, profile);
         	result.setDescription(resource.getDescription());
-        	if(log.isInfoEnabled())
-        		log.info("BioPAX DATA IMPORT FROM: " 
-        			+ result.getDescription());
+       		log.info("BioPAX DATA IMPORT FROM: " + result.getDescription());
 			try{
 				validator.importModel(result, resource.getInputStream());
 				validator.validate(result);
@@ -182,14 +180,11 @@ public class Main {
 				
 			} catch (Exception e) {
 				log.error("failed", e);
-				if(log.isDebugEnabled()) {
-					e.printStackTrace();
-				}
 			}
+			
 			response.addValidationResult(result);
 			validator.getResults().remove(result);
-			if (log.isInfoEnabled()) 
-				log.info("Done.");
+			log.info("Done.");
 		}
 		
         return response;
