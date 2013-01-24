@@ -47,7 +47,6 @@ public class EntityReferenceSamePhysicalEntitiesRule extends
 	Cluster<SimplePhysicalEntity> algorithm = new Cluster<SimplePhysicalEntity>() {
 		@Override
 		public boolean match(SimplePhysicalEntity e1, SimplePhysicalEntity e2) {
-			assert e1.getModelInterface().equals(e2.getModelInterface()); //true as they're both from eref.entityReferenceOf()...
 			return  e1.hasEquivalentFeatures(e2) 
 					&& e1.hasEquivalentCellularLocation(e2);
 			//TODO add 'standardName' for comparison?

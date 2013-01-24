@@ -27,8 +27,10 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXFactory;
@@ -54,7 +56,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author rodche
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:validator-core-context.xml"}) // AOP disabled
+@ContextConfiguration(locations = {"classpath:META-INF/spring/appContext-validator.xml"}) // AspectJ LTW is disabled!
 public class IntegrationTest {    
     @Autowired
     XrefHelper xrefHelper;
@@ -72,10 +74,62 @@ public class IntegrationTest {
         factory3 = BioPAXLevel.L3.getDefaultFactory();
         simpleIO = new SimpleIOHandler(BioPAXLevel.L3);
     }
+	   
 
     @Test
+    public void testBuildPaxtoolsL2ModelSimple() throws FileNotFoundException  {
+        System.out.println("with Level2 data");
+        InputStream is = getClass().getResourceAsStream("biopax_id_557861_mTor_signaling.owl");
+        SimpleIOHandler io = new SimpleIOHandler();
+        io.mergeDuplicates(true);
+        Model model = io.convertFromOWL(is);
+        assertNotNull(model);
+        assertFalse(model.getObjects().isEmpty());
+    }
+
+   
+    @Test
+    public void testBuildPaxtoolsL3ModelSimple() throws FileNotFoundException {
+        System.out.println("with Level3 data");
+        InputStream is = getClass().getResourceAsStream("biopax3-short-metabolic-pathway.owl");
+        SimpleIOHandler simpleReader = new SimpleIOHandler();
+        simpleReader.mergeDuplicates(true);
+        Model model = simpleReader.convertFromOWL(is);
+        assertNotNull(model);
+        assertFalse(model.getObjects().isEmpty());
+    }
+    
+    
+    @Test
+    public void testIsEquivalentUnificationXref() {
+    	BioPAXFactory factory3 = BioPAXLevel.L3.getDefaultFactory();
+    	UnificationXref x1 = factory3.create(UnificationXref.class, "x1");
+    	x1.addComment("x1");
+    	x1.setDb("db");
+    	x1.setId("id");
+    	UnificationXref x2 = factory3.create(UnificationXref.class, "x2");
+    	x2.addComment("x2");
+    	x2.setDb("db");
+    	x2.setId("id");
+    	
+    	assertTrue(x1.isEquivalent(x2));
+    	
+    	UnificationXref x3 = factory3.create(UnificationXref.class, "x1");
+    	x3.addComment("x3");
+    	x3.setDb(null);
+    	x3.setId("doesn't matter");
+    	assertFalse(x1.isEquivalent(x3)); // same ID does not matter anymore (since Apr'2011)!
+    	
+    	x3.setDb("db");
+    	x3.setId("id");
+    	assertTrue(x1.isEquivalent(x3)); 
+    	
+    	x3 = x1;
+    	assertTrue(x1.isEquivalent(x3)); 
+    }  
+    
+    @Test
     public void testRange1() {
-//        System.out.println("test Range (1)");
         Evidence ev = (Evidence) factory3.create(Evidence.class, "1");
         EvidenceCodeVocabulary ec = factory3.create(EvidenceCodeVocabulary.class, "2");
         ev.addEvidenceCode(ec);

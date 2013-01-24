@@ -15,7 +15,6 @@
 		<module>miriam-lib</module>		
 		<module>biopax-validator</module>
 		<module>biopax-validator-web</module>
-		<module>biopax-validator-test</module>
 		<module>biopax-validator-client</module>
 		<module>distr</module>
 	</modules>
@@ -108,7 +107,7 @@ in fact, it depends on plugin versions... it may generate no pages for modules o
             			<plugin>
               				<groupId>org.apache.maven.plugins</groupId>
               				<artifactId>maven-site-plugin</artifactId>
-              				<version>3.2</version> <!-- 3.2. has more bugs; e.g., fails site:run starts jetty on port 0 :/ -->
+              				<version>3.2</version> <!-- with v3.2, site:run starts jetty on port 0, but 3.1 - 8080 :/ -->
             			</plugin>
           			</plugins>
         		</pluginManagement>

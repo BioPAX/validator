@@ -24,14 +24,9 @@ package org.biopax.validator.impl;
 
 import java.lang.reflect.Method;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
-
-import org.springframework.beans.factory.annotation.Configurable;
 
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.io.SimpleIOHandler;
@@ -45,18 +40,11 @@ import org.biopax.validator.api.AbstractAspect;
  * all the validation exceptions together with 
  * external exceptions that may happen in the PaxTools
  * and other libraries. 
- * 
- * This one must use Load-Time Weaving (LTW)
- * (checkit's configured in the META-INF/aop.xml, and 
- * JVM is started with -javaagent:spring-instrument.jar option)!
  *
  * @author rodche
  */
-@Configurable
 @Aspect
 public class ExceptionsAspect extends AbstractAspect {
-	private static final Log LOG = LogFactory.getLog(ExceptionsAspect.class);
-	
     
     /**
      * This captures the exceptions that occur 

@@ -190,16 +190,6 @@ III. Errors, Logging, Behavior (actions to undertake)
  DEVELOPER NOTES
 ******************************************************************************
 
-Using Maven and the project source code, one can also build 
-and run the validator web app on the embedded Tomcan instance as follows:
-
-$mvn clean install
-$cd biopax-validator-web
-$mvn tomct6:run
-
-(see biopax-validator-web/pom.xml for details)
-
-
 Debugging tips:
 - to disable LTW AOP, set <context:load-time-weaver aspectj-weaving="off"/> 
   in the applicationContext.xml; or edit the META-INF/aop.xml
@@ -210,7 +200,7 @@ Debugging tips:
    (good for testing AOP and beans configuration without real validation job).
 
 
- The validator-core module is not specific to BioPAX only 
- and can be used for developing a validator and rules for another domain.
+ The validator-core module is not specific to BioPAX; 
+ can be used for developing a validator and rules for another knowledge domain.
  
  Enjoy and give us a feedback!

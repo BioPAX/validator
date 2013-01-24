@@ -26,7 +26,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns="http://java.sun.com/xml/ns/javaee" 
 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
-id="BiopaxValidator2" version="2.5">
+id="BiopaxValidator3" version="2.5">
   <display-name>The BioPAX Validator</display-name>
   
   <context-param>
@@ -45,7 +45,8 @@ id="BiopaxValidator2" version="2.5">
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
-			classpath:validator-aop-context.xml
+    		classpath:META-INF/spring/appContext-loadTimeWeaving.xml
+			classpath:META-INF/spring/appContext-validator.xml
 	</param-value>
   </context-param>
 

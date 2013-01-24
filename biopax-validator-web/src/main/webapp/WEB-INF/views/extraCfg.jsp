@@ -52,7 +52,7 @@
     <div id="left">
 
 <h2>Additional Configuration</h2>
-(defined in rules-context.xml)
+(defined in META-INF/spring/appContext-validator.xml)
 <p/>
 <h3>For XrefRule, XrefSynonymDbRule rules</h3>
 Some db synonyms/spellings are configured in the xml file,

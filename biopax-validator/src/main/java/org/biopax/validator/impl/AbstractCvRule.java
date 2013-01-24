@@ -25,7 +25,6 @@ package org.biopax.validator.impl;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
-//import javax.annotation.Resource;
 
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
@@ -34,7 +33,6 @@ import org.biopax.validator.api.CvRestriction;
 import org.biopax.validator.api.CvRule;
 import org.biopax.validator.api.CvValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * An abstract class for CV terms checks.
@@ -43,10 +41,8 @@ import org.springframework.beans.factory.annotation.Configurable;
  *
  * @param <D> property domain
  */
-@Configurable
 public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRule<D> implements CvRule<D> {
     
-	//@Resource // @Resource uses matching by name; too risky
     @Autowired
 	protected CvValidator ontologyManager;
     

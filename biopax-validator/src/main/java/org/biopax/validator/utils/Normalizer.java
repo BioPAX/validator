@@ -127,6 +127,8 @@ public final class Normalizer {
 	 * @param model
 	 */
 	private void normalizeXrefs(Model model) {
+		final String xmlBase = getXmlBase(model); //current base, the default or model's one, if set.
+		
 		// use a copy of the xrefs set (to avoid concurrent modif. exception)
 		Set<? extends Xref> xrefs = new HashSet<Xref>(model.getObjects(Xref.class));
 		for(Xref ref : xrefs) {
@@ -158,7 +160,7 @@ public final class Normalizer {
 				if (db.toUpperCase().startsWith("UNIPROT") && ref.getId() != null) {
 					if (ref.getIdVersion() != null) {
 						final String isoformId = ref.getId().toUpperCase() + "-" + ref.getIdVersion();
-						String testUri = Normalizer.uri(getXmlBase(model),
+						String testUri = Normalizer.uri(xmlBase,
 							"UniProt Isoform", isoformId, ProteinReference.class);
 						if (testUri.startsWith("http://identifiers.org/uniprot.isoform/")) {
 							ref.setDb("UniProt Isoform");
@@ -168,9 +170,9 @@ public final class Normalizer {
 						}
 					} else { //fix for possibly incorrect db name
 						//(this is not required if the data were already validated by the latest validator with auto-fix=true option)
-						if (!Normalizer.uri(getXmlBase(model), "UniProt", ref.getId(), ProteinReference.class)
+						if (!Normalizer.uri(xmlBase, "UniProt", ref.getId(), ProteinReference.class)
 									.startsWith("http://identifiers.org/uniprot/") &&
-							Normalizer.uri(getXmlBase(model), "UniProt Isoform", ref.getId(), ProteinReference.class)
+							Normalizer.uri(xmlBase, "UniProt Isoform", ref.getId(), ProteinReference.class)
 									.startsWith("http://identifiers.org/uniprot.isoform/")
 								) {
 							// update db name
@@ -179,11 +181,10 @@ public final class Normalizer {
 					}
 				}
 			
-			}
-			
+			}			
 			
 			String idPart = ref.getId() + ((otherId != null) ? otherId : "");
-			String uri = Normalizer.uri(getXmlBase(model),	ref.getDb(), idPart, ref.getModelInterface());	
+			String uri = Normalizer.uri(xmlBase, ref.getDb(), idPart, ref.getModelInterface());	
 						
 			// mark for replacing
 			addToReplacementMap(model, ref, uri);						

@@ -61,7 +61,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 //@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:validator-aop-context.xml"})
+@ContextConfiguration(locations = {
+		"/META-INF/spring/appContext-loadTimeWeaving.xml",
+		"/META-INF/spring/appContext-validator.xml"})
 public class AOPAspectJLTWIntegrationTest {
     @Autowired
     Validator validator;

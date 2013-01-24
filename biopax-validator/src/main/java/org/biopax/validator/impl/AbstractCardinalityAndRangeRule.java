@@ -32,7 +32,6 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.validator.api.AbstractRule;
 import org.biopax.validator.api.ValidatorException;
 import org.biopax.validator.api.beans.Validation;
-import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * 
@@ -41,7 +40,6 @@ import org.springframework.beans.factory.annotation.Configurable;
  * @param <E> extends BioPAXElement
  */
 
-@Configurable
 public abstract class AbstractCardinalityAndRangeRule<E extends BioPAXElement> 
 	extends AbstractRule<E> 
 {

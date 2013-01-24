@@ -75,6 +75,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		
+		<!-- dependencies versions -->
 		<spring.version>3.1.2.RELEASE</spring.version>
 		<paxtools.version>4.1.6-SNAPSHOT</paxtools.version>
 		<miriam-lib.version>2.2.1-SNAPSHOT</miriam-lib.version>
@@ -82,6 +84,25 @@
 		<junit.version>4.10</junit.version>
 		<commons-lang.version>2.4</commons-lang.version>
 		<commons-logging.version>1.1.1</commons-logging.version>
+		<aspectj.version>1.7.0</aspectj.version>
+		<log4j.version>1.2.13</log4j.version>
+		<commons-beanutils.version>1.8.1</commons-beanutils.version>
+		<commons-digester.version>2.0</commons-digester.version>
+		<commons-collections.version>3.2.1</commons-collections.version>
+		<servlet-api.version>2.5</servlet-api.version>
+		<jstl.version>1.1.2</jstl.version>
+		<taglibs.standard.version>1.1.2</taglibs.standard.version>
+		<commons-fileupload.version>1.2.1</commons-fileupload.version>
+		<commons-io.version>1.4</commons-io.version>
+		
+		<!-- plugin dependencies versions -->
+		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
+		<maven-war-plugin.version>2.3</maven-war-plugin.version>
+		<maven-release-plugin.version>2.4</maven-release-plugin.version>
+		<wagon-ssh.version>2.0</wagon-ssh.version>
+		<maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
+		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<maven-source-plugin.version>2.2.1</maven-source-plugin.version>
 	</properties>
 
 	<build>
@@ -89,7 +110,7 @@
 			<plugins>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
+					<version>${maven-compiler-plugin.version}</version>
 					<configuration>
 						<source>1.6</source>
 						<target>1.6</target>
@@ -98,16 +119,16 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.12</version>
+					<version>${maven-surefire-plugin.version}</version>
 					<configuration>
 						<testFailureIgnore>false</testFailureIgnore>
-						<argLine>-Dfile.encoding=UTF-8 -Xmx1536M -Xms128M -ea</argLine>
+						<argLine>-Dfile.encoding=UTF-8 -Xmx1g -Xms128M -ea</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.2</version>
+					<version>${maven-jar-plugin.version}</version>
 					<executions>
 						<execution>
 							<goals>
@@ -117,35 +138,40 @@
 					</executions>
 				</plugin>
 				<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-     	 	<plugin>
-        		<groupId>org.apache.maven.plugins</groupId>
-        		<artifactId>maven-release-plugin</artifactId>
-        		<version>2.4</version>
-        		<configuration>
-        			<autoVersionSubmodules>true</autoVersionSubmodules>
-        		</configuration>
-      		</plugin>		
-			</plugins>	
-		</pluginManagement>		
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${maven-source-plugin.version}</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>${maven-release-plugin.version}</version>
+					<configuration>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>${maven-war-plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh</artifactId>
-				<version>2.0</version>
+				<version>${wagon-ssh.version}</version>
 			</extension>
-		</extensions>		
+		</extensions>
 	</build>
 
 	<distributionManagement>
@@ -211,7 +237,7 @@
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
-				<version>1.2.13</version>
+				<version>${log4j.version}</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
@@ -276,15 +302,64 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-aspects</artifactId>
 				<version>${spring.version}</version>
-			</dependency>		
+			</dependency>
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjweaver</artifactId>
+				<version>${aspectj.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjrt</artifactId>
+				<version>${aspectj.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>${commons-beanutils.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-digester</groupId>
+				<artifactId>commons-digester</artifactId>
+				<version>${commons-digester.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>${commons-collections.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>taglibs</groupId>
+				<artifactId>standard</artifactId>
+				<version>${taglibs.standard.version}</version>
+				<scope>runtime</scope>
+			</dependency>	
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>${servlet-api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>jstl</artifactId>
+				<version>${jstl.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>${commons-fileupload.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons-io.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
-	    <dependency>
-        	<groupId>commons-lang</groupId>
-        	<artifactId>commons-lang</artifactId>
-        </dependency>
         <!-- %TODO switch to SLF4J and Logback -->
 		<dependency>
 			<groupId>commons-logging</groupId>
@@ -297,34 +372,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-oxm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
 		</dependency>
 	</dependencies>
 	

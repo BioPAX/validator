@@ -19,7 +19,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.2</version>
 				<configuration>
 					<webResources>
 						<resource>
@@ -48,9 +47,16 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-war-plugin</artifactId>
-						<version>2.2</version>
 						<configuration>
 							<webResources>
+								<resource>
+									<filtering>true</filtering>
+									<targetPath>templates</targetPath>
+									<directory>src/main/webapp/templates</directory>
+									<includes>
+										<include>*.jsp</include>
+									</includes>
+								</resource>
 								<resource>
 									<targetPath>META-INF</targetPath>
 									<directory>src/main/tomcat/conf</directory>
@@ -61,32 +67,17 @@
 							</webResources>
 						</configuration>
 					</plugin>
-<!-- with some effort, tomcat6:run worked 
-	and AOP LTW was activated with the built-in tomcat, 
-	BUT it did not catch exceptions in Paxtools! -->
-<!-- 					<plugin> -->
-<!-- 						<groupId>org.apache.tomcat.maven</groupId> -->
-<!-- 						<artifactId>tomcat6-maven-plugin</artifactId> -->
-<!-- 						<version>2.0</version> -->
-<!-- 						<configuration> -->
-<!-- 							<path>/biopax-validator</path> -->
-<!-- 							<useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader> -->
-<!-- 							<classLoaderClass>org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader</classLoaderClass> -->
-<!-- 						</configuration> -->
-<!-- 						<dependencies> -->
-<!-- 							<dependency> -->
-<!-- 								<groupId>org.springframework</groupId> -->
-<!-- 								<artifactId>spring-instrument-tomcat</artifactId> -->
-<!-- 								<version>${spring.version}</version> -->
-<!-- 							</dependency> -->
-<!-- 						</dependencies> -->
-<!-- 					</plugin> -->
 				</plugins>
 			</build>
 		</profile>
 	</profiles>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.biopax.validator</groupId>
+			<artifactId>biopax-validator</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
@@ -98,56 +89,42 @@
 		<dependency>
 			<groupId>taglibs</groupId>
 			<artifactId>standard</artifactId>
-			<version>1.1.2</version>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.biopax.validator</groupId>
-			<artifactId>biopax-validator</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
-			<version>1.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-digester</groupId>
 			<artifactId>commons-digester</artifactId>
-			<version>2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-			<version>3.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>1.1.2</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
-			<type>jar</type>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.springframework</groupId> -->
+<!-- 			<artifactId>spring-tx</artifactId> -->
+<!-- 		</dependency> -->
 	</dependencies>
 
 	<distributionManagement>

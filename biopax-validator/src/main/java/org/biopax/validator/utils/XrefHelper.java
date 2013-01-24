@@ -31,8 +31,6 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.collections15.collection.CompositeCollection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Configurable;
-
 
 import org.biopax.miriam.MiriamLink;
 import org.biopax.psidev.ontology_manager.Ontology;
@@ -46,7 +44,6 @@ import org.biopax.psidev.ontology_manager.impl.OntologyTermImpl;
  *
  * @author rodche
  */
-@Configurable
 public class XrefHelper {
     private static final Log log = LogFactory.getLog(XrefHelper.class);
     

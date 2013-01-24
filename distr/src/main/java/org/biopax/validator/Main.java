@@ -58,6 +58,7 @@ public class Main {
 	static int maxErrors = 0;
 	static final String EXT = ".modified.owl";
 	static String profile = null;
+	static String xmlBase = null;
 
 	public static void main(String[] args) throws Exception {
 		
@@ -83,12 +84,14 @@ public class Main {
 					maxErrors = Integer.parseInt(n);
 				} else if(args[i].startsWith("--profile=")) {
 					profile = args[i].substring(10);
+				} else if(args[i].startsWith("--xmlBase=")) {
+					xmlBase = args[i].substring(10);
 				}
 			}
 		}
 
 		// this does 90% of the job ;)
-		ctx = new ClassPathXmlApplicationContext("validator-aop-context.xml");
+		ctx = new ClassPathXmlApplicationContext("META-INF/spring/appContext-validator.xml");
 		// Rules are now loaded, and AOP is listening for BioPAX model method calls.
 		
         // get the beans to work with
@@ -137,7 +140,7 @@ public class Main {
 	private static void printHelpAndQuit() {
     	final String usage = 
 			"\n The BioPAX Validator v3, Console Java Application\n\n" +
-		    "Parameters: <input> <output[.xml|.html]> [--auto-fix] [--max-errors=<n>] [--profile=notstrict]\n" + 
+		    "Parameters: <input> <output[.xml|.html]> [--auto-fix] [--xmlBase=<base>] [--max-errors=<n>] [--profile=notstrict]\n" + 
 		    "(the second and next arguments are optional and can go in any order).\n" +
 		    "For example:\n" +
 		    "  path/dir errors.xml\n" +
@@ -164,9 +167,9 @@ public class Main {
         // Read from the batch and validate from file, id or url, line-by-line (stops on first empty line)
         for (Resource resource: resources) {
         	Validation result = new Validation(new IdentifierImpl(), resource.getDescription(), autofix, null, maxErrors, profile);
-        	result.setDescription(resource.getDescription());
+        	result.setDescription(resource.getDescription()); 
        		log.info("BioPAX DATA IMPORT FROM: " + result.getDescription());
-			try{
+			try{				
 				validator.importModel(result, resource.getInputStream());
 				validator.validate(result);
 				
@@ -174,6 +177,7 @@ public class Main {
 				if(autofix) {
 					Model model = (Model) result.getModel();
 					Normalizer normalizer = new Normalizer();
+					normalizer.setXmlBase(xmlBase); //if xmlBase is null, the model's one is used
 					normalizer.normalize(model);
 					result.setModelData(SimpleIOHandler.convertToOwl(model));
 				}
