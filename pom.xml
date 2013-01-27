@@ -101,7 +101,7 @@
 		
 		<!-- dependencies versions -->
 		<spring.version>3.1.2.RELEASE</spring.version>
-		<paxtools.version>4.1.6</paxtools.version>
+		<paxtools.version>4.1.7-SNAPSHOT</paxtools.version>
 		<license.licenseName>lgpl_v3</license.licenseName>
 		<junit.version>4.10</junit.version>
 		<commons-lang.version>2.4</commons-lang.version>
