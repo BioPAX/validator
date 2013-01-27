@@ -210,8 +210,8 @@ public class BiopaxValidatorClient {
             System.exit(-1);
         }
     	    	
-    	final String input = argv[1];
-        final String output = argv[2];
+    	final String input = argv[0];
+        final String output = argv[1];
         
         File fileOrDir = new File(input);
         if (!fileOrDir.canRead()) {
@@ -231,7 +231,7 @@ public class BiopaxValidatorClient {
         String profile = null;
         
         // match optional arguments
-		for (int i = 3; i < argv.length; i++) {
+		for (int i = 2; i < argv.length; i++) {
 			if ("html".equalsIgnoreCase(argv[i])) {
 				outf = RetFormat.HTML;
 			} else if ("xml".equalsIgnoreCase(argv[i])) {
