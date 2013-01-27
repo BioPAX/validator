@@ -22,10 +22,10 @@
 # #L%
 ###
 
-VALIDATOR_OPTS="-javaagent:lib/spring-instrument-${spring.version}.jar -Xms2g -Xmx2g -Dfile.encoding=UTF-8 -Djava.io.tmpdir=tmp"
+VALIDATOR_OPTS="-javaagent:lib/spring-instrument-${spring.version}.jar -Xms2g -Xmx2g -Dfile.encoding=UTF-8 -Djava.io.tmpdir=tmp -Dnet.sf.ehcache.skipUpdateCheck=true"
 
 # run the validator with log4j.properties and obo.properties from current directory -
-#$JAVA_HOME/bin/java -cp .:validate.jar $VALIDATOR_OPTS org.biopax.validator.Main "$1" "$2" "$3" "$4" "$5" "$6"
+#$JAVA_HOME/bin/java -cp .:biopax-validator.jar $VALIDATOR_OPTS org.biopax.validator.Main "$1" "$2" "$3" "$4" "$5" "$6"
 
 # run with default logging and OBO properties (from the default classpath)
-$JAVA_HOME/bin/java $VALIDATOR_OPTS -jar validate.jar "$1" "$2" "$3" "$4" "$5" "$6"
+$JAVA_HOME/bin/java $VALIDATOR_OPTS -jar biopax-validator.jar "$1" "$2" "$3" "$4" "$5" "$6"

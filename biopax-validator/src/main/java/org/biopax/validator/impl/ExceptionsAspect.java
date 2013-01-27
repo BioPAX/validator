@@ -28,6 +28,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 
+import org.springframework.beans.factory.annotation.Configurable;
+
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.io.SimpleIOHandler.Triple;
@@ -43,6 +45,7 @@ import org.biopax.validator.api.AbstractAspect;
  *
  * @author rodche
  */
+@Configurable
 @Aspect
 public class ExceptionsAspect extends AbstractAspect {
     

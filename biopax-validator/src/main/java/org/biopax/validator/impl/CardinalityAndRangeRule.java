@@ -24,6 +24,7 @@ package org.biopax.validator.impl;
 
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.model.level3.Level3Element;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * 
@@ -32,6 +33,7 @@ import org.biopax.paxtools.model.level3.Level3Element;
  * @param <E> extends BioPAXElement
  */
 
+@Configurable
 public abstract class CardinalityAndRangeRule<E extends Level3Element> 
 	extends AbstractCardinalityAndRangeRule<E>
 {

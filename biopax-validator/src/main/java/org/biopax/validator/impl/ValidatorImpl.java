@@ -63,6 +63,7 @@ import org.springframework.stereotype.Service;
  * 
  * @author rodche
  */
+@Configurable
 @Service
 public class ValidatorImpl implements Validator {	
 	private static final Log log = LogFactory.getLog(ValidatorImpl.class);

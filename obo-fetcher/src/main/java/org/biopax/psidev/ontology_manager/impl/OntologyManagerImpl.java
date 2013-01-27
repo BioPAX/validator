@@ -129,7 +129,6 @@ public class OntologyManagerImpl implements OntologyManager {
         }
     }
     
-
     protected Ontology fetchOntology( String ontologyID, String format, URI uri ) 
     	throws OntologyLoaderException {
     	Ontology oa = null;

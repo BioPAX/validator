@@ -4,7 +4,6 @@
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
 		<version>3.0.0-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -121,18 +120,6 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.springframework</groupId> -->
-<!-- 			<artifactId>spring-tx</artifactId> -->
-<!-- 		</dependency> -->
 	</dependencies>
-
-	<distributionManagement>
-		<site>
-			<id>biopax.sf.net</id>
-			<name>BioPAX Sourceforge site</name>
-			<url>${biopax.site.url}/validator-${project.parent.version}/${project.artifactId}</url>
-		</site>
-	</distributionManagement>
 
 </project>

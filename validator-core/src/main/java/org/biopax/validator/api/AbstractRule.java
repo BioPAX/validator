@@ -31,6 +31,7 @@ import org.biopax.validator.api.beans.Validation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Abstract validation rule.
@@ -39,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @param <T> a type the rule can validate, though it also depends on {@link #canCheck(Object)} method implementation
  */
+@Configurable
 public abstract class AbstractRule<T> implements Rule<T> {
 
     protected Log logger = LogFactory.getLog(AbstractRule.class);
