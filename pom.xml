@@ -13,7 +13,7 @@
 
 	<groupId>org.biopax.validator</groupId>
 	<artifactId>parent</artifactId>
-	<version>3.0.0-SNAPSHOT</version>	
+	<version>3.0.1-SNAPSHOT</version>	
 	<packaging>pom</packaging>
 	
 	<name>Validator - Parent</name>

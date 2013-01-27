@@ -188,4 +188,93 @@ public class BiopaxValidatorClient {
 		return resp;
     }
     
+    
+    /**
+     * Checks BioPAX files using the online BioPAX Validator. 
+     * 
+     * @see <a href="http://www.biopax.org/validator">BioPAX Validator Webservice</a>
+     * 
+     * @param argv
+     * @throws IOException
+     */
+    public static void main(String[] argv) throws IOException 
+    {
+        if (argv.length == 0) {
+            System.err.println("Available parameters: \n" + 
+            	"<path> <output> [xml|html|biopax] [auto-fix] [only-errors] [maxerrors=n] [notstrict]\n" +
+            	"\t- validate a BioPAX file/directory (up to ~25MB in total size, -\n" +
+            	"\totherwise, please use the biopax-validator.jar instead)\n" +
+            	"\tin the directory using the online BioPAX Validator service\n" +
+            	"\t(generates html or xml report, or gets the processed biopax\n" +
+            	"\t(cannot fix all errros though) see http://www.biopax.org/validator)");
+            System.exit(-1);
+        }
+    	    	
+    	final String input = argv[0];
+        final String output = argv[1];
+        
+        File fileOrDir = new File(input);
+        if (!fileOrDir.canRead()) {
+            System.err.println("Cannot read from " + input);
+            System.exit(-1);
+        }        
+        if (output == null || output.isEmpty()) {
+            System.err.println("No output file specified (for the validation report).");
+            System.exit(-1);
+        }
+        
+        // default options
+        RetFormat outf = RetFormat.HTML;
+        boolean fix = false;
+        Integer maxErrs = null;
+        Behavior level = null; //will report both errors and warnings
+        String profile = null;
+        
+        // match optional arguments
+		for (int i = 2; i < argv.length; i++) {
+			if ("html".equalsIgnoreCase(argv[i])) {
+				outf = RetFormat.HTML;
+			} else if ("xml".equalsIgnoreCase(argv[i])) {
+				outf = RetFormat.XML;
+			} else if ("biopax".equalsIgnoreCase(argv[i])) {
+				outf = RetFormat.OWL;
+			} else if ("auto-fix".equalsIgnoreCase(argv[i])) {
+				fix = true;
+			} else if ("only-errors".equalsIgnoreCase(argv[i])) {
+				level = Behavior.ERROR;
+			} else if ((argv[i]).toLowerCase().startsWith("maxerrors=")) {
+				String num = argv[i].substring(10);
+				maxErrs = Integer.valueOf(num);
+			} else if ("notstrict".equalsIgnoreCase(argv[i])) {
+				profile = "notstrict";
+			}
+		}
+
+        // collect files
+        Collection<File> files = new HashSet<File>();
+        
+        if (fileOrDir.isDirectory()) {
+            // validate all the OWL files in the folder
+            FilenameFilter filter = new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return (name.endsWith(".owl"));
+                }
+            };
+            
+            for (String s : fileOrDir.list(filter)) {
+                files.add(new File(
+                	fileOrDir.getCanonicalPath() + File.separator + s));
+            }
+        } else {
+            files.add(fileOrDir);
+        }
+
+        // upload and validate using the default URL: http://www.biopax.org/biopax-validator/check.html        
+        if (!files.isEmpty()) {
+        	BiopaxValidatorClient val = new BiopaxValidatorClient();
+        	val.validate(fix, profile, outf, level, maxErrs, 
+        		null, files.toArray(new File[]{}), new FileOutputStream(output));
+        }
+    }
+    
 }

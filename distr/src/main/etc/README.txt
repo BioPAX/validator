@@ -18,7 +18,10 @@
 #  <http://www.gnu.org/licenses/lgpl-3.0.html>.
 ##
  
-Welcome to the BioPAX Validator!
+ 
+****************************************************************************** 
+  INTRODUCTION
+******************************************************************************
 
   The BioPAX Validator is a command line tool, Java library, and online
 web service for BioPAX formatted pathway data validation. The validator
@@ -43,7 +46,7 @@ http://sourceforge.net/projects/biopax/
 
 
 ******************************************************************************
- INSTALL
+  INSTALLATION
 ******************************************************************************
 
 Download the latest ZIP distribution from 
@@ -54,10 +57,10 @@ Unpack and use (it also includes the WAR file).
 
 
 ******************************************************************************
- USING CONSOLE APPLICATION
+  CONSOLE APPLICATION
 ******************************************************************************
 
-Execute:
+RUN
 
 $sh path/to/validate.sh [args]
 
@@ -70,7 +73,14 @@ the XML validation response is auto-transformed to HTML with Javascript (similar
 what the web application produces by default) 
 
 
-NOTEs:
+For relatively small files (under ~25Mb in total size), you can also use the 
+CLIENT jar, and it's usually faster, because does not require initialization, 
+parsing ontologies (try it without any arguments to see help):
+
+java -jar biopax-validator-client.jar <in> <out> [optional parameters...]
+
+
+NOTE
 
 Smaller files validate quickly, however, actual time may vary for the same size data; 
 it takes longer for networks that contain loops (e.g., in nextStep->PathwayStep sequence);
@@ -82,16 +92,20 @@ parameter for the validate.sh. This is because Validator's initialization
 is very time/resources consuming task (mainly, due to OBO files parsing); 
 after it's done, next validations are performed much faster.
 
-One CAN edit the URLs in the obo.properties file to use alternative OBO ontologies locations
-(this helps when the default URls becomes old, unavailable, or broken, e.g., the latest revision introduces bugs, etc...;
-i.e, if the validator fails for this reason, look for a message like "Caused by: psidev.ontology_manager.impl.OntologyLoaderException: 
-Failed loading/parsing ontology CL from http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/anatomy/cell_type/cell.obo"
-in the console output and try with another revision of that ontology.)
+(Advanced use, usually not required)
+One CAN also edit the URLs in the obo.properties file and classpath in valifdate.sh (.bat) 
+script(s) to use alternative OBO files locations (or simply the latest versions).
+However, when an external ontology is unavailable or broken, the validator fails with a message like: "Caused by: 
+psidev.ontology_manager.impl.OntologyLoaderException: Failed loading/parsing ontology CL 
+from http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/anatomy/cell_type/cell.obo"
+(look for it in the console output and try with another revision/location of that ontology
+or revert to the default, built-in, validator's OBO files)
 
 
 ******************************************************************************
-USING WEB APPLICATION
+  WEB APPLICATION
 ******************************************************************************
+
 
 CONFIGURE
 
@@ -132,6 +146,7 @@ look for a log message like "Caused by: psidev.ontology_manager.impl.OntologyLoa
 Failed loading/parsing ontology CL from http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/anatomy/cell_type/cell.obo"
 and try with another revision of that ontology.)
 
+
 UNDEPLOY
 
 If you delete the biopax-validator.war from the 'webapps', 
@@ -140,7 +155,7 @@ it is usually uninstalled automatically by Tomcat.
 
 
 ******************************************************************************
-DESIGN
+  DESIGN
 ******************************************************************************
 
 I. Framework
@@ -187,7 +202,7 @@ III. Errors, Logging, Behavior (actions to undertake)
 
 
 ******************************************************************************
- DEVELOPER NOTES
+  DEVELOPER NOTES
 ******************************************************************************
 
 Debugging tips:
