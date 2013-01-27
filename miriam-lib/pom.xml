@@ -11,7 +11,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>3.0.0</version>
+		<version>3.0.1-SNAPSHOT</version>
 	</parent>
 
 	<build>
