@@ -101,7 +101,7 @@
 		
 		<!-- dependencies versions -->
 		<spring.version>3.1.2.RELEASE</spring.version>
-		<paxtools.version>4.1.6-SNAPSHOT</paxtools.version>
+		<paxtools.version>4.1.6</paxtools.version>
 		<license.licenseName>lgpl_v3</license.licenseName>
 		<junit.version>4.10</junit.version>
 		<commons-lang.version>2.4</commons-lang.version>
@@ -218,10 +218,23 @@
 	<profiles>
 		<profile>
 			<id>sourceforge</id>
-			<properties>
-				<biopax.snapshot.url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/snapshots</biopax.snapshot.url>
-				<biopax.release.url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/releases</biopax.release.url>
-			</properties>
+			<distributionManagement>
+			<site>
+				<id>biopax.sf.net</id>
+				<name>BioPAX Sourceforge site</name>
+				<url>${siteDeployUrl}</url>
+			</site>
+			<snapshotRepository>
+				<id>biopax.snapshots</id>
+				<name>BioPAX Snapshots Repository</name>
+				<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/snapshots</url>
+			</snapshotRepository>
+			<repository>
+				<id>biopax.releases</id>
+				<name>BioPAX Releases Repository</name>
+				<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/releases</url>
+			</repository>
+			</distributionManagement>
 		</profile>
 		<profile>
 			<id>maven-3</id>
