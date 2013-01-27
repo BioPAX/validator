@@ -1,9 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
-		<artifactId>biopax-validator</artifactId>
+		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
+	
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>distr</artifactId>
 	<name>BioPAX Validator Assembly</name>
@@ -22,26 +23,26 @@
 							<classpathPrefix>lib/</classpathPrefix>
 						</manifest>
 					</archive>
-					<finalName>validate</finalName>
+					<finalName>biopax-validator</finalName>
 				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-<!-- 				<version>2.2-beta-5</version> -->
 				<configuration>
 					<finalName>biopax-validator-${project.version}</finalName>
 					<descriptors>
 						<descriptor>src/main/assembly/assembly.xml</descriptor>
 					</descriptors>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine>-ea -Xmx1536m -javaagent:${project.basedir}/src/main/etc/spring-instrument.jar</argLine>
-					<useSystemClassLoader>true</useSystemClassLoader>
-				</configuration>
+				<executions>
+					<execution>
+						<id>make-distribution-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -49,19 +50,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>biopax-rules</artifactId>
+			<artifactId>biopax-validator</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>biopax-validator-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>biopax-validator-test</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -69,5 +59,22 @@
 			<version>${project.version}</version>
 			<type>war</type>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-instrument</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-instrument-tomcat</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.biopax.validator</groupId>
+			<artifactId>biopax-validator-client</artifactId>
+			<version>${project.version}</version>
+			<classifier>jar-with-dependencies</classifier>
+		</dependency>
 	</dependencies>
+	
 </project>

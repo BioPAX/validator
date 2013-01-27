@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  BioPAX Validator
+  %%
+  Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as 
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:oxm="http://www.springframework.org/schema/oxm"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+    
+    <context:spring-configured/>
+    <context:annotation-config/>
+    
+	<!-- XrefRule, XrefSynonymDbRule additional (optional) configuration 
+	The following LISTS of DB (biodata source) synonyms and typos will
+	merge with overlapping groups from Miriam and PSI-MI ("database citation" 
+	ontology branch) and then used to warn about non-standard but 
+	somewhat close/known names and probably auto-fix all such cases. If
+	the first name in a list below is a STANDARD name (found in Miriam or MI),
+	then the corresponding PREFERRED name will be suggested as the replacement.
+	If the first name in a list below is a STANDARD Miriam datasource name, then 
+	the rules will be able also to check identifiers using the ID pattern.
+	Otherwise (- not Miriam, no pattern), it won't validate identifiers.
+	-->
+	<util:set id="extraDbSynonyms">
+		<list>
+			<value>ENTREZ GENE</value>
+			<value>ENTREZ_GENE</value>
+			<value>LOCUS_LINK</value>
+			<value>LOCUSLINK</value>
+			<value>LOCUS-LINK</value>
+			<value>ENTREZGENE</value>
+			<value>ENTREZ GENE/LOCUSLINK</value>
+		</list>
+		<list>
+			<value>NCBI GI</value>
+			<value>ENTREZ GI</value>
+			<value>GI</value>
+		</list>		
+		<list>
+			<value>PUBCHEM-SUBSTANCE</value>
+			<value>NCBI PUBCHEM</value>
+			<value>PUBCHEM SUBSTANCE</value>
+			<value>PUBCHEM</value>
+		</list>
+		<list>
+			<value>PUBMED</value>
+			<value>PMID</value>
+			<value>MEDLINE</value>
+		</list>
+		<list>
+			<value>UNIPROT</value>
+			<value>SWISS-PROT</value>
+			<value>SWISSPROT</value>
+			<value>SWISSTREMBL</value>
+			<value>SWP</value>
+			<value>SWISS-PROT/TREMBL</value>
+			<value>UNIPROTKB</value>
+			<value>REACTOME PROTEIN</value>
+			<value>UNIPROT KNOWLEDGE BASE</value>
+			<value>PIR</value>
+			<value>PIR-SSD</value>
+		</list>
+		<list>
+			<value>ECOCYC</value>
+			<value>ECOO157CYC</value>
+		</list>
+		<list>
+			<value>GO</value>
+			<value>GENE ONTOLOGY</value>
+			<value>GENE_ONTOLOGY</value>
+		</list>
+		<list>
+			<value>UM-BBD</value>
+			<value>UMBBD</value>
+		</list>
+		<list>
+			<value>PSI-MI</value>
+			<value>PSI MI</value>
+			<value>PSIMI</value>
+			<value>MI</value>
+		</list>
+		<list>
+			<value>REFSEQ PROTEIN</value>
+			<value>REFSEQ</value>
+			<value>REF_SEQ</value>
+			<value>REF-SEQ</value>
+			<value>REF_SEQ PROTEIN</value>
+		</list>
+		<list>
+			<value>GENE SYMBOL</value>
+			<value>GENE_SYMBOL</value>
+		</list>
+		<list>
+			<value>TAXONOMY</value>
+			<value>NCBI TAXONOMY</value>
+			<value>NCBI_TAXONOMY</value>
+			<value>NCBI-TAXONOMY</value>
+			<value>TAXON</value>
+		</list>
+		<list>
+			<value>NUCLEOTIDE SEQUENCE DATABASE</value>
+			<value>NCBI GENBANK</value>
+			<value>GENBANK</value>
+			<value>DDBJ</value>
+			<value>EMBL-BANK</value>
+			<value>EMBL</value>
+		</list>
+		<list>
+			<value>PROTEIN GENBANK IDENTIFIER</value>
+			<value>GENPEPT</value>
+		</list>
+		<list>
+			<value>KEGG</value>
+			<value>COMPOUND</value>
+			<value>KEGG COMPOUND</value>
+		</list>
+		<list>
+			<value>KEGG GENOMES</value>
+			<value>KEGG GENOME</value>
+		</list>
+		<list>
+			<value>KEGG LIGAND</value>
+			<value>LIGAND</value>
+		</list>
+		<list>
+			<value>AFFYMETRIX</value>
+		</list>
+		<list>
+			<value>KEGG Glycan</value>
+			<value>GLYCAN</value>
+		</list>
+		<list>
+			<value>IOB</value>
+		</list>
+		<list>
+			<value>SGD</value>
+		</list>
+		<list>
+			<value>ENCODE</value>
+		</list>
+		<list>
+			<value>AMAZE</value>
+		</list>
+		<list>
+			<value>HUGE</value>
+		</list>
+		<list>
+			<value>HPRD</value>
+		</list>
+		<list>
+			<value>UNIPARC</value>
+		</list>
+		<list>
+			<value>SWISS-MODEL</value>
+		</list>
+		<list>
+			<value>CAS</value>
+		</list>
+		<list>
+			<value>UNIGENE</value>
+		</list>
+		<list>
+			<value>EVIDENCE CODE ONTOLOGY</value>
+			<value>ECO</value>
+			<value>EVIDENCE CODE</value>
+		</list>
+		<list>
+			<value>REACTOME</value>
+			<value>REACTOME STABLE ID</value>
+		</list>
+		<list>
+			<value>BIOCYC</value>
+			<value>HUMANCYC</value>
+			<value>MOUSECYC</value>
+		</list>	
+		<list>
+			<value>CL</value>
+			<value>CELL TYPE ONTOLOGY</value>
+			<value>CELL ONTOLOGY</value>
+		</list>		
+	</util:set>
+
+	<!-- end of the XrefRule config. -->
+	
+    <bean id="validator" class="org.biopax.validator.impl.ValidatorImpl" />
+    
+	<!-- BiopaxValidatorUtils configuration -->
+
+	<bean id="rulesMessageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>rules</value> <!-- classpath:rules.properties resource -->
+				<value>codes</value> <!-- classpath:codes.properties resource -->
+				<value>profiles</value> <!-- classpath:profiles.properties resource -->
+			</list>
+		</property>
+	</bean>
+
+	<bean id="utils" class="org.biopax.validator.api.ValidatorUtils">
+		<property name="messageSource" ref="rulesMessageSource" />
+		<property name="locale" value="en" />
+		<property name="maxErrors" value="10000" />
+	</bean>
+       
+	<!-- end of BiopaxValidatorUtils config. -->
+
+  	<bean id="ontologyManager" class="org.biopax.validator.utils.BiopaxOntologyManager" scope="singleton">
+		 <constructor-arg index="0">
+		 	<util:properties local-override="false" location="classpath:obo.properties"/>
+		 </constructor-arg>
+		 <constructor-arg index="1"><null/></constructor-arg>
+		 <constructor-arg index="2" value="true"/> <!--TODO in production, set to false -->
+	</bean>
+	
+	<!-- a helper and a proxy to access MIRIAM and MI database citation and regexps 
+   		to validate their corresponding IDs -->
+    <bean id="xrefHelper" class="org.biopax.validator.utils.XrefHelper" scope="singleton">
+		<constructor-arg ref="extraDbSynonyms"/>
+        <constructor-arg ref="ontologyManager" />
+    </bean>
+	
+	
+	<context:component-scan base-package="org.biopax.validator.rules"/>
+	
+</beans>

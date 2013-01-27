@@ -1,5 +1,27 @@
 package org.biopax.miriam;
 
+/*
+ * #%L
+ * Off-line MiriamLink
+ * %%
+ * Copyright (C) 2009 - 2013 University of Toronto (baderlab.org)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -78,15 +100,11 @@ public class MiriamLink
             //mir = (Miriam) unmarshaller.unmarshal(conn.getInputStream());
             try {
             	mir = (Miriam) unmarshaller.unmarshal(url.openStream());
-        		if(log.isInfoEnabled()) {
-        			log.info("Got the latest Miriam XML db from " 
-        				+ XML_LOCATION);
-        		}
+       			log.info("Got the latest Miriam XML db from " + XML_LOCATION);
             } catch (IOException e) {
             	// fall-back (to using local Miriam.xml)
-            	if(log.isWarnEnabled())
-            		log.warn("Cannot connect to Miriam resource: " + e
-            			+ "; now trying to find/use Miriam.xml from classpath...");
+            	log.warn("Cannot connect to Miriam resource: " + e
+            		+ "; now trying to find/use Miriam.xml from classpath...");
             	InputStream is = MiriamLink.class.getResourceAsStream("/Miriam.xml");
             	if(is != null) {
             		mir = (Miriam) unmarshaller.unmarshal(is);
@@ -99,11 +117,9 @@ public class MiriamLink
             
             miriam = mir;
             
-            if (log.isInfoEnabled()) {
-	            log.info("MIRIAM XML imported, version: "
+            log.info("MIRIAM XML imported, version: "
 	                + miriam.getDataVersion() + ", datatypes: "
 	                + miriam.getDatatype().size());
-	        }
 	    }
 	    catch (JAXBException e) {
 	        throw new RuntimeException(e);

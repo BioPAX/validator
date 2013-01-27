@@ -9,12 +9,12 @@
 </owl:Ontology>
 
 <bp:TemplateReactionRegulation rdf:about="regulation1">
- <bp:controlType rdf:datatype = "xsd:string">ACTIVATION_ALLOSTERIC</bp:controlType>
- <bp:comment rdf:datatype = "xsd:string">error: illegal controlType</bp:comment>
+ <bp:controlType rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">ACTIVATION_ALLOSTERIC</bp:controlType>
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">error: illegal controlType</bp:comment>
 </bp:TemplateReactionRegulation>
 
 <bp:Catalysis rdf:about="catalysis1">
- <bp:comment rdf:datatype = "xsd:string">error: illegal controlType</bp:comment>
- <bp:controlType rdf:datatype = "xsd:string">INHIBITION</bp:controlType>
+ <bp:controlType rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">INHIBITION</bp:controlType>
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">error: illegal controlType</bp:comment>
 </bp:Catalysis>
 </rdf:RDF>

@@ -10,16 +10,16 @@
 
 <bp:BioSource rdf:about="BioSource-Human">
  <bp:xref rdf:resource="Taxonomy_UnificationXref_9606" />
- <bp:displayName rdf:datatype = "xsd:string">Homo sapiens</bp:displayName>
+ <bp:displayName rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">Homo sapiens</bp:displayName>
 </bp:BioSource>
 
 <bp:UnificationXref rdf:about="Taxonomy_UnificationXref_9606">
- <bp:id rdf:datatype = "xsd:string">9606</bp:id>
- <bp:db rdf:datatype = "xsd:string">taxonomy</bp:db>
+ <bp:id rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">9606</bp:id>
+ <bp:db rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">taxonomy</bp:db>
 </bp:UnificationXref>
 
 <bp:ProteinReference rdf:about="ProteinReference1">
- <bp:displayName rdf:datatype = "xsd:string">ProteinReference1</bp:displayName>
- <bp:comment rdf:datatype = "xsd:string">No value is set for the &apos;organism&apos; property (must be exactly one)!</bp:comment>
+ <bp:displayName rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">ProteinReference1</bp:displayName>
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">No value is set for the &apos;organism&apos; property (must be exactly one)!</bp:comment>
 </bp:ProteinReference>
 </rdf:RDF>

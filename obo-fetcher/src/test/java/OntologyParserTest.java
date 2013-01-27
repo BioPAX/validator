@@ -1,3 +1,24 @@
+/*
+ * #%L
+ * Ontologies Access
+ * %%
+ * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 import static org.junit.Assert.*;
 
 import org.biopax.psidev.ontology_manager.Ontology;
@@ -8,8 +29,6 @@ import org.biopax.psidev.ontology_manager.impl.OntologyLoaderException;
 import org.biopax.psidev.ontology_manager.impl.OntologyManagerContext;
 import org.biopax.psidev.ontology_manager.impl.OntologyManagerImpl;
 import org.junit.*;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.ResourceLoader;
 
 
 import java.util.Collection;
@@ -22,9 +41,9 @@ public class OntologyParserTest {
 		OntologyManagerContext.getInstance().setStoreOntologiesLocally(true);
 		
 		final Properties cfg = new Properties();
-		cfg.put("SO", "http://song.cvs.sourceforge.net/viewvc/song/ontology/so.obo?revision=1.310");
-		cfg.put("MI", "http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/mi/rel25/data/psi-mi25.obo?revision=1.60");
-		cfg.put("MOD", "http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/mod/data/PSI-MOD.obo?revision=1.24");
+		cfg.put("SO", "classpath:so.obo");
+		cfg.put("MI", "classpath:mi.obo");
+		cfg.put("MOD", "classpath:mod.obo");
 		
 		OntologyManager manager = new OntologyManagerImpl(cfg);
 		

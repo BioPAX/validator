@@ -9,8 +9,8 @@
 </owl:Ontology>
 
 <bp:Complex rdf:about="complex">
- <bp:component rdf:resource="protein1" />
  <bp:component rdf:resource="protein2" />
+ <bp:component rdf:resource="protein1" />
 </bp:Complex>
 
 <bp:Degradation rdf:about="degradation">

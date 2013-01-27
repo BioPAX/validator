@@ -1,5 +1,28 @@
 package org.biopax.psidev.ontology_manager.impl;
 
+/*
+ * #%L
+ * Ontologies Access
+ * %%
+ * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.psidev.ontology_manager.Ontology;
@@ -51,14 +74,13 @@ public class OntologyManagerImpl implements OntologyManager {
 	{
 		this();
 		loadOntologies(cfg);
-		if (log.isDebugEnabled())
-			log.debug("Successfully created and configured new OntologyManagerImpl.");
+		log.debug("Successfully created and configured new OntologyManagerImpl.");
 	}
 
 
     public Ontology putOntology( String ontologyID, Ontology ontology ) {
         if ( ontologies.containsKey( ontologyID ) ) {
-            if ( log.isWarnEnabled() )log.warn( "Ontology with the ID '" + ontologyID + "' already exists. Overwriting!" );
+            log.warn( "Ontology with the ID '" + ontologyID + "' already exists. Overwriting!" );
         }
         return ontologies.put( ontologyID, ontology );
     }
@@ -93,10 +115,7 @@ public class OntologyManagerImpl implements OntologyManager {
             	String key = (String) ontId;
             	try {
                 	URI uri = LOADER.getResource(config.getProperty(key)).getURI();
-                	if ( log.isInfoEnabled() ) {
-                		log.info( "Loading ontology: ID= " + 
-                			ontId + ", uri=" + uri);
-                	}
+               		log.info( "Loading ontology: ID= " + ontId + ", uri=" + uri);
 
                     Ontology oa = fetchOntology( key, "OBO", uri );
                     putOntology(key, oa);
@@ -110,7 +129,6 @@ public class OntologyManagerImpl implements OntologyManager {
         }
     }
     
-
     protected Ontology fetchOntology( String ontologyID, String format, URI uri ) 
     	throws OntologyLoaderException {
     	Ontology oa = null;
@@ -130,9 +148,7 @@ public class OntologyManagerImpl implements OntologyManager {
                 // parse the URL and load the ontology
                 OboLoader loader = new OboLoader( );
                 try {
-                    if ( log.isDebugEnabled() )
-                        log.debug( "Parsing URL: " + url );
-                    
+                    log.debug( "Parsing URL: " + url );
                     oa = loader.parseOboFile( url, ontologyID );
                     oa.setName(ontologyID);
                 } catch ( Exception e ) {
@@ -143,10 +159,8 @@ public class OntologyManagerImpl implements OntologyManager {
             throw new OntologyLoaderException( "Unsupported ontology format: " + format );
         }
 
-        if ( log.isInfoEnabled() ) {
-            log.info( "Successfully created OntologyImpl from values: ontology="
-                      + ontologyID + " format=" + format + " location=" + uri );
-        }
+        log.info( "Successfully created OntologyImpl from values: ontology="
+              + ontologyID + " format=" + format + " location=" + uri );
         
         return oa;
     }

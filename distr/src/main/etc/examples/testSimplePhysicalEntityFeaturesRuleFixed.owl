@@ -9,8 +9,8 @@
 </owl:Ontology>
 
 <bp:ProteinReference rdf:about="proteinreference1">
- <bp:entityFeature rdf:resource="modnotfeature1" />
  <bp:entityFeature rdf:resource="modfeature1" />
+ <bp:entityFeature rdf:resource="modnotfeature1" />
 </bp:ProteinReference>
 
 <bp:FragmentFeature rdf:about="modnotfeature1">

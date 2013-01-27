@@ -1,14 +1,36 @@
 package org.biopax.validator.ws;
 
+/*
+ * #%L
+ * BioPAX Validator Web Application
+ * %%
+ * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
 import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.validator.result.Behavior;
-import org.biopax.validator.result.Category;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
-import org.biopax.validator.Rule;
-import org.biopax.validator.Validator;
+import org.biopax.validator.api.ValidatorUtils;
+import org.biopax.validator.api.Rule;
+import org.biopax.validator.api.Validator;
+import org.biopax.validator.api.beans.Behavior;
+import org.biopax.validator.api.beans.Category;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,29 +46,19 @@ public class ConfigController {
 	final static Log log = LogFactory.getLog(ConfigController.class);
 
 	private Validator validator;
-	private BiopaxValidatorUtils utils;
+	private ValidatorUtils utils;
 	private Properties errorTypes;
-	private Map maxDisplayNameLengths;
-	private Set warnOnDataPropertyValues;
-	private Map dbAllow;
 	private Set extraDbSynonyms;
-	private Map dbDeny;
 	
 	public ConfigController() {
 	}
 
-	public ConfigController(Validator validator, BiopaxValidatorUtils utils, 
-			Properties errorTypes, Map maxDisplayNameLengths, 
-			Set warnOnDataPropertyValues, Map dbAllow, 
-			Set extraDbSynonyms, Map dbDeny) {
+	public ConfigController(Validator validator, ValidatorUtils utils, 
+			Properties errorTypes, Set extraDbSynonyms) {
 		this.validator = validator;
 		this.utils = utils;
 		this.errorTypes = errorTypes;
-		this.maxDisplayNameLengths = maxDisplayNameLengths;
-		this.warnOnDataPropertyValues = warnOnDataPropertyValues;
-		this.dbAllow = dbAllow;
 		this.extraDbSynonyms = extraDbSynonyms;
-		this.dbDeny = dbDeny;
 	}
 	
     @ModelAttribute("behaviors")
@@ -193,32 +205,11 @@ public class ConfigController {
 			this.category = category;
 		}
 	}
-	
-    @ModelAttribute("maxDisplayNameLengths")
-    public Map maxDisplayNameLengths() {
-        return maxDisplayNameLengths;
-    }
-    
-    @ModelAttribute("warnOnDataPropertyValues")
-    public Set warnOnDataPropertyValues() {
-        return warnOnDataPropertyValues;
-    }
-    
-    @ModelAttribute("dbAllow")
-    public Map dbAllow() {
-        return dbAllow;
-    }
     
     @ModelAttribute("extraDbSynonyms")
     public Set extraDbSynonyms() {
         return extraDbSynonyms;
     }
-    
-    @ModelAttribute("dbDeny")
-    public Map dbDeny() {
-        return dbDeny;
-    }
-    
 
     @RequestMapping("/extraCfg")
     public void extraCfg() {} // the view knows what to do (using here defined @ModelAttribute methods)

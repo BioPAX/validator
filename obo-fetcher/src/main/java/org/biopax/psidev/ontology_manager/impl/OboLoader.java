@@ -5,16 +5,39 @@
  */
 package org.biopax.psidev.ontology_manager.impl;
 
+/*
+ * #%L
+ * Ontologies Access
+ * %%
+ * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
+
 //import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.biopax.ols.TermRelationship;
+import org.biopax.ols.TermSynonym;
+import org.biopax.ols.impl.BaseOBO2AbstractLoader;
+import org.biopax.ols.impl.OBO2FormatParser;
+import org.biopax.ols.impl.TermBean;
 import org.biopax.psidev.ontology_manager.Ontology;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
-import org.biopax.uk.ac.ebi.ols.TermRelationship;
-import org.biopax.uk.ac.ebi.ols.TermSynonym;
-import org.biopax.uk.ac.ebi.ols.impl.BaseOBO2AbstractLoader;
-import org.biopax.uk.ac.ebi.ols.impl.OBO2FormatParser;
-import org.biopax.uk.ac.ebi.ols.impl.TermBean;
 
 
 
@@ -70,7 +93,7 @@ public class OboLoader extends BaseOBO2AbstractLoader {
             		term.getName() );
 // the "unescape" workaround is not required anymore - after obo-fetcher internal implementation changed!
 //            		StringEscapeUtils.unescapeXml(term.getName()) ); 
-//            //- unescapeXml above and below is a workaround the bug in ols-1.18 OBO parser (org.biopax.uk.ac.ebi.ols.loader..), 
+//            //- unescapeXml above and below is a workaround the bug in ols-1.18 OBO parser (org.biopax.ols.loader..), 
 //            // which returns, e.g., "O4&;apos;-phospho-L-tyrosine" instead "O4'-phospho-L-tyrosine")
             
             final Collection<TermSynonym> synonyms = (Collection<TermSynonym>) term.getSynonyms();
@@ -118,9 +141,8 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                     	ontology.addLink( relation.getObjectTerm().getIdentifier(),
                     					  relation.getSubjectTerm().getIdentifier() );
                     } catch (NullPointerException e) {
-                    	if(log.isWarnEnabled())
-                    		log.warn("Skipping terms relationship "  
-                    			+ relation + "; " + e);
+                   		log.warn("Skipping terms relationship "  
+                   			+ relation + "; " + e);
 					}
                 }
             }
@@ -217,11 +239,9 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                 		ontologyDirectory.getPath() + " must be writeable" );
             }
 
-            if ( log.isInfoEnabled() ) {
-                log.info( "User work directory: " + ontologyDirectory.getAbsolutePath() );
-                log.info( "keepTemporaryFile: " + OntologyManagerContext.getInstance().isStoreOntologiesLocally() );
-            }
-
+            log.info( "User work directory: " + ontologyDirectory.getAbsolutePath() );
+            log.info( "keepTemporaryFile: " + OntologyManagerContext.getInstance().isStoreOntologiesLocally() );
+ 
             File registryFile = getRegistryFile();
 
             if ( null != registryFile ) {
@@ -238,16 +258,10 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                                 ontologyFile = new File( ( String ) registryMap.get( url ) );
 
                                 if ( ontologyFile.exists() && ontologyFile.canRead() ) {
-
                                     // Cool, find it ! use it instead of the provided URL
-                                    if ( log.isInfoEnabled() )
-                                        log.info( "Reuse existing cache: " + ontologyFile.getAbsolutePath() );
-
+                                    log.info( "Reuse existing cache: " + ontologyFile.getAbsolutePath() );
                                 } else {
-
-                                    if ( log.isInfoEnabled() )
-                                        log.info( "Could not find " + ontologyFile.getAbsolutePath() );
-
+                                    log.info( "Could not find " + ontologyFile.getAbsolutePath() );
                                     // cleanup map
                                     registryMap.remove( url );
 
@@ -283,12 +297,12 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                 // if it is not defined, not there or not readable...
 
                 // Read URL content
-                if ( log.isInfoEnabled() ) log.info( "Loading URL: " + url );
+                log.info( "Loading URL: " + url );
 
                 URLConnection con = url.openConnection();
                 long size = con.getContentLength();        // -1 if not stat available
 
-                if ( log.isInfoEnabled() ) log.info( "size = " + size );
+                log.info( "size = " + size );
 
                 InputStream is = url.openStream();
 
@@ -317,8 +331,7 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                     ontologyFile.deleteOnExit();
                 }
 
-                if ( log.isDebugEnabled() )
-                    log.debug( "The OBO file will be temporary stored as: " + ontologyFile.getAbsolutePath() );
+                log.debug( "The OBO file will be temporary stored as: " + ontologyFile.getAbsolutePath() );
 
                 FileOutputStream out = new FileOutputStream( ontologyFile );
 
@@ -331,20 +344,16 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                 while ( ( length = is.read( buf ) ) != -1 ) {
                     current += length;
                     out.write( buf, 0, length );
-                    if ( log.isInfoEnabled() ) {
-                        log.info( "length = " + current );
-                        if(size > 0)
-                        	log.info( "Percent: " 
-                        		+ ( ( current / ( float ) size ) * 100 ) + "%" );
-                    }
+                    log.info( "length = " + current );
+                    if(size > 0)
+                   		log.info( "Percent: " + ( ( current / ( float ) size ) * 100 ) + "%" );
                 }
                 */
                 
                 if(size == -1) size = 1024 * 1024 * 1024; //Integer.MAX_VALUE;
                 ReadableByteChannel source = Channels.newChannel(is);
 				size = out.getChannel().transferFrom(source, 0, size);
-				if(log.isInfoEnabled())
-					log.info(size + " bytes downloaded");
+				log.info(size + " bytes downloaded");
 
                 is.close();
                 out.flush();
@@ -359,7 +368,7 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                     registryMap.put( url, ontologyFile.getAbsolutePath() );
 
                     // serialize the map
-                    if ( log.isInfoEnabled() ) log.info( "Serializing Map" );
+                    log.info( "Serializing Map" );
                     File f = getRegistryFile();
                     ObjectOutputStream oos = new ObjectOutputStream( new FileOutputStream( f ) );
                     oos.writeObject( registryMap );

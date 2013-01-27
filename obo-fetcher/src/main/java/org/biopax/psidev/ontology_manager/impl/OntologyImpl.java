@@ -1,5 +1,28 @@
 package org.biopax.psidev.ontology_manager.impl;
 
+/*
+ * #%L
+ * Ontologies Access
+ * %%
+ * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.psidev.ontology_manager.Ontology;
@@ -23,8 +46,7 @@ public class OntologyImpl implements Ontology {
     private String name;
 
     public OntologyImpl() {
-    	if(log.isInfoEnabled())
-    		log.info( "Creating new OntologyImpl..." );
+   		log.info( "Creating new OntologyImpl..." );
     }
 
     public void setName(String name) {
@@ -216,9 +238,9 @@ public class OntologyImpl implements Ontology {
         if ( term == null ) {
             throw new IllegalArgumentException( "You must give a non null term" );
         }
-        if ( log.isDebugEnabled() ) {
-            log.debug( "Adding obsolete term: " + term.getTermAccession() + " " + term.getPreferredName() );
-        }
+
+        log.debug( "Adding obsolete term: " + term.getTermAccession() + " " + term.getPreferredName() );
+        
         obsoleteTerms.add( term );
     }
 
@@ -298,9 +320,9 @@ public class OntologyImpl implements Ontology {
     public void print() {
         log.info( ontologyTerms.size() + " terms to display." );
         final Collection<OntologyTermI> roots = getRoots();
-        if ( log.isDebugEnabled() ) {
-            log.info( this.roots.size() + " root(s) found." );
-        }
+
+        log.info( this.roots.size() + " root(s) found." );
+
         for ( OntologyTermI root : roots ) {
             print( root );
         }

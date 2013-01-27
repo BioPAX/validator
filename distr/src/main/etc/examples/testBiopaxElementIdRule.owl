@@ -9,10 +9,10 @@
 </owl:Ontology>
 
 <bp:UnificationXref rdf:about="Taxonomy UnificationXref_40674">
- <bp:comment rdf:datatype = "xsd:string">Invalid ID (has a space)</bp:comment>
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">Invalid ID (has a space)</bp:comment>
 </bp:UnificationXref>
 
 <bp:UnificationXref rdf:about="http://www.biopax.org/UnificationXref#Taxonomy_40674">
- <bp:comment rdf:datatype = "xsd:string">This is a valid ID</bp:comment>
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">This is a valid ID</bp:comment>
 </bp:UnificationXref>
 </rdf:RDF>

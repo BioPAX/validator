@@ -1,0 +1,24 @@
+  Welcome to the BioPAX Validator, we hope you enjoy your time
+on this auto-generated project site.  We've tried to assemble some
+great user documentation and developer information, and we're really
+excited that you've taken the time to visit this site.
+
+What is BioPAX
+
+  BioPAX is a community developed standard language for integration, 
+exchange and analysis of biological pathway data. BioPAX is defined 
+in Web Ontology Language (OWL) and can represent a broad spectrum 
+of biological processes including metabolic and signaling pathways, 
+molecular interactions and gene networks. Pathguide.org lists the 
+pathway databases and tools that support BioPAX.  
+
+What is the BioPAX Validator
+
+  The BioPAX Validator is a command line tool, Java library, and online
+web service for BioPAX formatted pathway data validation. The validator
+checks for more than a hundred rules and best practices, provides human
+readable reports and can automatically fix some common mistakes in data.
+The validator is in use by the BioPAX community and is continuously being
+improved and expanded based on community feedback. It is open source 
+and released under the LGPL v3 license. The latest stable version of the
+web application is available at http://www.biopax.org/validator.

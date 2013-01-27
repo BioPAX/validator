@@ -1,6 +1,28 @@
+<!--
+  #%L
+  BioPAX Validator Assembly
+  %%
+  Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as 
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+  <id>all</id>
   
   <formats>    
     <format>zip</format>
@@ -8,23 +30,41 @@
   
   <dependencySets>    
     <dependencySet>   
-      <outputDirectory>lib</outputDirectory>
-      <excludes>
-        <exclude>org.biopax.validator:biopax-validator-web:war</exclude>
-      </excludes>
-      <unpack>false</unpack>
-    </dependencySet>  
-    <dependencySet>   
       <outputDirectory></outputDirectory>
       <includes>
         <include>org.biopax.validator:biopax-validator-web:war</include>
       </includes>
       <outputFileNameMapping>biopax-validator.war</outputFileNameMapping>
       <unpack>false</unpack>
-    </dependencySet> 
+    </dependencySet>
+    <dependencySet>   
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>org.biopax.validator:biopax-validator-client:jar</include>
+      </includes>
+      <outputFileNameMapping>biopax-validator-client.jar</outputFileNameMapping>
+      <unpack>false</unpack>
+    </dependencySet>    
+    <dependencySet>   
+      <outputDirectory>lib</outputDirectory>
+      <excludes>
+        <exclude>org.biopax.validator:biopax-validator-web:war</exclude>
+        <exclude>org.biopax.validator:biopax-validator-client:jar</exclude>
+      </excludes>
+      <unpack>false</unpack>
+    </dependencySet>
   </dependencySets>     
   
-  <fileSets>       
+  <fileSets>  
+    <fileSet>
+      <directory></directory>
+      <includes>
+	  	<include>LICENSE.txt</include>
+	  </includes>
+      <fileMode>0644</fileMode>
+      <outputDirectory></outputDirectory>
+      <filtered>true</filtered>
+    </fileSet>     
     <fileSet>
       <directory>src/main/etc</directory>
       <includes>
@@ -32,11 +72,13 @@
 	  </includes>
       <fileMode>0644</fileMode>
       <outputDirectory></outputDirectory>
+      <filtered>true</filtered>
     </fileSet>
     <fileSet>
       <directory>src/main/etc/bin</directory>
       <fileMode>0755</fileMode>
       <outputDirectory></outputDirectory>
+      <filtered>true</filtered>
     </fileSet>
     <fileSet>
       <directory>src/main/etc/examples</directory>
@@ -51,6 +93,7 @@
       <directory>src/main/etc/tmp</directory>
       <fileMode>0644</fileMode>
       <outputDirectory>tmp</outputDirectory>
+      <filtered>true</filtered>
     </fileSet>
     <fileSet>
         <directory>target</directory>
@@ -58,6 +101,10 @@
         <includes>
             <include>*.jar</include>
         </includes>
+        <excludes>
+            <exclude>*-tests.jar</exclude>
+            <exclude>*-sources.jar</exclude>
+        </excludes>
     </fileSet>
   </fileSets>
 </assembly>

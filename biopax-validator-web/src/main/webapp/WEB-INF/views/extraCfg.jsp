@@ -1,3 +1,24 @@
+<%--
+  #%L
+  BioPAX Validator Web Application
+  %%
+  Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as 
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
@@ -31,7 +52,7 @@
     <div id="left">
 
 <h2>Additional Configuration</h2>
-(defined in rules-context.xml)
+(defined in META-INF/spring/appContext-validator.xml)
 <p/>
 <h3>For XrefRule, XrefSynonymDbRule rules</h3>
 Some db synonyms/spellings are configured in the xml file,
@@ -52,50 +73,6 @@ the list:<br />
  </ol>
 <p/>
 <hr />
-
-<h3>For DataPropertyIllegalValueRule rule</h3>
-Auto-recognized "illegal" values (perhaps, the property should be empty instead):
-<p/>
-  <ol>
-	<c:forEach var="v" items="${warnOnDataPropertyValues}">
-		<li>${v}</li>
-	</c:forEach>
-  </ol>
-<p/>  
-<hr />
-
-<h3>For UnificationXrefLimitedRule rule</h3>
-For the following BioPAX types, a unification xref should have
-one of the specified 'db' property values (standard synonyms are also allowed):
-  <table border>
-  	<tr><th>class</th><th>db names (&apos;:&apos; separated)</th></tr>
-	<c:forEach var="entry" items="${dbAllow}">
-		<tr><td>${entry.key.simpleName}</td><td>${entry.value}</td></tr>
-	</c:forEach>
-  </table>
-  <br />
-For the following BioPAX types, a unification xref should neither have
-any of the 'db' property values nor official synonyms of those listed:
-  <table border>
-  <tr><th>class</th><th>db names (&apos;:&apos; separated)</th></tr>
-	<c:forEach var="entry" items="${dbDeny}">
-		<tr><td>${entry.key.simpleName}</td><td>${entry.value}</td></tr>
-	</c:forEach>
-  </table>
-<p/>  
-<hr />
-
-<h3>For DisplayNameRule rule</h3>
-Recommended maximal length of the display name, by class
-(if different from the default max.):
-  <table border>
-    <tr><th>class</th><th>max displayName</th></tr>
-	<c:forEach var="entry" items="${maxDisplayNameLengths}">
-		<tr><td>${entry.key.simpleName}</td><td>${entry.value}</td></tr>
-	</c:forEach>
-  </table>
-  <br />
-<p/>  
 
   </div>
     <div id="right">

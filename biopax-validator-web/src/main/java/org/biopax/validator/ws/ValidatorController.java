@@ -1,5 +1,27 @@
 package org.biopax.validator.ws;
 
+/*
+ * #%L
+ * BioPAX Validator Web Application
+ * %%
+ * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
 import java.io.*;
 import java.net.MalformedURLException;
 import java.util.*;
@@ -9,10 +31,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.validator.result.*;
-import org.biopax.validator.Validator;
-import org.biopax.validator.utils.BiopaxValidatorException;
-import org.biopax.validator.utils.BiopaxValidatorUtils;
+import org.biopax.paxtools.io.SimpleIOHandler;
+import org.biopax.validator.api.ValidatorException;
+import org.biopax.validator.api.ValidatorUtils;
+import org.biopax.validator.api.Validator;
+import org.biopax.validator.api.beans.Behavior;
+import org.biopax.validator.api.beans.Validation;
+import org.biopax.validator.api.beans.ValidatorResponse;
+import org.biopax.validator.impl.IdentifierImpl;
 import org.biopax.validator.utils.Normalizer;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -48,7 +74,10 @@ public class ValidatorController {
       
     @RequestMapping(value="/check", method=RequestMethod.GET)
     public void check(Model model) {
-    	model.addAttribute("normalizer", new Normalizer());
+    	Normalizer normalizer = new Normalizer();
+    	normalizer.setInferPropertyDataSource(false);
+    	normalizer.setInferPropertyOrganism(false);
+    	model.addAttribute("normalizer", normalizer);
     }   
     
     
@@ -65,7 +94,6 @@ public class ValidatorController {
      * @param url
      * @param retDesired
      * @param autofix
-     * @param normalize
      * @param filter
      * @param maxErrors
      * @param profile
@@ -91,7 +119,7 @@ public class ValidatorController {
     	ValidatorResponse validatorResponse = new ValidatorResponse();
     	
     	if(url != null && url.length()>0) {
-        	if(log.isInfoEnabled() && url != null) 
+        	if(url != null) 
         		log.info("url : " + url);
         	try {
         		resource = new UrlResource(url);
@@ -119,8 +147,7 @@ public class ValidatorController {
 				if(file.getBytes().length==0 || filename==null || "".equals(filename)) 
 					continue;
 
-				if(log.isInfoEnabled()) 
-					log.info("check : " + filename);
+				log.info("check : " + filename);
 				
 				resource = new ByteArrayResource(file.getBytes());				
 				
@@ -138,9 +165,9 @@ public class ValidatorController {
 		}
 		
     	if("xml".equalsIgnoreCase(retDesired)) {
-        	BiopaxValidatorUtils.write(validatorResponse, writer, null);
+        	ValidatorUtils.write(validatorResponse, writer, null);
     	} else if("html".equalsIgnoreCase(retDesired)) {
-    		/* could also use BiopaxValidatorUtils.write with a xml-to-html xslt source
+    		/* could also use ValidatorUtils.write with a xml-to-html xslt source
     		 but using JSP here makes it easier to keep the same style, header, footer*/
 			mvcModel.addAttribute("response", validatorResponse);
 			return "groupByCodeResponse";
@@ -148,8 +175,8 @@ public class ValidatorController {
 			// write all the OWL results one after another TODO any better solution?
 			for(Validation result : validatorResponse.getValidationResult()) 
 			{
-				if(result.getModelSerialized() != null)
-					writer.write(result.getModelSerialized() + NEWLINE);
+				if(result.getModelData() != null)
+					writer.write(result.getModelData() + NEWLINE);
 				else
 					// empty result
 					writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -173,7 +200,7 @@ public class ValidatorController {
      * @param normalizer
      * @return
      * @throws IOException when cannot get the input stream from the resource
-     * @throws BiopaxValidatorException when there was an exception in the validator/normalizer
+     * @throws ValidatorException when there was an exception in the validator/normalizer
      */
 	private Validation execute(Resource biopaxResource, String resultName, Integer maxErrors,
 			Boolean autofix, Behavior errorLevel, String profile, Normalizer normalizer) 
@@ -186,16 +213,17 @@ public class ValidatorController {
     	}
     
     	boolean isFix = Boolean.TRUE.equals(autofix);
-    	Validation validationResult = new Validation(resultName, isFix, errorLevel, errMax, profile);
+    	Validation validationResult = 
+    		new Validation(new IdentifierImpl(), resultName, isFix, errorLevel, errMax, profile);
     	
 		validator.importModel(validationResult, biopaxResource.getInputStream());
 		validator.validate(validationResult);
     	validator.getResults().remove(validationResult);   	    	
 	
-       	if(isFix) { // do normalize too
+       	if(isFix && normalizer != null) { // do normalize too
        		org.biopax.paxtools.model.Model m = (org.biopax.paxtools.model.Model) validationResult.getModel();
    			normalizer.normalize(m);
-   			validationResult.updateModelSerialized(m);
+   			validationResult.setModelData(SimpleIOHandler.convertToOwl(m));
        	}
        	
        	return validationResult;
@@ -219,8 +247,7 @@ public class ValidatorController {
     public void getSchema(Writer writer, HttpServletResponse response) 
     		throws IOException 
     {
-    	if(log.isDebugEnabled())
-    		log.debug("XML Schema requested.");
+   		log.debug("XML Schema requested.");
     	
     	BufferedReader bis = new BufferedReader(new InputStreamReader(
     		LOADER.getResource("classpath:validator-response-2.0.xsd")

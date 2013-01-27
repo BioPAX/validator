@@ -4,7 +4,7 @@
   <artifactId>obo-fetcher</artifactId>
 
   <parent>
-	<artifactId>biopax-validator</artifactId>
+	<artifactId>parent</artifactId>
 	<groupId>org.biopax.validator</groupId>
 	<version>3.0.0-SNAPSHOT</version>
   </parent>
@@ -12,17 +12,6 @@
   <name>Ontologies Access</name>
 
   <description>Provides OBO ontology access and handling. It is derived from EBI / PSIDEV Ontology Manager and Ontology Lookup Service sources</description>
-
-	<repositories>
-		<repository>
-			<id>ebi-repo</id>
-			<name>The EBI internal repository</name>
-			<url>http://www.ebi.ac.uk/~maven/m2repo</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 
     <dependencies>
         <dependency>
@@ -36,11 +25,6 @@
         	<version>2.0</version>
         </dependency>
         <dependency>
-        	<groupId>proteomics</groupId>
-        	<artifactId>proteomics-common</artifactId>
-        	<version>1.5</version>
-        </dependency>
-        <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>oscache</artifactId>
             <version>2.4</version>
@@ -51,6 +35,10 @@
             	</exclusion>
             </exclusions>
         </dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
     </dependencies>
   
 </project>
