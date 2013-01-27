@@ -35,8 +35,8 @@
        http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
     
-    <context:annotation-config/>
     <context:spring-configured/>
+    <context:annotation-config/>
     
 	<!-- XrefRule, XrefSynonymDbRule additional (optional) configuration 
 	The following LISTS of DB (biodata source) synonyms and typos will

@@ -33,7 +33,6 @@ import org.biopax.validator.api.CvRestriction;
 import org.biopax.validator.api.CvRule;
 import org.biopax.validator.api.CvValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * An abstract class for CV terms checks.
@@ -42,7 +41,6 @@ import org.springframework.beans.factory.annotation.Configurable;
  *
  * @param <D> property domain
  */
-@Configurable
 public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRule<D> implements CvRule<D> {
     
     @Autowired

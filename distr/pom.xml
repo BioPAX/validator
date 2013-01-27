@@ -14,6 +14,19 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>org.biopax.validator.Main</mainClass>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+					</archive>
+					<finalName>biopax-validator</finalName>
+				</configuration>
+			</plugin>
+			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<finalName>biopax-validator-${project.version}</finalName>
@@ -39,34 +52,28 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>biopax-validator</artifactId>
 			<version>${project.version}</version>
-			<classifier>executable</classifier>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>biopax-validator-web</artifactId>
 			<version>${project.version}</version>
 			<type>war</type>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-instrument</artifactId>
 			<version>${spring.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-instrument-tomcat</artifactId>
 			<version>${spring.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.biopax.validator</groupId>
 			<artifactId>biopax-validator-client</artifactId>
 			<version>${project.version}</version>
 			<classifier>jar-with-dependencies</classifier>
-			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 	

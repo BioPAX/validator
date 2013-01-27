@@ -37,7 +37,6 @@ import org.biopax.psidev.ontology_manager.*;
 import org.biopax.validator.api.CvRestriction;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.utils.Normalizer;
-import org.springframework.beans.factory.annotation.Configurable;
 
 
 /**
@@ -45,7 +44,6 @@ import org.springframework.beans.factory.annotation.Configurable;
  * 
  * @author rodch
  */
-@Configurable
 public abstract class CvTermsRule<T extends Level3Element> 
 	extends AbstractCvRule<T> {
   
