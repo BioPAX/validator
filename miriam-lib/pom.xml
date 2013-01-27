@@ -2,7 +2,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.biopax</groupId>
 	<artifactId>miriam-lib</artifactId>
-	<version>2.2.1-SNAPSHOT</version>
 	
 	<name>Off-line MiriamLink</name>
 	<description>Re-factored MiriamLink (EBI-OLS), which loads the Miriam XML data once instead of hitting MIRIAM web service</description>
@@ -13,7 +12,6 @@
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
 		<version>3.0.0-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
 	</parent>
 
 	<build>
@@ -45,13 +43,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<distributionManagement>
-		<site>
-			<id>biopax.sf.net</id>
-			<name>BioPAX Sourceforge site</name>
-			<url>${biopax.site.url}/validator-${project.parent.version}/${project.artifactId}</url>
-		</site>
-	</distributionManagement>
 
 </project>

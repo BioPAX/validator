@@ -30,7 +30,6 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Basic class for the framework classes 
@@ -39,7 +38,6 @@ import org.springframework.beans.factory.annotation.Configurable;
  *
  * @author rodche
  */
-@Configurable
 public abstract class AbstractAspect {
 	private static final Log log = LogFactory.getLog(AbstractAspect.class);
 	

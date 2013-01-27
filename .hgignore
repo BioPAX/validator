@@ -3,8 +3,11 @@ syntax:regexp
 ?\.class
 /target/
 \.idea/
-syntax: glob
-.project
-.DS_Store
-.settings/
-.springBeans
+\cpath-dao/
+?\.project
+?\.DS_Store
+?\.settings
+?\.springBeans
+geo_data
+?\geo_data/
+^target$
