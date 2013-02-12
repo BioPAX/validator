@@ -62,7 +62,7 @@ public class NormalizerTest {
 		 assertEquals("http://identifiers.org/pubmed/12345", Normalizer.uri("test/", "PubMED", "12345", PublicationXref.class));
 		 assertFalse("http://identifiers.org/pubmed/12345".equals(Normalizer.uri(null, "PubMED", "12345", RelationshipXref.class))); //- not PublicationXref
 		 
-		 assertEquals("http://identifiers.org/obo.chebi/CHEBI:12345",Normalizer.uri("", "chebi", "CHEBI:12345", SmallMoleculeReference.class));
+		 assertEquals("http://identifiers.org/chebi/CHEBI:12345",Normalizer.uri("", "chebi", "CHEBI:12345", SmallMoleculeReference.class));
 		 assertEquals("http://identifiers.org/pubchem.substance/12345",Normalizer.uri("", "pubchem-substance", "12345", SmallMoleculeReference.class));
 		 assertEquals("http://identifiers.org/obo.psi-mod/MOD:12345",Normalizer.uri("", "PSI-mod", "MOD:12345", SequenceModificationVocabulary.class));
 		 assertEquals("http://identifiers.org/obo.psi-mod/MOD:12345",Normalizer.uri("", "MOD", "MOD:12345", ControlledVocabulary.class));
@@ -70,7 +70,7 @@ public class NormalizerTest {
 		 assertFalse("http://identifiers.org/obo.psi-mod/MOD:12345".equals(Normalizer.uri("", "MOD", "MOD:1234", ControlledVocabulary.class)));
 		 
 		 //wrong id (case-sens.)
-		 assertFalse("http://identifiers.org/obo.chebi/CHEBI:12345".equals(Normalizer.uri("", "chebi", "chebi:12345", SmallMoleculeReference.class)));
+		 assertFalse("http://identifiers.org/chebi/CHEBI:12345".equals(Normalizer.uri("", "chebi", "chebi:12345", SmallMoleculeReference.class)));
 		 //no 'pubchem' namespace there
 		 assertFalse("http://identifiers.org/pubchem/12345".equals(Normalizer.uri("", "pubchem-substance", "12345", UnificationXref.class))); 
 	}

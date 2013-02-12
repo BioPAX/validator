@@ -467,6 +467,9 @@ public final class Normalizer {
 			throw new IllegalArgumentException("Not Level3 model. " +
 				"Consider converting it first (e.g., with the PaxTools).");
 		
+		//TODO fix PE generics (auto-generate corresponding ERs and member ERs)
+		ModelUtils.normalizeGenerics(model);
+		
 		// clean/normalize xrefs first, because they gets used next;
 		// also, - because some of original xrefs might have already "normalized" URIs 
 		// that are, in fact, supposed to be used for other biopax types (e.g., CV or ProteinReference)
