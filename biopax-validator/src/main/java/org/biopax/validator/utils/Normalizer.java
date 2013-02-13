@@ -467,8 +467,8 @@ public final class Normalizer {
 			throw new IllegalArgumentException("Not Level3 model. " +
 				"Consider converting it first (e.g., with the PaxTools).");
 		
-		//TODO fix PE generics (auto-generate corresponding ERs and member ERs)
-		ModelUtils.normalizeGenerics(model);
+		//TODO fix PE generics? (auto-generate ERs and memberERs); or - better put: using pe.memberPhysicalEntity is a very BAD idea!
+//		ModelUtils.normalizeGenerics(model);
 		
 		// clean/normalize xrefs first, because they gets used next;
 		// also, - because some of original xrefs might have already "normalized" URIs 
