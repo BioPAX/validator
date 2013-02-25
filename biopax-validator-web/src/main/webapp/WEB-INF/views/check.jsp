@@ -24,8 +24,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> -->
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">
+<html>
 <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<meta name="author" content="BioPAX" />
@@ -34,7 +35,7 @@
 	<link rel="stylesheet" type="text/css" href="styles/style.css" media="screen" />
 	<link rel="shortcut icon" href="images/favicon.ico" />
 	<script type="text/javascript" src="scripts/rel.js"></script>
-	<title>Validate from URL</title>
+	<title>BioPAX Validator: check</title>
 </head>
 <body>
 
@@ -44,8 +45,8 @@
     <div id="left">
 
 <h2>Check BioPAX<b>*</b></h2>
-<form method="post" enctype="multipart/form-data" onsubmit="return validate();">
-    <div class="form-row" style="padding-top: 1em;">
+<form id="validate" method="post" enctype="multipart/form-data" onsubmit="return validate();">
+    <div class="form-row">
     	<input type="radio" id="switch" name="switch" checked="checked" onchange="switchInput();" value="fdfdfdf"/>
     	<label>Choose up to 25 BioPAX files:</label>
 		<input id="file" type="file" name="file_0" /> 
@@ -60,13 +61,13 @@
 		<br/>
         <input id="url" class="input" type="text" name="url" size="80%" disabled="disabled"/>
         <br/>
-        <label style="color: red;" id="urlMsg">${error}</label>
+        <label id="urlMsg" class="errorMsg">${error}</label>
     </div>
-	<div class="form-row" style="padding-top: 2em;">	
+	<div class="form-row">	
 		<input type="checkbox" id="autofix" name="autofix" value="true" onchange="updateValidatorOptions();"/>
 		<label>Fix and Normalize (<a href="javascript:switchit('aboutFix')">What does it mean?..</a>)</label>
 		
-		<ul id="aboutFix" style="display: none;">
+		<ul id="aboutFix">
 			<li>some rules can also auto-fix, e.g., Xref's properties (using MIRIAM), 
 			controlled vocabulary terms (using external ontologies), <em>displayName</em>, or remove duplicates, etc.;</li>
 			<li>Then, the Normalizer replaces URIs, if possible, for such utility class objects
@@ -84,7 +85,7 @@
 		</ul>
 		<br/>
 		
-		<div id="normalizerOptions" style="display: none;">
+		<div id="normalizerOptions">
 		<br/>
 		Options: 
 		<ul title="Options">
@@ -96,7 +97,7 @@
 		</div>
 		<br/>
 		
-		<div class="form-row" style="padding-top: 2em;">
+		<div class="form-row">
 		<label>Validation Profile:</label><br/>
 		<select name="profile">
 			<option label="Default (Best Practice)" value="" selected="selected">Default (Best Practice)</option>
@@ -120,7 +121,7 @@
 		</div>
 		<br/>
 	</div>
-		<div class="form-row" style="padding-top: 2em;">
+		<div class="form-row">
 		Report as:
 		<br/>
 		<input type="radio" name="retDesired" value="html" id="retHtml" checked="checked"/>
@@ -132,7 +133,7 @@
 		<input type="radio" name="retDesired" value="owl" id="retOwl" disabled="disabled"/>
 		<label>BioPAX (if modified)</label>
 	</div>
-	<div class="form-buttons" style="padding-top: 2em;">
+	<div class="form-buttons">
         <div class="button"><input name="submit" type="submit" value="Submit"/></div>
 	</div>   
 </form>

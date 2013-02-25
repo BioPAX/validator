@@ -21,8 +21,9 @@
   --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> -->
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">
+<html>
 <head>
    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<meta name="author" content="BioPAX" />
@@ -31,7 +32,7 @@
 	<link rel="stylesheet" type="text/css" href="styles/style.css" media="screen" />
 	<link rel="shortcut icon" href="images/favicon.ico" />
 	<script type="text/javascript" src="scripts/rel.js"></script>
-	<title>Webservice Description</title>
+	<title>BioPAX Validator: webservice</title>
 </head>
 <body>
 
@@ -42,8 +43,6 @@
 
 
 <h2>BioPAX Validator Webservice</h2>
-
-<br/>
 
 <div>
 

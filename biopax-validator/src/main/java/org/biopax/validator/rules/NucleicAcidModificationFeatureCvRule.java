@@ -22,10 +22,12 @@ package org.biopax.validator.rules;
  * #L%
  */
 
-import org.biopax.paxtools.model.level3.Dna;
+import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.ModificationFeature;
+import org.biopax.paxtools.model.level3.NucleicAcid;
+import org.biopax.paxtools.model.level3.NucleicAcidReference;
+import org.biopax.paxtools.model.level3.NucleicAcidRegionReference;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
-import org.biopax.paxtools.model.level3.Rna;
 import org.biopax.validator.api.CvRestriction;
 import org.biopax.validator.api.CvRestriction.UseChildTerms;
 import org.biopax.validator.impl.CvTermsRule;
@@ -48,16 +50,19 @@ public class NucleicAcidModificationFeatureCvRule extends CvTermsRule<Modificati
 						UseChildTerms.ALL, false));
 	}
 	
-	// This rule is for Dna/Rna features only
+	// This rule is for Dna*/Rna* and corresp.  entity references's features
 	@Override
 	public boolean canCheck(Object thing) {
-		if (thing instanceof ModificationFeature
-			&& ((ModificationFeature) thing).getModificationType() != null
-				&& ((ModificationFeature) thing).getFeatureOf() != null) {
+		if ( thing instanceof ModificationFeature
+			&& ((ModificationFeature) thing).getModificationType() != null)
+		{
+			EntityReference er = ((ModificationFeature) thing).getEntityFeatureOf();
+			if (er instanceof NucleicAcidReference || er instanceof NucleicAcidRegionReference)
+				return true;
+			
 			for (PhysicalEntity pe : ((ModificationFeature) thing).getFeatureOf()) {
-				if (pe instanceof Dna || pe instanceof Rna) {
+				if (pe instanceof NucleicAcid)
 					return true;
-				}
 			}
 		}
 		return false;

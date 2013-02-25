@@ -21,16 +21,10 @@
   --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<h2>Actions:</h2>
-<ul id="nav" title="Actions">
-<li><a href="<c:url value="/check.html"/>">Validate,fix,normalize</a></li>
-
-</ul>
-
-<h2>Information:</h2>
 <ul id="nav" title="Information">
-<li><a href="<c:url value='/ws.html' />">About Webservice</a></li>
-<li><a href='<c:url value="/rules.html"/>'>Validation Rules</a></li>
-<li><a href='<c:url value="/errorTypes.html"/>'>Validation Errors</a></li>
-<li><a href='<c:url value="/extraCfg.html"/>'>Extra Properties</a></li>
+<li><a href="<c:url value="/check.html"/>">Validate a BioPAX Now</a></li>
+<li><a href="<c:url value='/ws.html' />">Web Service Info</a></li>
+<li><a href='<c:url value="/rules.html"/>'>BioPAX Rules</a></li>
+<li><a href='<c:url value="/errorTypes.html"/>'>Error Types</a></li>
+<li><a href='<c:url value="/extraCfg.html"/>'>Other</a></li>
 </ul>

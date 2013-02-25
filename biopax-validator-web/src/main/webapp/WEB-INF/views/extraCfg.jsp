@@ -22,8 +22,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> -->
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">
+<html>
 <head>
    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<meta name="author" content="BioPAX" />
@@ -42,7 +43,7 @@
 			}
 		}
 	</script>
-	<title>Additional Configuration Info</title>
+	<title>BioPAX Validator: other</title>
 </head>
 <body>
 
@@ -52,16 +53,17 @@
     <div id="left">
 
 <h2>Additional Configuration</h2>
-(defined in META-INF/spring/appContext-validator.xml)
-<p/>
 <h3>For XrefRule, XrefSynonymDbRule rules</h3>
-Some db synonyms/spellings are configured in the xml file,
-and these then completed and new groups created automatically -
-from the Miriam resource and MI ("database citation" terms). 
-The first name in each group is the preferred one.<br />
+<p>
+Special groups of synonyms (or typos) for known databases 
+can be configured via a Spring XML file, and later - auto-completed
+by standard names from MIRIAM resource and PSI-MI ("database citation"). 
+</p>
+<p>
 Click <a href="javascript:switchit('syngroups')">here to show/hide</a> 
-the list:<br />
- <ol id="syngroups" style="list-style: inside; display: none" >
+the list:</p>
+
+ <ol id="syngroups">
   <c:forEach var="g" items="${extraDbSynonyms}">
 	<li>group:<ol>
 	  <c:forEach var="db" items="${g}">
