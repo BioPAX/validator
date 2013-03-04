@@ -23,6 +23,7 @@ package org.biopax.validator.utils;
  */
 
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
@@ -55,6 +56,13 @@ public final class Normalizer {
 	private boolean inferPropertyOrganism;
 	private boolean inferPropertyDataSource;
 	private String xmlBase;
+	
+	
+	// Normalizer will generate URIs using a strategy specified by the system property
+	// (the default is biopax.normalizer.uri.strategy=md5, to generate 32-byte digest hex string for xrefs's uris)
+	public static final String PROPERTY_NORMALIZER_URI_STRATEGY = "biopax.normalizer.uri.strategy";
+	public static final String VALUE_NORMALIZER_URI_STRATEGY_SIMPLE = "simple";
+	public static final String VALUE_NORMALIZER_URI_STRATEGY_MD5 = "md5"; //default strategy
 	
 	
 	/**
@@ -246,8 +254,16 @@ public final class Normalizer {
 		if (idPart != null)
 			sb.append(idPart);
 		
+		
+		String localPart;
+		String strategy = System.getProperty(PROPERTY_NORMALIZER_URI_STRATEGY);
+		if(VALUE_NORMALIZER_URI_STRATEGY_SIMPLE.equals(strategy))
+			localPart = URLEncoder.encode(sb.toString());
+		else
+			localPart = ModelUtils.md5hex(sb.toString());
+		
 		// create URI using the xml:base and digest of other values:
-		return ((xmlBase!=null)?xmlBase:"") + ModelUtils.md5hex(sb.toString());
+		return ((xmlBase!=null)?xmlBase:"") + localPart;
 		
 	}
 	

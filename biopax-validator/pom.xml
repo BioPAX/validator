@@ -18,7 +18,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<forkMode>once</forkMode>
-					<argLine>-Xmx1g -javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar -ea</argLine>
+					<argLine>-Xmx1g -javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar 
+					-ea -Dbiopax.normalizer.uri.strategy=md5</argLine> <!-- also - try strategy=simple when debugging ;) -->
 				</configuration>
 			</plugin>	
 		</plugins>
