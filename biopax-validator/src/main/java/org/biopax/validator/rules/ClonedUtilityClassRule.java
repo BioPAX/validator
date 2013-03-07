@@ -129,7 +129,7 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 							editor.removeValueFromBean(range, domain);
 						editor.setValueToBean(master, domain);
 						
-						log.debug("Replaced " 
+						logger.debug("Replaced " 
 							+ ((UtilityClass)range).getModelInterface().getSimpleName()
 							+ " " + ((UtilityClass)range).getRDFId() + 
 							" with " + master.getRDFId() +
