@@ -22,8 +22,8 @@
 						<goals>
 							<goal>schemagen</goal>
 						</goals>
+						<phase>compile</phase>
 <!-- 						<phase>generate-resources</phase> -->
-							<phase>package</phase>
 						<configuration>
 							<includes>
 								<include>org/biopax/validator/api/beans/*.java</include>
@@ -37,6 +37,7 @@
 							</transformSchemas>
 							<verbose>true</verbose>
 							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+			
 						</configuration>
 					</execution>
 				</executions>
