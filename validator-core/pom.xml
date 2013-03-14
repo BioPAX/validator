@@ -1,56 +1,50 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>parent</artifactId>
-    <groupId>org.biopax.validator</groupId>
-    <version>3.0.1-SNAPSHOT</version>
-  </parent>
-  
-  <artifactId>validator-core</artifactId>
-  <name>Object Model Validator Core</name>
-  <description>Flexible rule-based object validation and reporting core api and settings.</description>
-  
-  	<build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>parent</artifactId>
+		<groupId>org.biopax.validator</groupId>
+		<version>3.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>validator-core</artifactId>
+	<name>Object Model Validator Core</name>
+	<description>Flexible rule-based object validation and reporting core api and settings.</description>
+
+	<build>
 		<plugins>
 			<plugin>
-				<groupId>com.sun.tools.jxc.maven2</groupId>
-				<artifactId>maven-jaxb-schemagen-plugin</artifactId>
-				<version>1.2</version>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<version>1.5</version>
 				<executions>
 					<execution>
-						<phase>process-sources</phase>
 						<goals>
-							<goal>generate</goal>
+							<goal>schemagen</goal>
 						</goals>
+<!-- 						<phase>generate-resources</phase> -->
+							<phase>package</phase>
+						<configuration>
+							<includes>
+								<include>org/biopax/validator/api/beans/*.java</include>
+							</includes>
+							<transformSchemas>
+								<transformSchema>
+									<uri>http://biopax.org/validator/2.0/schema</uri>
+<!-- 									<toPrefix></toPrefix> -->
+									<toFile>validator-response-2.0.xsd</toFile>
+								</transformSchema>
+							</transformSchemas>
+							<verbose>true</verbose>
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<project>${project}</project>
-					<srcdir>${project.build.sourceDirectory}/org/biopax/validator/api/beans/</srcdir>
-					<schemas>
-						<schema>
-							<namespace>http://biopax.org/validator/2.0/schema</namespace>
-							<file>validator-response-2.0.xsd</file>
-						</schema>
-					</schemas>
-					<verbose>true</verbose>
-					<destdir>${project.build.outputDirectory}</destdir>
-				</configuration>
 				<dependencies>
 					<dependency>
 						<groupId>javax.xml.bind</groupId>
 						<artifactId>jaxb-api</artifactId>
-						<version>2.2</version>
-					</dependency>
-					<dependency>
-						<groupId>com.sun.xml.bind</groupId>
-						<artifactId>jaxb-xjc</artifactId>
-						<version>2.2</version>
-					</dependency>
-					<dependency>
-						<groupId>com.sun.xml.bind</groupId>
-						<artifactId>jaxb-impl</artifactId>
-						<version>2.2</version>
+						<version>2.1</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -78,10 +72,10 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-        	    <dependency>
-        	<groupId>commons-lang</groupId>
-        	<artifactId>commons-lang</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
@@ -103,5 +97,5 @@
 			<artifactId>spring-test</artifactId>
 		</dependency>
 	</dependencies>
-  
+
 </project>

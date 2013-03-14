@@ -51,7 +51,7 @@ public final class Normalizer {
 	private ShallowCopy copier;
 	private final Map<BioPAXElement,BioPAXElement> subs;
 	private Model subsModel;
-	private String description;
+	private String description = "";
 	private boolean fixDisplayName;
 	private boolean inferPropertyOrganism;
 	private boolean inferPropertyDataSource;

@@ -242,7 +242,6 @@ public class ValidatorController {
      * @param writer
      * @throws IOException
      */
-    //TODO consider using mvc:resources instead of the classpath and/or dependency on biopax-validator-client
     @RequestMapping(value="/schema")
     public void getSchema(Writer writer, HttpServletResponse response) 
     		throws IOException 
