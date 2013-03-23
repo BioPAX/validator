@@ -100,7 +100,7 @@
 		<siteDeployUrl>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2site/validator-${project.version}</siteDeployUrl>
 		
 		<!-- dependencies versions -->
-		<spring.version>3.1.2.RELEASE</spring.version>
+		<spring.version>3.2.2.RELEASE</spring.version>
 		<paxtools.version>4.2.0-SNAPSHOT</paxtools.version>
 		<license.licenseName>lgpl_v3</license.licenseName>
 		<junit.version>4.10</junit.version>
@@ -292,6 +292,11 @@
 
 	<repositories>
 		<repository>
+			<id>springsource-repo</id>
+			<name>SpringSource Repository</name>
+			<url>http://repo.springframework.org/release</url>
+		</repository>
+		<repository>
 			<id>biopax.snapshots</id>
 			<name>BioPAX Snapshots Repository at Sourceforge</name>
 			<url>http://biopax.sourceforge.net/m2repo/snapshots/</url>
@@ -401,6 +406,11 @@
 				<artifactId>spring-aspects</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-instrument</artifactId>
+				<version>${spring.version}</version>
+			</dependency>			
 			<dependency>
 				<groupId>org.aspectj</groupId>
 				<artifactId>aspectjweaver</artifactId>
