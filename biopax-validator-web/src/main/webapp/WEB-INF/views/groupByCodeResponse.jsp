@@ -56,9 +56,9 @@
 <ul id="validations">
 <c:forEach var="result" items="${response.validationResult}" varStatus="rstatus">
 	<li title="Click to see more detail">
-		<a href="javascript:switchit('result${rstatus.index}')">Resource:&nbsp;${result.description};&nbsp;${result.summary}</a>
+		<a href="javascript:switchit('result${rstatus.index}')">Resource:&nbsp;${result.description}</a>;&nbsp;${result.summary}
 	</li>
-  <ul id="vcomments">
+  <ul style="display: block;">
 	<li>
 	  <c:forEach var="comment" items="${result.comment}">
 		${comment}&nbsp;

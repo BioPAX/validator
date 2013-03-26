@@ -1,5 +1,5 @@
 format-version: 1.2
-date: 20:09:2012 12:59
+date: 03:12:2012 09:57
 saved-by: XPMUser
 auto-generated-by: OBO-Edit 2.1-beta1
 synonymtypedef: GE "LANGUAGE GERMAN"
@@ -1830,20 +1830,12 @@ synonym: "BALBc/3T3 cell" RELATED []
 is_a: BTO:0001958 ! embryonic fibroblast cell line
 
 [Term]
-id: BTO:0000219
-name: MH-3924 cell
-namespace: BrendaTissueOBO
-def: "Rat Morris hepatoma cell line." [PMID:12798353, PMID:3716925]
-synonym: "MH3924 cell" RELATED []
-is_a: BTO:0000578 ! hepatoma cell line
-
-[Term]
 id: BTO:0000220
 name: MH1C1 cell
 namespace: BrendaTissueOBO
 def: "Rat hepatoma, a clonal strain of epithelial cells was derived from a transplantable Morris hepatoma (#7795, Buffalo strain) in 1967; cells were described to synthesize and to secrete serum albumin and serum complement component C9." [Deutsche Sammlung von Mikroorganismen und Zellkulturen GmbH:DSMZ]
 synonym: "MH 1 C 1 cell" RELATED []
-is_a: BTO:0000578 ! hepatoma cell line
+is_a: BTO:0001080 ! Morris hepatoma cell
 
 [Term]
 id: BTO:0000221
@@ -4414,13 +4406,6 @@ namespace: BrendaTissueOBO
 is_a: BTO:0001479 ! culture condition:-grown cell
 
 [Term]
-id: BTO:0000550
-name: H35 cell
-namespace: BrendaTissueOBO
-def: "Rat hepatoma cell line." [PMID:11513951]
-is_a: BTO:0000578 ! hepatoma cell line
-
-[Term]
 id: BTO:0000551
 name: lung cancer cell
 namespace: BrendaTissueOBO
@@ -4628,7 +4613,12 @@ name: Morris hepatoma 3924A cell
 namespace: BrendaTissueOBO
 def: "Rat Morris hepatoma 3924A cell." [PMID:11895004]
 synonym: "3924A cell" RELATED []
+synonym: "MH 3924 A cell" RELATED []
+synonym: "MH 3924 cell" RELATED []
+synonym: "MH 3924A cell" RELATED []
+synonym: "MH-3924 cell" RELATED []
 synonym: "MH-3924A cell" RELATED []
+synonym: "MH3924 cell" RELATED []
 synonym: "MH3924A cell" RELATED []
 is_a: BTO:0001080 ! Morris hepatoma cell
 
@@ -5883,6 +5873,9 @@ id: BTO:0000736
 name: CCRF-CEM cell
 namespace: BrendaTissueOBO
 def: "Peripheral blood, T lymphoblast, acute lymphoblastic leukemia cell line. CCRF-CEM is a T lymphoblastoid cell line derived by G.E. Foley, et al. Cells were obtained in November, 1964 from peripheral blood buffy coat of a 4-year-old Caucasian female with acute lymphoblastic leukemia." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "CCRF CEM cell" RELATED []
+synonym: "CCRF/CEM cell" RELATED []
+synonym: "CCRFCEM cell" RELATED []
 synonym: "CEM T-cell" RELATED []
 is_a: BTO:0002144 ! acute lymphoblastic leukemia cell line
 is_a: BTO:0002504 ! T-lymphoblastic leukemia cell line
@@ -6078,7 +6071,10 @@ id: BTO:0000760
 name: LLC-PK1 cell
 namespace: BrendaTissueOBO
 def: "Pig normal kidney cell line, established from a 3- to 4-week-old male of sus scrofa." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
-is_a: BTO:0002578 ! LLC-PK cell
+synonym: "LLC-PK cell" RELATED []
+synonym: "LLC-PK(1) cell" RELATED []
+synonym: "LLCPK cell" RELATED []
+is_a: BTO:0000067 ! kidney cell line
 
 [Term]
 id: BTO:0000761
@@ -8881,10 +8877,13 @@ relationship: part_of BTO:0000961 ! olfactory bulb
 
 [Term]
 id: BTO:0001109
-name: HTC-116 cell
+name: HCT-116 cell
 namespace: BrendaTissueOBO
-def: "Human colon; colorectal carcinoma cell line from a male organism." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+def: "Human colon colorectal carcinoma cell line from a male organism.\nHuman colon carcinoma cell line; established from the primary colon carcinoma of an adult man." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/, Deutsche Sammlung von Mikroorganismen und Zellkulturen GmbH:DSMZ]
+synonym: "HCT 116 cell" RELATED []
+synonym: "HCT116 cell" RELATED []
 synonym: "HTC 116 cell" RELATED []
+synonym: "HTC-116 cell" RELATED []
 synonym: "HTC116 cell" RELATED []
 is_a: BTO:0001616 ! colorectal cancer cell line
 
@@ -9342,7 +9341,8 @@ is_a: BTO:0000024 ! abomasum
 id: BTO:0001169
 name: 3T3-F442A cell
 namespace: BrendaTissueOBO
-def: "Preadipocyte cell line." [PMID:12213191]
+def: "Preadipocyte cell line." [PMID:12213191, PMID:18711690]
+synonym: "3T3-442A cell" RELATED []
 synonym: "F442A cell" RELATED []
 is_a: BTO:0000746 ! preadipocyte cell line
 
@@ -9578,8 +9578,11 @@ is_a: BTO:0000765 ! exocrine gland
 id: BTO:0001199
 name: EBTr (NBL-4) cell
 namespace: BrendaTissueOBO
-def: "Embryonic bovine, trachea cell line; established from a male cow (Bos taurus) embryo." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+def: "Embryonic bovine, tracheal cell line; established from a male cow (Bos taurus) embryo." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "EBTr cell" RELATED []
+synonym: "NBL-4 cell" RELATED []
 is_a: BTO:0000669 ! embryonic cell line
+is_a: BTO:0004641 ! tracheal cell line
 
 [Term]
 id: BTO:0001200
@@ -9866,6 +9869,7 @@ is_a: BTO:0003096 ! internal male genital organ
 [Term]
 id: BTO:0001235
 name: seminiferous tubule
+
 namespace: BrendaTissueOBO
 def: "One of two or three twisted, curved tubules in each lobule of the testis in which spermatozoa develop." [The American Heritage Dictionary of the English Language:Fourth Edition. 2000.]
 relationship: part_of BTO:0001363 ! testis
@@ -11245,6 +11249,7 @@ is_a: BTO:0000756 ! pituitary gland tumor cell line
 [Term]
 id: BTO:0001411
 name: twig
+
 namespace: BrendaTissueOBO
 def: "A small shoot or branch usually without its leaves." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=twig]
 is_a: BTO:0001243 ! shoot
@@ -11973,13 +11978,6 @@ def: "The articulation between the femur and the innominate bone." [From Merriam
 relationship: part_of BTO:0001457 ! hip
 
 [Term]
-id: BTO:0001503
-name: LLC-WRC 256 cell
-namespace: BrendaTissueOBO
-def: "Carcinoma cell line, established from rattus norvegicus, strain: Walker." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
-is_a: BTO:0000356 ! breast cancer cell line
-
-[Term]
 id: BTO:0001504
 name: blastodisc
 namespace: BrendaTissueOBO
@@ -12696,6 +12694,10 @@ id: BTO:0001595
 name: WM-266-4 cell
 namespace: BrendaTissueOBO
 def: "Homo sapiens (human) skin melanoma cell line. The WM-266-4 cell line was derived from a metastatic site of a malignant melanoma from a 58 year old female organism." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "WM 266-4 cell" RELATED []
+synonym: "WM-2664 cell" RELATED []
+synonym: "WM266-4 cell" RELATED []
+synonym: "WM2664 cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
 
 [Term]
@@ -13048,6 +13050,7 @@ name: liver bud
 namespace: BrendaTissueOBO
 def: "A diverticulum from the foregut that gives rise to the liver and its ducts." [Dorlands Medical Dictionary:MerckSource]
 is_a: BTO:0001639 ! bud
+
 
 [Term]
 id: BTO:0001643
@@ -14886,9 +14889,12 @@ relationship: part_of BTO:0000823 ! cerebral gray matter
 
 [Term]
 id: BTO:0001870
-name: OVCAR-5 cell
+name: OVCA-5 cell
 namespace: BrendaTissueOBO
 def: "Human ovary carcinoma cell line." [HyperCLDB:http\://www.biotech.ist.unige.it/]
+synonym: "OVCA5 cell" RELATED []
+synonym: "OVCAR-5 cell" RELATED []
+synonym: "OVCAR5 cell" RELATED []
 is_a: BTO:0000297 ! carcinoma cell line
 is_a: BTO:0000811 ! ovary cancer cell line
 
@@ -14913,6 +14919,7 @@ name: lens epithelium
 namespace: BrendaTissueOBO
 is_a: BTO:0000416 ! epithelium
 relationship: part_of BTO:0000723 ! lens
+
 
 [Term]
 id: BTO:0001874
@@ -17019,22 +17026,6 @@ synonym: "RPMI7931 cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
 
 [Term]
-id: BTO:0002141
-name: HS-294 cell
-namespace: BrendaTissueOBO
-def: "Human melanoma cell line." [PMID:511204]
-synonym: "Hs294 cell" RELATED []
-is_a: BTO:0000849 ! melanoma cell line
-
-[Term]
-id: BTO:0002142
-name: CEM-VLB100 cell
-namespace: BrendaTissueOBO
-def: "Acute lymphoblastic leukemia cell line, resistant to vinblastine." [PMID:12949081]
-synonym: "CEM/VLB100 cell" RELATED []
-is_a: BTO:0000225 ! CEM cell
-
-[Term]
 id: BTO:0002143
 name: CEM-VCR R cell
 namespace: BrendaTissueOBO
@@ -17485,12 +17476,6 @@ namespace: BrendaTissueOBO
 is_a: BTO:0002202 ! lung squamous cell carcinoma cell line
 
 [Term]
-id: BTO:0002204
-name: SK-LU-1 cell
-namespace: BrendaTissueOBO
-is_a: BTO:0001911 ! lung adenocarcinoma cell line
-
-[Term]
 id: BTO:0002205
 name: large cell lung cancer cell line
 namespace: BrendaTissueOBO
@@ -17870,14 +17855,6 @@ def: "Human glioblastoma cell line." [PMID:12880869]
 is_a: BTO:0001530 ! glioblastoma cell line
 
 [Term]
-id: BTO:0002254
-name: HCT-116 cell
-namespace: BrendaTissueOBO
-def: "Human colon carcinoma cell line; established from the primary colon carcinoma of an adult man." [Deutsche Sammlung von Mikroorganismen und Zellkulturen GmbH:DSMZ]
-synonym: "HCT116 cell" RELATED []
-is_a: BTO:0000797 ! colonic cancer cell line
-
-[Term]
 id: BTO:0002255
 name: HCT-8 cell
 namespace: BrendaTissueOBO
@@ -17978,15 +17955,6 @@ name: rhabdomyosarcoma cell line
 namespace: BrendaTissueOBO
 is_a: BTO:0000400 ! sarcoma cell line
 relationship: develops_from BTO:0001802 ! rhabdomyosarcoma cell
-
-[Term]
-id: BTO:0002268
-name: HTB-82 cell
-namespace: BrendaTissueOBO
-def: "Rhabdomyosarcoma cell line." [PMID:9016850]
-synonym: "HTB 82 cell" RELATED []
-synonym: "HTB82 cell" RELATED []
-is_a: BTO:0002267 ! rhabdomyosarcoma cell line
 
 [Term]
 id: BTO:0002269
@@ -18164,14 +18132,6 @@ namespace: BrendaTissueOBO
 def: "SP2/0-AG14 is a hybrid between BALB/c spleen cells and the myeloma cell line P3X63AG8." [Deutsche Sammlung von Mikroorganismen und Zellkulturen GmbH:DSMZ]
 synonym: "Sp-2/0-Ag 14 cell" RELATED []
 is_a: BTO:0000899 ! myeloma cell line
-
-[Term]
-id: BTO:0002292
-name: Reuber H-35 cell
-namespace: BrendaTissueOBO
-def: "Rat hepatoma cell line Reuber H35." [PMID:15337832]
-synonym: "Reuber H35 cell" RELATED []
-is_a: BTO:0000578 ! hepatoma cell line
 
 [Term]
 id: BTO:0002293
@@ -19065,14 +19025,6 @@ synonym: "OLN93 cell" RELATED []
 is_a: BTO:0000872 ! oligodendrocytic cell line
 
 [Term]
-id: BTO:0002401
-name: H-II-E-C3 cell
-namespace: BrendaTissueOBO
-def: "Reuber rat hepatoma H-II-E-C3 cell line." [PMID:15755314]
-synonym: "H-IIE-C3 cell" RELATED []
-is_a: BTO:0000578 ! hepatoma cell line
-
-[Term]
 id: BTO:0002402
 name: oviduct epithelium
 namespace: BrendaTissueOBO
@@ -19229,6 +19181,7 @@ synonym: "histiocytic leukaemia cell" RELATED []
 synonym: "histiocytic leukemia cell" RELATED []
 synonym: "monoblastic leukaemia cell" RELATED []
 synonym: "monoblastic leukemia cell" RELATED []
+
 is_a: BTO:0001271 ! leukemia cell
 
 [Term]
@@ -19866,6 +19819,7 @@ synonym: "fasciola cinerea" RELATED []
 synonym: "gyrus fasciolaris" RELATED []
 relationship: part_of BTO:0002496 ! dentate gyrus
 
+
 [Term]
 id: BTO:0002498
 name: arachnoid barrier layer
@@ -20166,14 +20120,6 @@ def: "A Wistar rat cell line." [PMID:7548195]
 is_a: BTO:0001080 ! Morris hepatoma cell
 
 [Term]
-id: BTO:0002536
-name: H4-II-E cell
-namespace: BrendaTissueOBO
-def: "Rat hepatoma cell line." [PMID:16960379]
-synonym: "H4IIE cell" RELATED []
-is_a: BTO:0000578 ! hepatoma cell line
-
-[Term]
 id: BTO:0002537
 name: BNL CL.2 cell
 namespace: BrendaTissueOBO
@@ -20343,16 +20289,22 @@ is_a: BTO:0002553 ! non-small cell lung cancer cell line
 
 [Term]
 id: BTO:0002560
-name: OVCAR-2 cell
+name: OVCA-2 cell
 namespace: BrendaTissueOBO
 def: "Human ovarian cancer cell line." [PMID:3930572]
+synonym: "OVCA2 cell" RELATED []
+synonym: "OVCAR-2 cell" RELATED []
+synonym: "OVCAR2 cell" RELATED []
 is_a: BTO:0000811 ! ovary cancer cell line
 
 [Term]
 id: BTO:0002561
-name: OVCAR-4 cell
+name: OVCA-4 cell
 namespace: BrendaTissueOBO
 def: "Human ovarian cancer cell line." [PMID:3930572]
+synonym: "OVCA4 cell" RELATED []
+synonym: "OVCAR-4 cell" RELATED []
+synonym: "OVCAR4 cell" RELATED []
 is_a: BTO:0000811 ! ovary cancer cell line
 
 [Term]
@@ -20370,6 +20322,8 @@ namespace: BrendaTissueOBO
 def: "Human epithelial ovarian cancer cell line." [PMID:10589783]
 synonym: "OVCA 420 cell" RELATED []
 synonym: "OVCA420 cell" RELATED []
+synonym: "OVCAR-420 cell" RELATED []
+synonym: "OVCAR420 cell" RELATED []
 is_a: BTO:0000811 ! ovary cancer cell line
 
 [Term]
@@ -20379,6 +20333,8 @@ namespace: BrendaTissueOBO
 def: "Human epithelial ovarian cancer cell line." [PMID:10589783]
 synonym: "OVCA 429 cell" RELATED []
 synonym: "OVCA429 cell" RELATED []
+synonym: "OVCAR-429 cell" RELATED []
+synonym: "OVCAR429 cell" RELATED []
 is_a: BTO:0000811 ! ovary cancer cell line
 
 [Term]
@@ -20397,6 +20353,8 @@ namespace: BrendaTissueOBO
 def: "Human epithelial ovarian cancer cell line." [PMID:10589783]
 synonym: "OVCA 433 cell" RELATED []
 synonym: "OVCA433 cell" RELATED []
+synonym: "OVCAR-433 cell" RELATED []
+synonym: "OVCAR433 cell" RELATED []
 is_a: BTO:0000811 ! ovary cancer cell line
 
 [Term]
@@ -20485,14 +20443,6 @@ def: "The UMR-108 cell line is a clonal derivative of a transplantable rat osteo
 is_a: BTO:0000407 ! osteosarcoma cell line
 
 [Term]
-id: BTO:0002578
-name: LLC-PK cell
-namespace: BrendaTissueOBO
-def: "Porcine kidney epithelial cell line." [PMID:12631713]
-synonym: "LLCPK cell" RELATED []
-is_a: BTO:0000067 ! kidney cell line
-
-[Term]
 id: BTO:0002579
 name: IEC-CF7 cell
 namespace: BrendaTissueOBO
@@ -20543,9 +20493,10 @@ id: BTO:0002585
 name: WE-480 cell
 namespace: BrendaTissueOBO
 def: "Colorectal adenocarcinoma cell line." [PMID:12761194]
+comment: Misspelled in PubMed 12761194. Right term is SW-480 cell.
 synonym: "WE 480 cell" RELATED []
 synonym: "WE480 cell" RELATED []
-is_a: BTO:0001914 ! colorectal adenocarcinoma cell line
+is_obsolete: true
 
 [Term]
 id: BTO:0002586
@@ -22413,6 +22364,7 @@ namespace: BrendaTissueOBO
 def: "Human lung adenocarcinoma cell line." [PMID:15812828]
 synonym: "HUT-125 cell" RELATED []
 synonym: "HUT125 cell" RELATED []
+synonym: "NCI-HUT-125 cell" RELATED []
 is_a: BTO:0001911 ! lung adenocarcinoma cell line
 
 [Term]
@@ -23444,10 +23396,12 @@ is_a: BTO:0000849 ! melanoma cell line
 
 [Term]
 id: BTO:0002950
-name: 888 cell
+name: Mel888 cell
 namespace: BrendaTissueOBO
 def: "Human melanoma cell line." [PMID:11353831]
+synonym: "888 cell" RELATED []
 synonym: "888 mel cell" RELATED []
+synonym: "888-mel cell" RELATED []
 synonym: "888mel cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
 
@@ -23490,11 +23444,16 @@ is_a: BTO:0000849 ! melanoma cell line
 
 [Term]
 id: BTO:0002956
-name: 501 cell
+name: Mel501 cell
 namespace: BrendaTissueOBO
 def: "Human melanoma cell line." [PMID:16204058]
+synonym: "501 cell" RELATED []
 synonym: "501 mel cell" RELATED []
+synonym: "501-mel cell" RELATED []
 synonym: "501mel cell" RELATED []
+synonym: "Me-501 cell" RELATED []
+synonym: "Me501 cell" RELATED []
+synonym: "Mel 501 cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
 
 [Term]
@@ -23916,10 +23875,10 @@ is_a: BTO:0002553 ! non-small cell lung cancer cell line
 id: BTO:0003010
 name: NCI-H125 cell
 namespace: BrendaTissueOBO
-def: "Non-small cell lung cancer cell line." [PMID:11595720]
+def: "Human lung adenocarcinoma non-small cell lung cancer cell line." [PMID:11595720]
 synonym: "H-125 cell" RELATED []
 synonym: "H125 cell" RELATED []
-is_a: BTO:0002553 ! non-small cell lung cancer cell line
+is_a: BTO:0004078 ! non-small cell lung adenocarcinoma cell line
 
 [Term]
 id: BTO:0003011
@@ -24084,6 +24043,9 @@ id: BTO:0003029
 name: SKLU-1 cell
 namespace: BrendaTissueOBO
 def: "Non-small cell lung cancer cell line." [PMID:11595720]
+synonym: "SK LU 1 cell" RELATED []
+synonym: "SK-LU-1 cell" RELATED []
+synonym: "SKLU1 cell" RELATED []
 is_a: BTO:0002553 ! non-small cell lung cancer cell line
 
 [Term]
@@ -24284,9 +24246,11 @@ is_a: BTO:0000787 ! gastric cancer cell line
 
 [Term]
 id: BTO:0003054
-name: OVCAR-8 cell
+name: OVCA-8 cell
 namespace: BrendaTissueOBO
 def: "Ovarian human cancer cell line." [PMID:1503315]
+synonym: "OVCA8 cell" RELATED []
+synonym: "OVCAR-8 cell" RELATED []
 synonym: "OVCAR8 cell" RELATED []
 is_a: BTO:0000811 ! ovary cancer cell line
 
@@ -24477,7 +24441,11 @@ id: BTO:0003079
 name: RAMOS (RA.1) cell
 namespace: BrendaTissueOBO
 def: "Human Caucasian Burkitt's lymphoma cell line. This cell line is EBV-genome-negative but expresses EBV receptors and can be converted into a permanent EBV-positive line." [European collection of cell cultures:ECACC]
-is_a: BTO:0000889 ! Burkitt lymphoma cell line
+synonym: "RA 1 cell" RELATED []
+synonym: "RA.1 cell" RELATED []
+synonym: "Ramos(RA1) cell" RELATED []
+synonym: "Ramos-RA1 cell" RELATED []
+relationship: develops_from BTO:0003076 ! RAMOS cell
 
 [Term]
 id: BTO:0003080
@@ -24891,6 +24859,7 @@ namespace: BrendaTissueOBO
 def: "Human amnion epithelial cell line." [PMID:16619194]
 is_a: BTO:0001373 ! amnion epithelial cell line
 
+
 [Term]
 id: BTO:0003131
 name: CaR-1 cell
@@ -25121,7 +25090,6 @@ id: BTO:0003160
 name: PrEC cell
 namespace: BrendaTissueOBO
 def: "Primary normal human prostate epithelial cells." [PMID:18383581]
-is_a: BTO:0001413 ! primary cell
 is_a: BTO:0002398 ! prostate epithelium cell line
 
 [Term]
@@ -25989,13 +25957,6 @@ synonym: "Hs578 cell" RELATED []
 is_a: BTO:0000794 ! pancreatic cancer cell line
 
 [Term]
-id: BTO:0003269
-name: CFPAC cell
-namespace: BrendaTissueOBO
-def: "Human pancreatic cancer cell line." [PMID:16638857]
-is_a: BTO:0001521 ! pancreatic adenocarcinoma cell line
-
-[Term]
 id: BTO:0003270
 name: Me665/2 cell
 namespace: BrendaTissueOBO
@@ -26239,6 +26200,9 @@ id: BTO:0003301
 name: MEWO cell
 namespace: BrendaTissueOBO
 def: "Human skin malignant melanoma cell line." [HyperCLDB:http\://www.biotech.ist.unige.it/]
+synonym: "HTB-65 cell" RELATED []
+synonym: "MEVO cell" RELATED []
+synonym: "MeVo cell" RELATED []
 synonym: "MeWo cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
 
@@ -26381,10 +26345,13 @@ relationship: develops_from BTO:0002135 ! INS-1 cell
 id: BTO:0003318
 name: INS-1 823/13 cell
 namespace: BrendaTissueOBO
-def: "Subline of INS-1 with optimized glucose-sensitive insulin secretion." [PMID:16481372]
+def: "Subline of INS-1 rat insulinoma cell line with optimized glucose-sensitive insulin secretion." [PMID:16481372, PMID:19380737]
+synonym: "832/13 cell" RELATED []
+synonym: "832/13 INS-1 cell" RELATED []
 synonym: "INS 823/13 cell" RELATED []
 synonym: "INS-1 (823/13) cell" RELATED []
 synonym: "INS-1 (clone 823-13) cell" RELATED []
+synonym: "INS1 832/13 cell" RELATED []
 relationship: develops_from BTO:0002135 ! INS-1 cell
 
 [Term]
@@ -26529,7 +26496,7 @@ relationship: develops_from BTO:0003336 ! pulmonary artery smooth muscle cell
 id: BTO:0003338
 name: CS-54 cell
 namespace: BrendaTissueOBO
-def: "Human pulmonary artery smooth muscle cell line." [PMID:16632465]
+def: "Rat pulmonary artery smooth muscle cell line." [PMID:16632465]
 synonym: "CS54 cell" RELATED []
 is_a: BTO:0003337 ! pulmonary artery smooth muscle cell line
 
@@ -26972,14 +26939,6 @@ def: "The massive gray matter filling the basilar pons. The nuclei are of fairly
 synonym: "nuclei pontis" RELATED []
 synonym: "pontine gray matter" RELATED []
 relationship: part_of BTO:0001101 ! pons
-
-[Term]
-id: BTO:0003397
-name: MEVO cell
-namespace: BrendaTissueOBO
-def: "Human melanoma cell line." [PMID:16740130]
-synonym: "MeVo cell" RELATED []
-is_a: BTO:0000849 ! melanoma cell line
 
 [Term]
 id: BTO:0003398
@@ -27519,8 +27478,11 @@ id: BTO:0003467
 name: HS-294T cell
 namespace: BrendaTissueOBO
 def: "Human melanoma cell line." [PMID:15256463]
+synonym: "Hs 294T cell" RELATED []
+synonym: "HS-294 cell" RELATED []
+synonym: "Hs294 cell" RELATED []
 synonym: "Hs294T cell" RELATED []
-is_a: BTO:0002141 ! HS-294 cell
+is_a: BTO:0000849 ! melanoma cell line
 
 [Term]
 id: BTO:0003468
@@ -27537,7 +27499,7 @@ name: HKE-3 cell
 namespace: BrendaTissueOBO
 def: "Clonal derivative from HCT116 colorectal carcinoma cell line, that lacks the mutant k-ras allele." [PMID:15123634]
 synonym: "HKE3 cell" RELATED []
-relationship: develops_from BTO:0002254 ! HCT-116 cell
+relationship: develops_from BTO:0001109 ! HCT-116 cell
 relationship: develops_from BTO:0004742 ! HCT-115 cell
 relationship: develops_from BTO:0004743 ! HCT-166 cell
 
@@ -28290,14 +28252,6 @@ namespace: BrendaTissueOBO
 def: "Normal murine mammary gland cell line." [PMID:17638887]
 synonym: "c57MG cell" RELATED []
 is_a: BTO:0003568 ! mammary gland cell line
-
-[Term]
-id: BTO:0003570
-name: IMCD-3 cell
-namespace: BrendaTissueOBO
-def: "Inner medullary collecting duct cell line." [PMID:18524861]
-synonym: "IMCD3 cell" RELATED []
-is_a: BTO:0002658 ! collecting duct cell line
 
 [Term]
 id: BTO:0003571
@@ -29070,6 +29024,7 @@ namespace: BrendaTissueOBO
 def: "The area in the center of a lymph node containing aggregations of actively proliferating lymphocytes." [Dorlands Medical Dictionary:MerckMedicus]
 relationship: part_of BTO:0000784 ! lymph node
 
+
 [Term]
 id: BTO:0003672
 name: interdigitating reticulum cell
@@ -29569,10 +29524,10 @@ is_a: BTO:0000383 ! renal cell carcinoma cell line
 
 [Term]
 id: BTO:0003735
-name: THUR-25KTB cell
+name: TUHR-25TKB cell
 namespace: BrendaTissueOBO
 def: "Human renal cell carcinoma (RCC) cell line, obtained by primary culturing of a spindle cell carcinoma." [PMID:17284252]
-synonym: "THUR25KTB" RELATED []
+synonym: "TUHR25TKB cell" RELATED []
 is_a: BTO:0000383 ! renal cell carcinoma cell line
 
 [Term]
@@ -29814,6 +29769,7 @@ id: BTO:0003767
 name: A-204 cell
 namespace: BrendaTissueOBO
 def: "Human rhabdomyosarcoma cell line; established from a 1 year old female." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "HTB-82 cell" RELATED []
 is_a: BTO:0002267 ! rhabdomyosarcoma cell line
 
 [Term]
@@ -29874,6 +29830,7 @@ id: BTO:0003775
 name: SCC-4 cell
 namespace: BrendaTissueOBO
 def: "Human squamous cell carcinoma cell line; established from the squamous cell carcinoma of the tongue from a 55-year-old man after radio- and chemotherapy in 1980." [Deutsche Sammlung von Mikroorganismen und Zellkulturen GmbH:DSMZ]
+synonym: "SCC 4 cell" RELATED []
 synonym: "SCC4 cell" RELATED []
 is_a: BTO:0000786 ! tongue cancer cell line
 is_a: BTO:0002211 ! oral squamous cell carcinoma cell line
@@ -30336,13 +30293,6 @@ def: "System pertaining to blood vessels in the brain." [Health Library:Southwes
 relationship: part_of BTO:0001085 ! vascular system
 
 [Term]
-id: BTO:0003841
-name: INS-1 832/13 cell
-namespace: BrendaTissueOBO
-def: "Rat insulinoma cell line." [PMID:19380737]
-relationship: develops_from BTO:0002135 ! INS-1 cell
-
-[Term]
 id: BTO:0003842
 name: GM02037 cell
 namespace: BrendaTissueOBO
@@ -30370,6 +30320,8 @@ id: BTO:0003845
 name: A2780/CP70 cell
 namespace: BrendaTissueOBO
 def: "Human ovarian carcinoma cell line that is resistant to cisplatin." [PMID:10675489]
+synonym: "CP-70 cell" RELATED []
+synonym: "CP70 cell" RELATED []
 relationship: develops_from BTO:0002549 ! A-2780 cell
 
 [Term]
@@ -30882,12 +30834,15 @@ name: IMCD cell
 namespace: BrendaTissueOBO
 def: "Renal inner medullary collecting duct (IMCD) cell line." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
 is_a: BTO:0001526 ! renal medulla cell line
+is_a: BTO:0002658 ! collecting duct cell line
 
 [Term]
 id: BTO:0003913
 name: mIMCD-3 cell
 namespace: BrendaTissueOBO
 def: "Mouse renal inner medullary collecting duct (IMCD) cell line; SV40 transformed from an adult mouse." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "IMCD-3 cell" RELATED []
+synonym: "IMCD3 cell" RELATED []
 synonym: "mIMCD3 cell" RELATED []
 is_a: BTO:0003912 ! IMCD cell
 
@@ -31201,6 +31156,7 @@ is_a: BTO:0001473 ! blastomere
 id: BTO:0003954
 name: dopaminergic system
 namespace: BrendaTissueOBO
+
 def: "The system of nerve cells that uses dopamine as its neurotransmitter." [Online Medical Dictionary:http\://www.irishhealth.com/dictionary.html?]
 relationship: part_of BTO:0001484 ! nervous system
 
@@ -31442,32 +31398,11 @@ synonym: "SB2 cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
 
 [Term]
-id: BTO:0003987
-name: WM266-4 cell
-namespace: BrendaTissueOBO
-def: "Human melanoma cell line." [PMID:15492257]
-is_a: BTO:0000849 ! melanoma cell line
-
-[Term]
 id: BTO:0003988
 name: DX-3 cell
 namespace: BrendaTissueOBO
 def: "Human melanoma cell line." [PMID:15492257]
 synonym: "DX3 cell" RELATED []
-is_a: BTO:0000849 ! melanoma cell line
-
-[Term]
-id: BTO:0003989
-name: Mel501 cell
-namespace: BrendaTissueOBO
-def: "Human melanoma cell line." [PMID:15492257]
-is_a: BTO:0000849 ! melanoma cell line
-
-[Term]
-id: BTO:0003990
-name: Mel888 cell
-namespace: BrendaTissueOBO
-def: "Human melanoma cell line." [PMID:15492257]
 is_a: BTO:0000849 ! melanoma cell line
 
 [Term]
@@ -31744,13 +31679,6 @@ def: "It gives rise to the secondary neural tube by cavitation in human embryos.
 relationship: part_of BTO:0000379 ! embryo
 
 [Term]
-id: BTO:0004025
-name: 3T3-442A cell
-namespace: BrendaTissueOBO
-def: "Preadipocyte cell line." [PMID:18711690]
-is_a: BTO:0000746 ! preadipocyte cell line
-
-[Term]
 id: BTO:0004026
 name: 4TO7 cell
 namespace: BrendaTissueOBO
@@ -31839,14 +31767,6 @@ name: AD-10 cell
 namespace: BrendaTissueOBO
 def: "Human gynecologic ovarian cancer cell line." [PMID:9554442]
 synonym: "AD10 cell" RELATED []
-is_a: BTO:0000811 ! ovary cancer cell line
-
-[Term]
-id: BTO:0004038
-name: CP-70 cell
-namespace: BrendaTissueOBO
-def: "Human gynecologic ovarian cancer cell line." [PMID:9554442]
-synonym: "CP70 cell" RELATED []
 is_a: BTO:0000811 ! ovary cancer cell line
 
 [Term]
@@ -32983,7 +32903,7 @@ id: BTO:0004181
 name: NCI/ADR-RES cell
 namespace: BrendaTissueOBO
 def: "The recent study shows that NCI/ADR-RES cells are derived from OVCAR-8 ovarian adenocarcinoma cells. The multidrug-resistant MCF-7 breast adenocarcinoma cells originally named MCF-7/AdrR cells and later re-designated NCI/ADR-RES have served as an important and widely used research tool during the last two decades. The case of NCI/ADR-RES cells highlights a wide-spread problem of cell line cross-contamination and misidentification." [PMID:16504380]
-relationship: develops_from BTO:0003054 ! OVCAR-8 cell
+relationship: develops_from BTO:0003054 ! OVCA-8 cell
 
 [Term]
 id: BTO:0004182
@@ -33017,37 +32937,13 @@ is_a: BTO:0001037 ! sensory cell
 relationship: part_of BTO:0000108 ! olfactory epithelium
 
 [Term]
-id: BTO:0004186
-name: OVCAR-420 cell
-namespace: BrendaTissueOBO
-def: "Human ovarian carcinoma cell line." [PMID:9698467]
-synonym: "OVCAR420 cell" RELATED []
-is_a: BTO:0000811 ! ovary cancer cell line
-
-[Term]
-id: BTO:0004187
-name: OVCAR-429 cell
-namespace: BrendaTissueOBO
-def: "Human ovarian carcinoma cell line." [PMID:9698467]
-synonym: "OVCAR429 cell" RELATED []
-is_a: BTO:0000811 ! ovary cancer cell line
-
-[Term]
-id: BTO:0004188
-name: OVCAR-433 cell
-namespace: BrendaTissueOBO
-def: "Human ovarian carcinoma cell line." [PMID:9698467]
-synonym: "OVCAR433 cell" RELATED []
-is_a: BTO:0000811 ! ovary cancer cell line
-
-[Term]
 id: BTO:0004189
 name: OVCAR-8/ADR cell
 namespace: BrendaTissueOBO
 def: "Multidrug-resistant derivative of OVCAR-8." [PMID:17088436]
 synonym: "NCI/ADR cell" RELATED []
 synonym: "OVCAR8/ADR cell" RELATED []
-relationship: develops_from BTO:0003054 ! OVCAR-8 cell
+relationship: develops_from BTO:0003054 ! OVCA-8 cell
 
 [Term]
 id: BTO:0004190
@@ -34813,6 +34709,7 @@ namespace: BrendaTissueOBO
 def: "Human melanoma cell line highly metastatic in nude mice." [PMID:9271321]
 synonym: "DM4 cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
+
 created_by: Marion
 creation_date: 2010-02-01T12:11:54Z
 
@@ -34938,8 +34835,21 @@ id: BTO:0004428
 name: H4-II-E-C3 cell
 namespace: BrendaTissueOBO
 def: "Rat hepatoma cell line." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "H-35 cell" RELATED []
+synonym: "H-35 Reuber cell" RELATED []
 synonym: "H-4-IIE-C3 cell" RELATED []
+synonym: "H-II-E-C3 cell" RELATED []
+synonym: "H-IIE-C3 cell" RELATED []
+synonym: "H35 cell" RELATED []
+synonym: "H4-II-E cell" RELATED []
+synonym: "H4IIE cell" RELATED []
 synonym: "H4IIEC3 cell" RELATED []
+synonym: "Reuber H-35 cell" RELATED []
+synonym: "Reuber H35 cell" RELATED []
+synonym: "Reuber rat hepatoma cell" RELATED []
+synonym: "Reuber-H-35 hepatoma cell" RELATED []
+synonym: "Reuber-H35 hepatoma cell" RELATED []
+synonym: "RH-35 cell" RELATED []
 is_a: BTO:0000578 ! hepatoma cell line
 created_by: Marion
 creation_date: 2010-02-01T07:45:29Z
@@ -35222,6 +35132,8 @@ name: LN-308 cell
 namespace: BrendaTissueOBO
 def: "Human glioblastoma cell line." [PMID:7693337]
 synonym: "LN308 cell" RELATED []
+synonym: "LNZ-308 cell" RELATED []
+synonym: "LNZ308 cell" RELATED []
 is_a: BTO:0001530 ! glioblastoma cell line
 created_by: Marion
 creation_date: 2010-02-02T03:48:30Z
@@ -35245,16 +35157,6 @@ synonym: "LN382 cell" RELATED []
 is_a: BTO:0001530 ! glioblastoma cell line
 created_by: Marion
 creation_date: 2010-02-02T03:49:16Z
-
-[Term]
-id: BTO:0004460
-name: LNZ-308 cell
-namespace: BrendaTissueOBO
-def: "Human glioblastoma cell line." [PMID:14997208]
-synonym: "LNZ308 cell" RELATED []
-is_a: BTO:0001530 ! glioblastoma cell line
-created_by: Marion
-creation_date: 2010-02-02T03:53:43Z
 
 [Term]
 id: BTO:0004461
@@ -35540,7 +35442,10 @@ creation_date: 2010-02-04T05:31:44Z
 id: BTO:0004491
 name: RL95-2 cell
 namespace: BrendaTissueOBO
-def: "Human endometrial cell line, derived from a Grade 2 moderately differentiated adenosquamous carcinoma of the endometrium." [PMID:6339371]
+def: "Human endometrial cell line, derived from a Grade 2 moderately differentiated adenosquamous carcinoma of the endometrium." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/, PMID:6339371]
+synonym: "RL-95 cell" RELATED []
+synonym: "RL-95-2 cell" RELATED []
+synonym: "RL95 cell" RELATED []
 is_a: BTO:0001555 ! endometrial cancer cell line
 created_by: Marion
 creation_date: 2010-02-04T05:35:58Z
@@ -36526,6 +36431,7 @@ creation_date: 2010-04-12T11:29:02Z
 
 [Term]
 id: BTO:0004592
+
 name: bone matrix
 namespace: BrendaTissueOBO
 def: "The intercellular substance of bone tissue consisting of collagen fibers, ground substance, and inorganic bone salts." [The American Heritage Medical Dictionary:2009]
@@ -37001,16 +36907,6 @@ synonym: "TT2 cell" RELATED []
 is_a: BTO:0001581 ! embryonic stem cell line
 created_by: mgr
 creation_date: 2010-04-15T01:54:00Z
-
-[Term]
-id: BTO:0004640
-name: EBTr cell
-namespace: BrendaTissueOBO
-def: "Bovine foetal trachea cell line; derived from the trachea of a male bovine foetus." [European collection of cell cultures:ECACC]
-is_a: BTO:0001242 ! fetal cell line
-is_a: BTO:0004641 ! tracheal cell line
-created_by: mgr
-creation_date: 2010-04-16T09:14:49Z
 
 [Term]
 id: BTO:0004641
@@ -37964,6 +37860,7 @@ name: CFPAC-1 cell
 namespace: BrendaTissueOBO
 def: "This line was derived from a pancreatic duct adenocarcinoma (liver metastasis) from a patient with cystic fibrosis." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
 synonym: "CF-PAC-1 cell" RELATED []
+synonym: "CFPAC cell" RELATED []
 synonym: "CFPAC1 cell" RELATED []
 is_a: BTO:0003883 ! pancreatic ductal adenocarcinoma cell line
 created_by: mgr
@@ -38691,6 +38588,7 @@ namespace: BrendaTissueOBO
 def: "Chicken B cell line; established in 1985 from a bursal lymphoma, which was induced by infection of a 1 day old chicken with Rous-associated virus type 1 (RAV-1), an avian leukosis retrovirus carrying no cell-derived oncogene." [Deutsche Sammlung von Mikroorganismen und Zellkulturen GmbH:DSMZ]
 synonym: "DT 40 cell" RELATED []
 synonym: "DT40 cell" RELATED []
+synonym: "DT40B cell" RELATED []
 is_a: BTO:0001518 ! B-lymphoma cell line
 is_a: BTO:0001522 ! B-lymphocyte cell line
 created_by: mgr
@@ -39821,15 +39719,6 @@ synonym: "RMG1 cell" RELATED []
 is_a: BTO:0001882 ! ovary adenocarcinoma cell line
 created_by: Marion Gremse
 creation_date: 2010-10-28T09:27:50Z
-
-[Term]
-id: BTO:0004931
-name: RL-95 cell
-namespace: BrendaTissueOBO
-def: "Human endometrial carcinoma cell line." [PMID:3653767]
-is_a: BTO:0001555 ! endometrial cancer cell line
-created_by: Marion Gremse
-creation_date: 2010-10-28T09:30:48Z
 
 [Term]
 id: BTO:0004932
@@ -41235,10 +41124,14 @@ creation_date: 2011-03-07T07:42:39Z
 
 [Term]
 id: BTO:0005080
-name: Walker-256 cell
+name: LLC-WRC 256 cell
 namespace: BrendaTissueOBO
 def: "Rat breast carcinoma cell line, established from the Walker 256 rat tumor that has been maintained in vivo for over 60 years." [CLS-Cell Lines Service:http\://www.cell-lines-service.de/]
+synonym: "W256 cell" RELATED []
 synonym: "Walker 256 cell" RELATED []
+synonym: "Walker-256 cell" RELATED []
+synonym: "Walker-Ca.256 cell" RELATED []
+synonym: "Walker/LLC-WRC 256 cell" RELATED []
 is_a: BTO:0000356 ! breast cancer cell line
 created_by: XPMUser
 creation_date: 2011-03-07T07:52:23Z
@@ -41953,6 +41846,9 @@ id: BTO:0005155
 name: CEM-VBL100 cell
 namespace: BrendaTissueOBO
 def: "The CEM-VBL100 cell line is a multidrug-resistant variant of the derivative of the CCRF-CEM cell line." [PMID:11781249]
+synonym: "CEM-VLB100 cell" RELATED []
+synonym: "CEM/VLB 100" RELATED []
+synonym: "CEM/VLB100 cell" RELATED []
 is_a: BTO:0000225 ! CEM cell
 created_by: XPMUser
 creation_date: 2011-08-27T03:22:14Z
@@ -43110,6 +43006,7 @@ is_a: BTO:0000195 ! CACO-2 cell
 created_by: XPMUser
 creation_date: 2012-02-06T11:35:10Z
 
+
 [Term]
 id: BTO:0005280
 name: culture condition:oxalate-grown cell
@@ -43154,16 +43051,6 @@ def: "Human normal lymphoblastoid cell line." [PMID:20413351]
 is_a: BTO:0000773 ! lymphoblastoid cell line
 created_by: XPMUser
 creation_date: 2012-02-06T07:51:04Z
-
-[Term]
-id: BTO:0005285
-name: QBI-293A cell
-namespace: BrendaTissueOBO
-def: "The QBI-293A cell line is a permanent line of primary human embryonic kidney cells transformed by sheared human adenovirus type 5 (Ad5) DNA." [QBiogene:http\://www.qbiogene.com/]
-synonym: "QBI-HEK 293A cell" RELATED []
-relationship: develops_from BTO:0002524 ! HEK-293A cell
-created_by: XPMUser
-creation_date: 2012-02-06T07:56:45Z
 
 [Term]
 id: BTO:0005286
@@ -43242,6 +43129,7 @@ creation_date: 2012-02-08T12:58:31Z
 
 [Term]
 id: BTO:0005294
+
 name: NCI-H647 cell
 namespace: BrendaTissueOBO
 def: "Human non-small cell lung cancer adenosquamous carcinoma cell line." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
@@ -43311,8 +43199,10 @@ creation_date: 2012-02-09T04:24:37Z
 id: BTO:0005301
 name: NPrEC cell
 namespace: BrendaTissueOBO
-def: "An immortalized human normal prostate epithelial cell line." [PMID:18560533]
+def: "An immortalized primary normal human prostate epithelial cell line." [PMID:18560533]
+synonym: "PrEC cell" RELATED []
 is_a: BTO:0001019 ! prostate gland cell line
+is_a: BTO:0002290 ! primary cell line
 created_by: XPMUser
 creation_date: 2012-02-09T04:30:00Z
 
@@ -43364,7 +43254,7 @@ creation_date: 2012-02-13T11:16:52Z
 id: BTO:0005307
 name: UAMS-32 cell
 namespace: BrendaTissueOBO
-def: "Human stromal osteoblastic cell line." [PMID:10383440]
+def: "Murine stromal osteoblastic cell line." [PMID:10383440]
 is_a: BTO:0004324 ! osteoblast cell line
 created_by: XPMUser
 creation_date: 2012-02-13T11:42:09Z
@@ -44460,4 +44350,5 @@ namespace: BrendaTissueOBO
 id: related_to
 name: related to
 namespace: BrendaTissueOBO
+
 

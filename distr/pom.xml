@@ -66,13 +66,19 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-instrument-tomcat</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.biopax.validator</groupId>
 			<artifactId>biopax-validator-client</artifactId>
 			<version>${project.version}</version>
 			<classifier>jar-with-dependencies</classifier>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>biopax-validator-web</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<classifier>exec-war</classifier>
 		</dependency>
 	</dependencies>
 	

@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.paxtools.controller.ModelUtils;
-import org.biopax.paxtools.converter.LevelUpgrader;
+import org.biopax.paxtools.converter.OneTwoThree;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
@@ -124,7 +124,7 @@ public class ValidatorImpl implements Validator {
 					+ model.getObjects().size() + " objects");
 				
 		if(model.getLevel() != BioPAXLevel.L3) {
-   			model = (new LevelUpgrader()).filter(model);
+   			model = (new OneTwoThree()).filter(model);
    			validation.setModel(model);
    			log.info("Upgraded to BioPAX Level3 model: " + validation.getDescription());			
    		}

@@ -31,7 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.miriam.MiriamLink;
 import org.biopax.paxtools.controller.*;
-import org.biopax.paxtools.converter.LevelUpgrader;
+import org.biopax.paxtools.converter.OneTwoThree;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
@@ -116,7 +116,7 @@ public final class Normalizer {
 		// auto-convert to Level3 model
 		if (model.getLevel() != BioPAXLevel.L3) {
 			log.info("Converting model to BioPAX Level3...");
-			model = (new LevelUpgrader()).filter(model);
+			model = (new OneTwoThree()).filter(model);
 		}
 		
 		normalize(model); // L3 only!
@@ -684,7 +684,7 @@ public final class Normalizer {
 			Model model = io.convertFromOWL(is);
 			if (model.getLevel() != BioPAXLevel.L3) {
 				log.info("Converting to BioPAX Level3... " + model.getXmlBase());
-				model = (new LevelUpgrader()).filter(model);
+				model = (new OneTwoThree()).filter(model);
 				if (model != null) {
 					io.setFactory(model.getLevel().getDefaultFactory());
 					io.convertToOWL(model, os);

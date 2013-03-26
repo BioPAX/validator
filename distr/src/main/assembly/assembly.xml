@@ -53,6 +53,14 @@
       </excludes>
       <unpack>false</unpack>
     </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.biopax.validator:biopax-validator-web:jar:exec-war</include>
+      </includes>
+      <outputDirectory></outputDirectory>
+      <outputFileNameMapping>biopax-validator-web.jar</outputFileNameMapping>
+      <unpack>false</unpack>
+    </dependencySet>
   </dependencySets>     
   
   <fileSets>  

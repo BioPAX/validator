@@ -249,7 +249,7 @@ public class ValidatorController {
    		log.debug("XML Schema requested.");
     	
     	BufferedReader bis = new BufferedReader(new InputStreamReader(
-    		LOADER.getResource("classpath:validator-response-2.0.xsd")
+    		LOADER.getResource("classpath:org/biopax/validator/api/schema/schema1.xsd")
     			.getInputStream(), "UTF-8"));
     	
     	response.setContentType("application/xml");

@@ -23,21 +23,12 @@
 							<goal>schemagen</goal>
 						</goals>
 						<phase>compile</phase>
-<!-- 						<phase>generate-resources</phase> -->
 						<configuration>
 							<includes>
 								<include>org/biopax/validator/api/beans/*.java</include>
 							</includes>
-							<transformSchemas>
-								<transformSchema>
-									<uri>http://biopax.org/validator/2.0/schema</uri>
-<!-- 									<toPrefix></toPrefix> -->
-									<toFile>validator-response-2.0.xsd</toFile>
-								</transformSchema>
-							</transformSchemas>
 							<verbose>true</verbose>
-							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
-			
+							<outputDirectory>${project.build.directory}/classes/org/biopax/validator/api/schema</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -45,10 +36,10 @@
 					<dependency>
 						<groupId>javax.xml.bind</groupId>
 						<artifactId>jaxb-api</artifactId>
-						<version>2.1</version>
+						<version>2.2.7</version>
 					</dependency>
 				</dependencies>
-			</plugin>
+			</plugin>		
 		</plugins>
 	</build>
 
