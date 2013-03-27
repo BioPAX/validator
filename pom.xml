@@ -57,9 +57,9 @@
 
     <scm>
         <connection>scm:hg:http://hg.code.sf.net/p/biopax/validator</connection>
-		<developerConnection>scm:hg:ssh://${scm.username}@hg.code.sf.net/p/biopax/validator</developerConnection>
-		<url>http://biopax.hg.sourceforge.net/hgweb/biopax/validator</url>
-		<tag>HEAD</tag>
+	<developerConnection>scm:hg:ssh://${scm.username}@hg.code.sf.net/p/biopax/validator</developerConnection>
+	<url>https://sourceforge.net/p/biopax/validator</url>
+	<tag>HEAD</tag>
     </scm>
 
 	<developers>
