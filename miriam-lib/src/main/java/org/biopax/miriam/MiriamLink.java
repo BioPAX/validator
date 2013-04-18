@@ -85,14 +85,6 @@ public class MiriamLink
 		try
 	    {
 			URL url = new URL(XML_LOCATION);
-			/*// service has changed, - no need to send query anymore!
-			  URLConnection conn = url.openConnection();
-			  conn.setDoOutput(true);
-			  OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-			  String query = URLEncoder.encode("fileName=Miriam.xml", "UTF-8");
-			  wr.write(query);
-			  wr.flush(); 
-			 */
             JAXBContext jc = JAXBContext.newInstance(BINDING);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
             
@@ -247,7 +239,7 @@ public class MiriamLink
     		try {
 				return getOfficialDataTypeURI(datatype)	+ ":" + URLEncoder.encode(id, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				throw new IllegalArgumentException("UTF-8 encoding error of id=" + id, e);
+				throw new RuntimeException("UTF-8 encoding error of id=" + id, e);
 			}
     	} else 
     		throw new IllegalArgumentException(
@@ -286,7 +278,11 @@ public class MiriamLink
 		Datatype datatype = getDatatype(datatypeKey);
 		for (Resource resource : getResources(datatype)) {
 			String link = resource.getDataEntry();
-			link = link.replaceFirst("\\$id", URLEncoder.encode(entityId));
+			try {
+				link = link.replaceFirst("\\$id", URLEncoder.encode(entityId, "UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException(e);
+			}
 			locations.add(link);
 		}
     	return locations.toArray(ARRAY_OF_STRINGS);

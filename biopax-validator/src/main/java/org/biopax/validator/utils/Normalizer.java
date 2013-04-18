@@ -258,7 +258,11 @@ public final class Normalizer {
 		String localPart;
 		String strategy = System.getProperty(PROPERTY_NORMALIZER_URI_STRATEGY);
 		if(VALUE_NORMALIZER_URI_STRATEGY_SIMPLE.equals(strategy))
-			localPart = URLEncoder.encode(sb.toString());
+			try {
+				localPart = URLEncoder.encode(sb.toString(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException(e);
+			}
 		else
 			localPart = ModelUtils.md5hex(sb.toString());
 		

@@ -93,12 +93,19 @@ public class AOPAspectJLTWIntegrationTest {
     @Test
     public void testSyntaxErrors() throws IOException {
     	Validation validation = new Validation(new IdentifierImpl());
-    	//validation.setFix(true);
     	validator.importModel(validation, getClass()
-    			.getResourceAsStream("testSyntaxErrors.xml")); 
+    		.getResourceAsStream("testSyntaxErrors.xml")); 
     	validator.getResults().clear(); // clean after itself
     	assertEquals(1, validation.countErrors(null, null, "unknown.property", null, false, false));
+    	
+
+    	validation = new Validation(new IdentifierImpl());
+    	validator.importModel(validation, getClass()
+    		.getResourceAsStream("testBiochemPathwayStepOneConversionRule.owl")); 
+    	validator.getResults().clear(); // clean after itself
+    	assertEquals(1, validation.countErrors(null, null, "syntax.error", null, false, false));   	
     }
+
     
     @Test
     public void testClonedUtilityClass() throws IOException {

@@ -128,18 +128,6 @@ public class IntegrationTest {
     	assertTrue(x1.isEquivalent(x3)); 
     }  
     
-    @Test
-    public void testRange1() {
-        Evidence ev = (Evidence) factory3.create(Evidence.class, "1");
-        EvidenceCodeVocabulary ec = factory3.create(EvidenceCodeVocabulary.class, "2");
-        ev.addEvidenceCode(ec);
-
-        ControlledVocabulary cv = (CellVocabulary) factory3.create(CellVocabulary.class, "3");
-        Set<ControlledVocabulary> set = new HashSet<ControlledVocabulary>(); // not Set<EvidenceCodeVocabulary>
-        set.add(ec);
-        set.add(cv);
-        //ev.setEvidenceCode(set); // compile-time error       
-    }
     
 	/*
 	 * Tests:
@@ -438,7 +426,7 @@ public class IntegrationTest {
         instance.check(v, x);
         assertTrue(v.getError().isEmpty());
     }
-      
+
     
     private void writeExample(String file, Model model) {
     	try {
