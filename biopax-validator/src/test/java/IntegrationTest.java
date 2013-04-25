@@ -117,15 +117,9 @@ public class IntegrationTest {
     	UnificationXref x3 = factory3.create(UnificationXref.class, "x1");
     	x3.addComment("x3");
     	x3.setDb(null);
-    	x3.setId("doesn't matter");
-    	assertFalse(x1.isEquivalent(x3)); // same ID does not matter anymore (since Apr'2011)!
-    	
-    	x3.setDb("db");
-    	x3.setId("id");
-    	assertTrue(x1.isEquivalent(x3)); 
-    	
-    	x3 = x1;
-    	assertTrue(x1.isEquivalent(x3)); 
+    	x3.setId("foo");
+//    	assertFalse(x1.isEquivalent(x3)); // same ID does not matter anymore (since Apr'2011)!
+    	assertTrue(x1.isEquivalent(x3)); //same ID (it matters again ;), since 2013/04/25)
     }  
     
     
