@@ -292,11 +292,6 @@
 
 	<repositories>
 		<repository>
-			<id>springsource-repo</id>
-			<name>SpringSource Repository</name>
-			<url>http://repo.springframework.org/release</url>
-		</repository>
-		<repository>
 			<id>biopax.snapshots</id>
 			<name>BioPAX Snapshots Repository at Sourceforge</name>
 			<url>http://biopax.sourceforge.net/m2repo/snapshots/</url>
