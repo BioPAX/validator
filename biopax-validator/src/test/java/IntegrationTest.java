@@ -118,8 +118,8 @@ public class IntegrationTest {
     	x3.addComment("x3");
     	x3.setDb(null);
     	x3.setId("foo");
-    	assertFalse(x1.isEquivalent(x3)); // same ID does not matter anymore (since Apr'2011)!
-//    	assertTrue(x1.isEquivalent(x3)); //only same ID matters if 'equals' and 'hashCode' were overridden in Paxtools...
+//    	assertFalse(x1.isEquivalent(x3)); // same ID does not matter anymore (since Apr'2011)!
+    	assertTrue(x1.isEquivalent(x3)); //only same ID and type matters if 'equals' and 'hashCode' were overridden in Paxtools...
     }  
     
     
