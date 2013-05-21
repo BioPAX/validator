@@ -13,7 +13,7 @@
 
 	<groupId>org.biopax.validator</groupId>
 	<artifactId>parent</artifactId>
-	<version>3.0.1-SNAPSHOT</version>	
+	<version>3.0.2-SNAPSHOT</version>	
 	<packaging>pom</packaging>
 	
 	<name>Validator - Parent</name>
@@ -335,7 +335,6 @@
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>${log4j.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -471,11 +470,6 @@
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

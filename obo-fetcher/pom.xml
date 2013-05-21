@@ -6,7 +6,7 @@
   <parent>
 	<artifactId>parent</artifactId>
 	<groupId>org.biopax.validator</groupId>
-	<version>3.0.1-SNAPSHOT</version>
+	<version>3.0.2-SNAPSHOT</version>
   </parent>
  
   <name>Ontologies Access</name>
@@ -38,6 +38,11 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>runtime</scope>
 		</dependency>
     </dependencies>
   

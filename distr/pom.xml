@@ -2,7 +2,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>3.0.1-SNAPSHOT</version>
+		<version>3.0.2-SNAPSHOT</version>
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
@@ -79,6 +79,10 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 			<classifier>exec-war</classifier>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
 		</dependency>
 	</dependencies>
 	
