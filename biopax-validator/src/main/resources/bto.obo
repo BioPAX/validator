@@ -1,5 +1,5 @@
 format-version: 1.2
-date: 03:12:2012 09:57
+date: 26:04:2013 11:29
 saved-by: XPMUser
 auto-generated-by: OBO-Edit 2.1-beta1
 synonymtypedef: GE "LANGUAGE GERMAN"
@@ -378,6 +378,7 @@ def: "The outer portion of the adrenal glands that produces several steroid horm
 synonym: "cortex glandulae suprarenalis" RELATED []
 synonym: "cortex of adrenal gland" RELATED []
 synonym: "cortex of suprarenal gland" RELATED []
+
 synonym: "suprarenal cortex" RELATED []
 relationship: part_of BTO:0000047 ! adrenal gland
 
@@ -1565,6 +1566,7 @@ id: BTO:0000186
 name: lobular carcinoma cell
 namespace: BrendaTissueOBO
 def: "A cell of an infiltrating (invasive) breast cancer, relatively uncommon, accounting for only 5%-10% of breast tumours in most series. It is often an area of ill-defined thickening in the breast, in contrast to the dominant lump characteristic of ductal carcinoma. It is typically composed of small cells in a linear arrangement with a tendency to grow around ducts and lobules. There is likelihood of axillary nodal involvement with metastasis to meningeal and serosal surfaces." [Online Medical Dictionary:http\://cancerweb.ncl.ac.uk/]
+synonym: "lobular breast carcinoma cell" RELATED []
 is_a: BTO:0000150 ! breast cancer cell
 
 [Term]
@@ -1828,6 +1830,15 @@ def: "The BALB/3T3 clone A31 is one of several cell lines (see BALB/3T12) develo
 synonym: "BALB/3T3 clone A31" RELATED []
 synonym: "BALBc/3T3 cell" RELATED []
 is_a: BTO:0001958 ! embryonic fibroblast cell line
+
+[Term]
+id: BTO:0000219
+name: plastron
+namespace: BrendaTissueOBO
+def: "The ventral part of the shell of a turtle or tortoise." [Dictionary:http\://www.thefreedictionary.com/]
+relationship: part_of BTO:0004659 ! exoskeleton
+created_by: XPMUser
+creation_date: 2013-02-28T12:04:31Z
 
 [Term]
 id: BTO:0000220
@@ -2453,10 +2464,10 @@ is_a: BTO:0004055 ! COS cell
 
 [Term]
 id: BTO:0000299
-name: cotton fiber
+name: cotton fibre
 namespace: BrendaTissueOBO
 def: "Each seed of a cotton plant is surrounded with downy fiber, white or creamy in color and easily spun. The fibers flatten and twist naturally as they dry." [The Columbia Encyclopedia:Sixth Edition. 2001]
-synonym: "cotton fibre" RELATED []
+synonym: "cotton fiber" RELATED []
 is_a: BTO:0000450 ! fiber
 relationship: part_of BTO:0001226 ! seed
 
@@ -4009,6 +4020,7 @@ id: BTO:0000500
 name: gastric epithelium
 namespace: BrendaTissueOBO
 def: "Epithelium of the stomach." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=gastric]
+synonym: "stomach epithelium" RELATED []
 is_a: BTO:0000416 ! epithelium
 relationship: part_of BTO:0001307 ! stomach
 
@@ -4404,6 +4416,17 @@ id: BTO:0000549
 name: culture condition:H2/CO2-grown cell
 namespace: BrendaTissueOBO
 is_a: BTO:0001479 ! culture condition:-grown cell
+
+[Term]
+id: BTO:0000550
+name: anal plate
+namespace: BrendaTissueOBO
+def: "1. One of the posterior plates of the plastron of a turtle.\n2. The large scale in front of the anus of most snakes.\n3. The fused plate of early embryonic ectoderm and endoderm through which the anus later ruptures ." [From Merriam-Websters Online Dictionary at www.Merriam-Webster.com:From Merriam-Websthttp\://www.merriam-webster.com/dictionary/anal+plate]
+is_a: BTO:0000315 ! ectoderm
+is_a: BTO:0000800 ! endoderm
+relationship: part_of BTO:0000219 ! plastron
+created_by: XPMUser
+creation_date: 2013-02-28T12:06:36Z
 
 [Term]
 id: BTO:0000551
@@ -5024,7 +5047,7 @@ id: BTO:0000628
 name: inflorescence
 namespace: BrendaTissueOBO
 def: "A flower cluster with a definite arrangement." [PAE Virtual Glossary:Plants\, Animals and the Environment Glossary derived from leading WCB/McGraw-Hill textbooks]
-synonym: "panicle" RELATED []
+synonym: "flower cluster" RELATED []
 relationship: part_of BTO:0001461 ! whole plant
 
 [Term]
@@ -5350,7 +5373,7 @@ is_a: BTO:0001913 ! colonic adenocarcinoma cell line
 id: BTO:0000667
 name: keratinocyte
 namespace: BrendaTissueOBO
-def: "Skin cell, of the keratinized layer of epidermis: its characteristic intermediate filament protein is cytokeratin.\nA cell of the stratum spinosum of the epidermis." [The Dictionary of Cell and Molecular Biology:Third Edition]
+def: "Skin cell, of the keratinized layer of epidermis: its characteristic intermediate filament protein is cytokeratin. A cell of the stratum spinosum of the epidermis." [The Dictionary of Cell and Molecular Biology:Third Edition]
 synonym: "malpighian cell" RELATED []
 is_a: BTO:0001470 ! epidermal cell
 relationship: part_of BTO:0000435 ! stratum spinosum
@@ -5825,6 +5848,7 @@ name: endocarp
 namespace: BrendaTissueOBO
 def: "The inner layer of the pericarp of a fruit (as an apple or orange) when it consists of two or more layers of different texture or consistency." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=endocarp]
 relationship: part_of BTO:0001017 ! pericarp
+
 
 [Term]
 id: BTO:0000731
@@ -6875,9 +6899,10 @@ is_a: BTO:0000707 ! larva
 
 [Term]
 id: BTO:0000860
-name: CHRB30 cell
+name: CHRB-30 cell
 namespace: BrendaTissueOBO
 def: "Multidrug resistant chinese hamster ovary cell line." [PMID:9099718]
+synonym: "CHRB30 cell" RELATED []
 is_a: BTO:0000977 ! ovary cell line
 
 [Term]
@@ -8118,6 +8143,7 @@ id: BTO:0001017
 name: pericarp
 namespace: BrendaTissueOBO
 def: "The ripened and variously modified walls of a plant ovary." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=pericarp]
+synonym: "plant ovary wall" RELATED []
 relationship: part_of BTO:0000486 ! fruit
 
 [Term]
@@ -9869,7 +9895,6 @@ is_a: BTO:0003096 ! internal male genital organ
 [Term]
 id: BTO:0001235
 name: seminiferous tubule
-
 namespace: BrendaTissueOBO
 def: "One of two or three twisted, curved tubules in each lobule of the testis in which spermatozoa develop." [The American Heritage Dictionary of the English Language:Fourth Edition. 2000.]
 relationship: part_of BTO:0001363 ! testis
@@ -11249,7 +11274,6 @@ is_a: BTO:0000756 ! pituitary gland tumor cell line
 [Term]
 id: BTO:0001411
 name: twig
-
 namespace: BrendaTissueOBO
 def: "A small shoot or branch usually without its leaves." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=twig]
 is_a: BTO:0001243 ! shoot
@@ -11407,6 +11431,7 @@ relationship: part_of BTO:0001300 ! stem
 id: BTO:0001430
 name: mammary epithelium
 namespace: BrendaTissueOBO
+def: "The human breast epithelium is a branching ductal system composed of an inner layer of polarized luminal epithelial cells and an outer layer of myoepithelial cells that terminate in distally located terminal duct lobular units (TDLUs)." [PMID:16807805]
 is_a: BTO:0001428 ! breast epithelium
 
 [Term]
@@ -11976,6 +12001,15 @@ name: hip joint
 namespace: BrendaTissueOBO
 def: "The articulation between the femur and the innominate bone." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=hip+joint]
 relationship: part_of BTO:0001457 ! hip
+
+[Term]
+id: BTO:0001503
+name: thoracic leg
+namespace: BrendaTissueOBO
+def: "The arthropod leg is a form of jointed appendage of arthropods, usually used for walking. Many of the terms used for arthropod leg segments (called podomeres) are of Latin origin, and may be confused with terms for bones: coxa (meaning hip), trochanter, femur, tibia, tarsus, ischium, metatarsus, carpus, dactylus (meaning finger), patella. The typical thoracic leg of an adult insect is adapted for running, rather than for digging, leaping, swimming, predation or the like." [Wikipedia:The Free Encyclopedia]
+relationship: part_of BTO:0001368 ! thorax
+created_by: XPMUser
+creation_date: 2013-02-28T12:19:15Z
 
 [Term]
 id: BTO:0001504
@@ -12603,7 +12637,8 @@ is_a: BTO:0001581 ! embryonic stem cell line
 id: BTO:0001583
 name: T-98G cell
 namespace: BrendaTissueOBO
-def: "Human, Caucasian, glioblastoma cell line." [HyperCLDB:http\://www.biotech.ist.unige.it/]
+def: "Human brain glioblastoma multiforme cell line, established from a 61 years old caucasian male." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "T98 cell" RELATED []
 synonym: "T98G cell" RELATED []
 is_a: BTO:0001530 ! glioblastoma cell line
 
@@ -13050,7 +13085,6 @@ name: liver bud
 namespace: BrendaTissueOBO
 def: "A diverticulum from the foregut that gives rise to the liver and its ducts." [Dorlands Medical Dictionary:MerckSource]
 is_a: BTO:0001639 ! bud
-
 
 [Term]
 id: BTO:0001643
@@ -14193,6 +14227,8 @@ name: Peyer's gland
 namespace: BrendaTissueOBO
 def: "Any of numerous large oval patches of closely aggregated nodules of lymphoid tissue in the walls of the small intestine especially in the ileum that partially or entirely disappear in advanced life and in typhoid fever become the seat of ulcers which may perforate the intestines." [Fast Health Medical Dictionary:http\://www.fasthealth.com/dictionary/]
 synonym: "Peyer's patch" RELATED []
+synonym: "Peyers gland" RELATED []
+synonym: "Peyers patch" RELATED []
 is_a: BTO:0000784 ! lymph node
 relationship: part_of BTO:0000620 ! ileum
 
@@ -14919,7 +14955,6 @@ name: lens epithelium
 namespace: BrendaTissueOBO
 is_a: BTO:0000416 ! epithelium
 relationship: part_of BTO:0000723 ! lens
-
 
 [Term]
 id: BTO:0001874
@@ -15947,7 +15982,8 @@ relationship: part_of BTO:0000573 ! artery
 id: BTO:0002010
 name: tunica externa vasorum
 namespace: BrendaTissueOBO
-def: "External coat of vessels: the outer, fibroelastic coat of the blood vessels; called also adventitia and t. adventitia vasorum." [Dorlands Medical Dictionary:MerckSource]
+def: "External coat of vessels: the outer, fibroelastic coat of the blood vessels." [Dorlands Medical Dictionary:MerckSource]
+synonym: "adventitia" RELATED []
 synonym: "tunica adventitia vasorum" RELATED []
 relationship: part_of BTO:0002009 ! artery wall
 
@@ -16922,6 +16958,7 @@ is_a: BTO:0001530 ! glioblastoma cell line
 id: BTO:0002127
 name: U-138MG cell
 namespace: BrendaTissueOBO
+
 def: "Human glioblastoma cell line; established from a 47 years old human male." [HyperCLDB:http\://www.biotech.ist.unige.it/]
 synonym: "U-138 cell" RELATED []
 synonym: "U-138 MG cell" RELATED []
@@ -16975,6 +17012,7 @@ id: BTO:0002134
 name: SK-MEL-5 cell
 namespace: BrendaTissueOBO
 def: "Human caucasian skin melanoma cell line; established from a 24 year old Caucasian female. Derived from: axillary node." [HyperCLDB:http\://www.biotech.ist.unige.it/]
+synonym: "SKMel-5 cell" RELATED []
 is_a: BTO:0002130 ! SK-MEL cell
 
 [Term]
@@ -17024,6 +17062,24 @@ namespace: BrendaTissueOBO
 def: "Human melanoma cell line." [PMID:511204]
 synonym: "RPMI7931 cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
+
+[Term]
+id: BTO:0002141
+name: BCS-TC2 cell
+namespace: BrendaTissueOBO
+def: "Human colon adenocarcinoma cell line." [PMID:9263751]
+is_a: BTO:0001913 ! colonic adenocarcinoma cell line
+created_by: XPMUser
+creation_date: 2013-02-28T03:48:20Z
+
+[Term]
+id: BTO:0002142
+name: BRIN-BD11 cell
+namespace: BrendaTissueOBO
+def: "Insulin secreting beta cell line." [PMID:21627968]
+is_a: BTO:0000716 ! pancreatic beta cell line
+created_by: XPMUser
+creation_date: 2013-02-28T03:54:56Z
 
 [Term]
 id: BTO:0002143
@@ -17476,6 +17532,17 @@ namespace: BrendaTissueOBO
 is_a: BTO:0002202 ! lung squamous cell carcinoma cell line
 
 [Term]
+id: BTO:0002204
+name: palatine uvula
+namespace: BrendaTissueOBO
+def: "The small cone-shaped process suspended in the mouth from the middle of the posterior border of the soft palate." [Medical Dictionary:http\://medical-dictionary.thefreedictionary.com/]
+synonym: "uvula" RELATED []
+synonym: "uvula palatina" RELATED []
+relationship: part_of BTO:0001090 ! mouth
+created_by: XPMUser
+creation_date: 2013-02-28T04:12:45Z
+
+[Term]
 id: BTO:0002205
 name: large cell lung cancer cell line
 namespace: BrendaTissueOBO
@@ -17855,6 +17922,16 @@ def: "Human glioblastoma cell line." [PMID:12880869]
 is_a: BTO:0001530 ! glioblastoma cell line
 
 [Term]
+id: BTO:0002254
+name: vas efferens
+namespace: BrendaTissueOBO
+def: "Any of a number of small ducts that carry semen from the testis to the epididymis." [Dictionary:http\://www.thefreedictionary.com/]
+synonym: "vasa efferentia" RELATED []
+is_a: BTO:0003096 ! internal male genital organ
+created_by: XPMUser
+creation_date: 2013-02-28T04:30:19Z
+
+[Term]
 id: BTO:0002255
 name: HCT-8 cell
 namespace: BrendaTissueOBO
@@ -17955,6 +18032,16 @@ name: rhabdomyosarcoma cell line
 namespace: BrendaTissueOBO
 is_a: BTO:0000400 ! sarcoma cell line
 relationship: develops_from BTO:0001802 ! rhabdomyosarcoma cell
+
+[Term]
+id: BTO:0002268
+name: MLE-12 cell
+namespace: BrendaTissueOBO
+def: "Mouse lung cancer cell line.\nThis line was established in 1992 by Kathryn A. Wikenheiser from pulmonary tumors in a mouse transgenic for the SV40 large T antigen under the control of the promoter region of the human surfactant protein C gene. The cells express the mRNA for large T antigen. Lung surfactant proteins B and C were detected. The cells secrete phospholipids in response to phorbol esters and ATP but not in response to forskolin." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "MLE 12 cell" RELATED []
+is_a: BTO:0000762 ! lung cancer cell line
+created_by: XPMUser
+creation_date: 2013-02-28T04:36:01Z
 
 [Term]
 id: BTO:0002269
@@ -18134,6 +18221,15 @@ synonym: "Sp-2/0-Ag 14 cell" RELATED []
 is_a: BTO:0000899 ! myeloma cell line
 
 [Term]
+id: BTO:0002292
+name: flagellum
+namespace: BrendaTissueOBO
+def: "Long, slender, threadlike, whiplike extension of certain cells or unicellular organisms used mainly for movements (others for signal transduction). In bacteria, the flagella are helical filaments made up of the protein, flagellin, and rotate like screws. In eukaryotes, such as in cells of animals, plants and protists, they are made up of microtubules surrounded by the plasma membrane and enable the cells to move in a whip-like fashion. Some flagella are not used for movement but in sensation and signal transduction by various cell types, e.g. rod photoreceptor cells of the eye, olfactory receptor neurons of the nose, kinocilium in cochlea of the ear." [Biology Online Dictionary:http\://www.biology-online.org/dictionary/]
+is_a: BTO:0000464 ! flagellate
+created_by: XPMUser
+creation_date: 2013-02-28T07:40:27Z
+
+[Term]
 id: BTO:0002293
 name: SAKRTLS 12.1 cell
 namespace: BrendaTissueOBO
@@ -18290,8 +18386,11 @@ is_a: BTO:0002308 ! myoepithelium
 id: BTO:0002311
 name: mammary myoepithelial cell
 namespace: BrendaTissueOBO
+def: "The human breast epithelium is a branching ductal system composed of an inner layer of polarized luminal epithelial cells and an outer layer of myoepithelial cells that terminate in distally located terminal duct lobular units (TDLUs)." [PMID:16807805]
+synonym: "breast myoepithelial cell" RELATED []
 is_a: BTO:0002309 ! myoepithelial cell
 relationship: part_of BTO:0002310 ! mammary myoepithelium
+relationship: part_of BTO:0004300 ! mammary epithelial cell
 
 [Term]
 id: BTO:0002312
@@ -18435,11 +18534,13 @@ is_a: BTO:0000421 ! connective tissue
 
 [Term]
 id: BTO:0002331
-name: human hepatoma cell line
+name: PLHC-1 cell
 namespace: BrendaTissueOBO
-def: "Human hepatoma cell line." [RIKEN BioResource Center:http\://www2.brc.riken.jp/]
-synonym: "HLE cell" RELATED []
+def: "Poeciliopsis lucida hepatoma cell line, a fish cell line." [PMID:18950875]
+synonym: "PLHC-1/wt cell" RELATED []
 is_a: BTO:0000578 ! hepatoma cell line
+created_by: XPMUser
+creation_date: 2013-03-18T08:05:46Z
 
 [Term]
 id: BTO:0002332
@@ -19025,6 +19126,15 @@ synonym: "OLN93 cell" RELATED []
 is_a: BTO:0000872 ! oligodendrocytic cell line
 
 [Term]
+id: BTO:0002401
+name: feather rachis
+namespace: BrendaTissueOBO
+def: "The central shaft of the feather to which the vanes are attached." [Feather Anatomy and Function:http\://animals.about.com]
+relationship: part_of BTO:0000447 ! feather
+created_by: XPMUser
+creation_date: 2013-03-01T08:35:52Z
+
+[Term]
 id: BTO:0002402
 name: oviduct epithelium
 namespace: BrendaTissueOBO
@@ -19181,7 +19291,6 @@ synonym: "histiocytic leukaemia cell" RELATED []
 synonym: "histiocytic leukemia cell" RELATED []
 synonym: "monoblastic leukaemia cell" RELATED []
 synonym: "monoblastic leukemia cell" RELATED []
-
 is_a: BTO:0001271 ! leukemia cell
 
 [Term]
@@ -19819,7 +19928,6 @@ synonym: "fasciola cinerea" RELATED []
 synonym: "gyrus fasciolaris" RELATED []
 relationship: part_of BTO:0002496 ! dentate gyrus
 
-
 [Term]
 id: BTO:0002498
 name: arachnoid barrier layer
@@ -20120,6 +20228,15 @@ def: "A Wistar rat cell line." [PMID:7548195]
 is_a: BTO:0001080 ! Morris hepatoma cell
 
 [Term]
+id: BTO:0002536
+name: feather vane
+namespace: BrendaTissueOBO
+def: "The flattened part of the feather that is attached on either side of the rachis. Each feather has two vanes." [Feather Anatomy and Function:http\://animals.about.com]
+relationship: part_of BTO:0000447 ! feather
+created_by: XPMUser
+creation_date: 2013-03-01T08:37:18Z
+
+[Term]
 id: BTO:0002537
 name: BNL CL.2 cell
 namespace: BrendaTissueOBO
@@ -20392,6 +20509,7 @@ relationship: develops_from BTO:0002985 ! coronary artery smooth muscle
 [Term]
 id: BTO:0002571
 name: Caco-2/TC7 cell
+
 namespace: BrendaTissueOBO
 def: "Caco-2/TC7 cell line was established from the parental human enterocyte-like Caco-2 cell line." [PMID:16907815]
 synonym: "Caco-2/TC-7 cell" RELATED []
@@ -20441,6 +20559,15 @@ name: UMR-108 cell
 namespace: BrendaTissueOBO
 def: "The UMR-108 cell line is a clonal derivative of a transplantable rat osteosarcoma that had been induced by injection of radiophosphorous (32P)." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
 is_a: BTO:0000407 ! osteosarcoma cell line
+
+[Term]
+id: BTO:0002578
+name: feather barbs
+namespace: BrendaTissueOBO
+def: "The numerous branches off the rachis that form the vanes." [Feather Anatomy and Function:http\://animals.about.com]
+relationship: part_of BTO:0000447 ! feather
+created_by: XPMUser
+creation_date: 2013-03-01T08:38:10Z
 
 [Term]
 id: BTO:0002579
@@ -24859,7 +24986,6 @@ namespace: BrendaTissueOBO
 def: "Human amnion epithelial cell line." [PMID:16619194]
 is_a: BTO:0001373 ! amnion epithelial cell line
 
-
 [Term]
 id: BTO:0003131
 name: CaR-1 cell
@@ -25957,6 +26083,15 @@ synonym: "Hs578 cell" RELATED []
 is_a: BTO:0000794 ! pancreatic cancer cell line
 
 [Term]
+id: BTO:0003269
+name: feather barbicels
+namespace: BrendaTissueOBO
+def: "Tiny hooks that interlock to hold the barbules together." [Feather Anatomy and Function:http\://animals.about.com]
+relationship: part_of BTO:0000447 ! feather
+created_by: XPMUser
+creation_date: 2013-03-01T08:39:13Z
+
+[Term]
 id: BTO:0003270
 name: Me665/2 cell
 namespace: BrendaTissueOBO
@@ -26694,6 +26829,7 @@ synonym: "gingival crevicular fluid" RELATED []
 synonym: "sulcular fluid" RELATED []
 relationship: related_to BTO:0000519 ! gingiva
 
+
 [Term]
 id: BTO:0003365
 name: germinated grain
@@ -26941,6 +27077,15 @@ synonym: "pontine gray matter" RELATED []
 relationship: part_of BTO:0001101 ! pons
 
 [Term]
+id: BTO:0003397
+name: feather barbules
+namespace: BrendaTissueOBO
+def: "Tiny extensions from barbs that are held together by barbicels." [Feather Anatomy and Function:http\://animals.about.com]
+relationship: part_of BTO:0000447 ! feather
+created_by: XPMUser
+creation_date: 2013-03-01T08:39:17Z
+
+[Term]
 id: BTO:0003398
 name: ganglion cell layer
 namespace: BrendaTissueOBO
@@ -27166,6 +27311,7 @@ name: beta-TC6 cell
 namespace: BrendaTissueOBO
 def: "Mouse insulinoma cell line." [PMID:16332988]
 synonym: "beta TC6 cell" RELATED []
+
 is_a: BTO:0000794 ! pancreatic cancer cell line
 
 [Term]
@@ -27469,6 +27615,7 @@ relationship: develops_from BTO:0000007 ! HEK-293 cell
 id: BTO:0003466
 name: 293-CD40 cell
 namespace: BrendaTissueOBO
+
 def: "A 293 cell line stably expressing Flag-tagged CD40." [PMID:10920205]
 synonym: "293.CD40 cell" RELATED []
 relationship: develops_from BTO:0000007 ! HEK-293 cell
@@ -28254,6 +28401,15 @@ synonym: "c57MG cell" RELATED []
 is_a: BTO:0003568 ! mammary gland cell line
 
 [Term]
+id: BTO:0003570
+name: feather bud
+namespace: BrendaTissueOBO
+def: "Within chick embryos, interactions between the epidermis and dermis of the skin result in the formation of preliminary feather buds. Feather buds are forming the basis from which feathers will be formed." [Erin Betters\, Katy Lewis\, Katie Crawford:Culturing skin from eight day chicken embryos\: the development of feather buds]
+relationship: part_of BTO:0000379 ! embryo
+created_by: XPMUser
+creation_date: 2013-03-01T08:48:03Z
+
+[Term]
 id: BTO:0003571
 name: HL-60/MX-2 cell
 namespace: BrendaTissueOBO
@@ -29023,7 +29179,6 @@ name: germinal center
 namespace: BrendaTissueOBO
 def: "The area in the center of a lymph node containing aggregations of actively proliferating lymphocytes." [Dorlands Medical Dictionary:MerckMedicus]
 relationship: part_of BTO:0000784 ! lymph node
-
 
 [Term]
 id: BTO:0003672
@@ -30293,6 +30448,15 @@ def: "System pertaining to blood vessels in the brain." [Health Library:Southwes
 relationship: part_of BTO:0001085 ! vascular system
 
 [Term]
+id: BTO:0003841
+name: plant organ culture
+namespace: BrendaTissueOBO
+def: "The culture of excised organs in a suitable aseptic medium. Roots, leaves, embryos, meristems, and many other plant structures have been successfully maintained in culture. For example, chemical factors affecting sex expression have been studied using cultures of isolated flowers, and root nodule formation has been investigated in cultures of legume roots." [Dictionary of Botany:http\://botanydictionary.org/organ-culture.html]
+is_a: BTO:0003916 ! plant culture
+created_by: XPMUser
+creation_date: 2013-03-01T09:11:33Z
+
+[Term]
 id: BTO:0003842
 name: GM02037 cell
 namespace: BrendaTissueOBO
@@ -30860,7 +31024,8 @@ id: BTO:0003915
 name: hairy root culture
 namespace: BrendaTissueOBO
 def: "A relatively new type of plant culture, which consists of highly branched roots of a plant, covered with a mass of tiny root hairs." [Online Medical Dictionary:http\://www.irishhealth.com/dictionary.html?]
-is_a: BTO:0003916 ! plant culture
+synonym: "plant hairy root culture" RELATED []
+is_a: BTO:0003987 ! root culture
 
 [Term]
 id: BTO:0003916
@@ -31156,7 +31321,6 @@ is_a: BTO:0001473 ! blastomere
 id: BTO:0003954
 name: dopaminergic system
 namespace: BrendaTissueOBO
-
 def: "The system of nerve cells that uses dopamine as its neurotransmitter." [Online Medical Dictionary:http\://www.irishhealth.com/dictionary.html?]
 relationship: part_of BTO:0001484 ! nervous system
 
@@ -31340,6 +31504,7 @@ def: "In the human this area is called ectosplenial area 26. It is a cytoarchite
 synonym: "ectosplenial area 26" RELATED []
 relationship: part_of BTO:0003977 ! retrosplenial region
 
+
 [Term]
 id: BTO:0003980
 name: SGHPL-4 cell
@@ -31398,12 +31563,43 @@ synonym: "SB2 cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
 
 [Term]
+id: BTO:0003987
+name: root culture
+namespace: BrendaTissueOBO
+def: "Generally excised root is cultured in liquid medium. The techniques of root culture give certain important informations such as nutritional requirements, infection by Rhizobium and nodulation and physiological activities, for example, production of alkaloids and nicotine." [Online Botanical Encyclopedia:www.ePlantScience.com]
+synonym: "plant root culture" RELATED []
+is_a: BTO:0003841 ! plant organ culture
+created_by: XPMUser
+creation_date: 2013-03-01T09:13:35Z
+
+[Term]
 id: BTO:0003988
 name: DX-3 cell
 namespace: BrendaTissueOBO
 def: "Human melanoma cell line." [PMID:15492257]
 synonym: "DX3 cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
+
+[Term]
+id: BTO:0003989
+name: OV2008/C13 cell
+namespace: BrendaTissueOBO
+def: "Human epithelial ovarian cancer cell line. CDDP-resistant variant C13* was established after in vitro CDDP challenge from the Cisplatin-sensitive ovarian cystadenocarcinoma OV2008 cells." [PMID:18506185]
+synonym: "C-13 cell" RELATED []
+synonym: "C13* cell" RELATED []
+synonym: "OV-2008-C13 cell" RELATED []
+relationship: develops_from BTO:0003792 ! OV-2008 cell
+created_by: XPMUser
+creation_date: 2013-03-01T11:05:12Z
+
+[Term]
+id: BTO:0003990
+name: CH12F3-2 cell
+namespace: BrendaTissueOBO
+def: "Murine B lymphoma cell line." [PMID:10373455]
+is_a: BTO:0001518 ! B-lymphoma cell line
+created_by: XPMUser
+creation_date: 2013-03-01T11:14:18Z
 
 [Term]
 id: BTO:0003991
@@ -31679,6 +31875,15 @@ def: "It gives rise to the secondary neural tube by cavitation in human embryos.
 relationship: part_of BTO:0000379 ! embryo
 
 [Term]
+id: BTO:0004025
+name: claw muscle
+namespace: BrendaTissueOBO
+def: "Some invertebrate muscles, such as in crab claws, have much longer sarcomeres than vertebrates, resulting in many more sites for actin and myosin to bind and thus much greater force per square centimeter." [Wikipedia:The Free Encyclopedia]
+relationship: part_of BTO:0001719 ! claw
+created_by: XPMUser
+creation_date: 2013-03-15T12:00:36Z
+
+[Term]
 id: BTO:0004026
 name: 4TO7 cell
 namespace: BrendaTissueOBO
@@ -31768,6 +31973,16 @@ namespace: BrendaTissueOBO
 def: "Human gynecologic ovarian cancer cell line." [PMID:9554442]
 synonym: "AD10 cell" RELATED []
 is_a: BTO:0000811 ! ovary cancer cell line
+
+[Term]
+id: BTO:0004038
+name: colonic neoplasm cell
+namespace: BrendaTissueOBO
+def: "An abnormal growth of tissue in animals or plants. Neoplasms can be benign or malignant." [Medical Dictionary:http\://medical-dictionary.thefreedictionary.com/]
+synonym: "colonic tumor cell" RELATED []
+relationship: develops_from BTO:0000269 ! colon
+created_by: XPMUser
+creation_date: 2013-03-15T12:16:35Z
 
 [Term]
 id: BTO:0004039
@@ -32935,6 +33150,34 @@ synonym: "olfactory neuron" RELATED []
 synonym: "olfactory sensory neuron" RELATED []
 is_a: BTO:0001037 ! sensory cell
 relationship: part_of BTO:0000108 ! olfactory epithelium
+
+[Term]
+id: BTO:0004186
+name: DuPro cell
+namespace: BrendaTissueOBO
+def: "Androgen-insensitive human prostate cancer cell line." [PMID:18413741]
+is_a: BTO:0001033 ! prostate cancer cell line
+created_by: XPMUser
+creation_date: 2013-03-15T12:22:37Z
+
+[Term]
+id: BTO:0004187
+name: NRK-E52 cell
+namespace: BrendaTissueOBO
+def: "Normal rat kidney cell line." [PMID:20444976]
+relationship: develops_from BTO:0000951 ! NRK cell
+created_by: XPMUser
+creation_date: 2013-03-15T12:36:19Z
+
+[Term]
+id: BTO:0004188
+name: ECRF cell
+namespace: BrendaTissueOBO
+def: "Immortalized HUVEC cell line." [PMID:20424116]
+synonym: "EC-RF cell" RELATED []
+is_a: BTO:0001949 ! HUVEC cell
+created_by: XPMUser
+creation_date: 2013-03-15T12:46:59Z
 
 [Term]
 id: BTO:0004189
@@ -34709,7 +34952,6 @@ namespace: BrendaTissueOBO
 def: "Human melanoma cell line highly metastatic in nude mice." [PMID:9271321]
 synonym: "DM4 cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
-
 created_by: Marion
 creation_date: 2010-02-01T12:11:54Z
 
@@ -35157,6 +35399,16 @@ synonym: "LN382 cell" RELATED []
 is_a: BTO:0001530 ! glioblastoma cell line
 created_by: Marion
 creation_date: 2010-02-02T03:49:16Z
+
+[Term]
+id: BTO:0004460
+name: FD-1 cell
+namespace: BrendaTissueOBO
+def: "Farber disease dermal fibroblast cell line." [PMID:21335555]
+synonym: "GM02315 cell" RELATED []
+is_a: BTO:0001619 ! skin fibroblast cell line
+created_by: XPMUser
+creation_date: 2013-03-15T12:56:20Z
 
 [Term]
 id: BTO:0004461
@@ -36431,7 +36683,6 @@ creation_date: 2010-04-12T11:29:02Z
 
 [Term]
 id: BTO:0004592
-
 name: bone matrix
 namespace: BrendaTissueOBO
 def: "The intercellular substance of bone tissue consisting of collagen fibers, ground substance, and inorganic bone salts." [The American Heritage Medical Dictionary:2009]
@@ -36907,6 +37158,16 @@ synonym: "TT2 cell" RELATED []
 is_a: BTO:0001581 ! embryonic stem cell line
 created_by: mgr
 creation_date: 2010-04-15T01:54:00Z
+
+[Term]
+id: BTO:0004640
+name: FD-2 cell
+namespace: BrendaTissueOBO
+def: "Farber disease dermal fibroblast cell line." [PMID:21335555]
+synonym: "GM20017 cell" RELATED []
+is_a: BTO:0001619 ! skin fibroblast cell line
+created_by: XPMUser
+creation_date: 2013-03-15T12:57:07Z
 
 [Term]
 id: BTO:0004641
@@ -38587,6 +38848,7 @@ name: DT-40 cell
 namespace: BrendaTissueOBO
 def: "Chicken B cell line; established in 1985 from a bursal lymphoma, which was induced by infection of a 1 day old chicken with Rous-associated virus type 1 (RAV-1), an avian leukosis retrovirus carrying no cell-derived oncogene." [Deutsche Sammlung von Mikroorganismen und Zellkulturen GmbH:DSMZ]
 synonym: "DT 40 cell" RELATED []
+synonym: "DT-40B cell" RELATED []
 synonym: "DT40 cell" RELATED []
 synonym: "DT40B cell" RELATED []
 is_a: BTO:0001518 ! B-lymphoma cell line
@@ -39721,6 +39983,16 @@ created_by: Marion Gremse
 creation_date: 2010-10-28T09:27:50Z
 
 [Term]
+id: BTO:0004931
+name: NPD-1 cell
+namespace: BrendaTissueOBO
+def: "Niemann-Pick type A dermal fibroblast cell line." [PMID:21335555]
+synonym: "GM13205 cell" RELATED []
+is_a: BTO:0001619 ! skin fibroblast cell line
+created_by: XPMUser
+creation_date: 2013-03-15T12:59:20Z
+
+[Term]
 id: BTO:0004932
 name: RCC-10 cell
 namespace: BrendaTissueOBO
@@ -39749,6 +40021,7 @@ created_by: Marion Gremse
 creation_date: 2010-10-28T10:05:07Z
 
 [Term]
+
 id: BTO:0004935
 name: NALM-24 cell
 namespace: BrendaTissueOBO
@@ -42956,7 +43229,8 @@ id: BTO:0005274
 name: adventitious root culture
 namespace: BrendaTissueOBO
 def: "Leaf and stem explants cultured on MS (Murashige and Skoog) medium supplemented with various auxins." [Iyyakkannu Sivanesan and Byoung Ryong Jeong:Induction and establishment of adventitious and hairy root cultures of Plumbago zeylanica L.]
-is_a: BTO:0003916 ! plant culture
+synonym: "plant adventitious root culture" RELATED []
+is_a: BTO:0003987 ! root culture
 created_by: XPMUser
 creation_date: 2012-02-06T09:31:24Z
 
@@ -43006,12 +43280,11 @@ is_a: BTO:0000195 ! CACO-2 cell
 created_by: XPMUser
 creation_date: 2012-02-06T11:35:10Z
 
-
 [Term]
 id: BTO:0005280
 name: culture condition:oxalate-grown cell
 namespace: BrendaTissueOBO
-is_a: BTO:0000216 ! culture condition
+is_a: BTO:0001479 ! culture condition:-grown cell
 created_by: XPMUser
 creation_date: 2012-02-06T11:38:30Z
 
@@ -43051,6 +43324,16 @@ def: "Human normal lymphoblastoid cell line." [PMID:20413351]
 is_a: BTO:0000773 ! lymphoblastoid cell line
 created_by: XPMUser
 creation_date: 2012-02-06T07:51:04Z
+
+[Term]
+id: BTO:0005285
+name: NPD-2 cell
+namespace: BrendaTissueOBO
+def: "Niemann-Pick type A dermal fibroblast cell line." [PMID:21335555]
+synonym: "GM16195 cell" RELATED []
+is_a: BTO:0001619 ! skin fibroblast cell line
+created_by: XPMUser
+creation_date: 2013-03-15T12:59:53Z
 
 [Term]
 id: BTO:0005286
@@ -43129,7 +43412,6 @@ creation_date: 2012-02-08T12:58:31Z
 
 [Term]
 id: BTO:0005294
-
 name: NCI-H647 cell
 namespace: BrendaTissueOBO
 def: "Human non-small cell lung cancer adenosquamous carcinoma cell line." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
@@ -43534,6 +43816,7 @@ id: BTO:0005337
 name: Ma-Mel-04 cell
 namespace: BrendaTissueOBO
 def: "Established melanoma cell line from the Skin Cancer Unit at the German Cancer Research Center, Heidelberg." [PMID:21465477]
+synonym: "MaMel04 cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
 created_by: XPMUser
 creation_date: 2012-03-23T09:09:57Z
@@ -43552,6 +43835,7 @@ id: BTO:0005339
 name: Ma-Mel-11 cell
 namespace: BrendaTissueOBO
 def: "Established melanoma cell line from the Skin Cancer Unit at the German Cancer Research Center, Heidelberg." [PMID:21465477]
+synonym: "MaMel11 cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
 created_by: XPMUser
 creation_date: 2012-03-23T09:11:06Z
@@ -43561,6 +43845,7 @@ id: BTO:0005340
 name: Ma-Mel-12 cell
 namespace: BrendaTissueOBO
 def: "Established melanoma cell line from the Skin Cancer Unit at the German Cancer Research Center, Heidelberg." [PMID:21465477]
+synonym: "MaMel12 cell" RELATED []
 is_a: BTO:0000849 ! melanoma cell line
 created_by: XPMUser
 creation_date: 2012-03-23T09:11:46Z
@@ -44330,6 +44615,237 @@ synonym: "SpA-TGC cell" RELATED []
 is_a: BTO:0005362 ! trophoblast giant cell
 created_by: XPMUser
 creation_date: 2012-09-20T12:31:03Z
+
+[Term]
+id: BTO:0005422
+name: culture condition:(+)-camphor-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: XPMUser
+creation_date: 2013-03-15T01:05:31Z
+
+[Term]
+id: BTO:0005423
+name: MDCK-MDR1 cell
+namespace: BrendaTissueOBO
+def: "Madin-Darby canine kidney cells transfected with the human MDR1 gene." [PMID:16749865]
+relationship: develops_from BTO:0000837 ! MDCK cell
+created_by: XPMUser
+creation_date: 2013-03-15T06:33:18Z
+
+[Term]
+id: BTO:0005424
+name: melan-a Hm cell
+namespace: BrendaTissueOBO
+def: "HERmrk-transgenic melanocytes that transgenically express a chimeric protein consisting of an extracellular EGFR- and an intracellular Xmrk (an oncogene) domain." [PMID:20667128]
+is_a: BTO:0003183 ! melanocyte cell line
+created_by: XPMUser
+creation_date: 2013-03-15T06:37:19Z
+
+[Term]
+id: BTO:0005425
+name: NCI-H2170 cell
+namespace: BrendaTissueOBO
+def: "Human lung squamous cell carcinoma cell line." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "H2170 cell" RELATED []
+is_a: BTO:0002202 ! lung squamous cell carcinoma cell line
+created_by: XPMUser
+creation_date: 2013-03-15T06:48:39Z
+
+[Term]
+id: BTO:0005426
+name: NB-69 cell
+namespace: BrendaTissueOBO
+def: "Human neuroblastoma brain (Stage III) cell line, isolated from a 16 month old male." [Health Protection Agency Culture Collections:http\://hpacultures.org.uk/products/celllines/]
+synonym: "NB69 cell" RELATED []
+is_a: BTO:0000932 ! neuroblastoma cell line
+created_by: XPMUser
+creation_date: 2013-03-18T04:58:01Z
+
+[Term]
+id: BTO:0005427
+name: NW-1539 cell
+namespace: BrendaTissueOBO
+def: "Human melanoma cell line." [PMID:10518794]
+synonym: "NW1539 cell" RELATED []
+is_a: BTO:0000849 ! melanoma cell line
+created_by: XPMUser
+creation_date: 2013-03-18T05:02:33Z
+
+[Term]
+id: BTO:0005428
+name: NW-624 cell
+namespace: BrendaTissueOBO
+def: "Human melanoma cell line." [PMID:10518794]
+synonym: "NW624 cell" RELATED []
+is_a: BTO:0000849 ! melanoma cell line
+created_by: XPMUser
+creation_date: 2013-03-18T05:04:03Z
+
+[Term]
+id: BTO:0005429
+name: PLHC-1/dox cell
+namespace: BrendaTissueOBO
+def: "A doxorubicin (DOX) resistant PLHC-1 subclone." [PMID:18950875]
+relationship: develops_from BTO:0002331 ! PLHC-1 cell
+created_by: XPMUser
+creation_date: 2013-03-18T08:06:34Z
+
+[Term]
+id: BTO:0005430
+name: STKM-1 cell
+namespace: BrendaTissueOBO
+def: "Human gastric carcinoma cell line." [PMID:22948776]
+is_a: BTO:0000787 ! gastric cancer cell line
+created_by: XPMUser
+creation_date: 2013-03-18T08:30:15Z
+
+[Term]
+id: BTO:0005431
+name: Vgamma9Vdelta2 T-lymphocyte
+namespace: BrendaTissueOBO
+def: "Vgamma9Vdelta2 T- lymphocytes are reported to participate in the anti-tumor immune surveillance in human. They are known to recognize phosphoantigens and molecules expressed on cells undergoing neoplasic transformation." [PMID:17764010]
+synonym: "Vgamma9Vdelta2 T lymphocyte" RELATED []
+is_a: BTO:0000782 ! T-lymphocyte
+created_by: XPMUser
+creation_date: 2013-03-18T08:52:47Z
+
+[Term]
+id: BTO:0005432
+name: Bm3-c2 cell
+namespace: BrendaTissueOBO
+def: "Drosophila melanogaster larval neuronal cell line." [PMID:20372979]
+is_a: BTO:0000947 ! neuronal cell line
+is_a: BTO:0002632 ! larval cell line
+created_by: XPMUser
+creation_date: 2013-03-21T09:01:55Z
+
+[Term]
+id: BTO:0005433
+name: culture condition:4-nitrophenol-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: XPMUser
+creation_date: 2013-04-18T10:59:02Z
+
+[Term]
+id: BTO:0005434
+name: culture condition:L-alanine-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: XPMUser
+creation_date: 2013-04-18T11:00:41Z
+
+[Term]
+id: BTO:0005435
+name: culture condition:succinate-glucose-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: XPMUser
+creation_date: 2013-04-18T11:01:07Z
+
+[Term]
+id: BTO:0005436
+name: panicle
+namespace: BrendaTissueOBO
+def: "A branched indeterminate inflorescence in which the branches are racemes, so that each flower has its own stalk attached to the branch. Oats and sorghum have panicles." [Dictionary:http\://www.thefreedictionary.com/]
+is_a: BTO:0000628 ! inflorescence
+created_by: XPMUser
+creation_date: 2013-04-18T11:08:50Z
+
+[Term]
+id: BTO:0005437
+name: mammary luminal epithelial cell
+namespace: BrendaTissueOBO
+def: "The human breast epithelium is a branching ductal system composed of an inner layer of polarized luminal epithelial cells and an outer layer of myoepithelial cells that terminate in distally located terminal duct lobular units (TDLUs)." [PMID:16807805]
+synonym: "breast luminal epithelial cell" RELATED []
+relationship: part_of BTO:0004300 ! mammary epithelial cell
+created_by: XPMUser
+creation_date: 2013-04-22T09:43:48Z
+
+[Term]
+id: BTO:0005438
+name: HO-8910 cell
+namespace: BrendaTissueOBO
+def: "Human epithelial ovarian cancer cell line." [PMID:21211287]
+is_a: BTO:0000811 ! ovary cancer cell line
+created_by: XPMUser
+creation_date: 2013-04-22T10:09:12Z
+
+[Term]
+id: BTO:0005439
+name: Lu-134-B cell
+namespace: BrendaTissueOBO
+def: "Human small cell lung cancer cell line." [PMID:2168867]
+synonym: "Lu134B cell" RELATED []
+is_a: BTO:0002206 ! small cell lung cancer cell line
+created_by: XPMUser
+creation_date: 2013-04-22T10:17:12Z
+
+[Term]
+id: BTO:0005440
+name: PC-7 cell
+namespace: BrendaTissueOBO
+def: "Human lung adenocarcinoma cell line." [PMID:17150102]
+synonym: "PC7 cell" RELATED []
+is_a: BTO:0001911 ! lung adenocarcinoma cell line
+created_by: XPMUser
+creation_date: 2013-04-22T10:21:40Z
+
+[Term]
+id: BTO:0005441
+name: lateral root
+namespace: BrendaTissueOBO
+def: "Lateral roots extend horizontally from the primary root (radicle) and serve to anchor the plant securely into the soil. This branching of roots also contributes to water uptake, and facilitates the extraction of nutrients required for the growth and development of the plant." [Wikipedia:The Free Encyclopedia]
+is_a: BTO:0001188 ! root
+created_by: XPMUser
+creation_date: 2013-04-23T11:36:51Z
+
+[Term]
+id: BTO:0005442
+name: SBC-1 cell
+namespace: BrendaTissueOBO
+def: "Human small cell lung cancer cell line." [PMID:18695882]
+is_a: BTO:0002206 ! small cell lung cancer cell line
+created_by: XPMUser
+creation_date: 2013-04-23T11:50:04Z
+
+[Term]
+id: BTO:0005443
+name: STKM-2 cell
+namespace: BrendaTissueOBO
+def: "Human gastric carcinoma cell line." [PMID:22948776]
+is_a: BTO:0000787 ! gastric cancer cell line
+created_by: XPMUser
+creation_date: 2013-04-23T11:54:02Z
+
+[Term]
+id: BTO:0005444
+name: SHI-1 cell
+namespace: BrendaTissueOBO
+def: "Human acute monocytic leukemia cell line." [PMID:15951289]
+is_a: BTO:0002332 ! monocytic leukemia cell line
+created_by: XPMUser
+creation_date: 2013-04-23T11:56:05Z
+
+[Term]
+id: BTO:0005445
+name: rectal epithelium
+namespace: BrendaTissueOBO
+def: "Epithelium of the rectum." [curators:mgr]
+synonym: "rectum epithelium" RELATED []
+relationship: part_of BTO:0001158 ! rectum
+created_by: XPMUser
+creation_date: 2013-04-26T10:08:43Z
+
+[Term]
+id: BTO:0005446
+name: plant septum
+namespace: BrendaTissueOBO
+def: "A partition or wall, especially in an ovary. A septum is formed by the fusion of the walls of two adjacent organs like ovary walls or anther walls, for example, the partition between two sections of an orange." [Memidex Free Online Dictionary:emidex.com/septum+plant-organ, PO:0000030]
+relationship: part_of BTO:0000750 ! plant ovary
+created_by: XPMUser
+creation_date: 2013-04-26T11:03:12Z
 
 [Typedef]
 id: develops_from
