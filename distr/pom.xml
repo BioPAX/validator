@@ -80,6 +80,10 @@
 			<type>jar</type>
 			<classifier>exec-war</classifier>
 		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
 	</dependencies>
 	
 </project>
