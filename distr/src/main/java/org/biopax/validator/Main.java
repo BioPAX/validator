@@ -24,12 +24,12 @@ package org.biopax.validator;
 
 import java.io.*;
 import java.util.*;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.PropertyConfigurator;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.Model;
 import org.biopax.validator.api.ValidatorUtils;
@@ -59,115 +59,116 @@ public class Main {
 	static final String EXT = ".modified.owl";
 	static String profile = null;
 	static String xmlBase = null;
+	static String outFormat = "html";
+	static String output = null;
 
+	
+	private static void setUpLogger() {
+		//set defaults
+		Properties properties = new Properties();
+		properties.put("log4j.rootLogger", "ERROR, Console");
+		properties.put("log4j.appender.Console", "org.apache.log4j.ConsoleAppender");
+		properties.put("log4j.appender.Console.layout", "org.apache.log4j.PatternLayout");
+		properties.put("log4j.appender.Console.layout.ConversionPattern", "%-4r [%t] %-5p %c %x - %m%n");
+		PropertyConfigurator.configure(properties);
+		
+		properties = new Properties(properties);
+		
+		try {
+			properties.load(new FileReader("log4j.properties"));
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to load cPath2 properties " +
+					"from log4j.properties", e);
+		}
+		
+		PropertyConfigurator.configure(properties);
+	}
+	
 	public static void main(String[] args) throws Exception {
 		
-        if(args == null || args.length < 2) {
-        	log.warn("At least input and output parameters must be specified.");
+		setUpLogger();
+		
+        if(args == null || args.length == 0) {
+        	log.warn("At least input file/dir must be specified.");
         	printHelpAndQuit();
         }
 
 		String input = args[0];
-		String output = args[1];
-		if(input == null || input.isEmpty() || output == null || output.isEmpty()) {
-			log.warn("At least input and output parameters must be specified.");
+		
+		if(input == null || input.isEmpty() || input.startsWith("--")) {
+			log.warn("Input (file, url, or directory) is probably missing");
 			printHelpAndQuit();
 		}
         
 		// match optional parameters
-		if (args.length > 2) {
-			for (int i = 1; i < args.length; i++) {
-				if("--auto-fix".equalsIgnoreCase(args[i])) {
-					autofix = true;
-				} else if(args[i].startsWith("--max-errors=")) {
-					String n = args[i].substring(13);
-					maxErrors = Integer.parseInt(n);
-				} else if(args[i].startsWith("--profile=")) {
-					profile = args[i].substring(10);
-				} else if(args[i].startsWith("--xmlBase=")) {
-					xmlBase = args[i].substring(10);
-				}
+		for (int i = 1; i < args.length; i++) {
+			if("--auto-fix".equalsIgnoreCase(args[i])) {
+				autofix = true;
+			} else if(args[i].startsWith("--max-errors=")) {
+				String n = args[i].substring(13);
+				maxErrors = Integer.parseInt(n);
+			} else if(args[i].startsWith("--profile=")) {
+				profile = args[i].substring(10);
+			} else if(args[i].startsWith("--xmlBase=")) {
+				xmlBase = args[i].substring(10);
+			} else if(args[i].startsWith("--output=")) {
+				output = args[i].substring(9);	
+			} else if(args[i].startsWith("--out-format=")) {
+				outFormat = args[i].substring(13);
+				if(outFormat.isEmpty())
+					outFormat = "html";
 			}
 		}
 
 		// this does 90% of the job ;)
 		ctx = new ClassPathXmlApplicationContext(
-			new String[] {"META-INF/spring/appContext-loadTimeWeaving.xml", "META-INF/spring/appContext-validator.xml"});
+			new String[] {"META-INF/spring/appContext-loadTimeWeaving.xml", 
+				"META-INF/spring/appContext-validator.xml"});
 		// Rules are now loaded, and AOP is listening for BioPAX model method calls.
 		
         // get the beans to work with
         Validator validator = (Validator) ctx.getBean("validator");
 		
 		// go validate all
-		ValidatorResponse validatorResponse = runBatch(validator,
-				getResourcesToValidate(input));
-		
-		// save modified BioPAX data
-		
-		for (Validation result : validatorResponse.getValidationResult()) 
-		{
-			if (autofix) {
-				String out = result.getDescription();
-				// if was URL, create a shorter name;
-				out = out.replaceAll("\\[|\\]","").replaceFirst("/&", ""); // remove ']', '[', and ending '/', if any
-				int idx = out.lastIndexOf('/');
-				if(idx >= 0) {
-					if(idx < out.length() - 1)
-						out = out.substring(idx+1);
-				}
-				out += EXT; // add the file extension
-				PrintWriter bpWriter = new PrintWriter(out);
-				String owl = result.getModelData();
-				bpWriter.write(owl, 0, owl.length());
-				bpWriter.write(System.getProperty ( "line.separator" ));
-				bpWriter.flush();
-			}
-			
-			// remove the BioPAX model data before printing results
-			result.setModel(null);
-			result.setModelData(null);
-		}
-
-			
-		// save the validation result either as XML or HTML
-		PrintWriter errWriter = new PrintWriter(output);
-		Source xsltSrc = (output.endsWith(".html"))
-			? new StreamSource(ctx.getResource("classpath:html-result.xsl").getInputStream())
-				: null;
-		ValidatorUtils.write(validatorResponse, errWriter, xsltSrc);
+		runBatch(validator, getResourcesToValidate(input));
 	}
 	
 	
 	private static void printHelpAndQuit() {
     	final String usage = 
-			"\n The BioPAX Validator v3, Console Java Application\n\n" +
-		    "Parameters: <input> <output[.xml|.html]> [--auto-fix] [--xmlBase=<base>] [--max-errors=<n>] [--profile=notstrict]\n" + 
-		    "(the second and next arguments are optional and can go in any order).\n" +
+			"\nThe BioPAX Validator v3\n\n" +
+		    "Usage (arguments):\n <input> [--output=<filename>] [--out-format=xml|html] [--auto-fix] " +
+		    "[--xmlBase=<base>] [--max-errors=<n>] [--profile=notstrict]\n\n" + 
+		    "Given --output=<filename>, a one-file validation report will be \n" +
+		    "generated (HTML or XML) instead of default report file(s) in the \n" +
+		    "current directory. Optional arguments can go in any order.\n" +
 		    "For example:\n" +
-		    "  path/dir errors.xml\n" +
-		    "  list:batch_file.txt errors.xml\n" +
-		    "  file:biopax.owl errors.xml --auto-fix\n" +
-		    "  http://www.some.net/data.owl errors.html\n\n" +
-		    "A batch file should list one task (resource) per line, i.e., " +
+		    "  path/dir --out-format=xml\n" +
+		    "  list:batch_file.txt --output=reports.html\n" +
+		    "  file:biopax.owl --out-format=xml --auto-fix\n" +
+		    "  http://www.some.net/data.owl\n\n" +
+		    "A batch file should list one task (resource) per line, i.e.,\n" +
 		    "file:path/file or URL (to BioPAX data)\n" +
-		    "If '--auto-fix' option was used, it " +
-		    "also creates a new BioPAX file for each input file " +
-		    "in the current working directory (using '.modified.owl' exention). " +
-		    "If the output file extension is '.html', the XML result will " +
-		    "be auto-transformed to a stand-alone HTML/javascript page, " +
-		    "which is very similar to what the online version returns.";
+		    "If '--auto-fix' option was used, it also creates a new BioPAX file \n" +
+		    "for each input file in the current working directory \n" +
+		    "(adding '.modified.owl' exention). If the outFormat file extension \n" +
+		    "is '.html', the XML result will be auto-transformed to a stand-alone \n" +
+		    "HTML/javascript page, which is very similar to what the online version returns.";
         System.out.println(usage);
         System.exit(-1);
 	}
 
 
-	protected static ValidatorResponse runBatch(Validator validator, 
-			Collection<Resource> resources) throws IOException {					
-		ValidatorResponse response = new ValidatorResponse();       
+	protected static void runBatch(Validator validator, 
+			Collection<Resource> resources) throws IOException {					      
 
-        // Read from the batch and validate from file, id or url, line-by-line (stops on first empty line)
+		//collect all reports in this object (only if --output option was used)
+		final ValidatorResponse consolidatedReport = new ValidatorResponse();  
+		
+		// Read from the batch and validate from file, id or url, line-by-line (stops on first empty line)
         for (Resource resource: resources) {
-        	Validation result = new Validation(new IdentifierImpl(), resource.getDescription(), autofix, null, maxErrors, profile);
+        	Validation result = new Validation(new IdentifierImpl(), resource.getDescription(), 
+        			autofix, null, maxErrors, profile);
         	result.setDescription(resource.getDescription()); 
        		log.info("BioPAX DATA IMPORT FROM: " + result.getDescription());
 			try{				
@@ -183,19 +184,71 @@ public class Main {
 					result.setModelData(SimpleIOHandler.convertToOwl(model));
 				}
 				
+				if(output != null)
+					consolidatedReport.addValidationResult(result);
+				
 			} catch (Exception e) {
 				log.error("failed", e);
 			}
 			
-			response.addValidationResult(result);
+			final String filename = outFileName(result);
+			PrintWriter writer;
+			
+			// save modified (normalized) biopax if the option was used
+			if (autofix) {
+				writer = new PrintWriter(filename + EXT);
+				String owl = result.getModelData();
+				writer.write(owl, 0, owl.length());
+				writer.write(System.getProperty ( "line.separator" ));
+				writer.flush();
+			}
+			
+			// remove the BioPAX data before writing report
+			result.setModel(null);
+			result.setModelData(null);
+			
+			// save the individual validation results
+			//unless the user specified the output file explicitly
+			if(output == null || output.isEmpty()) { 
+				writer = new PrintWriter(filename + ".validation." + outFormat);
+				Source xsltSrc = (outFormat.equalsIgnoreCase("html"))
+						? new StreamSource(ctx.getResource("classpath:html-result.xsl").getInputStream())
+						: null;
+				ValidatorUtils.write(result, writer, xsltSrc);			
+				writer.close();
+			}
+			
 			validator.getResults().remove(result);
-			log.info("Done.");
+			log.info("Done with " + filename);
 		}
-		
-        return response;
+        
+		// save if the user specified the output file explicitly
+		if(output != null) { 
+			Writer writer = new PrintWriter(output);
+			Source xsltSrc = (outFormat.equalsIgnoreCase("html"))
+				? new StreamSource(ctx.getResource("classpath:html-result.xsl").getInputStream())
+					: null;
+			ValidatorUtils.write(consolidatedReport, writer, xsltSrc);			
+			writer.close();
+		}        
     }
 	
 	
+	private static String outFileName(Validation result) {
+		String filename = result.getDescription();
+		// if was URL, create a shorter name;
+		// remove ']', '[', and ending '/', if any
+		filename = filename.replaceAll("\\[|\\]","").replaceFirst("/&", ""); 
+		int idx = filename.lastIndexOf('/');
+		if(idx >= 0) {
+			if(idx < filename.length() - 1)
+				filename = filename.substring(idx+1);
+		}
+		
+		return filename;
+	}
+
+
 	public static Collection<Resource> getResourcesToValidate(String input) throws IOException {
 			Set<Resource> setRes = new HashSet<Resource>();
 			

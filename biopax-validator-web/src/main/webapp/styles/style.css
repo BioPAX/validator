@@ -49,10 +49,10 @@ h2 {
 	font-size: 15px;
 }
 h1 {    
-        color: #9f9f9f;
-        margin:0px;
-        padding:0px;
-        font-size: 15px;
+    color: #9f9f9f;
+    margin:0px;
+    padding:0px;
+    font-size: 15px;
 }
 
 ul {
@@ -60,7 +60,6 @@ ul {
 	margin:0;
 	padding:0;
 	list-style-image: url(../images/bullet2.gif);
-	/*list-style: circle;*/ 
 }
 
 a {
@@ -180,6 +179,9 @@ blockquote{
 	padding: 10px 0 10px 0;
 }
 
+#content p {
+	width: 90%;
+}
 
 /**** Content ***/
 
@@ -191,6 +193,10 @@ blockquote{
 
 #left li {
 	margin-bottom:5px;
+}
+
+#left div {
+	width: 90%;
 }
 
 #left {
@@ -288,4 +294,31 @@ blockquote{
 #footer p {
 	margin: 0px;
 	padding: 0;
+}
+
+
+/**** for the BioPAX Validator ***/
+
+#validate div {
+	padding-top: 2em;
+}
+#aboutFix {
+	display: none;
+}
+#normalizerOptions {
+	display: none;
+}
+#syngroups {
+	list-style: inside; 
+	display: none;
+}
+.errorMsg {
+	color: red;
+}
+#validations ul {
+	display: none;
+	list-style: decimal;
+}
+#vOwl {
+	list-style: inside;
 }

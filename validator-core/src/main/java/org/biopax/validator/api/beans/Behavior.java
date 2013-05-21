@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author rodche
  */
-@XmlType(name="Behavior", namespace="http://biopax.org/validator/2.0/schema")
+@XmlType(name="Behavior")
 @XmlEnum
 public enum Behavior 
 {

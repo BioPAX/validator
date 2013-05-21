@@ -22,9 +22,11 @@ package org.biopax.validator.rules;
  * #L%
  */
 
+import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.ModificationFeature;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.Protein;
+import org.biopax.paxtools.model.level3.ProteinReference;
 import org.biopax.validator.api.CvRestriction;
 import org.biopax.validator.api.CvRestriction.UseChildTerms;
 import org.biopax.validator.impl.CvTermsRule;
@@ -58,12 +60,15 @@ public class ProteinModificationFeatureCvRule extends CvTermsRule<ModificationFe
 	@Override
 	public boolean canCheck(Object thing) {
 		if (thing instanceof ModificationFeature
-			&& ((ModificationFeature) thing).getModificationType() != null
-				&& ((ModificationFeature) thing).getFeatureOf() != null) {
+			&& ((ModificationFeature) thing).getModificationType() != null)
+		{
+			EntityReference er = ((ModificationFeature) thing).getEntityFeatureOf();
+			if(er instanceof ProteinReference)
+				return true;
+			
 			for (PhysicalEntity pe : ((ModificationFeature) thing).getFeatureOf()) {
-				if (pe instanceof Protein) {
+				if (pe instanceof Protein)
 					return true;
-				}
 			}
 		}
 		return false;

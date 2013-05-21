@@ -25,7 +25,7 @@ package org.biopax.validator.api.beans;
 import java.io.Serializable;
 import javax.xml.bind.annotation.*;
 
-@XmlType(name="ErrorCaseType", namespace="http://biopax.org/validator/2.0/schema")
+@XmlType(name="ErrorCaseType")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ErrorCaseType implements Serializable, Comparable<ErrorCaseType> {
 

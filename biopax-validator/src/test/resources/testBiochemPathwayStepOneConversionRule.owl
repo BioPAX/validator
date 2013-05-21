@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#">
+<owl:Ontology rdf:about="">
+ <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl#" />
+</owl:Ontology>
+
+<bp:BiochemicalReaction rdf:about="conversion1">
+</bp:BiochemicalReaction>
+
+<bp:BiochemicalPathwayStep rdf:about="step1">
+ <bp:stepProcess rdf:resource="catalysis1" />
+ <bp:stepProcess rdf:resource="conversion1" />
+ <bp:stepConversion rdf:resource="conversion1" />
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">error: conversion cannot be a step process (only stepConversion)</bp:comment>
+</bp:BiochemicalPathwayStep>
+
+<bp:Catalysis rdf:about="catalysis1">
+ <bp:comment rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">valid step process value</bp:comment>
+</bp:Catalysis>
+</rdf:RDF>

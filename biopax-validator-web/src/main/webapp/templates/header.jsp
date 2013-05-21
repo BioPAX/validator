@@ -28,7 +28,6 @@
 <li><a href="<c:url value='/'/>">Home</a></li>
 <li><a href="<c:url value="/check.html"/>">Validate</a></li>
 <li><a href="http://sf.net/tracker/?group_id=85345">Report</a></li>
-
 </ul>
 </div>
 </div>

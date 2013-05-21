@@ -27,8 +27,8 @@ import java.util.*;
 import javax.xml.bind.annotation.*;
 
 
-@XmlRootElement(namespace="http://biopax.org/validator/2.0/schema")
-@XmlType(name="ValidatorResponse", namespace="http://biopax.org/validator/2.0/schema")
+@XmlRootElement
+@XmlType(name="ValidatorResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ValidatorResponse implements Serializable {
 

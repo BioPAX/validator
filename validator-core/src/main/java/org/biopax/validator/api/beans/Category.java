@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  * @author rodche
  */
-@XmlType(name="Category", namespace="http://biopax.org/validator/2.0/schema")
+@XmlType(name="Category")
 @XmlEnum
 public enum Category 
 {

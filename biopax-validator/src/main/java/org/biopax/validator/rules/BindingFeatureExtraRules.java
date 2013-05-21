@@ -67,12 +67,11 @@ public class BindingFeatureExtraRules extends AbstractRule<Model> {
 		
 		// report the error once for each cluster >1
 		for (Set<BindingFeature> s : violations) {
-			if(violations.size() > 1) {
+			if(s.size() > 1) {
 				BindingFeature a = s.iterator().next();
 				error(validation, a, "inverse.functional.violated",	false, "bindsTo", a.getBindsTo(), s);
 			}
 		}
-
 	}
    
 }

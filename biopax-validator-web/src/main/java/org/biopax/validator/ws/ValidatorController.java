@@ -242,7 +242,6 @@ public class ValidatorController {
      * @param writer
      * @throws IOException
      */
-    //TODO consider using mvc:resources instead of the classpath and/or dependency on biopax-validator-client
     @RequestMapping(value="/schema")
     public void getSchema(Writer writer, HttpServletResponse response) 
     		throws IOException 
@@ -250,7 +249,7 @@ public class ValidatorController {
    		log.debug("XML Schema requested.");
     	
     	BufferedReader bis = new BufferedReader(new InputStreamReader(
-    		LOADER.getResource("classpath:validator-response-2.0.xsd")
+    		LOADER.getResource("classpath:org/biopax/validator/api/schema/schema1.xsd")
     			.getInputStream(), "UTF-8"));
     	
     	response.setContentType("application/xml");

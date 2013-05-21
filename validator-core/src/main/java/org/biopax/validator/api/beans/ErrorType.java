@@ -27,7 +27,7 @@ import java.util.*;
 
 import javax.xml.bind.annotation.*;
 
-@XmlType(name="ErrorType", namespace="http://biopax.org/validator/2.0/schema")
+@XmlType(name="ErrorType")
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class ErrorType implements Serializable, Comparable<ErrorType> {
 	

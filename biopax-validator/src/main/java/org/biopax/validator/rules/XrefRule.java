@@ -62,10 +62,8 @@ public class XrefRule extends AbstractRule<Xref>{
 			String id = x.getId();
 			if (id != null) {
 				if (!xrefHelper.canCheckIdFormatIn(preferedDbName)) {
-					if (logger.isWarnEnabled()) {
-						logger.warn("Can't check IDs (no regexp) for " 
-								+ db + " (" + preferedDbName + ")");
-					}
+					logger.info("Can't check IDs (no regexp) for " 
+							+ db + " (" + preferedDbName + ")");
 				} else if (!xrefHelper.checkIdFormat(preferedDbName, id)) {
 					
 					String regxp = xrefHelper.getRegexpString(preferedDbName);

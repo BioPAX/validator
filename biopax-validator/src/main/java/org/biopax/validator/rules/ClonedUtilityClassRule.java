@@ -128,12 +128,6 @@ public class ClonedUtilityClassRule extends	AbstractRule<Model> {
 						if(editor.isMultipleCardinality())
 							editor.removeValueFromBean(range, domain);
 						editor.setValueToBean(master, domain);
-						
-						log.debug("Replaced " 
-							+ ((UtilityClass)range).getModelInterface().getSimpleName()
-							+ " " + ((UtilityClass)range).getRDFId() + 
-							" with " + master.getRDFId() +
-							"; " + editor.toString() + "; (domain) bean: " + domain);
 					}
 				}
 			};

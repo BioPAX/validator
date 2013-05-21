@@ -23,6 +23,7 @@ package org.biopax.validator.utils;
  */
 
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
@@ -50,11 +51,18 @@ public final class Normalizer {
 	private ShallowCopy copier;
 	private final Map<BioPAXElement,BioPAXElement> subs;
 	private Model subsModel;
-	private String description;
+	private String description = "";
 	private boolean fixDisplayName;
 	private boolean inferPropertyOrganism;
 	private boolean inferPropertyDataSource;
 	private String xmlBase;
+	
+	
+	// Normalizer will generate URIs using a strategy specified by the system property
+	// (the default is biopax.normalizer.uri.strategy=md5, to generate 32-byte digest hex string for xrefs's uris)
+	public static final String PROPERTY_NORMALIZER_URI_STRATEGY = "biopax.normalizer.uri.strategy";
+	public static final String VALUE_NORMALIZER_URI_STRATEGY_SIMPLE = "simple";
+	public static final String VALUE_NORMALIZER_URI_STRATEGY_MD5 = "md5"; //default strategy
 	
 	
 	/**
@@ -246,8 +254,20 @@ public final class Normalizer {
 		if (idPart != null)
 			sb.append(idPart);
 		
+		
+		String localPart;
+		String strategy = System.getProperty(PROPERTY_NORMALIZER_URI_STRATEGY);
+		if(VALUE_NORMALIZER_URI_STRATEGY_SIMPLE.equals(strategy))
+			try {
+				localPart = URLEncoder.encode(sb.toString(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException(e);
+			}
+		else
+			localPart = ModelUtils.md5hex(sb.toString());
+		
 		// create URI using the xml:base and digest of other values:
-		return ((xmlBase!=null)?xmlBase:"") + ModelUtils.md5hex(sb.toString());
+		return ((xmlBase!=null)?xmlBase:"") + localPart;
 		
 	}
 	
@@ -466,6 +486,9 @@ public final class Normalizer {
 		if(model.getLevel() != BioPAXLevel.L3)
 			throw new IllegalArgumentException("Not Level3 model. " +
 				"Consider converting it first (e.g., with the PaxTools).");
+		
+		//TODO fix PE generics? (auto-generate ERs and memberERs); or - better put: using pe.memberPhysicalEntity is a very BAD idea!
+//		ModelUtils.normalizeGenerics(model);
 		
 		// clean/normalize xrefs first, because they gets used next;
 		// also, - because some of original xrefs might have already "normalized" URIs 

@@ -22,11 +22,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page language="java" contentType="text/html; charset=UTF-8"%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+   <meta charset="utf-8" />
 	<meta name="author" content="BioPAX" />
 	<meta name="description" content="BioPAX Validator" />
 	<meta name="keywords" content="BioPAX, Validation, Validator, Rule, OWL, Exchange" />
@@ -53,13 +52,13 @@
     <div id="left">
 
 <h2>Validation Results</h2>
-<div><label style="color: red;">${error}</label></div>
-<ul>
+<p><label class="errorMsg">${error}</label></p>
+<ul id="validations">
 <c:forEach var="result" items="${response.validationResult}" varStatus="rstatus">
-	<li style="text-decoration: underline" title="Click to see more detail">
-		<a href="javascript:switchit('result${rstatus.index}')">Resource:&nbsp;${result.description};&nbsp;${result.summary}</a>
+	<li title="Click to see more detail">
+		<a href="javascript:switchit('result${rstatus.index}')">Resource:&nbsp;${result.description}</a>;&nbsp;${result.summary}
 	</li>
-	<ul style="list-style: inside;">
+  <ul style="display: block;">
 	<li>
 	  <c:forEach var="comment" items="${result.comment}">
 		${comment}&nbsp;
@@ -86,13 +85,13 @@
 	
 	<c:if test="${result.fix}">
 	  	<li><a href="javascript:switchit('result${rstatus.index}owl')">Modified BioPAX</a>&nbsp;(HTML-escaped BioPAX RDF/XML)</li>
-		<ul id="result${rstatus.index}owl" style="display: none">
+		<ul id="result${rstatus.index}owl" class="vOwl">
 			<li><div>${result.modelDataHtmlEscaped}</div></li>
 		</ul>
 	</c:if>
-	</ul>
+  </ul>
 	
-	<ul id="result${rstatus.index}" style="display: none; list-style: decimal;">
+	<ul id="result${rstatus.index}">
 	  <c:forEach var="errorType" items="${result.error}" varStatus="estatus">
 		<li title="Click to see the error cases">
 			<a href="javascript:switchit('result${rstatus.index}type${estatus.index}')">
@@ -108,7 +107,7 @@
 	  		</c:choose>
 			</a><br/>${errorType.message}
 		</li>
-		<ul id="result${rstatus.index}type${estatus.index}" style="display: none">
+		<ul id="result${rstatus.index}type${estatus.index}">
 		<c:forEach var="errorCase" items="${errorType.errorCase}">
 			<li>
 				<c:if test="${errorCase.fixed}"><b>[FIXED!]</b>&nbsp;</c:if>

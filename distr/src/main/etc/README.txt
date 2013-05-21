@@ -1,23 +1,6 @@
 ##
 #  BioPAX Validator, Version ${version}
-#  
-#  Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
-#
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as 
-#  published by the Free Software Foundation, either version 3 of the 
-#  License, or (at your option) any later version.
-#  
-#  This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Lesser Public License for more details.
-#  
-#  You should have received a copy of the GNU General Lesser Public 
-#  License along with this program.  If not, see
-#  <http://www.gnu.org/licenses/lgpl-3.0.html>.
 ##
- 
  
 ****************************************************************************** 
   INTRODUCTION
@@ -45,6 +28,25 @@ http://www.biopax.org/validator
 http://sourceforge.net/projects/biopax/
 
 
+##
+#  Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Lesser General Public License as 
+#  published by the Free Software Foundation, either version 3 of the 
+#  License, or (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Lesser Public License for more details.
+#  
+#  You should have received a copy of the GNU General Lesser Public 
+#  License along with this program.  If not, see
+#  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+##
+
+
 ******************************************************************************
   INSTALLATION
 ******************************************************************************
@@ -64,27 +66,26 @@ RUN
 
 $sh path/to/validate.sh [args]
 
-- it prints a brief help message when no arguments provided; otherwise, use as, e.g: 
+- it prints a brief help message when no arguments provided; 
+then use as, e.g: 
 
-sh validate.sh input_dir_or_file output[.html] --auto-fix --profile=notstrict
+sh validate.sh input_dir_or_file --profile=notstrict
 
-Validation result is saved to the output file. When the '.html' file extension is used,
-the XML validation response is auto-transformed to HTML with Javascript (similar to 
-what the web application produces by default) 
+Validation results are saved to the current directory.
 
-
-For relatively small files (under ~25Mb in total size), you can also use the 
+For files under 100Mb total size, you can also use the 
 CLIENT jar, and it's usually faster, because does not require initialization, 
 parsing ontologies (try it without any arguments to see help):
 
 java -jar biopax-validator-client.jar <in> <out> [optional parameters...]
+
+(the client parameters are slightly differend from the command-line validator's.)
 
 
 NOTE
 
 Smaller files validate quickly, however, actual time may vary for the same size data; 
 it takes longer for networks that contain loops (e.g., in nextStep->PathwayStep sequence);
-e.g., once it took me several hours to validate ~50Mb BioPAX L3 file (Reactome's Canis familiaris);
 
 If you want to validate several files, it always much more efficient 
 to copy them all in a directory and use that directory as the first 
@@ -106,10 +107,23 @@ or revert to the default, built-in, validator's OBO files)
   WEB APPLICATION
 ******************************************************************************
 
+EXEC-WAR
+
+java -Xmx1g -jar biopax-validator-web.jar
+
+or
+
+sh server.sh
+
+- will run the BioPAX Validator web app with the built-in Tomcat 7 server.
+Thats it. Open http://localhost:8080 in a browser.
+Use --help argument to see all the server options (e.g., httpPort, ajpPort)
+
+
+Otherwise, - 
+the following describes Java 6 and Tomcat 6 (or 7) Application Server configuration. 
 
 CONFIGURE
-
-This describes Java 6 and Tomcat 6 (or 7) Application Server configuration. 
 
 Make sure tomcat runs with JAVA_OPTS="-Xmx2g -Xms256m -Dfile.encoding=UTF-8" 
 (modify the launch script or environment to add these options), and also 

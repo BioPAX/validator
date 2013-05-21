@@ -35,7 +35,7 @@ import org.biopax.validator.api.Identifier;
 import org.biopax.validator.api.Rule;
 
 
-@XmlType(name="Validation", namespace="http://biopax.org/validator/2.0/schema")
+@XmlType(name="Validation")
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class Validation implements Serializable {
 	private static final long serialVersionUID = 1L;

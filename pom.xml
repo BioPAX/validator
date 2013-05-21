@@ -47,7 +47,7 @@
 
 	<issueManagement>
 		<system>Sourceforge.net Tracker</system>
-		<url>https://sourceforge.net/tracker/?group_id=85345</url>
+		<url>http://sourceforge.net/p/biopax/bugs/</url>
 	</issueManagement>
 
 	<ciManagement>
@@ -56,10 +56,9 @@
 	</ciManagement>
 
     <scm>
-        <connection>scm:hg:http://biopax.hg.sourceforge.net:8000/hgroot/biopax/validator</connection>
-		<developerConnection>scm:hg:ssh://${scm.username}@biopax.hg.sourceforge.net/hgroot/biopax/validator</developerConnection>
-		<url>http://biopax.hg.sourceforge.net/hgweb/biopax/validator</url>
-		<tag>HEAD</tag>
+        <connection>scm:hg:http://hg.code.sf.net/p/biopax/validator</connection>
+	<developerConnection>scm:hg:ssh://${scm.username}@hg.code.sf.net/p/biopax/validator</developerConnection>
+	<url>http://sourceforge.net/p/biopax/validator</url>
     </scm>
 
 	<developers>
@@ -95,13 +94,13 @@
 
 		<!-- with maven 3, unlike ${project.version}, the ${biopax.site.url} is somehow not resolved 
  		(from settings.xml) and thus 'modules' links suck; so - will use the firm URL prefix instead -
-		${biopax.site.url}/paxtools-${project.version} -->
-		<siteUrl>http://biopax.sourceforge.net/m2site/validator-${project.version}</siteUrl>
+		${biopax.site.url}/validator-${project.version} -->
+		<siteUrl>http://www.biopax.org/m2site/validator-${project.version}</siteUrl>
 		<siteDeployUrl>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2site/validator-${project.version}</siteDeployUrl>
 		
 		<!-- dependencies versions -->
-		<spring.version>3.1.2.RELEASE</spring.version>
-		<paxtools.version>4.1.6</paxtools.version>
+		<spring.version>3.2.2.RELEASE</spring.version>
+		<paxtools.version>4.2.0</paxtools.version>
 		<license.licenseName>lgpl_v3</license.licenseName>
 		<junit.version>4.10</junit.version>
 		<commons-lang.version>2.4</commons-lang.version>
@@ -401,6 +400,16 @@
 				<artifactId>spring-aspects</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-instrument</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-instrument-tomcat</artifactId>
+				<version>${spring.version}</version>
+			</dependency>			
 			<dependency>
 				<groupId>org.aspectj</groupId>
 				<artifactId>aspectjweaver</artifactId>

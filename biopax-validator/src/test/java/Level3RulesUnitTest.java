@@ -33,6 +33,7 @@ import org.biopax.validator.api.Rule;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.impl.IdentifierImpl;
 import org.biopax.validator.rules.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -66,7 +67,16 @@ public class Level3RulesUnitTest {
 		}
     }
 	
-	
+	/**
+	 * @deprecated Since 4.2.0, paxtools now throws IA exception
+	 * when attempting to add a Conversion to BiochemicalPathwayStep.stepProcess.
+	 * If this happens in a BioPAX file a model is being built from,
+	 * then it will be intercepted and reported. The
+	 * BiochemicalPathwayStepProcessOnlyControlCRRule rule will be removed.
+	 * 
+	 * @throws IOException
+	 */
+	@Ignore //do not enable; this is outdated test
 	@Test
 	public void testBiochemicalPathwayStepProcessOnlyControlCRRule() 
 		throws IOException
@@ -75,6 +85,9 @@ public class Level3RulesUnitTest {
 		BiochemicalPathwayStep step = level3.create(BiochemicalPathwayStep.class, "step1");
 		Conversion conv = level3.create(BiochemicalReaction.class, "interaction1");
 		conv.addComment("a conversion reaction (not Control)");
+		//illegal process
+		//Since 4.2.0, paxtools throws IA exception
+		// when attempting to add a Conversion to BiochemicalPathwayStep.stepProcess.
 		step.addStepProcess((Process) conv);
 		step.addComment("error: has not a Control type step process");
 		
@@ -90,7 +103,16 @@ public class Level3RulesUnitTest {
 		writeExample("testBiochemicalPathwayStepProcessOnlyControlCRRule.owl",m);
 	}
 	
-	
+	/**
+	 * @deprecated Since 4.2.0, paxtools throws IA exception
+	 * when attempting to add a Conversion to BiochemicalPathwayStep.stepProcess.
+	 * If this happens in a BioPAX file a model is being built from,
+	 * then it will be intercepted and reported. The
+	 * BiochemPathwayStepOneConversionRule rule will be removed.
+	 * 
+	 * @throws IOException
+	 */
+	@Ignore //do not enable this
 	@Test
 	public void testBiochemPathwayStepOneConversionRule() throws IOException {
 		Rule rule = new BiochemPathwayStepOneConversionRule();
@@ -102,8 +124,7 @@ public class Level3RulesUnitTest {
 		assertFalse(rule.canCheck(level3.create(PathwayStep.class, "3")));
 		assertFalse(rule.canCheck(level3.create(Conversion.class, "4")));
 		assertTrue(rule.canCheck(level3.create(BiochemicalPathwayStep.class, "1")));
-			
-		
+					
 		// assertions for BioPAX constraints
 		
 		BiochemicalPathwayStep step = level3.create(BiochemicalPathwayStep.class, "step1");
@@ -125,6 +146,8 @@ public class Level3RulesUnitTest {
 		assertTrue(v.getError().isEmpty());
 		
 		//illegal process
+		//Since 4.2.0, paxtools throws IA exception
+		// when attempting to add a Conversion to BiochemicalPathwayStep.stepProcess.
 		step.addStepProcess((Process) conv);
 		
 		v = new Validation(new IdentifierImpl());
