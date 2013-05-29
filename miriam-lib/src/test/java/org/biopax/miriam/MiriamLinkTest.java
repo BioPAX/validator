@@ -200,8 +200,8 @@ public class MiriamLinkTest {
 	
 	@Test
 	public final void testGetIdentifiersOrgURI() {
-		assertEquals("http://identifiers.org/obo.go/GO:0045202", MiriamLink.getIdentifiersOrgURI("urn:miriam:obo.go", "GO:0045202"));
-		assertEquals("http://identifiers.org/obo.go/GO:0045202", MiriamLink.getIdentifiersOrgURI("go", "GO:0045202"));
+		assertEquals("http://identifiers.org/go/GO:0045202", MiriamLink.getIdentifiersOrgURI("urn:miriam:obo.go", "GO:0045202"));
+		assertEquals("http://identifiers.org/go/GO:0045202", MiriamLink.getIdentifiersOrgURI("go", "GO:0045202"));
 	}
 
 }
