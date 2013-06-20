@@ -63,14 +63,9 @@ value: a positive integer; "0" (default) means "unlimited", "1" - fail-fast mode
 
 <h4>Output Formats:</h4>
 <ul>
-<li>HTML - stand-alone HTML/JavaScript validation results page to save and view off-line</li>
-<li>XML - results follow the <a href="<c:url value='/schema.html'/>">schema (XSD)</a> 
- There are different ways to convert the XML result to domain objects. JAXB works great (one can generate the classes from the schema; 
-copy/modify the classes used by the Validator (<a href="http://biopax.hg.sf.net/hgweb/biopax/validator/file/default/biopax-validator-core/src/main/java/org/biopax/validator/result/">sources here</a>);
- or grab into your project the (latest snapshot) jar (<a href="http://biopax.sourceforge.net/m2repo/snapshots/org/biopax/validator/biopax-validator-core/2.0-SNAPSHOT/">from the BioPAX public repository</a>) 
- or simply add that repository and the org.biopax.validator:biopax-validator-core:2.0-SNAPSHOT:jar dependency to your pom.xml 
- (though, this will automatically bring more dependencies to your project, e.g., paxtools-core, spring framework, etc...)</li>
-<li>OWL - modified BioPAX L3 data (fixed/normalized)</li>
+<li>HTML - stand-alone HTML+JavaScript validation results page to save locally and view off-line</li>
+<li>XML - results in the XML format defined by the <a href="<c:url value='/schema.html'/>">XML schema</a></li>
+<li>OWL - modified BioPAX L3 data (fixed and normalized)</li>
 </ul>
 
 </div>
