@@ -57,8 +57,8 @@ along with errors and warnings.
 </p>
 <p>
 Please feel free to post your comments, suggestions, and issues at the 
-<a href="http://sourceforge.net/apps/mediawiki/biopax/index.php?title=BioPAXValidator">Validator Wiki</a> and 
-<a href="http://sf.net/tracker/?group_id=85345">BioPAX issue tracker</a>.
+<a href="http://www.biopax.org/wiki/index.php?title=BioPAXValidator">Validator Wiki</a> and 
+<a href="http://sourceforge.net/p/biopax/_list/tickets">BioPAX issue tracker</a>.
 </p>
 	
     </div>

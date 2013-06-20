@@ -74,9 +74,9 @@ value: a positive integer; "0" (default) means "unlimited", "1" - fail-fast mode
 
 <div>
 As an example, there is a basic BioPAX validator client module (it connects to the http://www.biopax.org/biopax-validator/check.html), and the 
-<a href="http://biopax.hg.sf.net/hgweb/biopax/validator/file/default/biopax-validator-client">sources are here</a> (see test classes there as well:).
+<a href="http://sourceforge.net/p/biopax/validator/ci/default/tree/biopax-validator-client/">sources are here</a> (see test classes there as well:).
 </div>
-	
+
       </div>
     <div id="right">
       <jsp:include page="/templates/menu.jsp"/>
