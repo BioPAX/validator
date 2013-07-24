@@ -1,5 +1,5 @@
 format-version: 1.2
-date: 09:04:2013 18:08
+date: 21:05:2013 14:51
 saved-by: gkoutos
 auto-generated-by: OBO-Edit 2.3
 subsetdef: abnormal_slim "Abnormal/normal slim"
@@ -2482,8 +2482,8 @@ def: "A shape quality inhering in a bearer by virtue of the bearer's being such 
 subset: cell_quality
 subset: mpath_slim
 subset: value_slim
-synonym: "round" EXACT []
-synonym: "rounded" EXACT []
+synonym: "round" RELATED []
+synonym: "rounded" RELATED []
 is_a: PATO:0000947 ! elliptic
 
 [Term]
@@ -7399,7 +7399,6 @@ name: high saturation
 def: "A color saturation which is of high purity." [PATOC:MAH]
 subset: value_slim
 synonym: "bright " EXACT []
-synonym: "shiny" RELATED []
 synonym: "vivid" RELATED []
 is_a: PATO:0000017 ! color saturation
 
@@ -8531,6 +8530,8 @@ id: PATO:0001373
 name: glistening
 def: "A reflectivity quality inhering in a bearer by virtue of the bearer's reflecting lots of light." [PATOC:GVG]
 subset: value_slim
+synonym: "glossy" EXACT []
+synonym: "shiny" EXACT []
 is_a: PATO:0001297 ! reflectivity
 
 [Term]
@@ -17713,6 +17714,8 @@ id: PATO:0002397
 name: subcircular
 def: "A circular shape quality inhering in a bearer by virtue of the bearer's being nearly, but not perfectly, circular." [PATOC:AD]
 subset: value_slim
+synonym: "round" RELATED []
+synonym: "rounded" RELATED []
 is_a: PATO:0002006 ! 2-D shape
 created_by: gkoutos
 creation_date: 2012-12-07T17:32:18Z
