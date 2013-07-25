@@ -27,7 +27,7 @@
 <ul>
 <li><a href="<c:url value='/'/>">Home</a></li>
 <li><a href="<c:url value="/check.html"/>">Validate</a></li>
-<li><a href="http://sourceforge.net/p/biopax/_list/tickets">Report</a></li>
+<li><a href="http://sourceforge.net/p/biopax/bugs/">Report</a></li>
 </ul>
 </div>
 </div>
