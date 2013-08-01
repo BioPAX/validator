@@ -35,7 +35,7 @@ import org.junit.Test;
 
 public class MiriamLinkTest {
 	
-	static final String MIURN = "urn:miriam:obo.mi";
+	static final String MIURN = "urn:miriam:psimi";
 	static final String MIPAGE = "http://www.ebi.ac.uk/ontology-lookup/";
 	static final String MIETRY_PREFIX = "http://www.ebi.ac.uk/ontology-lookup/?termId=";
 	static final String MI = "Molecular Interactions Ontology";
@@ -81,7 +81,7 @@ public class MiriamLinkTest {
 
 	@Test
 	public final void testGetURI() {
-		assertEquals("urn:miriam:obo.mi:MI%3A0000", MiriamLink.getURI(MISYN, "MI:0000"));
+		assertEquals("urn:miriam:psimi:MI%3A0000", MiriamLink.getURI(MISYN, "MI:0000"));
 		
 		try{
 			MiriamLink.getURI(MISYN, "MI_0000");
@@ -101,14 +101,14 @@ public class MiriamLinkTest {
 	public final void testGetLocations() {
 		String[] locs = MiriamLink.getLocations(MI, "MI:0000");
 		assertTrue(locs.length>0);
-		assertEquals("http://www.ebi.ac.uk/ontology-lookup/?termId=MI%3A0000", locs[0]);
+		assertTrue(Arrays.asList(locs).contains("http://www.ebi.ac.uk/ontology-lookup/?termId=MI%3A0000"));
 	}
 
 	@Test
 	public final void testGetDataResources() {
 		String[] drs = MiriamLink.getDataResources(MI);
-		assertTrue(drs.length == 1);
-		assertEquals("http://www.ebi.ac.uk/ontology-lookup/", drs[0]);
+		assertEquals(2, drs.length);
+		assertTrue(Arrays.asList(drs).contains("http://www.ebi.ac.uk/ontology-lookup/"));
 	}
 
 	@Test
@@ -200,8 +200,8 @@ public class MiriamLinkTest {
 	
 	@Test
 	public final void testGetIdentifiersOrgURI() {
-		assertEquals("http://identifiers.org/obo.go/GO:0045202", MiriamLink.getIdentifiersOrgURI("urn:miriam:obo.go", "GO:0045202"));
-		assertEquals("http://identifiers.org/obo.go/GO:0045202", MiriamLink.getIdentifiersOrgURI("go", "GO:0045202"));
+		assertEquals("http://identifiers.org/go/GO:0045202", MiriamLink.getIdentifiersOrgURI("urn:miriam:obo.go", "GO:0045202"));
+		assertEquals("http://identifiers.org/go/GO:0045202", MiriamLink.getIdentifiersOrgURI("go", "GO:0045202"));
 	}
 
 }
