@@ -6,7 +6,7 @@
   <parent>
 	<artifactId>parent</artifactId>
 	<groupId>org.biopax.validator</groupId>
-	<version>3.0.2-SNAPSHOT</version>
+	<version>3.0.2</version>
   </parent>
  
   <name>Ontologies Access</name>
