@@ -88,7 +88,7 @@ public class XrefHelper {
      * 
      */
     @PostConstruct //vital thing
-    void init() {
+    synchronized void init() {
 		this.allSynonyms =  new CompositeCollection<String>();
 		this.unofficialDbNames = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());	
     	
@@ -123,7 +123,8 @@ public class XrefHelper {
 			allSynonyms.addComposited(synonyms);
 			
 			// also associate primary name with ID patterns
-			dataPatterns.put(db, pattern); // will be used with all synonyms
+			if(pattern != null) //null value is not allowed for ConcurrentHashMap
+				dataPatterns.put(db, pattern); // will be used with all synonyms
 		}
     	
 		// load all names from MI 'database citation'
