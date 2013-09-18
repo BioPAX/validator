@@ -31,7 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.miriam.MiriamLink;
 import org.biopax.paxtools.controller.*;
-import org.biopax.paxtools.converter.OneTwoThree;
+import org.biopax.paxtools.converter.LevelUpgrader;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
@@ -116,7 +116,7 @@ public final class Normalizer {
 		// auto-convert to Level3 model
 		if (model.getLevel() != BioPAXLevel.L3) {
 			log.info("Converting model to BioPAX Level3...");
-			model = (new OneTwoThree()).filter(model);
+			model = (new LevelUpgrader()).filter(model);
 		}
 		
 		normalize(model); // L3 only!
@@ -207,13 +207,12 @@ public final class Normalizer {
 	 * Consistently generates a new BioPAX element URI 
 	 * using given URI namespace (xml:base), BioPAX class, 
 	 * and two different identifiers (at least one is required).
-	 * Miriam registry is used to get the standard db name, 
-	 * using the dbName argument, and identifiers.org URI, if possible,
-	 * for controlled vocabulary, publication xref, bio source, and entity
-	 * reference biopax types.
+	 * Miriam registry is used to get the standard db name and 
+	 * identifiers.org URI, if possible, for controlled vocabulary, 
+	 * publication xref, bio source, and entity reference types.
 	 * 
 	 * @param xmlBase xml:base (common URI prefix for a BioPAX model), case-sensitive
-	 * @param dbName a biodata collection name or synonym, case-insensitive
+	 * @param dbName a bio data collection name or synonym, case-insensitive
 	 * @param idPart optional (can be null), e.g., xref.id, case-sensitive
 	 * @param type BioPAX class
 	 * @return
@@ -223,54 +222,55 @@ public final class Normalizer {
 		String dbName, final String idPart, Class<? extends BioPAXElement> type) 
 	{
 		if(type == null || (dbName == null && idPart == null))
-			throw new IllegalArgumentException();		
+			throw new IllegalArgumentException("'Either type' is null, " +
+					"or both dbName and idPart are nulls.");		
 			
 		// try to find a standard URI, if exists, for a publication xref, 
 		// or at least a standard name:
 		if (dbName != null) {
 			try {
-				// try to get the preferred name
+				// try to get the preferred/standard name
+				// for any type, for consistency
 				dbName = MiriamLink.getName(dbName);
-
-				// a shortcut: try getting standard URI for some types
+				
+				// a shortcut: a standard and resolvable URI exists for some BioPAX types
 				if (type.equals(PublicationXref.class) || ControlledVocabulary.class.isAssignableFrom(type)
 						|| type.equals(BioSource.class) || EntityReference.class.isAssignableFrom(type)) {
 					return MiriamLink.getIdentifiersOrgURI(dbName, idPart);
-				}
+				} 
+				
 			} catch (IllegalArgumentException e) {
-				log.debug("uri: not a standard db name or synonym: " + dbName);
-				dbName = dbName.toLowerCase(); //setting same Case is important for data merging (only when dbName is not standard!)
+				log.debug("uri: not a standard db name or synonym: " + dbName, e);
 			}
 		}
 
 		// if not returned above this point, then -
-		// let's consistently build a new URI, anyway
-		// (doing so ensures re-using of equivalent xrefs, i.e. no duplicate xrefs, for better data merging)
-		StringBuilder sb = new StringBuilder(type.getSimpleName());
+		// let's consistently build a new URI from args, anyway
+		StringBuilder sb = new StringBuilder();
 		
 		if (dbName != null)
-			sb.append(dbName);
+			sb.append(dbName.toLowerCase()); //lowercase for consistency 		
 		
 		if (idPart != null)
 			sb.append(idPart);
-		
-		
+				
 		String localPart;
-		String strategy = System.getProperty(PROPERTY_NORMALIZER_URI_STRATEGY);
-		if(VALUE_NORMALIZER_URI_STRATEGY_SIMPLE.equals(strategy))
+		String strategy = System
+			.getProperty(PROPERTY_NORMALIZER_URI_STRATEGY, VALUE_NORMALIZER_URI_STRATEGY_MD5);
+		if(VALUE_NORMALIZER_URI_STRATEGY_SIMPLE.equals(strategy)) {
+			sb.insert(0, type.getSimpleName());
 			try {
 				localPart = URLEncoder.encode(sb.toString(), "UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				throw new RuntimeException(e);
 			}
-		else
-			localPart = ModelUtils.md5hex(sb.toString());
+		} else {
+			localPart = type.getSimpleName() + "_" + ModelUtils.md5hex(sb.toString());
+		}
 		
 		// create URI using the xml:base and digest of other values:
-		return ((xmlBase!=null)?xmlBase:"") + localPart;
-		
+		return ((xmlBase!=null)?xmlBase:"") + localPart;		
 	}
-	
 	
 	
 	/*
@@ -688,7 +688,7 @@ public final class Normalizer {
 			Model model = io.convertFromOWL(is);
 			if (model.getLevel() != BioPAXLevel.L3) {
 				log.info("Converting to BioPAX Level3... " + model.getXmlBase());
-				model = (new OneTwoThree()).filter(model);
+				model = (new LevelUpgrader()).filter(model);
 				if (model != null) {
 					io.setFactory(model.getLevel().getDefaultFactory());
 					io.convertToOWL(model, os);
