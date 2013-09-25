@@ -45,8 +45,9 @@ public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysica
     @Override
     public void check(final Validation validation, SimplePhysicalEntity thing) {
         EntityReference er = thing.getEntityReference();
-        Set<EntityFeature> erefs = er.getEntityFeature(),
-                           peefs = new HashSet<EntityFeature>();
+        //wrap er.getEntityFeature() in a new hashset because it can be modified (also in other threads)
+        Set<EntityFeature> erefs =  new HashSet<EntityFeature>(er.getEntityFeature());
+        Set<EntityFeature> peefs = new HashSet<EntityFeature>();
 
         peefs.addAll(thing.getFeature());
         peefs.addAll(thing.getNotFeature());
