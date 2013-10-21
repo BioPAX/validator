@@ -34,8 +34,7 @@ public class BiopaxValidatorClientTest {
 
 	@Test
 	public void testClientHtml() throws IOException {
-		//BiopaxValidatorClient client = new BiopaxValidatorClient();	
-		BiopaxValidatorClient client = new BiopaxValidatorClient("http://localhost:8080/biopax-validator/check.html");
+		BiopaxValidatorClient client = new BiopaxValidatorClient();
 		
 		File[] files = new File[] {
 				new File(getClass().getResource(
@@ -50,9 +49,7 @@ public class BiopaxValidatorClientTest {
 	
 	@Test
 	public void testClientXml() throws IOException, JAXBException {
-		//BiopaxValidatorClient client = new BiopaxValidatorClient();
-		
-		BiopaxValidatorClient client = new BiopaxValidatorClient("http://localhost:8080/biopax-validator/check.html");
+		BiopaxValidatorClient client = new BiopaxValidatorClient();
 		
 		File[] files = new File[] {
 				new File(getClass().getResource(
