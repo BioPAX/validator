@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<modules>
@@ -14,7 +13,7 @@
 
 	<groupId>org.biopax.validator</groupId>
 	<artifactId>parent</artifactId>
-	<version>3.0.3-SNAPSHOT</version>
+	<version>3.0.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Validator - Parent</name>
@@ -101,7 +100,7 @@
 
 		<!-- dependencies versions -->
 		<spring.version>3.2.2.RELEASE</spring.version>
-		<paxtools.version>4.2.2-SNAPSHOT</paxtools.version>
+		<paxtools.version>4.2.1</paxtools.version>
 		<license.licenseName>lgpl_v3</license.licenseName>
 		<junit.version>4.10</junit.version>
 		<commons-lang.version>2.4</commons-lang.version>
