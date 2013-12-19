@@ -139,4 +139,19 @@ public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRu
 	public PropertyEditor<? super D, ?> getEditor() {
 		return editor;
 	}
+	
+	/**
+	 * Ontology IDs used to check this CV rule.
+	 * These can be extracted from the CV rescrictions 
+	 * used to define the rule.
+	 * (other ontologies are not used).
+	 * 
+	 * @return
+	 */
+	protected Set<String> getOntologyIDs() {
+		Set<String> ids = new HashSet<String>();
+		for(CvRestriction restriction : restrictions)
+			ids.add(restriction.getOntologyId());
+		return ids;
+	}
 }

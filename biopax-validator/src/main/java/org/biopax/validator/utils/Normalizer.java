@@ -411,7 +411,6 @@ public final class Normalizer {
 		}
 		
 		Comparator<UnificationXref> comparator = new Comparator<UnificationXref>() {
-			@Override
 			public int compare(UnificationXref o1, UnificationXref o2) {
 				String s1 = o1.getDb() + o1.getId();
 				String s2 = o2.getDb() + o2.getId();

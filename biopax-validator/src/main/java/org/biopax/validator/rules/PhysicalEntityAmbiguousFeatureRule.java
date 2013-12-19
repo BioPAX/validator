@@ -41,7 +41,7 @@ import java.util.HashSet;
  */
 @Component
 public class PhysicalEntityAmbiguousFeatureRule extends AbstractRule<PhysicalEntity>{
-    @Override
+
     public void check(final Validation validation, PhysicalEntity thing) {
         // Capture PEs that is both a participant of a conversion and a component of a complex
         if(!thing.getParticipantOf().isEmpty() && !thing.getComponentOf().isEmpty()) {
@@ -63,7 +63,6 @@ public class PhysicalEntityAmbiguousFeatureRule extends AbstractRule<PhysicalEnt
         }
     }
 
-    @Override
     public boolean canCheck(Object thing) {
         return thing instanceof PhysicalEntity;
     }

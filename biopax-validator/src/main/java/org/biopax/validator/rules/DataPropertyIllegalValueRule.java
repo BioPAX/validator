@@ -53,7 +53,6 @@ public class DataPropertyIllegalValueRule extends AbstractRule<BioPAXElement> {
 		return thing instanceof BioPAXElement;
 	}
 
-	@Override
 	public void check(final Validation validation, BioPAXElement bpe) {
 		EditorMap editorMap = (bpe instanceof Level3Element)
 			? SimpleEditorMap.get(BioPAXLevel.L3)

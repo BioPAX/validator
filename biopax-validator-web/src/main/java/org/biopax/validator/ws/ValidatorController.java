@@ -224,6 +224,9 @@ public class ValidatorController {
        		org.biopax.paxtools.model.Model m = (org.biopax.paxtools.model.Model) validationResult.getModel();
    			normalizer.normalize(m);
    			validationResult.setModelData(SimpleIOHandler.convertToOwl(m));
+       	} else if(!isFix) {
+       		validationResult.setModelData(null);
+       		validationResult.setModel(null);
        	}
        	
        	return validationResult;

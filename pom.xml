@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<modules>
 		<module>validator-core</module>
 		<module>obo-fetcher</module>
-		<module>miriam-lib</module>		
+		<module>miriam-lib</module>
 		<module>biopax-validator</module>
 		<module>biopax-validator-web</module>
 		<module>biopax-validator-client</module>
@@ -13,30 +14,30 @@
 
 	<groupId>org.biopax.validator</groupId>
 	<artifactId>parent</artifactId>
-	<version>3.0.3-SNAPSHOT</version>	
+	<version>3.0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	
+
 	<name>Validator - Parent</name>
 	<description>The BioPAX Validator Project (including a general-purpose 
 	object model validation and error reporting API core, OBO ontologies manager, 
 	MIRIAM registry access (to resolve bio db names and identifiers), hundreds 
 	BioPAX Level3 rules, settings, and the console and web applications)</description>
-		
+
 	<inceptionYear>2008</inceptionYear>
 
-    <organization>
-        <name>University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)</name>
-        <url>http://www.biopax.org</url>
-    </organization>
+	<organization>
+		<name>University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)</name>
+		<url>http://www.biopax.org</url>
+	</organization>
 
 	<url>${siteUrl}</url>
 
-    <mailingLists>
-     <mailingList>
-       <name>BioPAX Discussion Group</name>
-      <post>biopax-discuss@googlegroups.com</post>
-     </mailingList>
-    </mailingLists>
+	<mailingLists>
+		<mailingList>
+			<name>BioPAX Discussion Group</name>
+			<post>biopax-discuss@googlegroups.com</post>
+		</mailingList>
+	</mailingLists>
 
 	<licenses>
 		<license>
@@ -55,21 +56,21 @@
 		<url>http://cbiojenkins.no-ip.org:8080/job/BioPAX_Validator</url>
 	</ciManagement>
 
-    <scm>
-        <connection>scm:hg:http://hg.code.sf.net/p/biopax/validator</connection>
-	<developerConnection>scm:hg:ssh://${scm.username}@hg.code.sf.net/p/biopax/validator</developerConnection>
-	<url>http://sourceforge.net/p/biopax/validator</url>
-    </scm>
+	<scm>
+		<connection>scm:hg:http://hg.code.sf.net/p/biopax/validator</connection>
+		<developerConnection>scm:hg:ssh://${scm.username}@hg.code.sf.net/p/biopax/validator</developerConnection>
+		<url>http://sourceforge.net/p/biopax/validator</url>
+	</scm>
 
 	<developers>
 		<developer>
 			<id>rodche</id>
 			<name>Igor Rodchenkov</name>
 			<organization>University of Toronto</organization>
-			    <roles>
-                	<role>architect</role>
-                	<role>developer</role>
-            	</roles>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
 		</developer>
 		<developer>
 			<name>Gary Bader</name>
@@ -92,15 +93,15 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<!-- with maven 3, unlike ${project.version}, the ${biopax.site.url} is somehow not resolved 
- 		(from settings.xml) and thus 'modules' links suck; so - will use the firm URL prefix instead -
-		${biopax.site.url}/validator-${project.version} -->
+		<!-- with maven 3, unlike ${project.version}, the ${biopax.site.url} is 
+			somehow not resolved (from settings.xml) and thus 'modules' links suck; so 
+			- will use the firm URL prefix instead - ${biopax.site.url}/validator-${project.version} -->
 		<siteUrl>http://www.biopax.org/m2site/validator-${project.version}</siteUrl>
 		<siteDeployUrl>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2site/validator-${project.version}</siteDeployUrl>
-		
+
 		<!-- dependencies versions -->
 		<spring.version>3.2.2.RELEASE</spring.version>
-		<paxtools.version>4.2.1-SNAPSHOT</paxtools.version>
+		<paxtools.version>4.2.2-SNAPSHOT</paxtools.version>
 		<license.licenseName>lgpl_v3</license.licenseName>
 		<junit.version>4.10</junit.version>
 		<commons-lang.version>2.4</commons-lang.version>
@@ -115,30 +116,36 @@
 		<taglibs.standard.version>1.1.2</taglibs.standard.version>
 		<commons-fileupload.version>1.2.1</commons-fileupload.version>
 		<commons-io.version>1.4</commons-io.version>
-		
+
 		<!-- plugin dependencies versions -->
-		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
+		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
+		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 		<maven-war-plugin.version>2.3</maven-war-plugin.version>
-		<wagon-ssh.version>2.0</wagon-ssh.version>
-		<maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
+		<maven-release-plugin.version>2.4.1</maven-release-plugin.version>
+		<wagon-ssh.version>2.5</wagon-ssh.version>
+		<maven-surefire-plugin.version>2.15</maven-surefire-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 		<maven-source-plugin.version>2.2.1</maven-source-plugin.version>
-		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
-		<maven-site-plugin.version>3.0</maven-site-plugin.version>
+		<maven-site-plugin.version>3.3</maven-site-plugin.version>
+		<maven-javadoc-plugin.version>2.9</maven-javadoc-plugin.version>
+		<maven-jxr-plugin.version>2.3</maven-jxr-plugin.version>
+		<maven-project-info-reports-plugin.version>2.7</maven-project-info-reports-plugin.version>
+		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
+		<jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
+		<maven-deploy-plugin.version>2.7</maven-deploy-plugin.version>
 	</properties>
 
 	<build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${maven-compiler-plugin.version}</version>
 					<configuration>
 						<source>1.6</source>
 						<target>1.6</target>
 					</configuration>
-				</plugin>
+				</plugin>			
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
@@ -182,15 +189,48 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>${maven-assembly-plugin.version}</version>
-				</plugin>	
+				</plugin>
 				<plugin>
-					<!-- when not using maven 3.x -->
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>2.3</version>
+					<version>${maven-site-plugin.version}</version>
 				</plugin>
-			</plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jxr-plugin</artifactId>
+					<version>${maven-jxr-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-project-info-reports-plugin</artifactId>
+					<version>${maven-project-info-reports-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>jaxb2-maven-plugin</artifactId>
+					<version>${jaxb2-maven-plugin.version}</version>		
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${maven-resources-plugin.version}</version>		
+				</plugin>				
+			</plugins>	
 		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-descriptor</id>
+						<goals>
+							<goal>attach-descriptor</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
@@ -199,77 +239,43 @@
 			</extension>
 		</extensions>
 	</build>
-	
+
 
 	<!-- How to deploy and site-deploy: 
-	 1) for maven artifacts deployment (mvn deploy), e.g. by Jenkins, have biopax.snapshot.url 
-	 and biopax.release.url set in your .m2/settings.xml and point to a local directory, which
-	 then can be synchronized (rsync) with the remote public biopax repositories as needed 
-	 (recommended method, which is quick, does not require you start the remote shell service 
-	 in advance, and also respects your intranet/firewall/security policies). 
-	 So, do NOT: mvn deploy -Psourceforge, because it's slow, may violate network policy (brute force), etc.
-	 
-	 2) try: mvn clean site site:stage -DstagingDirectory=/some/local/path/paxtools-${version}
-	 (though some of resulting links won't be right), but not site-stage...; 
-	 finally, once satisfied, start sf.net shell and do: mvn clean site-deploy -Psourceforge 
-	 (this deploys directly to the public website, where all links should work)
-	-->
+		1) for maven artifacts deployment (mvn 
+		deploy), e.g. by Jenkins, have biopax.snapshot.url and biopax.release.url 
+		set in your .m2/settings.xml and point to a local directory, which then can 
+		be synchronized (rsync) with the remote public biopax repositories as needed 
+		(recommended method, which is quick, does not require you start the remote 
+		shell service in advance, and also respects your intranet/firewall/security 
+		policies). So, do NOT: mvn deploy -Psourceforge, because it's slow, may violate 
+		network policy (brute force), etc. 
+		2) try: mvn clean site site:stage -DstagingDirectory=/some/local/path/paxtools-${version} 
+		(though some of resulting links won't be right), but not site-stage...; finally, 
+		once satisfied, start sf.net shell and do: mvn clean site-deploy -Psourceforge 
+		(this deploys directly to the public website, where all links should work) -->
 	<profiles>
 		<profile>
 			<id>sourceforge</id>
 			<distributionManagement>
-			<site>
-				<id>biopax.sf.net</id>
-				<name>BioPAX Sourceforge site</name>
-				<url>${siteDeployUrl}</url>
-			</site>
-			<snapshotRepository>
-				<id>biopax.snapshots</id>
-				<name>BioPAX Snapshots Repository</name>
-				<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/snapshots</url>
-			</snapshotRepository>
-			<repository>
-				<id>biopax.releases</id>
-				<name>BioPAX Releases Repository</name>
-				<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/releases</url>
-			</repository>
+				<site>
+					<id>biopax.sf.net</id>
+					<name>BioPAX Sourceforge site</name>
+					<url>${siteDeployUrl}</url>
+				</site>
+				<snapshotRepository>
+					<id>biopax.snapshots</id>
+					<name>BioPAX Snapshots Repository</name>
+					<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/snapshots</url>
+				</snapshotRepository>
+				<repository>
+					<id>biopax.releases</id>
+					<name>BioPAX Releases Repository</name>
+					<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/releases</url>
+				</repository>
 			</distributionManagement>
 		</profile>
-		<profile>
-			<id>maven-3</id>
-			<activation>
-				<file>
-					<exists>${basedir}</exists>
-				</file>
-			</activation>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-site-plugin</artifactId>
-							<version>${maven-site-plugin.version}</version>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-site-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-descriptor</id>
-								<goals>
-									<goal>attach-descriptor</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 	</profiles>
-	
 
 	<distributionManagement>
 		<site>
@@ -408,7 +414,7 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-instrument-tomcat</artifactId>
 				<version>${spring.version}</version>
-			</dependency>			
+			</dependency>
 			<dependency>
 				<groupId>org.aspectj</groupId>
 				<artifactId>aspectjweaver</artifactId>
@@ -439,7 +445,7 @@
 				<artifactId>standard</artifactId>
 				<version>${taglibs.standard.version}</version>
 				<scope>runtime</scope>
-			</dependency>	
+			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
@@ -466,7 +472,7 @@
 	</dependencyManagement>
 
 	<dependencies>
-        <!-- %TODO switch to SLF4J and Logback -->
+		<!-- %TODO switch to SLF4J and Logback -->
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
@@ -483,20 +489,19 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
+				<version>${maven-javadoc-plugin.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
-				<version>2.3</version>
+				<version>${maven-jxr-plugin.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.6</version>
+				<version>${maven-project-info-reports-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</reporting>
 
-	
 </project>

@@ -34,12 +34,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RnaRegionEntityReferenceRule extends AbstractRule<RnaRegion> {
-	@Override
+
 	public boolean canCheck(Object thing) {
 		return thing instanceof RnaRegion;
 	}
 
-	@Override
 	public void check(final Validation validation, RnaRegion sm) {
 		if(sm.getEntityReference() == null) {
 			if(sm.getMemberPhysicalEntity().isEmpty()) {

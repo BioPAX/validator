@@ -31,41 +31,54 @@ import javax.xml.bind.annotation.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.validator.api.Identifier;
 import org.biopax.validator.api.Rule;
 
 
 @XmlType(name="Validation")
-@XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Validation implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Log log = LogFactory.getLog(Validation.class);
 	
+	@XmlTransient
 	private Object model;
-	private String modelData;
-	private final Set<ErrorType> error;
-	private String description;
-	private final Set<String> comment;
-	
 	// "forcedly" associated objects, i.e., parser, model(s), and dangling elements 
+	@XmlTransient
 	private final Set<Object> objects;
-	
-	private boolean fix = false;
-	private Behavior threshold;
-	
-	// limit not fixed error cases (1 means "fall-fast" mode, i.e., stop after the first serious and not fixed error)
-	private int maxErrors;
-	
 	// extra/optional settings
+	@XmlTransient
 	private final Properties properties;
-
-	private String profile;
-	
-	/**
-	 * Concrete strategy impl. to get an object's ID (for error reporting)
-	 */
+	// getting object's ID strategy (for error reporting)
+	@XmlTransient
 	private final Identifier idCalc;
-
+	
+	
+	@XmlElement(required=false)
+	private String modelData;
+	@XmlElement
+	private final Set<ErrorType> error;
+	@XmlAttribute(required=false)
+	private String description;
+	@XmlElement
+	private final Set<String> comment;
+	@XmlAttribute
+	private int notFixedProblems = 0;
+	@XmlAttribute
+	private int notFixedErrors = 0;
+	@XmlAttribute
+	private int totalProblemsFound = 0;
+	@XmlAttribute
+	private boolean fix = false;
+	@XmlAttribute(required=false)
+	private Behavior threshold;	
+	// limit not fixed error cases (1 means "fall-fast" mode, i.e., stop after the first serious and not fixed error)
+	@XmlAttribute(required=false)
+	private int maxErrors;
+	@XmlAttribute(required=false)
+	private String profile;
+	@XmlAttribute
+	private String summary;
+	
 	
 	/** 
 	 * Default Constructor (this is mainly for OXM)
@@ -83,7 +96,6 @@ public class Validation implements Serializable {
 		this.properties = new Properties();
 		this.idCalc = (idCalculator != null) ? idCalculator : new Identifier() {			
 			// fall-back Identifier strategy implementation that uses toString
-			@Override
 			public String identify(Object obj) {
 				return String.valueOf(obj);
 			}
@@ -182,7 +194,6 @@ public class Validation implements Serializable {
 	}
 
 	
-	@XmlElement(required = false)
 	public String getModelData() 
 	{
 		return modelData;
@@ -309,7 +320,6 @@ public class Validation implements Serializable {
 	 * 
 	 * @return
 	 */
-	@XmlAttribute(required=false)
 	public String getDescription() {
 		return description;
 	}
@@ -317,7 +327,7 @@ public class Validation implements Serializable {
 	
 	/**
 	 * This method should never be used
-	 * (this is for OXM frameworks only)!
+	 * (this is for OXM frameworks only)
 	 *
 	 * @param comments
 	 */
@@ -350,14 +360,11 @@ public class Validation implements Serializable {
 	 * 
 	 * @return
 	 */
-	@XmlAttribute
 	public synchronized String getSummary() {
-		StringBuffer result = new StringBuffer();
-		if (error.size()>0) { 
-			result.append("different types of problem: ");
-			result.append(error.size());
-		}
-		return result.toString();
+		return summary;
+	}
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 	
 	
@@ -487,7 +494,6 @@ public class Validation implements Serializable {
 	/**
 	 * @return true if auto-fix is enabled; otherwise - false
 	 */
-	@XmlAttribute
 	public boolean isFix() {
 		return fix;
 	}
@@ -508,11 +514,9 @@ public class Validation implements Serializable {
 	 * 
 	 * @return
 	 */
-	@XmlAttribute(required=false)
 	public Behavior getThreshold() {
 		return threshold;
 	}
-
 
 	/**
 	 * Sets the errors reporting level.
@@ -531,9 +535,11 @@ public class Validation implements Serializable {
 	 * 
 	 * @return
 	 */
-	@XmlAttribute
 	public int getTotalProblemsFound() {
-		return countErrors(null, null, null, null, false, false);
+		return totalProblemsFound;
+	}
+	public void setTotalProblemsFound(int n) {
+		this.totalProblemsFound = n;
 	}
 
 
@@ -543,30 +549,29 @@ public class Validation implements Serializable {
 	 * 
 	 * @return
 	 */
-	@XmlAttribute
-	public int getNotFixedProblems() {
-		return countErrors(null, null, null, null, false, true);
+	public synchronized int getNotFixedProblems() {
+		return notFixedProblems;
 	}
-	
+	public void setNotFixedProblems(int n) {
+		notFixedProblems = n;
+	}
 
 	/** 
 	 * Total number of NOT fixed {@link Behavior#ERROR} cases.
 	 * 
 	 * @return
 	 */
-	@XmlAttribute
-	public int getNotFixedErrors() {
-		return countErrors(null, null, null, null, true, true);
+	public synchronized int getNotFixedErrors() {
+		return notFixedErrors;
+	}
+	public void setNotFixedErrors(int n) {
+		notFixedErrors = n;
 	}
 
 
 	/** 
-	 * Finds the previously reported
+	 * Finds a previously reported
 	 * by the rule error case and marks it as fixed.
-	 * 
-	 * This method is used by {@link Normalizer} to allow
-	 * fixing and reporting as 'fixed' for some error cases 
-	 * previously found by the validator (using this validation instance).
 	 * 
 	 * @param objectId model element identifier (associated with the error)
 	 * @param rule a validation rule name (that reports the error code)
@@ -576,15 +581,16 @@ public class Validation implements Serializable {
 	public void setFixed(String objectId, String rule, String errCode, String newMsg) 
 	{
 		Behavior type = Behavior.WARNING;
-		ErrorCaseType ect = findErrorCase(
-			new ErrorType(errCode, type), 
-			new ErrorCaseType(rule, objectId, null)); // msg is ignored when comparing errors
+		ErrorCaseType ect = findErrorCase(new ErrorType(errCode, type), 
+			new ErrorCaseType(rule, objectId, null)); // msg is ignored when comparing errors anyway
+		
 		if(ect == null) {
 			type = Behavior.ERROR;
 			ect = findErrorCase(
 				new ErrorType(errCode, type), 
 				new ErrorCaseType(rule, objectId, null));
 		}
+		
 		if(ect != null && !ect.isFixed()) {
 			ect.setFixed(true);
 			if(newMsg != null && !"".equals(newMsg.trim()))
@@ -601,7 +607,6 @@ public class Validation implements Serializable {
 	 * 
 	 * @return the max no. errors to be collected, or 0 if {@link #isMaxErrorsSet()} returns 'false'
 	 */
-	@XmlAttribute(required=false)
 	public int getMaxErrors() {
 		return (isMaxErrorsSet()) ? maxErrors : 0;
 	}
@@ -644,7 +649,6 @@ public class Validation implements Serializable {
 	 * 
 	 * @return the profile
 	 */
-	@XmlAttribute(required=false)
 	public String getProfile() {
 		return profile;
 	}
@@ -671,5 +675,40 @@ public class Validation implements Serializable {
 	 */
 	public String identify(Object obj) {
 		return idCalc.identify(obj);
+	}
+	
+	
+	/**
+	 * This is a generic functional object (strategy)
+	 * interface that contain the only method, which
+	 * is called by the validator framework to get an
+	 * identifier or name of a model element to report 
+	 * an error about. 
+	 * 
+	 * Not BioPAX specific.
+	 * 
+	 * @author rodche
+	 *
+	 */
+	public static interface Identifier {
+		
+		/**
+		 * Gets the id or name of a model element or 
+		 * other object that matters during a validation
+		 * and worth mentioning in a error message.
+		 * 
+		 * This is called by the Validator framework to get a
+		 * domain specific identifier or name of a model element 
+		 * to report an error about.
+		 * 
+		 * This interface is required, because a domain specific 'get id'
+		 * method, if any, is not known to the core validation framework
+		 * in advance, and toString method may not be satisfactory.
+		 * 
+		 * @param obj
+		 * @return
+		 */
+		String identify(Object obj);
+
 	}
 } 

@@ -122,12 +122,10 @@ public class OntologyTermImpl implements OntologyTermI {
         return result;
     }
 
-	@Override
 	public String getOntologyId() {
 		return this.ontologyId;
 	}
 
-	@Override
 	public void setOntologyId(String ontologyId) {
 		this.ontologyId = ontologyId;
 	}

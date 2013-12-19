@@ -39,7 +39,6 @@ import java.util.Set;
 @Component
 public class ConversionStoichiometryCheckRule extends AbstractRule<Conversion> {
 
-    @Override
     public void check(final Validation validation, Conversion thing) {
         float lsto = getStoichiometry(thing.getParticipantStoichiometry(), thing.getLeft()),
               rsto = getStoichiometry(thing.getParticipantStoichiometry(), thing.getRight()),
@@ -74,7 +73,6 @@ public class ConversionStoichiometryCheckRule extends AbstractRule<Conversion> {
         return total;
     }
 
-    @Override
     public boolean canCheck(Object thing) {
         return thing instanceof Conversion && !(thing instanceof Degradation);
     }

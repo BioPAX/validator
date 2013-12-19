@@ -292,7 +292,6 @@ public class BiopaxValidatorClient {
         	//do POST for location (Location header present if there's a 301/302/307 redirect on the way)
         	loc = Request.Post(loc).execute()
         			.handleResponse(new ResponseHandler<String>() {
-						@Override
 						public String handleResponse(HttpResponse httpResponse)
 								throws ClientProtocolException, IOException {
 							Header header = httpResponse.getLastHeader("Location");

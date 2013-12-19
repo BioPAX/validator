@@ -31,6 +31,7 @@ public class ErrorCaseType implements Serializable, Comparable<ErrorCaseType> {
 
 	private static final long serialVersionUID = 1L;
 	
+	@XmlElement
 	protected String message = null;
 	@XmlAttribute
 	protected String object = "";

@@ -34,12 +34,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DnaEntityReferenceRule extends AbstractRule<Dna> {
-	@Override
+
 	public boolean canCheck(Object thing) {
 		return thing instanceof Dna;
 	}
 
-	@Override
 	public void check(final Validation validation, Dna sm) {
 		if(sm.getEntityReference() == null) {
 			if(sm.getMemberPhysicalEntity().isEmpty()) {

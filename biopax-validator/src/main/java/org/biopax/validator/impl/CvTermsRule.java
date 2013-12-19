@@ -123,13 +123,11 @@ public abstract class CvTermsRule<T extends Level3Element>
 					// only for valid terms
 					if(getValidTerms().contains(name.toLowerCase())) {
 						// check if there is the corresponding unification xref
-						Set<OntologyTermI> ots = ((OntologyManager) ontologyManager).searchTermByName(name.toLowerCase());
+						Set<OntologyTermI> ots = ((OntologyManager) ontologyManager)
+								.searchTermByName(name.toLowerCase(), getOntologyIDs());
 						assert(!ots.isEmpty()); // shouldn't be, because the above getValidTerms() contains the name
 						boolean noXrefsForTermNameFound = true; // next, - prove otherwise is the case
 						terms: for(OntologyTermI term : ots) {
-//							String prefname = term.getPreferredName();
-//							String ontId = term.getOntologyId(); // e.g., "GO" 
-//							String db = ((OntologyManager) ontologyManager).getOntology(ontId).getName();
 							String id = term.getTermAccession();
 							// search for the xref with the same xref.id
 							for (UnificationXref x : new ClassFilterSet<Xref,UnificationXref>(

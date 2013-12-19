@@ -42,7 +42,6 @@ import java.util.Set;
 @Component
 public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysicalEntity>{
 
-    @Override
     public void check(final Validation validation, SimplePhysicalEntity thing) {
         EntityReference er = thing.getEntityReference();
         //wrap er.getEntityFeature() in a new hashset because it can be modified (also in other threads)
@@ -62,7 +61,6 @@ public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysica
         }
     }
 
-    @Override
     public boolean canCheck(Object thing) {
         return thing instanceof SimplePhysicalEntity && ((SimplePhysicalEntity) thing).getEntityReference() != null;
     }

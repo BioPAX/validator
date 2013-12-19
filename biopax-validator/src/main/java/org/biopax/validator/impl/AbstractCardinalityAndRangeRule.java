@@ -70,7 +70,6 @@ public abstract class AbstractCardinalityAndRangeRule<E extends BioPAXElement>
 		return domain.isInstance(thing);
 	}
 	
-	@Override
 	public void check(Validation validation, E thing) {
 		try {
 			Class<? extends BioPAXElement> face 

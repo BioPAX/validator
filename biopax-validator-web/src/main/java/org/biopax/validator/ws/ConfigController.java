@@ -124,7 +124,6 @@ public class ConfigController {
 			this.altProfile = altProfile;
 		}
 
-		@Override
 		public int compareTo(AboutRule r) {return name.compareTo(r.name);};
 	};
 	
@@ -168,7 +167,6 @@ public class ConfigController {
 			this.code = code;
 		}
 		
-		@Override
 		public int compareTo(ErrorCfg that) {
 			return this.code.compareToIgnoreCase(that.code);
 		}
