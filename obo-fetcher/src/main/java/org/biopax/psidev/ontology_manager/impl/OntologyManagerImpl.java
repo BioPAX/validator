@@ -167,12 +167,26 @@ public class OntologyManagerImpl implements OntologyManager {
     
 
 	public Set<OntologyTermI> searchTermByName(String name) {
+		return searchTermByName(name, null);
+	}
+	
+	
+	public Set<OntologyTermI> searchTermByName(String name, Set<String> ontologies) {
 		Set<OntologyTermI> found  = new HashSet<OntologyTermI>();
+		assert name!=null : "searchTermByName: null arg.";
 		
-		for(String ontologyId: getOntologyIDs()) {
+		Set<String> ontologyIDs = new HashSet<String>(getOntologyIDs());
+		if(ontologies != null && !ontologies.isEmpty())
+			ontologyIDs.retainAll(ontologies);
+		
+		for(String ontologyId: ontologyIDs) {
 			Ontology oa = getOntology(ontologyId);
 			for(OntologyTermI term : oa.getOntologyTerms()) {
-				if(term.getPreferredName().equalsIgnoreCase(name)) {
+				String prefName = term.getPreferredName();
+				if(prefName == null) {
+					log.error("searchTermByName: NULL preffered name for term " 
+						+ term.getTermAccession() + " in " + ontologyId + "; report to authors.");
+				} else if(name.equalsIgnoreCase(prefName)) {
 					found.add(term);
 				} else {
 					for(String syn : term.getNameSynonyms()) {

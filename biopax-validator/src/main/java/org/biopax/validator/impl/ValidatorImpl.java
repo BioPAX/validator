@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.paxtools.controller.ModelUtils;
-import org.biopax.paxtools.converter.OneTwoThree;
+import org.biopax.paxtools.converter.LevelUpgrader;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
@@ -124,7 +124,7 @@ public class ValidatorImpl implements Validator {
 					+ model.getObjects().size() + " objects");
 				
 		if(model.getLevel() != BioPAXLevel.L3) {
-   			model = (new OneTwoThree()).filter(model);
+   			model = (new LevelUpgrader()).filter(model);
    			validation.setModel(model);
    			log.info("Upgraded to BioPAX Level3 model: " + validation.getDescription());			
    		}
@@ -202,6 +202,16 @@ public class ValidatorImpl implements Validator {
 		
 		//Refresh 'modelData' property: 		
 		validation.setModelData(SimpleIOHandler.convertToOwl(model));
+		
+		//update all error counts (total, fixed, notfixed)
+		for(ErrorType errorType : validation.getError()) {
+			errorType.setTotalCases(errorType.countErrors(null, null, false));
+			errorType.setNotFixedCases(errorType.countErrors(null, null, true));
+		}
+		validation.setNotFixedProblems(validation.countErrors(null, null, null, null, false, true));
+		validation.setNotFixedErrors(validation.countErrors(null, null, null, null, true, true));
+		validation.setTotalProblemsFound(validation.countErrors(null, null, null, null, false, false));
+		validation.setSummary("different types of problem: " + validation.getError().size());
 	}
 
 
@@ -210,7 +220,6 @@ public class ValidatorImpl implements Validator {
 	{
 		exec.execute(new Runnable() {
 			@SuppressWarnings("unchecked") //obj can be either Model or a BPE
-			@Override
 			public void run() {
 				try {
 					rule.check(validation, obj);
@@ -326,7 +335,6 @@ public class ValidatorImpl implements Validator {
 	 * during the data read and/or modify.
 	 *  
 	 */
-	@Override
 	public void report(Object obj, String errorCode, String reportedBy, boolean isFixed, Object... args) 
 	{		
 		if(obj == null) {

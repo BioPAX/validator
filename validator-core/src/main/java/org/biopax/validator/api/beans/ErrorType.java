@@ -28,7 +28,7 @@ import java.util.*;
 import javax.xml.bind.annotation.*;
 
 @XmlType(name="ErrorType")
-@XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ErrorType implements Serializable, Comparable<ErrorType> {
 	
 	private static final long serialVersionUID = 1L;
@@ -40,11 +40,20 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	 * and overriding the 'equals' method. 
 	 * 
 	 */
+	@XmlElement
 	private final Set<ErrorCaseType> errorCase; 
+	@XmlAttribute
 	private String code = null;
+	@XmlAttribute
 	private String message = null;
+	@XmlAttribute
 	private Behavior type = Behavior.ERROR; // default
-	private Category category = Category.INFORMATION; // default
+	@XmlAttribute
+	private Category category = Category.INFORMATION; // default	
+	@XmlAttribute
+	private int notFixedCases = 0;
+	@XmlAttribute
+	private int totalCases = 0;
 
 	public ErrorType() {
 		errorCase = new TreeSet<ErrorCaseType>();
@@ -56,7 +65,6 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 		this.type = type;
 	}
 	
-	@XmlAttribute
 	public Category getCategory() {
 		return category;
 	}
@@ -65,16 +73,20 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 		this.category = category;
 	}
 	
+	/**
+	 * Unmodifiable set of validation current error cases.
+	 * 
+	 * @return
+	 */
 	public synchronized Collection<ErrorCaseType> getErrorCase() {
-		return errorCase;
+		return Collections.unmodifiableSet(errorCase);
 	}
 
 	public synchronized void setErrorCase(Collection<ErrorCaseType> errorCases) {
-		this.errorCase.clear();
-		this.errorCase.addAll(errorCases);
+		errorCase.clear();
+		errorCase.addAll(errorCases);
 	}
 	
-	@XmlAttribute
 	public String getCode() {
 		return code;
 	}
@@ -83,7 +95,6 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 		code = newCode.toLowerCase();
 	}
 
-	@XmlAttribute
 	public String getMessage() {
 		return message;
 	}
@@ -105,23 +116,16 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	 * 
 	 * @param newCase
 	 */
-	public void addErrorCase(ErrorCaseType newCase) {
-		// errorCase.add(newCase);
+	public synchronized void addErrorCase(ErrorCaseType newCase) {
 		ErrorCaseType ect = findErrorCase(newCase);
-		if(ect != null) {
-			// update the existing case
-			ect.setFixed(newCase.isFixed());
-					
-			if(!newCase.isFixed()) {
-				// new message (error re-occur)
+		if(ect != null) { //found a previously reported case
+			ect.setFixed(newCase.fixed);
+			if(!newCase.fixed) {		
+				// update the message
 				ect.setMessage(newCase.getMessage());
-			} else {
-				// message ignored (previous error is being fixed)
 			}
-		} else {
-			synchronized (this) {
-				errorCase.add(newCase);
-			}
+		} else { //fresh error case
+			errorCase.add(newCase);
 		}
 	}
 	
@@ -131,16 +135,15 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	 * @param cases
 	 */
 	public void addCases(Collection<ErrorCaseType> cases) {
-		//this.errorCase.addAll(cases);
 		for (ErrorCaseType errorCase : cases) {
 			addErrorCase(errorCase);
 		}
 	}
-	
-	
+		
 	public synchronized void removeErrorCase(ErrorCaseType eCase) {
 		errorCase.remove(eCase);
 	}
+
 	
 	@Override
 	public String toString() {
@@ -168,7 +171,6 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 		return this.toString().compareToIgnoreCase(et.toString());
 	}
 	
-	@XmlAttribute
 	public Behavior getType() {
 		return type;
 	}
@@ -182,22 +184,24 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	 * 
 	 * @return
 	 */
-	@XmlAttribute
 	public int getTotalCases() {
-		return countErrors(null, null, false);
+		return totalCases;
 	}
-	
+	public void setTotalCases(int n) {
+		this.totalCases = n;
+	}
 	
 	/**
 	 * Total number of cases not fixed yet.
 	 * 
 	 * @return
 	 */
-	@XmlAttribute
 	public int getNotFixedCases() {
-		return countErrors(null, null, true);
+		return notFixedCases;
 	}
-	
+	public void setNotFixedCases(int n) {
+		this.notFixedCases = n;
+	}
 	
 	/**
 	 * Count current error cases.
@@ -249,6 +253,5 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 		}
 		return null;
 	}
-	
-	
+
 }

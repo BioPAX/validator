@@ -34,12 +34,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ProteinEntityReferenceRule extends AbstractRule<Protein> {
-	@Override
+
 	public boolean canCheck(Object thing) {
 		return thing instanceof Protein;
 	}
 
-	@Override
 	public void check(final Validation validation, Protein p) {
 		if(p.getEntityReference() == null) {
 			if(p.getMemberPhysicalEntity().isEmpty()) {

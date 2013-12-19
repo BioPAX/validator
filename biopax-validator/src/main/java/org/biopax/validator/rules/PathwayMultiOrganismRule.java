@@ -47,7 +47,7 @@ import org.springframework.stereotype.Component;
 public class PathwayMultiOrganismRule extends AbstractRule<Pathway> 
 {	
 	private final static Filter<PropertyEditor> filter = new Filter<PropertyEditor>() {
-		@Override
+
 		public boolean filter(PropertyEditor editor) {
 			return !"nextStep".equals(editor.getProperty());
 		}

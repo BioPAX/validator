@@ -2,7 +2,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>3.0.3-SNAPSHOT</version>
+		<version>3.0.3</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -19,7 +19,7 @@
 				<configuration>
 					<forkMode>once</forkMode>
 					<argLine>-Xmx1g -javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar 
-					-ea -Dbiopax.normalizer.uri.strategy=md5</argLine> <!-- also - try strategy=simple when debugging ;) -->
+					-ea</argLine> <!-- try: -Dbiopax.normalizer.uri.strategy=simple when debugging ;) -->
 				</configuration>
 			</plugin>	
 		</plugins>

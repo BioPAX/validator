@@ -34,6 +34,7 @@ public class ValidatorResponse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	@XmlElement
 	private List<Validation> validation;
 
 	public ValidatorResponse() {

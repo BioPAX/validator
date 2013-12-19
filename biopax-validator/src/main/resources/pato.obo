@@ -1,7 +1,7 @@
 format-version: 1.2
-date: 21:05:2013 14:51
+date: 25:10:2013 16:45
 saved-by: gkoutos
-auto-generated-by: OBO-Edit 2.3
+auto-generated-by: OBO-Edit 2.1-beta19
 subsetdef: abnormal_slim "Abnormal/normal slim"
 subsetdef: absent_slim "Absent/present slim"
 subsetdef: attribute_slim "Attribute slim"
@@ -741,7 +741,6 @@ is_obsolete: true
 id: PATO:0000119
 name: height
 def: "A 1-D extent quality inhering in a bearer by virtue of the bearer's vertical dimension of extension." [PATOC:GVG]
-comment: This term is for curator easiness - denote vertical length - we might consider obsoleting this but we have to consider how curators are going to represent them if we do.
 subset: attribute_slim
 subset: scalar_slim
 is_a: PATO:0001708 ! 1-D extent
@@ -5544,7 +5543,6 @@ is_obsolete: true
 id: PATO:0000921
 name: width
 def: "A 1-D extent quality which is equal to the distance from one side of an object to another side which is opposite." [PATOC:GVG]
-comment: This term is for curator easiness - we might consider obsoleting this but we have to consider how curators are going to represent them if we do.
 subset: attribute_slim
 subset: scalar_slim
 synonym: "breadth" RELATED []
@@ -6375,7 +6373,7 @@ is_obsolete: true
 
 [Term]
 id: PATO:0001051
-name: acute angle
+name: acute angle to
 def: "An angle which is less than 90 degrees." [thesaurus.maths:thesaurus.maths]
 subset: relational_slim
 subset: value_slim
@@ -7953,7 +7951,7 @@ name: variability
 def: "A quality inhering in a bearer by virtue of the bearer's disposition to varying or changing." [Dictionary:http\://dictionary.reference.com/]
 subset: attribute_slim
 synonym: "variability of a physical quality" RELATED []
-is_a: PATO:0001018 ! physical quality
+is_a: PATO:0001236 ! process quality
 
 [Term]
 id: PATO:0001304
@@ -7996,6 +7994,7 @@ def: "A variability of temperature which is relatively low." [PATOC:GVG]
 subset: value_slim
 synonym: "low variability of temperature" EXACT []
 is_a: PATO:0001314 ! variant temperature
+is_a: PATO:0002302 ! decreased process quality
 is_a: PATO:0002303 ! decreased object quality
 intersection_of: PATO:0001314 ! variant temperature
 intersection_of: decreased_in_magnitude_relative_to PATO:0000461 ! normal
@@ -8007,6 +8006,7 @@ def: "A variability of temperature which is relatively high." [PATOC:GVG]
 subset: value_slim
 synonym: "high variability of temperature" EXACT []
 is_a: PATO:0001314 ! variant temperature
+is_a: PATO:0002304 ! increased process quality
 is_a: PATO:0002305 ! increased object quality
 intersection_of: PATO:0001314 ! variant temperature
 intersection_of: increased_in_magnitude_relative_to PATO:0000461 ! normal
@@ -8121,7 +8121,7 @@ is_a: PATO:0002326 ! angle
 
 [Term]
 id: PATO:0001322
-name: straight angle
+name: straight angle to
 def: "An angle which is 180 degrees to another entity." [thesaurus.maths:thesaurus.maths]
 comment: TODO: decide on correct parentage.
 subset: relational_slim
@@ -8810,7 +8810,7 @@ def: "A nucleate quality inhering in a bearer by virtue of the bearer's having o
 subset: cell_quality
 subset: mpath_slim
 subset: value_slim
-is_a: PATO:0001404 ! nucleate quality
+is_a: PATO:0002505 ! nucleated
 
 [Term]
 id: PATO:0001408
@@ -9100,7 +9100,6 @@ name: broken
 alt_id: PATO:0001443
 alt_id: PATO:0001820
 def: "A broken quality inhering in a bearer by virtue of the bearer's being broken open." [PATOC:GVG]
-subset: attribute_slim
 subset: value_slim
 synonym: "burst" EXACT []
 synonym: "cracked" RELATED []
@@ -9126,7 +9125,6 @@ name: whole
 def: "A wholeness quality inhering in a bearer by virtue of the bearer's including all its components." [thefreedictionary.com:thefreedictionary.com]
 subset: value_slim
 is_a: PATO:0001442 ! wholeness
-disjoint_from: PATO:0001444 ! broken
 
 [Term]
 id: PATO:0001447
@@ -9364,7 +9362,6 @@ is_a: PATO:0000470 ! present in greater numbers in organism
 id: PATO:0001474
 name: anteverted
 def: "An oriented quality inhering in a bearer by virtue of the bearer's axis being positioned forward." [bdid:bdid]
-subset: attribute_slim
 subset: mpath_slim
 subset: value_slim
 is_a: PATO:0000614 ! oriented
@@ -10252,6 +10249,7 @@ def: "A variability which is relatively low." [PATO:GVG]
 subset: value_slim
 synonym: "low variability" EXACT []
 is_a: PATO:0001227 ! variant
+is_a: PATO:0002302 ! decreased process quality
 is_a: PATO:0002303 ! decreased object quality
 intersection_of: PATO:0001227 ! variant
 intersection_of: decreased_in_magnitude_relative_to PATO:0000461 ! normal
@@ -10263,6 +10261,7 @@ def: "A variability which is relatively high." [PATO:GVG]
 subset: value_slim
 synonym: "high variability" EXACT []
 is_a: PATO:0001227 ! variant
+is_a: PATO:0002304 ! increased process quality
 is_a: PATO:0002305 ! increased object quality
 intersection_of: PATO:0001227 ! variant
 intersection_of: increased_in_magnitude_relative_to PATO:0000461 ! normal
@@ -10292,6 +10291,7 @@ def: "A variability of rate which is relatively high." [PATO:GVG]
 subset: value_slim
 synonym: "high variability of rate" EXACT []
 is_a: PATO:0001586 ! variability of rate
+is_a: PATO:0002304 ! increased process quality
 is_a: PATO:0002305 ! increased object quality
 intersection_of: PATO:0001586 ! variability of rate
 intersection_of: increased_in_magnitude_relative_to PATO:0000461 ! normal
@@ -10303,6 +10303,7 @@ def: "A variability of rate which is relatively low." [PATO:GVG]
 subset: value_slim
 synonym: "low variability of rate" EXACT []
 is_a: PATO:0001586 ! variability of rate
+is_a: PATO:0002302 ! decreased process quality
 is_a: PATO:0002303 ! decreased object quality
 intersection_of: PATO:0001586 ! variability of rate
 intersection_of: decreased_in_magnitude_relative_to PATO:0000461 ! normal
@@ -10362,7 +10363,6 @@ is_a: PATO:0001857 ! concave
 id: PATO:0001595
 name: depth
 def: "A 1-D extent quality inhering in a bearer by virtue of the bearer's downward or backward or inward dimenision." [WordNet:WordNet]
-comment: This term is for curator easiness - denote downward/inward length - we might consider obsoleting this but we have to consider how curators are going to represent them if we do.
 subset: attribute_slim
 subset: scalar_slim
 is_a: PATO:0001708 ! 1-D extent
@@ -10506,6 +10506,7 @@ def: "A variability of color which is relatively high." [PATO:GVG]
 subset: value_slim
 synonym: "high variability of color" EXACT []
 is_a: PATO:0001615 ! variant color
+is_a: PATO:0002304 ! increased process quality
 is_a: PATO:0002305 ! increased object quality
 intersection_of: PATO:0001615 ! variant color
 intersection_of: increased_in_magnitude_relative_to PATO:0000461 ! normal
@@ -10517,6 +10518,7 @@ def: "A variability of color which is relatively low." [PATO:GVG]
 subset: value_slim
 synonym: "low variability of color" EXACT []
 is_a: PATO:0001615 ! variant color
+is_a: PATO:0002302 ! decreased process quality
 is_a: PATO:0002303 ! decreased object quality
 intersection_of: PATO:0001615 ! variant color
 intersection_of: decreased_in_magnitude_relative_to PATO:0000461 ! normal
@@ -12624,9 +12626,7 @@ alt_id: PATO:0001479
 alt_id: PATO:0002158
 alt_id: PATO:0002159
 def: "A positional quality inhering in a bearer by virtue of the bearer's being out of its usual or proper place, or position." [thefreedictionary.com:thefreedictionary.com]
-subset: attribute_slim
 subset: mpath_slim
-subset: relational_slim
 subset: value_slim
 synonym: "dislocation" EXACT []
 synonym: "luxated" EXACT []
@@ -12835,6 +12835,7 @@ name: triangular
 def: "A shape quality inhering in a bearer by virtue of the bearer's having three angles." [wordreference:wordreference]
 subset: cell_quality
 subset: value_slim
+synonym: "delta shaped" RELATED []
 synonym: "deltoid" EXACT []
 synonym: "triangle" RELATED []
 synonym: "triangle-shaped" RELATED []
@@ -13120,7 +13121,7 @@ name: multinucleate
 def: "A nucleate quality inhering in a bearer by virtue of the bearer's having more than one nucleus." [PATOC:GVG]
 subset: mpath_slim
 subset: value_slim
-is_a: PATO:0001404 ! nucleate quality
+is_a: PATO:0002505 ! nucleated
 
 [Term]
 id: PATO:0001909
@@ -13491,6 +13492,7 @@ def: "A variability of size which is relatively low." [PATOC:GVG]
 subset: value_slim
 synonym: "low variability of size" EXACT []
 is_a: PATO:0001956 ! variability of size
+is_a: PATO:0002302 ! decreased process quality
 is_a: PATO:0002303 ! decreased object quality
 intersection_of: PATO:0001956 ! variability of size
 intersection_of: decreased_in_magnitude_relative_to PATO:0000461 ! normal
@@ -13502,6 +13504,7 @@ def: "A variability of size which is relatively high." [PATOC:GVG]
 subset: value_slim
 synonym: "high variability of size" EXACT []
 is_a: PATO:0001956 ! variability of size
+is_a: PATO:0002304 ! increased process quality
 is_a: PATO:0002305 ! increased object quality
 intersection_of: PATO:0001956 ! variability of size
 intersection_of: increased_in_magnitude_relative_to PATO:0000461 ! normal
@@ -13729,6 +13732,7 @@ id: PATO:0001989
 name: sinuous
 def: "A curvature quality inhering in a bearer by virtue of the bearer's having many curves and turns." [PATOC:GVG]
 subset: value_slim
+synonym: "twisted" RELATED []
 is_a: PATO:0001591 ! curvature
 
 [Term]
@@ -16212,7 +16216,6 @@ id: PATO:0002244
 name: mass flow rate
 def: "A flow rate quality inhering in a substance by virtue of the mass of substance which passes through a given surface per unit time." [url:http\://en.wikipedia.org/wiki/Mass_flow_rate]
 subset: attribute_slim
-subset: value_slim
 is_a: PATO:0001574 ! flow rate
 created_by: george
 creation_date: 2010-07-28T03:02:03Z
@@ -16330,7 +16333,6 @@ id: PATO:0002254
 name: flattened
 def: "A quality inhering in a bearer by virtue of the bearer's surface becoming more extended in a plane." [PATOC:CVS]
 comment: Becoming flat but not necessarily completely flat.
-subset: attribute_slim
 subset: value_slim
 synonym: "compressed" RELATED []
 is_a: PATO:0001591 ! curvature
@@ -16739,6 +16741,7 @@ name: foveate
 def: "A texture quality inhering in a surface by virtue of the bearer's being marked by the presence of small, shallow, regular depressions called fovae." [Book:Book]
 subset: value_slim
 synonym: "foveolate" RELATED []
+synonym: "pitted" RELATED []
 is_a: PATO:0000150 ! texture
 created_by: George Gkoutos
 creation_date: 2011-05-17T07:59:30Z
@@ -16937,8 +16940,9 @@ creation_date: 2011-10-03T03:59:59Z
 [Term]
 id: PATO:0002316
 name: autogenous
-def: "Being separate or discrete, ossifying from an independent centre and, by extension, used in the sense of bones that are not fused to the nearest neighbor." [Dictionary of Ichthyology:]
+def: "Being separate or discrete from other skeletal elements." [PATOC:WD]
 subset: value_slim
+synonym: "free" RELATED []
 is_a: PATO:0000141 ! structure
 created_by: George Gkoutos
 creation_date: 2011-10-03T04:17:08Z
@@ -17032,7 +17036,7 @@ creation_date: 2011-11-23T12:06:09Z
 
 [Term]
 id: PATO:0002327
-name: increased angle
+name: increased angle to
 def: "An angle which is relatively high." [PATOC:GVG]
 subset: relational_slim
 subset: value_slim
@@ -17045,7 +17049,7 @@ creation_date: 2011-11-23T12:06:38Z
 
 [Term]
 id: PATO:0002328
-name: decreased angle
+name: decreased angle to
 def: "An angle which is relatively low." [PATOC:GVG]
 subset: relational_slim
 subset: value_slim
@@ -17479,7 +17483,7 @@ def: "A positional quality inhering in a bearer by virtue of the bearer's locati
 subset: value_slim
 is_a: PATO:0001769 ! positional polarity
 created_by: gkoutos
-creation_date: 2012-07-05T13:49:04Z
+creation_date: 2012-07-05T01:49:04Z
 
 [Term]
 id: PATO:0002374
@@ -17488,7 +17492,7 @@ def: "Recurrent and often more or less cyclic alteration." [PATOC:DS]
 subset: value_slim
 is_a: PATO:0001227 ! variant
 created_by: gkoutos
-creation_date: 2012-07-05T13:52:36Z
+creation_date: 2012-07-05T01:52:36Z
 
 [Term]
 id: PATO:0002375
@@ -17497,7 +17501,7 @@ def: "A concave 3-D shape quality inhering in a bearer by virtue of the bearer's
 subset: value_slim
 is_a: PATO:0002008 ! concave 3-D shape
 created_by: gkoutos
-creation_date: 2012-07-05T14:45:17Z
+creation_date: 2012-07-05T02:45:17Z
 
 [Term]
 id: PATO:0002376
@@ -17507,7 +17511,7 @@ subset: value_slim
 synonym: "air-filled" EXACT []
 is_a: PATO:0002014 ! structure, cavities
 created_by: gkoutos
-creation_date: 2012-07-05T14:55:10Z
+creation_date: 2012-07-05T02:55:10Z
 
 [Term]
 id: PATO:0002377
@@ -17516,7 +17520,7 @@ def: "A structure quality inhering in a bearer by virtue of the bearer's being n
 subset: value_slim
 is_a: PATO:0002014 ! structure, cavities
 created_by: gkoutos
-creation_date: 2012-07-05T14:56:07Z
+creation_date: 2012-07-05T02:56:07Z
 
 [Term]
 id: PATO:0002378
@@ -17526,7 +17530,7 @@ subset: mpath_slim
 subset: value_slim
 is_a: PATO:0001979 ! lobed
 created_by: gkoutos
-creation_date: 2012-07-05T14:58:05Z
+creation_date: 2012-07-05T02:58:05Z
 
 [Term]
 id: PATO:0002379
@@ -17535,7 +17539,7 @@ def: "A female fertility quality inhering in a female by virtue of the bearer's 
 subset: value_slim
 is_a: PATO:0000892 ! female sterile
 created_by: gkoutos
-creation_date: 2012-07-05T15:04:28Z
+creation_date: 2012-07-05T03:04:28Z
 
 [Term]
 id: PATO:0002380
@@ -17544,7 +17548,7 @@ def: "A female fertility quality inhering in a female by virtue of the bearer's 
 subset: value_slim
 is_a: PATO:0000892 ! female sterile
 created_by: gkoutos
-creation_date: 2012-07-05T15:06:12Z
+creation_date: 2012-07-05T03:06:12Z
 
 [Term]
 id: PATO:0002381
@@ -17553,7 +17557,7 @@ def: "A composition quality inhering in an bearer by virtue of the presence of l
 subset: attribute_slim
 is_a: PATO:0000025 ! composition
 created_by: gkoutos
-creation_date: 2012-07-05T15:17:00Z
+creation_date: 2012-07-05T03:17:00Z
 
 [Term]
 id: PATO:0002382
@@ -17565,7 +17569,7 @@ is_a: PATO:0002381 ! waxiness
 intersection_of: PATO:0002381 ! waxiness
 intersection_of: increased_in_magnitude_relative_to PATO:0000461 ! normal
 created_by: gkoutos
-creation_date: 2012-07-05T15:18:03Z
+creation_date: 2012-07-05T03:18:03Z
 
 [Term]
 id: PATO:0002383
@@ -17576,7 +17580,7 @@ is_a: PATO:0002381 ! waxiness
 intersection_of: PATO:0002381 ! waxiness
 intersection_of: decreased_in_magnitude_relative_to PATO:0000461 ! normal
 created_by: gkoutos
-creation_date: 2012-07-05T15:18:14Z
+creation_date: 2012-07-05T03:18:14Z
 
 [Term]
 id: PATO:0002384
@@ -17586,7 +17590,7 @@ subset: mpath_slim
 subset: value_slim
 is_a: PATO:0002381 ! waxiness
 created_by: gkoutos
-creation_date: 2012-07-05T15:18:21Z
+creation_date: 2012-07-05T03:18:21Z
 
 [Term]
 id: PATO:0002385
@@ -17595,7 +17599,7 @@ def: "A shape quality inhering in a bearer by virtue of the bearer's being marke
 subset: value_slim
 is_a: PATO:0001410 ! striated
 created_by: gkoutos
-creation_date: 2012-07-05T17:17:07Z
+creation_date: 2012-07-05T05:17:07Z
 
 [Term]
 id: PATO:0002386
@@ -17604,7 +17608,7 @@ def: "A concave 3-D shape that inheres in the bearer by virtue of the bearer's s
 synonym: "anvil shaped" EXACT []
 is_a: PATO:0002008 ! concave 3-D shape
 created_by: gkoutos
-creation_date: 2012-07-23T15:13:41Z
+creation_date: 2012-07-23T03:13:41Z
 
 [Term]
 id: PATO:0002387
@@ -17615,7 +17619,7 @@ subset: value_slim
 synonym: "per-acute" EXACT []
 is_a: PATO:0000389 ! acute
 created_by: gkoutos
-creation_date: 2012-09-15T14:57:46Z
+creation_date: 2012-09-15T02:57:46Z
 
 [Term]
 id: PATO:0002388
@@ -17625,7 +17629,7 @@ subset: mpath_slim
 subset: value_slim
 is_a: PATO:0000141 ! structure
 created_by: gkoutos
-creation_date: 2012-10-12T13:10:41Z
+creation_date: 2012-10-12T01:10:41Z
 
 [Term]
 id: PATO:0002389
@@ -17634,7 +17638,7 @@ def: "Growing horizontal to the ground without setting roots." [PATO:PG]
 subset: value_slim
 is_a: PATO:0000631 ! prostrate
 created_by: gkoutos
-creation_date: 2012-10-12T13:33:50Z
+creation_date: 2012-10-12T01:33:50Z
 
 [Term]
 id: PATO:0002390
@@ -17644,7 +17648,7 @@ subset: attribute_slim
 subset: scalar_slim
 is_a: PATO:0000122 ! length
 created_by: gkoutos
-creation_date: 2012-11-15T17:17:15Z
+creation_date: 2012-11-15T05:17:15Z
 
 [Term]
 id: PATO:0002391
@@ -17653,7 +17657,7 @@ def: "A shape quality inhering in a bearer by virtue of the bearer's having thre
 subset: value_slim
 is_a: PATO:0000052 ! shape
 created_by: gkoutos
-creation_date: 2012-11-15T17:19:32Z
+creation_date: 2012-11-15T05:19:32Z
 
 [Term]
 id: PATO:0002392
@@ -17663,7 +17667,7 @@ subset: relational_slim
 subset: value_slim
 is_a: PATO:0000140 ! position
 created_by: gkoutos
-creation_date: 2012-11-15T17:21:51Z
+creation_date: 2012-11-15T05:21:51Z
 
 [Term]
 id: PATO:0002393
@@ -17676,7 +17680,7 @@ is_a: PATO:0002305 ! increased object quality
 intersection_of: PATO:0000515 ! tolerant to
 intersection_of: increased_in_magnitude_relative_to PATO:0000461 ! normal
 created_by: gkoutos
-creation_date: 2012-11-15T17:32:07Z
+creation_date: 2012-11-15T05:32:07Z
 
 [Term]
 id: PATO:0002394
@@ -17689,7 +17693,7 @@ is_a: PATO:0002303 ! decreased object quality
 intersection_of: PATO:0000515 ! tolerant to
 intersection_of: decreased_in_magnitude_relative_to PATO:0000461 ! normal
 created_by: gkoutos
-creation_date: 2012-11-15T17:33:05Z
+creation_date: 2012-11-15T05:33:05Z
 
 [Term]
 id: PATO:0002395
@@ -17698,7 +17702,7 @@ def: "A positional quality inhering in a bearer by virtue of the bearer's being 
 subset: value_slim
 is_a: PATO:0000628 ! mislocalised
 created_by: gkoutos
-creation_date: 2012-11-20T16:13:32Z
+creation_date: 2012-11-20T04:13:32Z
 
 [Term]
 id: PATO:0002396
@@ -17707,7 +17711,7 @@ def: "A positional quality inhering in a bearer by virtue of the bearer's being 
 subset: value_slim
 is_a: PATO:0000628 ! mislocalised
 created_by: gkoutos
-creation_date: 2012-11-20T16:15:12Z
+creation_date: 2012-11-20T04:15:12Z
 
 [Term]
 id: PATO:0002397
@@ -17718,14 +17722,14 @@ synonym: "round" RELATED []
 synonym: "rounded" RELATED []
 is_a: PATO:0002006 ! 2-D shape
 created_by: gkoutos
-creation_date: 2012-12-07T17:32:18Z
+creation_date: 2012-12-07T05:32:18Z
 
 [Term]
 id: PATO:0002398
 name: <new term>
 is_obsolete: true
 created_by: gkoutos
-creation_date: 2012-12-07T17:34:16Z
+creation_date: 2012-12-07T05:34:16Z
 
 [Term]
 id: PATO:0002399
@@ -17735,7 +17739,7 @@ subset: mpath_slim
 subset: value_slim
 is_a: PATO:0001599 ! rotated
 created_by: gkoutos
-creation_date: 2012-12-07T17:41:01Z
+creation_date: 2012-12-07T05:41:01Z
 
 [Term]
 id: PATO:0002400
@@ -17745,7 +17749,7 @@ subset: mpath_slim
 subset: value_slim
 is_a: PATO:0001409 ! spindle-shaped
 created_by: gkoutos
-creation_date: 2012-12-07T17:43:25Z
+creation_date: 2012-12-07T05:43:25Z
 
 [Term]
 id: PATO:0002401
@@ -17911,7 +17915,7 @@ subset: mpath_slim
 subset: value_slim
 is_a: PATO:0000140 ! position
 created_by: gkoutos
-creation_date: 2012-12-17T14:16:18Z
+creation_date: 2012-12-17T02:16:18Z
 
 [Term]
 id: PATO:0002418
@@ -17921,7 +17925,7 @@ subset: mpath_slim
 subset: value_slim
 is_a: PATO:0002070 ! affinity
 created_by: gkoutos
-creation_date: 2012-12-17T15:01:19Z
+creation_date: 2012-12-17T03:01:19Z
 
 [Term]
 id: PATO:0002419
@@ -17931,7 +17935,7 @@ subset: mpath_slim
 subset: value_slim
 is_a: PATO:0002070 ! affinity
 created_by: gkoutos
-creation_date: 2012-12-17T15:02:09Z
+creation_date: 2012-12-17T03:02:09Z
 
 [Term]
 id: PATO:0002420
@@ -17941,7 +17945,7 @@ subset: mpath_slim
 subset: value_slim
 is_a: PATO:0002070 ! affinity
 created_by: gkoutos
-creation_date: 2012-12-17T15:04:39Z
+creation_date: 2012-12-17T03:04:39Z
 
 [Term]
 id: PATO:0002421
@@ -17951,7 +17955,7 @@ subset: mpath_slim
 subset: value_slim
 is_a: PATO:0000052 ! shape
 created_by: gkoutos
-creation_date: 2012-12-17T15:08:09Z
+creation_date: 2012-12-17T03:08:09Z
 
 [Term]
 id: PATO:0002422
@@ -17962,7 +17966,7 @@ subset: mpath_slim
 subset: value_slim
 is_a: PATO:0000141 ! structure
 created_by: gkoutos
-creation_date: 2012-12-17T15:11:10Z
+creation_date: 2012-12-17T03:11:10Z
 
 [Term]
 id: PATO:0002423
@@ -17972,7 +17976,7 @@ subset: mpath_slim
 subset: value_slim
 is_a: PATO:0000052 ! shape
 created_by: gkoutos
-creation_date: 2012-12-17T15:13:44Z
+creation_date: 2012-12-17T03:13:44Z
 
 [Term]
 id: PATO:0002424
@@ -18206,7 +18210,7 @@ subset: relational_slim
 subset: value_slim
 is_a: PATO:0000133 ! orientation
 created_by: gkoutos
-creation_date: 2013-02-16T14:57:06Z
+creation_date: 2013-02-16T02:57:06Z
 
 [Term]
 id: PATO:0002449
@@ -18216,7 +18220,7 @@ subset: relational_slim
 subset: value_slim
 is_a: PATO:0001633 ! posterior to
 created_by: gkoutos
-creation_date: 2013-02-16T15:00:46Z
+creation_date: 2013-02-16T03:00:46Z
 
 [Term]
 id: PATO:0002450
@@ -18225,7 +18229,7 @@ def: "A hardness quality of giving significant resistance to pressure." [PATOC:C
 subset: value_slim
 is_a: PATO:0000048 ! hardness
 created_by: gkoutos
-creation_date: 2013-02-26T14:02:38Z
+creation_date: 2013-02-26T02:02:38Z
 
 [Term]
 id: PATO:0002451
@@ -18243,7 +18247,7 @@ def: "A structural quality inhering in a bearer by virtue of the bearer being th
 subset: value_slim
 is_a: PATO:0000141 ! structure
 created_by: gkoutos
-creation_date: 2013-04-08T20:43:31Z
+creation_date: 2013-04-08T08:43:31Z
 
 [Term]
 id: PATO:0002453
@@ -18252,7 +18256,7 @@ def: "A structural quality inhering in a bearer by virtue of the bearer bring gr
 subset: value_slim
 is_a: PATO:0000141 ! structure
 created_by: gkoutos
-creation_date: 2013-04-08T20:45:08Z
+creation_date: 2013-04-08T08:45:08Z
 
 [Term]
 id: PATO:0002454
@@ -18261,7 +18265,7 @@ def: "A  quality inhering in a bearer by virtue of the bearer's similarity to th
 subset: value_slim
 is_a: PATO:0000052 ! shape
 created_by: gkoutos
-creation_date: 2013-04-09T18:00:28Z
+creation_date: 2013-04-09T06:00:28Z
 
 [Term]
 id: PATO:0002455
@@ -18270,7 +18274,7 @@ def: "A  quality inhering in a bearer by virtue of the bearer's architecture bea
 subset: value_slim
 is_a: PATO:0000052 ! shape
 created_by: gkoutos
-creation_date: 2013-04-09T18:01:02Z
+creation_date: 2013-04-09T06:01:02Z
 
 [Term]
 id: PATO:0002456
@@ -18279,7 +18283,7 @@ def: "A  quality inhering in a bearer by virtue of the bearer's similarity to th
 subset: value_slim
 is_a: PATO:0000052 ! shape
 created_by: gkoutos
-creation_date: 2013-04-09T18:02:05Z
+creation_date: 2013-04-09T06:02:05Z
 
 [Term]
 id: PATO:0002457
@@ -18288,7 +18292,7 @@ def: "A structural quality inhering in a bearer by virtue of the bearer's simila
 subset: value_slim
 is_a: PATO:0000052 ! shape
 created_by: gkoutos
-creation_date: 2013-04-09T18:02:58Z
+creation_date: 2013-04-09T06:02:58Z
 
 [Term]
 id: PATO:0002458
@@ -18297,7 +18301,7 @@ def: "A quality inhering in a bearer by virtue of the bearer being thin and lack
 subset: value_slim
 is_a: PATO:0000052 ! shape
 created_by: gkoutos
-creation_date: 2013-04-09T18:03:56Z
+creation_date: 2013-04-09T06:03:56Z
 
 [Term]
 id: PATO:0002459
@@ -18306,7 +18310,7 @@ def: "A structural quality inhering in a bearer by virtue of the bearer's simila
 subset: value_slim
 is_a: PATO:0000052 ! shape
 created_by: gkoutos
-creation_date: 2013-04-09T18:04:36Z
+creation_date: 2013-04-09T06:04:36Z
 
 [Term]
 id: PATO:0002460
@@ -18315,7 +18319,7 @@ def: "A structural quality inhering in a bearer by virtue of the bearer being sm
 subset: value_slim
 is_a: PATO:0000141 ! structure
 created_by: gkoutos
-creation_date: 2013-04-09T18:05:18Z
+creation_date: 2013-04-09T06:05:18Z
 
 [Term]
 id: PATO:0002461
@@ -18324,7 +18328,448 @@ def: "To bend or hang downwards due to loss of water" []
 subset: value_slim
 is_a: PATO:0002165 ! drooping
 created_by: gkoutos
-creation_date: 2013-04-09T18:06:14Z
+creation_date: 2013-04-09T06:06:14Z
+
+[Term]
+id: PATO:0002462
+name: collagenous
+def: "A composition quality inhering in an bearer by virtue of the bearer's consisting of collagen." [PATOC:WD]
+subset: value_slim
+is_a: PATO:0000025 ! composition
+created_by: gkoutos
+creation_date: 2013-09-15T11:34:15Z
+
+[Term]
+id: PATO:0002463
+name: extends to
+def: "A positional quality inhering in a bearer by virtue of some aspect of the bearer extending to the position of another entity." [PATOC:WD]
+subset: relational_slim
+is_a: PATO:0000140 ! position
+created_by: gkoutos
+creation_date: 2013-09-15T11:41:00Z
+
+[Term]
+id: PATO:0002464
+name: extends beyond
+def: "A positional quality inhering in a bearer by virtue of some aspect of the bearer extending past the position of another entity." [PATOC:WD]
+subset: relational_slim
+is_a: PATO:0000140 ! position
+created_by: gkoutos
+creation_date: 2013-09-15T11:42:15Z
+
+[Term]
+id: PATO:0002465
+name: prism shaped
+def: "A quality inhering in a bearer by virtue of the bearer's resembling a prism." []
+subset: value_slim
+synonym: "tent shaped" RELATED []
+is_a: PATO:0000052 ! shape
+created_by: gkoutos
+creation_date: 2013-09-15T11:44:03Z
+
+[Term]
+id: PATO:0002466
+name: keyhole shaped
+def: "A shape quality inhering in a bearer by virtue of the bearer resembling a keyhole." [PATOC:WD]
+subset: value_slim
+is_a: PATO:0000052 ! shape
+created_by: gkoutos
+creation_date: 2013-09-15T11:45:53Z
+
+[Term]
+id: PATO:0002467
+name: lathlike
+def: "A shape quality inhering in a bearer by virtue of the bearer resembling a thin narrow strip." [PATOC:WD]
+subset: value_slim
+is_a: PATO:0000052 ! shape
+created_by: gkoutos
+creation_date: 2013-09-15T11:47:11Z
+
+[Term]
+id: PATO:0002468
+name: distensible
+def: "A structure quality inhering in a bearer by virtue of the bearer's being capable of swelling or stretching." [PATOC:WD]
+subset: value_slim
+is_a: PATO:0000141 ! structure
+created_by: gkoutos
+creation_date: 2013-09-15T11:48:26Z
+
+[Term]
+id: PATO:0002469
+name: sutured to
+def: "Structural quality inhereing in a bearer in which a joint has apposed bony surfaces united by fibrous tissue, permitting no movement; found only between bones." [PATOC:WD]
+subset: relational_slim
+subset: value_slim
+is_a: PATO:0000141 ! structure
+created_by: gkoutos
+creation_date: 2013-09-15T11:55:50Z
+
+[Term]
+id: PATO:0002470
+name: transformed to
+def: "A morphological quality between two bearers inhering that one bearer is subject to change the nature, function, or condition of itself to become the other." [PATOC:LC]
+subset: relational_slim
+subset: value_slim
+is_a: PATO:0000051 ! morphology
+created_by: gkoutos
+creation_date: 2013-09-15T12:01:57Z
+
+[Term]
+id: PATO:0002471
+name: increased velocity
+def: "A physical quality inhering in a bearer by virtue of the bearer's increased rate of change of the position." [PATOC:NV]
+subset: value_slim
+is_a: PATO:0002242 ! velocity
+is_a: PATO:0002305 ! increased object quality
+intersection_of: PATO:0002242 ! velocity
+intersection_of: increased_in_magnitude_relative_to PATO:0000461 ! normal
+created_by: gkoutos
+creation_date: 2013-09-15T12:03:45Z
+
+[Term]
+id: PATO:0002472
+name: decreased velocity
+def: "A physical quality inhering in a bearer by virtue of the bearer's decreased rate of change of the position." [PATOC:NV]
+subset: value_slim
+is_a: PATO:0002242 ! velocity
+is_a: PATO:0002303 ! decreased object quality
+intersection_of: PATO:0002242 ! velocity
+intersection_of: decreased_in_magnitude_relative_to PATO:0000461 ! normal
+created_by: gkoutos
+creation_date: 2013-09-15T12:05:06Z
+
+[Term]
+id: PATO:0002473
+name: neoplastic, spontaneous
+def: "A disposition inhering in a tumour by virtue of the bearer's disposition to spontaneously arise." [PATOC:NV]
+subset: mpath_slim
+subset: value_slim
+is_a: PATO:0002011 ! neoplastic
+created_by: gkoutos
+creation_date: 2013-09-15T12:07:08Z
+
+[Term]
+id: PATO:0002474
+name: bitter
+def: "A flavor quality inhering in a bearer by virtue of the bearer's having an acrid, sharp, or disagreeable flavor." [PATOC:LC]
+subset: value_slim
+is_a: PATO:0001329 ! flavourful
+created_by: gkoutos
+creation_date: 2013-09-15T12:09:15Z
+
+[Term]
+id: PATO:0002475
+name: subterminal
+def: "A position quality inhering in a bearer by virtue of the bearer's existing near the end of another entity." [PATOC:WD]
+subset: relational_slim
+subset: value_slim
+is_a: PATO:0000140 ! position
+created_by: gkoutos
+creation_date: 2013-09-15T12:17:41Z
+
+[Term]
+id: PATO:0002476
+name: terminal
+def: "A position quality inhering in a bearer by virtue of the bearer's forming the end of another entity." [PATOC:WD]
+subset: relational_slim
+subset: value_slim
+is_a: PATO:0000140 ! position
+created_by: gkoutos
+creation_date: 2013-09-15T12:18:08Z
+
+[Term]
+id: PATO:0002477
+name: brittle
+def: "A structural quality inhering in a bearer by virtue of the bearer's disposition to breaks without significant deformation (strain) when subjected to stress." [wikipedia:http\://en.wikipedia.org/wiki/Brittleness]
+subset: value_slim
+is_a: PATO:0000141 ! structure
+created_by: gkoutos
+creation_date: 2013-09-15T12:25:03Z
+
+[Term]
+id: PATO:0002478
+name: transversely striated
+def: "A shape quality inhering in a bearer by virtue of the bearer's being marked by narrow lines or grooves, usually parallel, that are oriented transversely relative to the long axis of the bearer." [PATOC:DS]
+subset: cell_quality
+subset: mpath_slim
+subset: value_slim
+is_a: PATO:0001410 ! striated
+created_by: gkoutos
+creation_date: 2013-09-15T12:29:15Z
+
+[Term]
+id: PATO:0002479
+name: obliquely striated
+def: "A shape quality inhering in a bearer by virtue of the bearer's being marked by narrow lines or grooves, usually parallel, that are oriented obliquely relative to the long axis of the bearer." [PATOC:DS]
+subset: cell_quality
+subset: mpath_slim
+subset: value_slim
+is_a: PATO:0001410 ! striated
+created_by: gkoutos
+creation_date: 2013-09-15T12:29:42Z
+
+[Term]
+id: PATO:0002480
+name: poorly ossified
+def: "A quality inhering in an bearer by virtue of the bearer's possessing only minor levels of ossification." [PATOC:AD]
+subset: value_slim
+is_a: PATO:0001448 ! ossified
+created_by: gkoutos
+creation_date: 2013-09-30T05:47:07Z
+
+[Term]
+id: PATO:0002481
+name: oblique orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a slanting direction or position : neither perpendicular nor parallel." [merriam-wester:http\://www.merriam-webster.com/dictionary/oblique]
+subset: value_slim
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-09-30T05:49:50Z
+
+[Term]
+id: PATO:0002482
+name: slit-like
+def: "Shape quality inhering in a bearer by virtue of the bearer exhibiting a narrow and elongate opening." [PATOC:WD]
+subset: value_slim
+is_a: PATO:0000052 ! shape
+created_by: gkoutos
+creation_date: 2013-09-30T05:51:39Z
+
+[Term]
+id: PATO:0002483
+name: external to
+def: "Positional quality in which an entity is located outside of another entity." [PATOC:WD]
+subset: relational_slim
+subset: value_slim
+is_a: PATO:0000140 ! position
+created_by: gkoutos
+creation_date: 2013-09-30T06:06:27Z
+
+[Term]
+id: PATO:0002484
+name: inverted-V shaped
+def: "An angular shape quality inhering in a bearer by virtue of the bearer's having a single angle in its length giving the bearer the form of an inverted letter V." [PATOC:WD]
+subset: value_slim
+synonym: "chevron shaped" BROAD []
+is_a: PATO:0001977 ! angular
+created_by: gkoutos
+creation_date: 2013-10-10T03:55:44Z
+
+[Term]
+id: PATO:0002485
+name: parallel-sided
+def: "A shape quality inhering in a bearer by virtue of the bearer's possessing two sides that are at the same continuous distance relative to each other." [PATOC:WD]
+subset: value_slim
+is_a: PATO:0000052 ! shape
+created_by: gkoutos
+creation_date: 2013-10-10T03:58:37Z
+
+[Term]
+id: PATO:0002486
+name: multi-organismal process
+def: "A quality inhering in a process by virtue of that process having two or more organisms as participants." [PATOC:DS]
+subset: attribute_slim
+is_a: PATO:0001236 ! process quality
+created_by: gkoutos
+creation_date: 2013-10-10T04:08:44Z
+
+[Term]
+id: PATO:0002487
+name: single organismal
+def: "A quality inhering in a process by virtue of that process having exactly one organism as a participant." [PATOC:DS]
+subset: attribute_slim
+is_a: PATO:0001236 ! process quality
+created_by: gkoutos
+creation_date: 2013-10-10T04:09:51Z
+
+[Term]
+id: PATO:0002488
+name: overlapping
+def: "Overlap with quality inhering in a bearer by virtue of the bearer's being positioned over another entity so as to cover some portion of it." [PATOC:WD]
+subset: relational_slim
+subset: value_slim
+is_a: PATO:0001590 ! overlap with
+created_by: gkoutos
+creation_date: 2013-10-10T04:12:22Z
+
+[Term]
+id: PATO:0002489
+name: overlapped by
+def: "Overlap with quality inhering in a bearer by virtue of the bearer's being positioned under another entity so as to be covered by some portion of it." [PATOC:WD]
+subset: relational_slim
+subset: value_slim
+is_a: PATO:0001590 ! overlap with
+created_by: gkoutos
+creation_date: 2013-10-10T04:13:04Z
+
+[Term]
+id: PATO:0002490
+name: anterior orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed anteriorly." [PATOC:WD]
+subset: value_slim
+synonym: "anteriorly directly" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:11:26Z
+
+[Term]
+id: PATO:0002491
+name: anterodorsal orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed anterodorsally." [PATOC:WD]
+subset: value_slim
+synonym: "anterodorsally directed" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:12:15Z
+
+[Term]
+id: PATO:0002492
+name: anterolateral orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed anterolaterally." [PATOC:WD]
+subset: value_slim
+synonym: "anterolaterally directed" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:13:17Z
+
+[Term]
+id: PATO:0002493
+name: anteroventral orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed anteroventrally." [PATOC:WD]
+subset: value_slim
+synonym: "anteroventrally directed" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:13:55Z
+
+[Term]
+id: PATO:0002494
+name: distal orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed distally." [PATOC:WD]
+subset: value_slim
+synonym: "distally directed" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:14:37Z
+
+[Term]
+id: PATO:0002495
+name: dorsal orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed dorsally." [PATOC:WD]
+subset: value_slim
+synonym: "dorsally directed" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:15:24Z
+
+[Term]
+id: PATO:0002496
+name: dorsolateral orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed dorsolaterally." [PATOC:WD]
+subset: value_slim
+synonym: "dorsolaterally directed" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:16:04Z
+
+[Term]
+id: PATO:0002497
+name: lateral orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed laterally." [PATOC:WD]
+subset: value_slim
+synonym: "laterally directed" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:16:45Z
+
+[Term]
+id: PATO:0002498
+name: medial orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed medially." [PATOC:WD]
+subset: value_slim
+synonym: "medially directed" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:17:30Z
+
+[Term]
+id: PATO:0002499
+name: posterior orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed posteriorly." [PATOC:WD]
+subset: value_slim
+synonym: "<new synonym>" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:18:21Z
+
+[Term]
+id: PATO:0002500
+name: ventrolaterally orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed ventrolaterally." [PATOC:WD]
+subset: value_slim
+synonym: "ventrolaterally directed" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:19:16Z
+
+[Term]
+id: PATO:0002501
+name: ventral orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed ventrally." [PATOC:WD]
+subset: value_slim
+synonym: "ventrally directed" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:19:22Z
+
+[Term]
+id: PATO:0002502
+name: transverse orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed transversely." [PATOC:WD]
+subset: value_slim
+synonym: "transversely oriented" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:19:25Z
+
+[Term]
+id: PATO:0002503
+name: posterolateral orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed posterolaterally." [PATOC:WD]
+subset: value_slim
+synonym: "posterolaterally directed" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:19:28Z
+
+[Term]
+id: PATO:0002504
+name: posterodorsal orientation
+def: "An orientation quality inhering in a bearer by virtue of the bearer having a position that is directed posterodorsally." [PATOC:WD]
+subset: value_slim
+synonym: "posterodorsally directed" EXACT []
+is_a: PATO:0000133 ! orientation
+created_by: gkoutos
+creation_date: 2013-10-10T05:19:36Z
+
+[Term]
+id: PATO:0002505
+name: nucleated
+def: "A nucleate quality inhering in a bearer by virtue of the bearer's having one or more nucleus." [PATOC:GVG]
+subset: mpath_slim
+subset: value_slim
+is_a: PATO:0001404 ! nucleate quality
+created_by: gkoutos
+creation_date: 2013-10-21T05:44:34Z
+
+[Term]
+id: PATO:0002506
+name: alobate
+def: "A surface feature shape quality inhering in a bearer by virtue of the bearer's not having undulating edges forming lobes." [PATOC:DOS]
+subset: value_slim
+is_a: PATO:0001925 ! surface feature shape
+created_by: gkoutos
+creation_date: 2013-10-25T04:42:40Z
 
 [Typedef]
 id: correlates_with

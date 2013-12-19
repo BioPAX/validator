@@ -59,7 +59,6 @@ public abstract class AbstractRule<T> implements Rule<T> {
      * 
      * @throws NullPointerException when validation is null
 	 */
-    @Override
     public void error(final Validation validation, Object object, String code, boolean setFixed, Object... args) {
 
     	if(object == null) {

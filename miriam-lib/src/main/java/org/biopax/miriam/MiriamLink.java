@@ -33,9 +33,6 @@ import java.util.regex.Pattern;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-//import javax.xml.validation.Schema;
-//import javax.xml.validation.SchemaFactory;
-//import javax.xml.XMLConstants;
 
 import net.biomodels.miriam.*;
 import net.biomodels.miriam.Miriam.Datatype;

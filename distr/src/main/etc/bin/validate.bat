@@ -1,4 +1,4 @@
-set VALIDATOR_OPTS="-javaagent:lib/spring-instrument-${spring.version}.jar -Xmx2g -Dfile.encoding=UTF-8 -Djava.io.tmpdir=tmp"
+set VALIDATOR_OPTS="-javaagent:lib/spring-instrument-${spring.version}.jar -Xmx2g -Dfile.encoding=UTF-8"
 
 # make sure the right (the one you want) java installation directory 
 # goes before the system java, etc. in your current PATH

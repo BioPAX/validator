@@ -48,7 +48,6 @@ public class AcyclicPathwayRule extends AbstractRule<Pathway> {
 		AbstractTraverser checker = new AbstractTraverser(
 				SimpleEditorMap.L3, 
 				new Filter<PropertyEditor>() {
-					@Override
 					public boolean filter(PropertyEditor editor) {
 						return !"nextStep".equals(editor.getProperty());
 					}

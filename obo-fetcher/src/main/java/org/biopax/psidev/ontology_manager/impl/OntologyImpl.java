@@ -341,7 +341,6 @@ public class OntologyImpl implements Ontology {
     }
 
 
-	@Override
 	public OntologyTermI getTermForAccession(String accession) {
 		return search(accession);
 	}

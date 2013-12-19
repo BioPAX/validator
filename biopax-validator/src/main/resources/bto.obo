@@ -1,7 +1,7 @@
 format-version: 1.2
-date: 26:04:2013 11:29
-saved-by: XPMUser
-auto-generated-by: OBO-Edit 2.1-beta1
+date: 04:12:2013 10:46
+saved-by: Marion
+auto-generated-by: OBO-Edit 2.3-beta5
 synonymtypedef: GE "LANGUAGE GERMAN"
 synonymtypedef: SCI "SCIENTIFIC NAME"
 default-namespace: 
@@ -87,7 +87,7 @@ is_a: BTO:0001479 ! culture condition:-grown cell
 id: BTO:0000011
 name: 3T3-L1 cell
 namespace: BrendaTissueOBO
-def: "L1 is a continuous substrain of 3T3 (Swiss albino) developed through clonal isolation. Cells undergo a pre-adipose to adipose like conversion as they progress from a rapidly dividing to a confluent and contact inhibited state. A high serum content in the medium enhances fat accumulation." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+def: "L1 is a continuous substrain of 3T3 Swiss albino developed through clonal isolation. Cells undergo a pre-adipose to adipose like conversion as they progress from a rapidly dividing to a confluent and contact inhibited state. A high serum content in the medium enhances fat accumulation." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
 synonym: "NIH3T3-L1 cell" RELATED []
 relationship: develops_from BTO:0000944 ! NIH-3T3 cell
 
@@ -378,7 +378,6 @@ def: "The outer portion of the adrenal glands that produces several steroid horm
 synonym: "cortex glandulae suprarenalis" RELATED []
 synonym: "cortex of adrenal gland" RELATED []
 synonym: "cortex of suprarenal gland" RELATED []
-
 synonym: "suprarenal cortex" RELATED []
 relationship: part_of BTO:0000047 ! adrenal gland
 
@@ -794,9 +793,10 @@ relationship: develops_from BTO:0000091 ! ascites
 
 [Term]
 id: BTO:0000095
-name: F9 cell
+name: F-9 cell
 namespace: BrendaTissueOBO
 def: "Mouse embryonal carcinoma, initiated from a testicular teratocarcinoma of a strain 129 mouse." [Deutsche Sammlung von Mikroorganismen und Zellkulturen GmbH:DSMZ]
+synonym: "F9 cell" RELATED []
 synonym: "F9 EC cell" RELATED []
 synonym: "F9 embryonal carcinoma cell" RELATED []
 synonym: "F9-EC cell" RELATED []
@@ -954,7 +954,7 @@ id: BTO:0000114
 name: basidiocarp
 namespace: BrendaTissueOBO
 def: "The large fruiting body characteristic of the majority of fungi of the subphylum Basidiomycotina; it is composed of masses of intertwined hyphal elements and produces basidia. Mushrooms and toadstools are common examples." [Dorlands Medical Dictionary:MerckSource]
-is_a: BTO:0000487 ! fruitbody
+is_a: BTO:0000487 ! fruit body
 
 [Term]
 id: BTO:0000115
@@ -1445,7 +1445,7 @@ name: pileus
 namespace: BrendaTissueOBO
 def: "The convex, concave, or flattened spore-bearing structure of some basidiomycetes that is attached superiorly to the stem and typically is expanded with gills or pores on the underside." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=pileus]
 synonym: "cap" RELATED []
-relationship: part_of BTO:0000487 ! fruitbody
+relationship: part_of BTO:0000487 ! fruit body
 
 [Term]
 id: BTO:0000173
@@ -2340,7 +2340,7 @@ id: BTO:0000284
 name: organism form
 namespace: BrendaTissueOBO
 synonym: "Gestalt" RELATED GE []
-is_a: BTO:0001489 ! whole body
+is_a: BTO:0000000 ! tissues, cell types and enzyme sources
 
 [Term]
 id: BTO:0000285
@@ -3740,7 +3740,7 @@ is_a: BTO:0000713 ! leaf
 id: BTO:0000463
 name: filament
 namespace: BrendaTissueOBO
-def: "Part of the stamen in a flower that supports the anther.\nA chainlike series of cells, as in many algae;" [PAE Virtual Glossary:Plants\, Animals and the Environment Glossary derived from leading WCB/McGraw-Hill textbooks, The American Heritage Dictionary of the English Language:Fourth Edition. 2000.]
+def: "Part of the stamen in a flower that supports the anther.\nA chainlike series of cells, as in many algae." [PAE_Virtual_Glossary:Plants\,_Animals_and_the_Environment_Glossary_derived_from_leading_WCB/McGraw-Hill_textbooks, The_American_Heritage_Dictionary_of_the_English_Language:Fourth_Edition_copyright_2000]
 relationship: part_of BTO:0001064 ! phycobiont
 relationship: part_of BTO:0001461 ! whole plant
 relationship: part_of BTO:0001559 ! stamen
@@ -3914,7 +3914,7 @@ relationship: part_of BTO:0002017 ! plant reproductive system
 
 [Term]
 id: BTO:0000487
-name: fruitbody
+name: fruit body
 namespace: BrendaTissueOBO
 def: "Any specialized structure which bears or contains sexually or asexually derived spores." [Microbial Structure Ontology Project:http\://www.geneontology.org/doc/microbial_structure_ontology/ont.defs.html]
 synonym: "Fruchtkoerper" RELATED GE []
@@ -4144,8 +4144,9 @@ is_a: BTO:0000720 ! plant form
 id: BTO:0000515
 name: haustorium
 namespace: BrendaTissueOBO
-def: "A food-absorbing outgrowth of a plant organ (as a hypha or stem)." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=haustorium]
+def: "A specialized absorbing structure of a parasitic plant, such as the rootlike outgrowth of the dodder, that obtains food from a host plant. In parasitic fungi, haustoria are specialized hyphae that penetrate the cells of other organisms and absorb nutrients directly from them." [The_American_Heritage_Science_Dictionary:Copyright 2005]
 relationship: part_of BTO:0001461 ! whole plant
+relationship: part_of BTO:0001494 ! fungus
 
 [Term]
 id: BTO:0000516
@@ -4205,7 +4206,7 @@ id: BTO:0000523
 name: gleba
 namespace: BrendaTissueOBO
 def: "The fleshy, spore-bearing inner mass of a puffball." [The American Heritage Dictionary of the English Language:Fourth Edition. 2000.]
-relationship: part_of BTO:0000487 ! fruitbody
+relationship: part_of BTO:0000487 ! fruit body
 
 [Term]
 id: BTO:0000524
@@ -4381,6 +4382,7 @@ id: BTO:0000544
 name: guard cell
 namespace: BrendaTissueOBO
 def: "One of the two crescent-shaped epidermal cells that border and open and close a plant stoma." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=guard+cell]
+synonym: "stomatal guard cell" RELATED []
 relationship: part_of BTO:0000718 ! leaf epidermis
 
 [Term]
@@ -5849,7 +5851,6 @@ namespace: BrendaTissueOBO
 def: "The inner layer of the pericarp of a fruit (as an apple or orange) when it consists of two or more layers of different texture or consistency." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=endocarp]
 relationship: part_of BTO:0001017 ! pericarp
 
-
 [Term]
 id: BTO:0000731
 name: acute lymphoblastic leukemia cell
@@ -7125,6 +7126,7 @@ namespace: BrendaTissueOBO
 def: "An elongated contractile cell that forms the muscles of the body." [TheFreeDictionary.com:http\://www.thefreedictionary.com/muscle]
 synonym: "muscle cell" RELATED []
 synonym: "muscle fiber" RELATED []
+synonym: "myocyte" RELATED []
 relationship: part_of BTO:0000887 ! muscle
 
 [Term]
@@ -7230,11 +7232,16 @@ is_a: BTO:0000199 ! cardiac muscle
 
 [Term]
 id: BTO:0000902
-name: myocyte
+name: plant vessel
 namespace: BrendaTissueOBO
-def: "A cell of the muscular tissue." [Dorlands Medical Dictionary:MerckSource]
-synonym: "muscle cell" RELATED []
-relationship: part_of BTO:0000887 ! muscle
+def: "One of the tubular conductive vessels in the xylem of vascular plants." [The_American_Heritage_Dictionary_of_the_English_Language:Fourth_Edition_copyright_2000]
+synonym: "plant trachea" RELATED []
+synonym: "plant tracheid" RELATED []
+synonym: "trachea" RELATED []
+synonym: "tracheid" RELATED []
+relationship: part_of BTO:0001429 ! vascular bundle
+created_by: Marion
+creation_date: 2013-11-07T09:22:23Z
 
 [Term]
 id: BTO:0000903
@@ -7993,9 +8000,10 @@ is_a: BTO:0000858 ! mesophyll
 
 [Term]
 id: BTO:0000999
-name: parenchyma
+name: plant parenchyma
 namespace: BrendaTissueOBO
 def: "A tissue of higher plants that consists of thin-walled living photosynthetic or storage cells capable of division even when mature and that makes up much of the substance of leaves and roots, the pulp of fruits, and parts of stems and supporting structures." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=parenchyma]
+synonym: "parenchyma" RELATED []
 is_a: BTO:0001310 ! storage tissue
 relationship: part_of BTO:0000486 ! fruit
 relationship: part_of BTO:0000713 ! leaf
@@ -8342,6 +8350,8 @@ id: BTO:0001041
 name: petiole
 namespace: BrendaTissueOBO
 def: "A slender stem that supports the blade of a foliage leaf." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=petiole]
+synonym: "leaf stalk" RELATED []
+synonym: "leafstalk" RELATED []
 relationship: part_of BTO:0000713 ! leaf
 
 [Term]
@@ -8814,7 +8824,7 @@ id: BTO:0001098
 name: sorocarp
 namespace: BrendaTissueOBO
 def: "Fruiting body formed by some cellular slime moulds; has both stalk and spore-mass." [The Dictionary of Cell and Molecular Biology:Third Edition]
-is_a: BTO:0000487 ! fruitbody
+is_a: BTO:0000487 ! fruit body
 
 [Term]
 id: BTO:0001099
@@ -8963,6 +8973,7 @@ id: BTO:0001116
 name: floral primordium
 namespace: BrendaTissueOBO
 def: "Immediately next to the growing inflorescence tip is the floral primordium, which is a bump of cells representing the very youngest stage of a flower." [Proceedings of the Royal Society B Biological Sciences:Evolution of meiosis timing during floral development]
+is_a: BTO:0005525 ! plant primordium
 relationship: part_of BTO:0000628 ! inflorescence
 
 [Term]
@@ -9256,7 +9267,7 @@ id: BTO:0001155
 name: ray cell
 namespace: BrendaTissueOBO
 def: "A primary tissue composed of medullary ray: radiating bands of parenchyma cells extending between the vascular bundles of herbaceous dicotyledonous stems and connecting the pith with the cortex." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=ray+cell]
-is_a: BTO:0000999 ! parenchyma
+is_a: BTO:0000999 ! plant parenchyma
 
 [Term]
 id: BTO:0001156
@@ -9386,7 +9397,7 @@ namespace: BrendaTissueOBO
 def: "A primitive usually unicellular often environmentally resistant dormant or reproductive body produced by plants and some microorganisms and capable of development into a new individual either directly or after fusion with another spore." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=spore]
 is_a: BTO:0000284 ! organism form
 is_a: BTO:0000720 ! plant form
-relationship: part_of BTO:0000487 ! fruitbody
+relationship: part_of BTO:0000487 ! fruit body
 relationship: part_of BTO:0000735 ! sporophyte
 
 [Term]
@@ -9530,8 +9541,10 @@ is_a: BTO:0000578 ! hepatoma cell line
 id: BTO:0001190
 name: root nodule
 namespace: BrendaTissueOBO
-def: "Gall-like structures on the roots of legumes that contain symbiotic nitrogen-fixing bacteria." [:PAE Virtual Glossary, :Plants, Animals and the Environment Glossary derived from leading WCB/McGraw-Hill textbooks:http\://www.mhhe.com/biosci/pae/glossary.html]
+def: "Gall-like structures on the roots of legumes that contain symbiotic nitrogen-fixing bacteria." [PAE_Virtual_Glossary:Plants\,_Animals_and_the_Environment_Glossary_derived_from_leading_WCB/McGraw-Hill_textbooks]
 synonym: "nodule" RELATED []
+synonym: "root tubercle" RELATED []
+relationship: develops_from BTO:0005444 ! root nodule primordium
 relationship: part_of BTO:0001188 ! root
 
 [Term]
@@ -9877,6 +9890,7 @@ id: BTO:0001233
 name: plant embryo
 namespace: BrendaTissueOBO
 def: "The early developmental stage that, through embryological development, ultimately becomes an adult individual. In plants, that portion of a seed that will form the growing seedling following germination; it has a radicle, apical meristem, and embryonic leaf or leaves." [:PAE Virtual Glossary, :Plants, Animals and the Environment Glossary derived from leading WCB/McGraw-Hill textbooks:http\://www.mhhe.com/biosci/pae/glossary.html]
+synonym: "embryo" RELATED []
 synonym: "plant germ" RELATED []
 is_a: BTO:0001461 ! whole plant
 relationship: part_of BTO:0001226 ! seed
@@ -10299,7 +10313,7 @@ relationship: part_of BTO:0000721 ! leg
 id: BTO:0001285
 name: sporangiophore
 namespace: BrendaTissueOBO
-def: "A stalk or similar structure bearing sporangia." [PAE Virtual Glossary:Plants\, Animals and the Environment Glossary derived from leading WCB/McGraw-Hill textbooks]
+def: "A stalk or similar structure bearing sporangia in plants and fungi." [PAE Virtual Glossary:Plants\, Animals and the Environment Glossary derived from leading WCB/McGraw-Hill textbooks]
 is_a: BTO:0000468 ! floret
 
 [Term]
@@ -10340,13 +10354,14 @@ name: sporocarp
 namespace: BrendaTissueOBO
 def: "A structure (as in red algae, fungi, or mosses) in or on which spores are produced." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=sporocarp]
 is_a: BTO:0000468 ! floret
+relationship: part_of BTO:0000487 ! fruit body
 
 [Term]
 id: BTO:0001291
 name: sporophore
 namespace: BrendaTissueOBO
 def: "The spore-producing organ of a fungus or slime mold." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=sporophore]
-relationship: part_of BTO:0000487 ! fruitbody
+relationship: part_of BTO:0000487 ! fruit body
 
 [Term]
 id: BTO:0001292
@@ -10737,9 +10752,10 @@ relationship: part_of BTO:0000136 ! bronchoalveolar system
 
 [Term]
 id: BTO:0001341
-name: S49 cell
+name: S-49 cell
 namespace: BrendaTissueOBO
-def: "Mouse T-lymphocyte, lymphoma cell line." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+def: "Mouse lymphoblastic T-lymphoma cell line." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "S49 cell" RELATED []
 is_a: BTO:0003212 ! T-lymphoma cell line
 
 [Term]
@@ -10933,8 +10949,9 @@ relationship: part_of BTO:0000342 ! diencephalon
 id: BTO:0001366
 name: thallus
 namespace: BrendaTissueOBO
-def: "A plant body that is characteristic of thallophytes , lacks differentiation into distinct members (as stem, leaves, and roots), and does not grow from an apical point." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=thallus]
+def: "A plant or plantlike body, as of an alga, fungus, or moss, that lacks differentiation into distinct members, as stem, leaves, and roots, and does not grow from an apical point." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=thallus]
 is_a: BTO:0000720 ! plant form
+is_a: BTO:0002261 ! fungus form
 
 [Term]
 id: BTO:0001367
@@ -11726,8 +11743,7 @@ relationship: part_of BTO:0001233 ! plant embryo
 id: BTO:0001468
 name: xylem
 namespace: BrendaTissueOBO
-def: "A complex tissue in the vascular system of higher plants that consists of vessels, tracheids, or both usually together with wood fibers and parenchyma cells, functions chiefly in conduction of water and dissolved minerals but also in support and food storage, and typically constitutes the woody element (as of a plant stem)." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=xylem]
-synonym: "wood" RELATED []
+def: "A complex tissue in the vascular system of higher plants that consists of vessels, tracheids, or both usually together with wood fibers and parenchyma cells, functions chiefly in conduction of water and dissolved minerals but also in support and food storage, and typically constitutes the woody element." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=xylem]
 relationship: develops_from BTO:0001135 ! protoxylem
 relationship: part_of BTO:0001299 ! stele
 
@@ -12265,14 +12281,12 @@ is_a: BTO:0004055 ! COS cell
 
 [Term]
 id: BTO:0001539
-name: cardiac myocyte
+name: parenchyma
 namespace: BrendaTissueOBO
-def: "A heart muscle cell." [Medical Dictionary:http\://www.medterms.com/]
-synonym: "cardiac muscle cell" RELATED []
-synonym: "cardiocyte" RELATED []
-synonym: "cardiomyocyte" RELATED []
-is_a: BTO:0000902 ! myocyte
-relationship: part_of BTO:0000199 ! cardiac muscle
+def: "The tissue characteristic of an organ, as distinguished from associated connective or supporting tissues." [The_American_Heritage_Dictionary_of_the_English_Language:Fourth_Edition_copyright_2000]
+relationship: part_of BTO:0001491 ! viscus
+created_by: Marion
+creation_date: 2013-11-07T09:33:34Z
 
 [Term]
 id: BTO:0001540
@@ -13221,7 +13235,7 @@ relationship: part_of BTO:0001461 ! whole plant
 id: BTO:0001659
 name: aerial root
 namespace: BrendaTissueOBO
-def: "An aerial root is a plant's root that is produced above the ground." [Botany and Paleobotany Dictionary:Plant Glossary]
+def: "An aerial root is a plant's root that is produced above the ground." [Botany and Paleobotany Dictionary:Plant_Glossary]
 synonym: "air root" RELATED []
 is_a: BTO:0001188 ! root
 is_a: BTO:0001658 ! aerial part
@@ -13365,6 +13379,7 @@ synonym: "S2 cell" RELATED []
 synonym: "Schneider cell" RELATED []
 synonym: "SCHNEIDER S2 Cell" RELATED []
 synonym: "Schneider's Line S2 cell" RELATED []
+synonym: "SL-2 cell" RELATED []
 synonym: "SL2 cell" RELATED []
 is_a: BTO:0000669 ! embryonic cell line
 
@@ -14953,6 +14968,7 @@ is_a: BTO:0001874 ! lens epithelial cell line
 id: BTO:0001873
 name: lens epithelium
 namespace: BrendaTissueOBO
+def: "Cuboidal epithelium covering the lens." [Saunders_Comprehensive_Veterinary_Dictionary:3rd_Edition_2007_Elsevier]
 is_a: BTO:0000416 ! epithelium
 relationship: part_of BTO:0000723 ! lens
 
@@ -15869,7 +15885,7 @@ id: BTO:0001995
 name: myocytoma cell
 namespace: BrendaTissueOBO
 def: "A benign neoplasm derived from muscle." [Online Medical Dictionary:http\://cancerweb.ncl.ac.uk/]
-relationship: develops_from BTO:0000902 ! myocyte
+relationship: develops_from BTO:0000888 ! muscle fibre
 
 [Term]
 id: BTO:0001996
@@ -16958,7 +16974,6 @@ is_a: BTO:0001530 ! glioblastoma cell line
 id: BTO:0002127
 name: U-138MG cell
 namespace: BrendaTissueOBO
-
 def: "Human glioblastoma cell line; established from a 47 years old human male." [HyperCLDB:http\://www.biotech.ist.unige.it/]
 synonym: "U-138 cell" RELATED []
 synonym: "U-138 MG cell" RELATED []
@@ -17221,7 +17236,7 @@ name: ascocarp
 namespace: BrendaTissueOBO
 def: "The fruiting body of an ascomycetous fungus, including the asci and ascospores." [Dorlands Medical Dictionary:MerckMedicus]
 synonym: "ascoma" RELATED []
-is_a: BTO:0000487 ! fruitbody
+is_a: BTO:0000487 ! fruit body
 
 [Term]
 id: BTO:0002162
@@ -17312,15 +17327,15 @@ is_a: BTO:0001668 ! mast cell line
 id: BTO:0002173
 name: tubercle
 namespace: BrendaTissueOBO
-def: "The adult male dorsal surface of Schistosoma is covered in small bosses called tubercles that provide purchase against the blood vessel wall when the worm is crawling up the mesenteric veins carrying the female in its ventral groove. Each tubercle has a thin (2-3 micron) covering of the syncytial tegument. Enclosed entirely within the tegument cytoplasm of the tubercle are a series of spines, made of actin, which assist in gripping the blood vessel. The tegument is normally closely apposed to the underlying circular muscle layer, and separated from it only by an extracellular matrix of collagen fibres. The tubercle is the exception, where the tegument is lifted up by numerous extensions of parenchymal cells. The parenchymal cell bodies lie below the muscle layers and send out narrow extensions of cytoplasm which insinuate between the muscles to form the packing for the tubercle." [University of York:R.A. Wilson]
-is_a: BTO:0002174 ! parenchymal cell
-relationship: part_of BTO:0000634 ! integument
+def: "The adult male dorsal surface of Schistosoma is covered in small bosses called tubercles that provide purchase against the blood vessel wall when the worm is crawling up the mesenteric veins carrying the female in its ventral groove. Each tubercle has a thin, 2-3 micron, covering of the syncytial tegument. Enclosed entirely within the tegument cytoplasm of the tubercle are a series of spines, made of actin, which assist in gripping the blood vessel. The tegument is normally closely apposed to the underlying circular muscle layer, and separated from it only by an extracellular matrix of collagen fibres. The tubercle is the exception, where the tegument is lifted up by numerous extensions of parenchymal cells. The parenchymal cell bodies lie below the muscle layers and send out narrow extensions of cytoplasm which insinuate between the muscles to form the packing for the tubercle." [University of York:R.A. Wilson]
+relationship: related_to BTO:0000634 ! integument
 
 [Term]
 id: BTO:0002174
 name: parenchymal cell
 namespace: BrendaTissueOBO
-is_a: BTO:0000421 ! connective tissue
+def: "Any cell that is a functional element of an organ, such as a hepatocyte." [Mosbys_Medical_Dictionary:8th_Edition_2009_Elsevier]
+relationship: part_of BTO:0001539 ! parenchyma
 
 [Term]
 id: BTO:0002175
@@ -17803,6 +17818,7 @@ id: BTO:0002240
 name: exodermis
 namespace: BrendaTissueOBO
 def: "A layer of the outer living cortical cells of plants that takes over the functions of the epidermis in roots lacking secondary thickening." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=exodermis]
+synonym: "plant hypodermis" RELATED []
 relationship: part_of BTO:0001188 ! root
 
 [Term]
@@ -18456,7 +18472,9 @@ id: BTO:0002320
 name: cardiac muscle fiber
 namespace: BrendaTissueOBO
 def: "Cardiac muscle fibers contain one or sometimes two nuclei and myofibrils and are separated from one another by an intercalated disk; although striated, cardiac muscle fibers branch to form an interlacing network." [Dorlands Medical Dictionary:MerckSource]
-is_a: BTO:0000888 ! muscle fibre
+synonym: "cardiac muscle cell" RELATED []
+synonym: "cardiac myocyte" RELATED []
+relationship: part_of BTO:0000199 ! cardiac muscle
 
 [Term]
 id: BTO:0002321
@@ -19254,12 +19272,14 @@ id: BTO:0002417
 name: helper T-lymphocyte
 namespace: BrendaTissueOBO
 def: "A T-cell that participates in an immune response by recognizing a foreign antigen and secreting lymphokines to activate T cell and B cell proliferation, that usually carries CD4 molecular markers on its cell surface, and that is reduced to 20 percent or less of normal numbers in AIDS." [From Merriam-Websters Online Dictionary at www.Merriam-Webster.com:http\://www.merriam-webster.com/dictionary/helper t cell]
+synonym: "CD4 cell" RELATED []
 synonym: "helper cell" RELATED []
 synonym: "helper lymphocyte" RELATED []
 synonym: "helper T cell" RELATED []
 synonym: "helper T lymphocyte" RELATED []
 synonym: "helper T-cell" RELATED []
 synonym: "T helper cell" RELATED []
+synonym: "T4 cell" RELATED []
 is_a: BTO:0000782 ! T-lymphocyte
 created_by: Marion
 creation_date: 2010-01-28T08:36:32Z
@@ -20509,7 +20529,6 @@ relationship: develops_from BTO:0002985 ! coronary artery smooth muscle
 [Term]
 id: BTO:0002571
 name: Caco-2/TC7 cell
-
 namespace: BrendaTissueOBO
 def: "Caco-2/TC7 cell line was established from the parental human enterocyte-like Caco-2 cell line." [PMID:16907815]
 synonym: "Caco-2/TC-7 cell" RELATED []
@@ -23091,6 +23110,7 @@ id: BTO:0002895
 name: HEPA 1-6 cell
 namespace: BrendaTissueOBO
 def: "Mouse hepatoma cell line; derived from the BW7756 tumor that arose in a C57L mouse." [Deutsche Sammlung von Mikroorganismen und Zellkulturen GmbH:DSMZ]
+synonym: "Hepa1-6 cell" RELATED []
 is_a: BTO:0000578 ! hepatoma cell line
 
 [Term]
@@ -25623,7 +25643,7 @@ name: S49.A2 cell
 namespace: BrendaTissueOBO
 def: "Glucocorticoid sensitive murine T cell lymphoma cell line." [PMID:18272518]
 synonym: "S49A2 cell" RELATED []
-relationship: develops_from BTO:0001341 ! S49 cell
+relationship: develops_from BTO:0001341 ! S-49 cell
 
 [Term]
 id: BTO:0003212
@@ -26473,6 +26493,7 @@ id: BTO:0003317
 name: INS-1E cell
 namespace: BrendaTissueOBO
 def: "Rat insulinoma cell line, derived from parental strain INS-1." [PMID:18248766]
+synonym: "INS1E beta cell" RELATED []
 is_a: BTO:0000794 ! pancreatic cancer cell line
 relationship: develops_from BTO:0002135 ! INS-1 cell
 
@@ -26829,7 +26850,6 @@ synonym: "gingival crevicular fluid" RELATED []
 synonym: "sulcular fluid" RELATED []
 relationship: related_to BTO:0000519 ! gingiva
 
-
 [Term]
 id: BTO:0003365
 name: germinated grain
@@ -26896,6 +26916,7 @@ id: BTO:0003373
 name: gametangium
 namespace: BrendaTissueOBO
 def: "A structure in which gametes are produced." [Online Medical Dictionary:http\://cancerweb.ncl.ac.uk/]
+relationship: part_of BTO:0000487 ! fruit body
 relationship: part_of BTO:0002017 ! plant reproductive system
 
 [Term]
@@ -27311,7 +27332,6 @@ name: beta-TC6 cell
 namespace: BrendaTissueOBO
 def: "Mouse insulinoma cell line." [PMID:16332988]
 synonym: "beta TC6 cell" RELATED []
-
 is_a: BTO:0000794 ! pancreatic cancer cell line
 
 [Term]
@@ -27615,7 +27635,6 @@ relationship: develops_from BTO:0000007 ! HEK-293 cell
 id: BTO:0003466
 name: 293-CD40 cell
 namespace: BrendaTissueOBO
-
 def: "A 293 cell line stably expressing Flag-tagged CD40." [PMID:10920205]
 synonym: "293.CD40 cell" RELATED []
 relationship: develops_from BTO:0000007 ! HEK-293 cell
@@ -28446,6 +28465,7 @@ id: BTO:0003575
 name: HK-2 cell
 namespace: BrendaTissueOBO
 def: "An immortalized proximal tubule epithelial cell line from normal adult human kidney." [PMID:8127021]
+synonym: "HK2 cell" RELATED []
 is_a: BTO:0003577 ! proximale tubular epithelium cell line
 
 [Term]
@@ -28619,7 +28639,7 @@ is_a: BTO:0003596 ! uterine sarcoma cell
 id: BTO:0003599
 name: human lung microvascular endothelial cell
 namespace: BrendaTissueOBO
-synonym: "HLMVEC" RELATED []
+synonym: "HLMVE cell" RELATED []
 synonym: "HLMVEC cell" RELATED []
 is_a: BTO:0003124 ! microvascular endothelial cell line
 
@@ -29319,7 +29339,7 @@ is_a: BTO:0003687 ! serous cell
 id: BTO:0003689
 name: mucous cell
 namespace: BrendaTissueOBO
-def: "A cell secreting mucus; e.g., a goblet cell." [Online Medical Dictionary:http\://cancerweb.ncl.ac.uk/]
+def: "A cell secreting mucus, e.g. a goblet cell." [Online Medical Dictionary:http\://cancerweb.ncl.ac.uk/]
 relationship: part_of BTO:0001979 ! mucous gland
 
 [Term]
@@ -30135,7 +30155,7 @@ id: BTO:0003794
 name: chlorenchyma
 namespace: BrendaTissueOBO
 def: "Chlorophyll-containing parenchyma of plants." [From Merriam-Webster's Online Dictionary at www.Merriam-Webster.com:http\://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=chlorenchyma]
-is_a: BTO:0000999 ! parenchyma
+is_a: BTO:0000999 ! plant parenchyma
 
 [Term]
 id: BTO:0003795
@@ -31131,8 +31151,10 @@ id: BTO:0003929
 name: MM1-R cell
 namespace: BrendaTissueOBO
 def: "Multiple myeloma cell line." [PMID:15381930]
+synonym: "MM-1R cell" RELATED []
+synonym: "MM.1R cell" RELATED []
 synonym: "MM1.R cell" RELATED []
-is_a: BTO:0000727 ! multiple myeloma cell line
+relationship: develops_from BTO:0005490 ! MM-1 cell
 
 [Term]
 id: BTO:0003930
@@ -31159,9 +31181,11 @@ is_a: BTO:0000727 ! multiple myeloma cell line
 id: BTO:0003933
 name: MM1-S cell
 namespace: BrendaTissueOBO
-def: "Multiple myeloma cell line." [PMID:12479703]
+def: "Human B lymphoblast multiple myeloma cell line." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "MM-1S cell" RELATED []
+synonym: "MM.1S cell" RELATED []
 synonym: "MM1.S cell" RELATED []
-is_a: BTO:0000727 ! multiple myeloma cell line
+relationship: develops_from BTO:0005490 ! MM-1 cell
 
 [Term]
 id: BTO:0003934
@@ -31503,7 +31527,6 @@ namespace: BrendaTissueOBO
 def: "In the human this area is called ectosplenial area 26. It is a cytoarchitecturally defined portion of the retrosplenial region of the cerebral cortex. It is a narrow band located in the isthmus of cingulate gyrus adjacent to the fasciolar gyrus internally. It is bounded externally by the granular retrolimbic area 29." [Wikipedia:The Free Encyclopedia]
 synonym: "ectosplenial area 26" RELATED []
 relationship: part_of BTO:0003977 ! retrosplenial region
-
 
 [Term]
 id: BTO:0003980
@@ -32500,9 +32523,10 @@ relationship: part_of BTO:0000233 ! cerebral cortex
 id: BTO:0004103
 name: leaf primordium
 namespace: BrendaTissueOBO
-def: "The first stage of leaf development; a small lateral protuburance formed by an apical shoot meristem that will expand to form a leaf." [PAE Virtual Glossary:Plants\, Animals and the Environment Glossary derived from leading WCB/McGraw-Hill textbooks]
+def: "The first stage of leaf development; a small lateral protuburance formed by an apical shoot meristem that will expand to form a leaf." [PAE_Virtual_Glossary:Plants\,_Animals_and_the_Environment_Glossary_derived_from_leading_WCB/McGraw-Hill_textbooks]
 synonym: "primordial leaf" RELATED []
 is_a: BTO:0000713 ! leaf
+is_a: BTO:0005525 ! plant primordium
 created_by: XPMUser
 creation_date: 2011-02-24T10:17:00Z
 
@@ -35822,6 +35846,7 @@ creation_date: 2011-02-24T10:57:00Z
 id: BTO:0004504
 name: root vascular cell
 namespace: BrendaTissueOBO
+synonym: "root vasculature cell" RELATED []
 is_a: BTO:0004501 ! plant vascular cell
 relationship: part_of BTO:0001188 ! root
 created_by: Marion
@@ -38291,6 +38316,7 @@ namespace: BrendaTissueOBO
 def: "This line is a clone of VERO 76." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
 synonym: "Vero 76 clone E6 cell" RELATED []
 synonym: "Vero E6 cell" RELATED []
+synonym: "Vero-E6 cell" RELATED []
 synonym: "VeroE6 cell" RELATED []
 relationship: develops_from BTO:0001444 ! Vero cell
 created_by: mgr
@@ -38630,6 +38656,7 @@ name: root primordium
 namespace: BrendaTissueOBO
 def: "Different primordial types like the leaf and flower primordia arise from the shoot lateral meristem." [Answers.com:http\://www.answers.com/]
 is_a: BTO:0001188 ! root
+is_a: BTO:0005525 ! plant primordium
 created_by: mgr
 creation_date: 2010-10-04T10:15:09Z
 
@@ -38638,8 +38665,8 @@ id: BTO:0004792
 name: RHEK-1 cell
 namespace: BrendaTissueOBO
 def: "The human epidermal keratinocyte\nline, designated RHEK-1, was used at passage\n23 for these transformation studies. This cell line was\nestablished from primary foreskin epidermal keratinocytes\nafter infection with the Adl2-SV40 hybrid virus." [PMID:2405395]
-is_a: BTO:0000375 ! keratinocyte cell line
 is_a: BTO:0002245 ! foreskin fibroblast cell line
+is_a: BTO:0005481 ! foreskin keratinocyte cell line
 created_by: mgr
 creation_date: 2010-10-04T10:27:03Z
 
@@ -40021,7 +40048,6 @@ created_by: Marion Gremse
 creation_date: 2010-10-28T10:05:07Z
 
 [Term]
-
 id: BTO:0004935
 name: NALM-24 cell
 namespace: BrendaTissueOBO
@@ -40737,7 +40763,7 @@ creation_date: 2011-03-01T09:46:06Z
 id: BTO:0005011
 name: 1205-Lu cell
 namespace: BrendaTissueOBO
-def: "The 1205Lu cell line was derived from lung metastases of WM793 after subcutaneous injection into immunodeficient mice. 1205Lu cells are highly invasive and exhibit spontaneous metastatis to lung and liver." []
+def: "The 1205Lu cell line was derived from lung metastases of WM793 after subcutaneous injection into immunodeficient mice. 1205Lu cells are highly invasive and exhibit spontaneous metastatis to lung and liver." [ATCC_American_Cell_Type_Culture_Collection:http\://www.lgcstandards-atcc.org/]
 synonym: "1205 Lu cell" RELATED []
 synonym: "1205Lu cell" RELATED []
 relationship: develops_from BTO:0004612 ! WM-793B cell
@@ -41196,7 +41222,7 @@ creation_date: 2011-03-05T09:46:36Z
 id: BTO:0005059
 name: TZM-bl cell
 namespace: BrendaTissueOBO
-def: "TZM-bl cells are HeLa-cell derivatives that express high levels of CD4 and both co-receptors CXCR4 and CCR5, and are stably transduced carrying a LTR-driven firefly luciferase as well as a LTR-driven β-galactosidase cassette." [PMID:17087820]
+def: "TZM-bl cells are HeLa-cell derivatives that express high levels of CD4 and both co-receptors CXCR4 and CCR5, and are stably transduced carrying a LTR-driven firefly luciferase as well as a LTR-driven beta-galactosidase cassette." [PMID:17087820]
 relationship: develops_from BTO:0000567 ! HeLa cell
 created_by: XPMUser
 creation_date: 2011-03-05T09:51:34Z
@@ -42677,7 +42703,7 @@ creation_date: 2011-09-02T11:32:05Z
 id: BTO:0005215
 name: KB-C2 cell
 namespace: BrendaTissueOBO
-def: "Human epidermoid carcinoma cell line. KB cells were subcloned twice; a singly recloned line, KB-3-1, was used as the parental cell line. Multidrug-resistant KB-C2 cells that overexpress P-gp were originally isolated from KB-3-\n1 cells exposed to increasing concentrations of colchicine,\nand maintained in medium containing 2 μg/ml of colchicine." [PMID:10874217]
+def: "Human epidermoid carcinoma cell line. KB cells were subcloned twice; a singly recloned line, KB-3-1, was used as the parental cell line. Multidrug-resistant KB-C2 cells that overexpress P-gp were originally isolated from KB-3-\n1 cells exposed to increasing concentrations of colchicine,\nand maintained in medium containing 2 ug/ml of colchicine." [PMID:10874217]
 relationship: develops_from BTO:0003918 ! KB-3-1 cell
 created_by: XPMUser
 creation_date: 2011-09-02T11:43:44Z
@@ -43162,7 +43188,7 @@ creation_date: 2011-10-05T09:39:51Z
 id: BTO:0005267
 name: 293-F FreeStyle cell
 namespace: BrendaTissueOBO
-def: "FreeStyle™ 293-F cell line is derived from the 293 cell line and is intended for use with the FreeStyle™ MAX 293 Expression System or FreeStyle™ 293 Expression System." [Biocompare:http\://www.biocompare.com/]
+def: "FreeStyle 293-F cell line is derived from the 293 cell line and is intended for use with the FreeStyle MAX 293 Expression System or FreeStyle 293 Expression System." [Biocompare:http\://www.biocompare.com/]
 synonym: "FreeStyle 293-F cell" RELATED []
 relationship: develops_from BTO:0000007 ! HEK-293 cell
 created_by: XPMUser
@@ -44141,7 +44167,7 @@ id: BTO:0005371
 name: hymenium
 namespace: BrendaTissueOBO
 def: "The spore-bearing layer of the fruiting body of certain fungi, containing asci or basidia." [Dictionary:http\://www.thefreedictionary.com/]
-relationship: part_of BTO:0000487 ! fruitbody
+relationship: part_of BTO:0000487 ! fruit body
 created_by: XPMUser
 creation_date: 2012-08-31T02:58:03Z
 
@@ -44582,7 +44608,9 @@ name: plant oil gland
 namespace: BrendaTissueOBO
 def: "A gland or a cavity lined with cells that secrete oils." [Plant Ontology Consortium:PO0005669]
 synonym: "oil cavity" RELATED []
-relationship: part_of BTO:0001461 ! whole plant
+synonym: "oil gland secretory cell" RELATED []
+synonym: "plant oil secretory cell" RELATED []
+is_a: BTO:0005528 ! plant secretory cell
 created_by: XPMUser
 creation_date: 2012-09-20T12:22:36Z
 
@@ -44821,12 +44849,13 @@ creation_date: 2013-04-23T11:54:02Z
 
 [Term]
 id: BTO:0005444
-name: SHI-1 cell
+name: root nodule primordium
 namespace: BrendaTissueOBO
-def: "Human acute monocytic leukemia cell line." [PMID:15951289]
+def: "To form a root nodule primordium, fully differentiated root cortical cells have to be developmentally reprogrammed, which starts with mitotic activation of these cells. This is induced by Nod factors and leads to the formation of nodule primordia. Upon infection by rhizobia these primordia subsequently differentiate in nodules." [PMID:15951289, Rene Geurts :A GENETIC APPROACH TO STUDY RHIZOBIAL NOD FACTOR AND MYCORRHIZAL FUNGI ACTIVATED SIGNALING]
 is_a: BTO:0002332 ! monocytic leukemia cell line
-created_by: XPMUser
-creation_date: 2013-04-23T11:56:05Z
+is_a: BTO:0004791 ! root primordium
+created_by: Marion
+creation_date: 2013-11-07T08:56:21Z
 
 [Term]
 id: BTO:0005445
@@ -44847,6 +44876,837 @@ relationship: part_of BTO:0000750 ! plant ovary
 created_by: XPMUser
 creation_date: 2013-04-26T11:03:12Z
 
+[Term]
+id: BTO:0005447
+name: VMM39 cell
+namespace: BrendaTissueOBO
+def: "Melanoma cell line, isolated from lymph node metastasis from three separate patients." [PMID:15184373]
+synonym: "VMM 39 cell" RELATED []
+is_a: BTO:0000849 ! melanoma cell line
+created_by: XPMUser
+creation_date: 2013-08-26T12:04:36Z
+
+[Term]
+id: BTO:0005448
+name: ARL-15C1 cell
+namespace: BrendaTissueOBO
+def: "Nontumorigenic rat liver cell line." [PMID:2870063]
+is_a: BTO:0000224 ! liver cell line
+created_by: XPMUser
+creation_date: 2013-09-04T11:32:27Z
+
+[Term]
+id: BTO:0005449
+name: ARL-16T2 cell
+namespace: BrendaTissueOBO
+def: "Tumorigenic rat liver cell line." [PMID:2870063]
+is_a: BTO:0000578 ! hepatoma cell line
+created_by: XPMUser
+creation_date: 2013-09-04T11:34:07Z
+
+[Term]
+id: BTO:0005450
+name: B-12 cell
+namespace: BrendaTissueOBO
+def: "Rat nervous tissue glial tumour cell line." [Health Protection Agency Culture Collections:http\://hpacultures.org.uk/products/celllines/]
+synonym: "B12 cell" RELATED []
+is_a: BTO:0000711 ! glioma cell line
+created_by: XPMUser
+creation_date: 2013-09-04T11:38:18Z
+
+[Term]
+id: BTO:0005451
+name: C32-TG cell
+namespace: BrendaTissueOBO
+def: "Human amelanotic melanoma cell line." [Health Protection Agency Culture Collections:http\://hpacultures.org.uk/products/celllines/]
+synonym: "C32TG cell" RELATED []
+is_a: BTO:0002171 ! amelanotic melanoma cell line
+created_by: XPMUser
+creation_date: 2013-09-04T11:44:47Z
+
+[Term]
+id: BTO:0005452
+name: C6/36 cell
+namespace: BrendaTissueOBO
+def: "Aedes albopictus, mosquito, Asian tiger larval cell line." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+is_a: BTO:0002632 ! larval cell line
+created_by: XPMUser
+creation_date: 2013-09-04T11:48:08Z
+
+[Term]
+id: BTO:0005453
+name: culture condition:CD4+ cell
+namespace: BrendaTissueOBO
+def: "CD4, cluster of differentiation 4, is a glycoprotein found on the surface of immune cells such as T helper cells, monocytes, macrophages, and dendritic cells. In humans\nCD4+ T helper cells are white blood cells that are an essential part of the human immune system." [Wikipedia:The Free Encyclopedia]
+is_a: BTO:0002008 ! culture condition:antigen-presenting cell
+created_by: XPMUser
+creation_date: 2013-09-06T09:18:55Z
+
+[Term]
+id: BTO:0005454
+name: corpus cavernosum
+namespace: BrendaTissueOBO
+def: "Either of the columns of erectile tissue forming the body of the clitoris or penis." [Medical Dictionary:http\://medical-dictionary.thefreedictionary.com/]
+is_a: BTO:0000081 ! reproductive system
+created_by: XPMUser
+creation_date: 2013-09-06T09:39:31Z
+
+[Term]
+id: BTO:0005455
+name: cotyledonary node
+namespace: BrendaTissueOBO
+def: "A leaf of the embryo of a seed plant, which upon germination either remains in the seed or emerges, enlarges, and becomes green." [The American Heritage Dictionary of the English Language\, Fourth Edition copyright 2000:]
+synonym: "seed leaf" RELATED []
+relationship: part_of BTO:0001233 ! plant embryo
+created_by: XPMUser
+creation_date: 2013-09-06T09:46:59Z
+
+[Term]
+id: BTO:0005456
+name: FM-516-SV cell
+namespace: BrendaTissueOBO
+def: "An SV40 T-antigen immortalized human foreskin melanocyte cell line." [PMID:19202553]
+synonym: "FM-516 SV cell" RELATED []
+is_a: BTO:0005457 ! foreskin melanocyte cell line
+created_by: XPMUser
+creation_date: 2013-09-06T10:06:21Z
+
+[Term]
+id: BTO:0005457
+name: foreskin melanocyte cell line
+namespace: BrendaTissueOBO
+is_a: BTO:0003183 ! melanocyte cell line
+relationship: develops_from BTO:0001113 ! prepuce
+created_by: XPMUser
+creation_date: 2013-09-06T10:11:02Z
+
+[Term]
+id: BTO:0005458
+name: NCE-G55T2 cell
+namespace: BrendaTissueOBO
+def: "Human glioblastoma cell line." [PMID:   23283548]
+synonym: "G55T2 cell" RELATED []
+synonym: "NCEG55T2 cell" RELATED []
+is_a: BTO:0001530 ! glioblastoma cell line
+created_by: XPMUser
+creation_date: 2013-09-06T10:14:21Z
+
+[Term]
+id: BTO:0005459
+name: GP-202 cell
+namespace: BrendaTissueOBO
+def: "Human gastric carcinoma cell line." [PMID:14525978]
+synonym: "GP202 cell" RELATED []
+is_a: BTO:0000787 ! gastric cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-06T10:19:09Z
+
+[Term]
+id: BTO:0005460
+name: HaEpi cell
+namespace: BrendaTissueOBO
+def: "An epidermal cell line from the 5th instar larval integument of Helicoverpa armigera." [PMID:18769621]
+is_a: BTO:0002632 ! larval cell line
+is_a: BTO:0004830 ! epidermal cell line
+created_by: XPMUser
+creation_date: 2013-09-08T09:23:39Z
+
+[Term]
+id: BTO:0005461
+name: HBE135-E6E7 cell
+namespace: BrendaTissueOBO
+def: "The cell line was derived from normal bronchial epithelium taken from a man undergoing lobectomy for squamous cell carcinoma." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+is_a: BTO:0002202 ! lung squamous cell carcinoma cell line
+created_by: XPMUser
+creation_date: 2013-09-08T09:34:13Z
+
+[Term]
+id: BTO:0005462
+name: hemolymph vessel
+namespace: BrendaTissueOBO
+def: "In an insect it extends from the posterior extremity to the head, and it is enlarged and muscular posteriorly, constituting the heart." [General Parasitology:Thomas C. Cheng]
+synonym: "circulatory tube" RELATED []
+relationship: part_of BTO:0000570 ! hematopoietic system
+created_by: XPMUser
+creation_date: 2013-09-08T09:41:22Z
+
+[Term]
+id: BTO:0005463
+name: Huh-7.5.1 cell
+namespace: BrendaTissueOBO
+def: "Huh-7.5.1 cells were derived from the Huh-7.5 GFP-HCV replicon cell line I/5A-GFP-6." [PMID:15939869]
+relationship: develops_from BTO:0004126 ! Huh-7.5 cell
+created_by: XPMUser
+creation_date: 2013-09-08T09:56:13Z
+
+[Term]
+id: BTO:0005464
+name: IME cell
+namespace: BrendaTissueOBO
+def: "Mouse renal inner medullary epithelial cell line." [PMID:11756692]
+is_a: BTO:0001526 ! renal medulla cell line
+created_by: XPMUser
+creation_date: 2013-09-08T09:59:42Z
+
+[Term]
+id: BTO:0005465
+name: intercalary meristem
+namespace: BrendaTissueOBO
+def: "A meristem developing between regions of mature or permanent tissue as at the base of the grass leaf." [From Merriam-Websters Online Dictionary at www.Merriam-Webster.com:From Merriam-Websthttp\://www.merriam-webster.com/dictionary/intercalary+meristem]
+is_a: BTO:0000852 ! meristem
+created_by: XPMUser
+creation_date: 2013-09-08T12:27:11Z
+
+[Term]
+id: BTO:0005466
+name: IPA-220 cell
+namespace: BrendaTissueOBO
+def: "Human gastric cancer cell line." [PMID:19563644]
+synonym: "IPA220 cell" RELATED []
+is_a: BTO:0000787 ! gastric cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-08T12:33:01Z
+
+[Term]
+id: BTO:0005467
+name: KKU-M139 cell
+namespace: BrendaTissueOBO
+def: "A human cholangiocarcinoma-derived cell line." [PMID:20355241]
+is_a: BTO:0000578 ! hepatoma cell line
+created_by: XPMUser
+creation_date: 2013-09-08T12:45:59Z
+
+[Term]
+id: BTO:0005468
+name: labial palp
+namespace: BrendaTissueOBO
+def: "In carnivorous snails the lateral lips of the mouth form lobes called labial palps, which help to locate prey. The mouth itself frequently is prolonged into a proboscis that extends well in front of the tentacles." [Encyclopedia Britannica:http\://www.britannica.com/]
+relationship: part_of BTO:0001090 ! mouth
+created_by: XPMUser
+creation_date: 2013-09-08T12:51:06Z
+
+[Term]
+id: BTO:0005469
+name: RPK-9 cell
+namespace: BrendaTissueOBO
+def: "Parental and gemcitabine resistant pancreatic cancer cell line." [PMID:22490663]
+synonym: "RPK9 cell" RELATED []
+is_a: BTO:0000794 ! pancreatic cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-09T05:17:32Z
+
+[Term]
+id: BTO:0005470
+name: RPK-1 cell
+namespace: BrendaTissueOBO
+def: "Parental and gemcitabine resistant pancreatic cancer cell line." [PMID:22490663]
+synonym: "RPK1 cell" RELATED []
+is_a: BTO:0000794 ! pancreatic cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-09T05:19:26Z
+
+[Term]
+id: BTO:0005471
+name: RPK-59 cell
+namespace: BrendaTissueOBO
+def: "Parental and gemcitabine resistant pancreatic cancer cell line." [PMID:22490663]
+synonym: "RPK59 cell" RELATED []
+is_a: BTO:0000794 ! pancreatic cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-09T05:19:30Z
+
+[Term]
+id: BTO:0005472
+name: RTG-2 cell
+namespace: BrendaTissueOBO
+def: "Rainbow trout, Oncorhynchus mykiss, fibroblast cell line." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+is_a: BTO:0000453 ! fibroblast cell line
+created_by: XPMUser
+creation_date: 2013-09-09T05:25:27Z
+
+[Term]
+id: BTO:0005473
+name: RTG-P1 cell
+namespace: BrendaTissueOBO
+def: "The RTG-2 cell line was transfected with a trout Mx1 promoter-luciferase construct and selected to produce a stable cell line." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+relationship: develops_from BTO:0005472 ! RTG-2 cell
+created_by: XPMUser
+creation_date: 2013-09-09T05:27:36Z
+
+[Term]
+id: BTO:0005474
+name: SOB-15 cell
+namespace: BrendaTissueOBO
+def: "Long-term primary culture epithelial cells from rainbow trout, Oncorhynchus mykiss, liver." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+is_a: BTO:0000224 ! liver cell line
+created_by: XPMUser
+creation_date: 2013-09-09T05:31:50Z
+
+[Term]
+id: BTO:0005475
+name: SUM-149PT cell
+namespace: BrendaTissueOBO
+def: "Human breast cancer cell line from a primary tumor." [PMID:23401782]
+synonym: "SUM149PT cell" RELATED []
+is_a: BTO:0000356 ! breast cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-09T05:33:55Z
+
+[Term]
+id: BTO:0005476
+name: SUM-185PE cell
+namespace: BrendaTissueOBO
+def: "Human breast cancer cell line from a primary tumor." [PMID:23401782]
+synonym: "SUM185PE cell" RELATED []
+is_a: BTO:0000356 ! breast cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-09T05:35:38Z
+
+[Term]
+id: BTO:0005477
+name: SUM-190PT cell
+namespace: BrendaTissueOBO
+def: "Human breast cancer cell line from a primary tumor." [PMID:23401782]
+synonym: "SUM190PT cell" RELATED []
+is_a: BTO:0000356 ! breast cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-09T05:36:05Z
+
+[Term]
+id: BTO:0005478
+name: SUM-225CWN cell
+namespace: BrendaTissueOBO
+def: "Human breast cancer cell line from a primary tumor." [PMID:23401782]
+synonym: "SUM225CWN cell" RELATED []
+is_a: BTO:0000356 ! breast cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-09T05:36:25Z
+
+[Term]
+id: BTO:0005479
+name: SUM-229PE cell
+namespace: BrendaTissueOBO
+def: "Human breast cancer cell line from a primary tumor." [PMID:23401782]
+synonym: "SUM229PE cell" RELATED []
+is_a: BTO:0000356 ! breast cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-09T05:36:47Z
+
+[Term]
+id: BTO:0005480
+name: WM-278 cell
+namespace: BrendaTissueOBO
+def: "This cell line was established from skin taken from a patient with primary nodular melanoma in vertical growth phase." [Biocompare:http\://www.biocompare.com/]
+synonym: "WM278 cell" RELATED []
+is_a: BTO:0000849 ! melanoma cell line
+created_by: XPMUser
+creation_date: 2013-09-09T05:41:37Z
+
+[Term]
+id: BTO:0005481
+name: foreskin keratinocyte cell line
+namespace: BrendaTissueOBO
+is_a: BTO:0000375 ! keratinocyte cell line
+relationship: develops_from BTO:0001113 ! prepuce
+created_by: XPMUser
+creation_date: 2013-09-10T09:19:48Z
+
+[Term]
+id: BTO:0005482
+name: 38E6E7HFK cell
+namespace: BrendaTissueOBO
+def: "Human foreskin keratinocyte cell line expressing the E6 and E7 oncoproteins of human papillomavirus  type 38." [PMID:21482671]
+is_a: BTO:0005481 ! foreskin keratinocyte cell line
+created_by: XPMUser
+creation_date: 2013-09-10T09:20:16Z
+
+[Term]
+id: BTO:0005483
+name: molluscan catch muscle
+namespace: BrendaTissueOBO
+def: "Muscle responsible for holding closed the two halves of the shell of bivalves." [Encyclo:http\://www.encyclo.co.uk/]
+relationship: part_of BTO:0001266 ! invertebrate muscular system
+created_by: XPMUser
+creation_date: 2013-09-10T09:55:21Z
+
+[Term]
+id: BTO:0005484
+name: DLD-1/alpha-cat cell
+namespace: BrendaTissueOBO
+def: "The expression vector encoding the wild type alpha-catenin was transfected into DLD-1/delta alpha cells and selected using G418 to obtain a stable expression cell line." [PMID:21115490]
+relationship: develops_from BTO:0000391 ! DLD-1 cell
+created_by: XPMUser
+creation_date: 2013-09-10T10:05:19Z
+
+[Term]
+id: BTO:0005485
+name: MC-3T3 cell
+namespace: BrendaTissueOBO
+def: "Osteoblast precursor cell line derived from Mus musculus calvaria." [Wikipedia:The Free Encyclopedia]
+is_a: BTO:0004324 ! osteoblast cell line
+created_by: XPMUser
+creation_date: 2013-09-10T10:18:15Z
+
+[Term]
+id: BTO:0005486
+name: PK-9 cell
+namespace: BrendaTissueOBO
+def: "Parental and gemcitabine resistant pancreatic cancer cell line." [PMID:22490663]
+synonym: "PK9 cell" RELATED []
+is_a: BTO:0000794 ! pancreatic cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-10T10:22:59Z
+
+[Term]
+id: BTO:0005487
+name: PK-59 cell
+namespace: BrendaTissueOBO
+def: "Parental and gemcitabine resistant pancreatic cancer cell line." [PMID:22490663]
+synonym: "PK59 cell" RELATED []
+is_a: BTO:0000794 ! pancreatic cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-10T10:24:13Z
+
+[Term]
+id: BTO:0005488
+name: osteocyte cell line
+namespace: BrendaTissueOBO
+relationship: develops_from BTO:0002038 ! osteocyte
+created_by: XPMUser
+creation_date: 2013-09-10T10:30:52Z
+
+[Term]
+id: BTO:0005489
+name: MLO-Y4 cell
+namespace: BrendaTissueOBO
+def: "Murine long bone osteocyte cell line." [PMID:10084404]
+is_a: BTO:0005488 ! osteocyte cell line
+created_by: XPMUser
+creation_date: 2013-09-10T10:31:12Z
+
+[Term]
+id: BTO:0005490
+name: MM-1 cell
+namespace: BrendaTissueOBO
+def: "Parent cell line, established from peripheral blood of a multiple myeloma patient who had become resistant to steroid-based therapy." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "MM.1 cell" RELATED []
+is_a: BTO:0000727 ! multiple myeloma cell line
+created_by: XPMUser
+creation_date: 2013-09-11T08:40:21Z
+
+[Term]
+id: BTO:0005491
+name: MO-91 cell
+namespace: BrendaTissueOBO
+def: "Acute myelogenous leukemia-derived cell line." [PMID:15477587]
+synonym: "M0-91 cell" RELATED []
+synonym: "M091 cell" RELATED []
+synonym: "MO91 cell" RELATED []
+is_a: BTO:0001883 ! acute myeloid leukemia cell line
+created_by: XPMUser
+creation_date: 2013-09-11T09:00:47Z
+
+[Term]
+id: BTO:0005492
+name: MT-2 cell
+namespace: BrendaTissueOBO
+def: "Human lymphoblastic T-lymphocyte cell line, carrying the human T-cell leukemia virus type I." [HyperCLDB:http\://bioinformatics.istge.it/, PMID:2992081]
+synonym: "MT2 cell" RELATED []
+is_a: BTO:0001045 ! T-lymphocyte cell line
+created_by: XPMUser
+creation_date: 2013-09-11T09:05:17Z
+
+[Term]
+id: BTO:0005493
+name: Mv1Lu cell
+namespace: BrendaTissueOBO
+def: "Mink fetal lung cell line, derived from trypsinised lungs of several foetuses of Aleutian mink." [Health Protection Agency Culture Collections:http\://hpacultures.org.uk/products/celllines/]
+synonym: "Mv 1 Lu cell" RELATED []
+synonym: "Mv.1.Lu cell" RELATED []
+synonym: "NBL-7 cell" RELATED []
+is_a: BTO:0000353 ! lung cell line
+created_by: XPMUser
+creation_date: 2013-09-11T09:11:37Z
+
+[Term]
+id: BTO:0005494
+name: N-1511 cell
+namespace: BrendaTissueOBO
+def: "Clonal chondrocytic cell line N1511 derived from rib cartilage of a p53-null mouse." [PMID:12369787]
+synonym: "N1511 cell" RELATED []
+is_a: BTO:0003858 ! chondrocyte cell line
+created_by: XPMUser
+creation_date: 2013-09-11T09:17:22Z
+
+[Term]
+id: BTO:0005495
+name: NC-37 cell
+namespace: BrendaTissueOBO
+def: "Though deposited with the ATCC as a lymphoblastoid cell line established from a 34 year old male caucasian, DNA fingerprinting has shown this line to be a derivative of Raji Burkitt's lymphoma cell line." [ATCC American Cell Type Culture Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "NC37 cell" RELATED []
+relationship: develops_from BTO:0001154 ! RAJI cell
+created_by: XPMUser
+creation_date: 2013-09-11T09:22:56Z
+
+[Term]
+id: BTO:0005496
+name: NHEM-neo cell
+namespace: BrendaTissueOBO
+def: "Normal melanocyte cell line." [PMID:21475863]
+is_a: BTO:0003183 ! melanocyte cell line
+created_by: XPMUser
+creation_date: 2013-09-11T09:29:15Z
+
+[Term]
+id: BTO:0005497
+name: nucleus pulposus cell line
+namespace: BrendaTissueOBO
+relationship: develops_from BTO:0003626 ! nucleus pulposus
+created_by: XPMUser
+creation_date: 2013-09-11T09:35:45Z
+
+[Term]
+id: BTO:0005498
+name: HNPC cell
+namespace: BrendaTissueOBO
+def: "Human nucleus pulposus cell line, isolated from nucleus pulposus of human intervertibral disc." [ScienCell Research Laboratories:http\://www.sciencellonline.com/]
+is_a: BTO:0005497 ! nucleus pulposus cell line
+created_by: XPMUser
+creation_date: 2013-09-11T09:36:11Z
+
+[Term]
+id: BTO:0005499
+name: NYH cell
+namespace: BrendaTissueOBO
+def: "Human small cell lung cancer cell line." [PMID:12044890]
+is_a: BTO:0002206 ! small cell lung cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-11T09:42:44Z
+
+[Term]
+id: BTO:0005500
+name: QGP-1 cell
+namespace: BrendaTissueOBO
+def: "Human pancreatic neuroendocrine tumor cell line." [PMID:17443844]
+synonym: "QGP1 cell" RELATED []
+is_a: BTO:0000794 ! pancreatic cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-12T12:17:54Z
+
+[Term]
+id: BTO:0005501
+name: SW-2 cell
+namespace: BrendaTissueOBO
+def: "Human small cell lung carcinoma cell line." [PMID:22184126]
+synonym: "SW2 cell" RELATED []
+is_a: BTO:0002206 ! small cell lung cancer cell line
+created_by: XPMUser
+creation_date: 2013-09-12T12:23:40Z
+
+[Term]
+id: BTO:0005502
+name: Panc1-bC2GnT-M cell
+namespace: BrendaTissueOBO
+def: "Panc-1 cell line transfected with the Core 2 N-acetylglucosaminyltransferase mucus-type." [PMID:    23396488]
+relationship: develops_from BTO:0000304 ! PANC-1 cell
+created_by: XPMUser
+creation_date: 2013-09-13T12:57:22Z
+
+[Term]
+id: BTO:0005503
+name: corpus cavernosum smooth muscle
+namespace: BrendaTissueOBO
+is_a: BTO:0001260 ! smooth muscle
+relationship: develops_from BTO:0005454 ! corpus cavernosum
+created_by: XPMUser
+creation_date: 2013-09-13T01:30:42Z
+
+[Term]
+id: BTO:0005504
+name: fungal sporangium
+namespace: BrendaTissueOBO
+def: "An enclosure in which spores are formed. It can be composed of a single cell or can be multicellular. All plants, fungi, and many other lineages form sporangia at some point in their life cycle." [Wikipedia:The_Free_Encyclopedia]
+synonym: "sporangium" RELATED []
+is_a: BTO:0001285 ! sporangiophore
+relationship: part_of BTO:0005505 ! fungal sporangiophore
+created_by: Marion
+creation_date: 2013-11-07T09:40:52Z
+
+[Term]
+id: BTO:0005505
+name: fungal sporangiophore
+namespace: BrendaTissueOBO
+def: "A stalk or similar structure bearing sporangia in plants and fungi." [PAE Virtual Glossary:Plants\, Animals and the Environment Glossary derived from leading WCB/McGraw-Hill textbooks]
+synonym: "sporangiophore" RELATED []
+relationship: part_of BTO:0000487 ! fruit body
+created_by: Marion
+creation_date: 2013-11-07T09:43:27Z
+
+[Term]
+id: BTO:0005506
+name: culture condition:H2-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: Marion
+creation_date: 2013-09-20T02:43:24Z
+
+[Term]
+id: BTO:0005507
+name: culture condition:H2/sulfate-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: Marion
+creation_date: 2013-09-20T02:51:34Z
+
+[Term]
+id: BTO:0005508
+name: culture condition:ferric citrate-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: Marion
+creation_date: 2013-09-20T02:54:22Z
+
+[Term]
+id: BTO:0005509
+name: culture condition:2-aminophenol-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: Marion
+creation_date: 2013-09-20T02:56:04Z
+
+[Term]
+id: BTO:0005510
+name: culture condition:2-phenylethanol-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: Marion
+creation_date: 2013-09-20T02:56:38Z
+
+[Term]
+id: BTO:0005511
+name: embryonic carcinoma cell
+namespace: BrendaTissueOBO
+synonym: "embryonic cancer cell" RELATED []
+relationship: develops_from BTO:0000379 ! embryo
+created_by: Marion
+creation_date: 2013-09-20T03:44:52Z
+
+[Term]
+id: BTO:0005512
+name: basal node
+namespace: BrendaTissueOBO
+def: "The node or joint at the base of the stem." [Encyclopedic_Dictionary_of_Plant_Breeding:2003_p52]
+is_a: BTO:0001156 ! node
+created_by: Marion
+creation_date: 2013-10-16T12:41:13Z
+
+[Term]
+id: BTO:0005513
+name: cercaria
+namespace: BrendaTissueOBO
+def: "A usually tadpole-shaped larval trematode worm that develops in a molluscan host from a redia." [From_Merriam-Websters_Online_Dictionary_at_www.Merriam-Webster.com:From_Merriam-Websthttp\://www.merriam-webster.com/dictionary/cercaria]
+is_a: BTO:0000707 ! larva
+created_by: Marion
+creation_date: 2013-10-16T12:45:33Z
+
+[Term]
+id: BTO:0005514
+name: gonadal sheath cell
+namespace: BrendaTissueOBO
+def: "In Caenorhabditis elegans, specialized contractile myoepithelial cells of the somatic gonad, the gonadal sheath cells, are closely apposed to oocytes and are required for normal meiotic maturation and ovulation." [PMID:9405097]
+is_a: BTO:0002309 ! myoepithelial cell
+relationship: part_of BTO:0000534 ! gonad
+created_by: Marion
+creation_date: 2013-10-16T12:51:49Z
+
+[Term]
+id: BTO:0005515
+name: leaf vein
+namespace: BrendaTissueOBO
+def: "The veins are the vascular tissue of the leaf and are located in the sponge layer of the mesophyll." [Wikipedia:The_Free_Encyclopedia]
+is_a: BTO:0000713 ! leaf
+created_by: Marion
+creation_date: 2013-10-16T12:57:11Z
+
+[Term]
+id: BTO:0005516
+name: wood
+namespace: BrendaTissueOBO
+def: "Wood is a hard, fibrous structural xylem tissue found in the stems and roots of trees and other woody plants." [Wikipedia:The_Free_Encyclopedia]
+is_a: BTO:0001468 ! xylem
+created_by: Marion
+creation_date: 2013-10-16T13:01:35Z
+
+[Term]
+id: BTO:0005517
+name: lyophilized cell
+namespace: BrendaTissueOBO
+def: "Lyophilization is a dehydration process typically used to preserve a perishable material or make the material more convenient for transport. Freeze-drying works by freezing the material and then reducing the surrounding pressure to allow the frozen water in the material to sublimate directly from the solid phase to the gas phase." [Wikipedia:The_Free_Encyclopedia]
+synonym: "cryodesiccated cell" RELATED []
+synonym: "freeze-dried cell" RELATED []
+synonym: "lyophilised cell" RELATED []
+is_a: BTO:0000214 ! cell culture
+created_by: Marion
+creation_date: 2013-10-16T13:05:01Z
+
+[Term]
+id: BTO:0005518
+name: PC-9 cell
+namespace: BrendaTissueOBO
+def: "A cell line derived from human lung adenocarcinoma." [RIKEN_BioResource_Center:http\://www2.brc.riken.jp/]
+synonym: "PC9 cell" RELATED []
+is_a: BTO:0001911 ! lung adenocarcinoma cell line
+created_by: Marion
+creation_date: 2013-10-16T14:34:08Z
+
+[Term]
+id: BTO:0005519
+name: spermathecal-uterine valve
+namespace: BrendaTissueOBO
+def: "A single syncytium cell of four nuclei makes a valve, connecting spermatheca and uterus of hermaphrodite gonad. After oocyte fertilization the newly formed embryo passes from the spermatheca to the uterus via a connecting valve called the spermatheca-uterus valve." [Wormatlas:http\://www.wormatlas.org/]
+synonym: "spermatheca-uterus valve" RELATED []
+is_a: BTO:0003099 ! internal female genital organ
+created_by: Marion
+creation_date: 2013-10-16T15:00:38Z
+
+[Term]
+id: BTO:0005520
+name: uterine seam cell
+namespace: BrendaTissueOBO
+def: "Caenorhabditis elegans membranous cell attaches the uterus to the lateral epidermis (seam) and forms a thin laminar process dorsal to the vulva." [Wormatlas:http\://www.wormatlas.org/]
+is_a: BTO:0003099 ! internal female genital organ
+created_by: Marion
+creation_date: 2013-10-16T17:44:20Z
+
+[Term]
+id: BTO:0005521
+name: GM0536 cell
+namespace: BrendaTissueOBO
+def: "Human EBV-transformed lymphoblastoid cell line." [PMID:22850745]
+synonym: "GMO536 cell" RELATED []
+is_a: BTO:0000773 ! lymphoblastoid cell line
+created_by: Marion
+creation_date: 2013-10-17T11:40:32Z
+
+[Term]
+id: BTO:0005522
+name: plant epidermal cell
+namespace: BrendaTissueOBO
+def: "The plant epidermis cell is a group of cells that covers plants leaves, flowers, roots and stems. The cells of the epidermis are structurally and functionally variable. Most plants have an epidermis that is a single cell layer thick. Some plants like Ficus elastica and Peperomia, which have periclinal cellular division within the protoderm of the leaves, have an epidermis with multiple cell layers. Epidermal cells are tightly linked to each other and provide mechanical strength and protection to the plant." [Wikipedia:The_Free_Encyclopedia]
+synonym: "epidermal cell" RELATED []
+synonym: "plant epidermis cell" RELATED []
+relationship: part_of BTO:0000116 ! plant epidermis
+created_by: Marion
+creation_date: 2013-11-05T10:09:05Z
+
+[Term]
+id: BTO:0005523
+name: culture condition:anaerobic and sulfate-thiosulfate-lactate-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: Marion
+creation_date: 2013-11-05T10:20:03Z
+
+[Term]
+id: BTO:0005524
+name: plant lip
+namespace: BrendaTissueOBO
+def: "One of the two divisions of a bilabiate corolla or calyx, as in the snapdragon, or the modified upper petal of an orchid flower." [The_American_Heritage_Dictionary_of_the_English_Language:Fourth_Edition_copyright_2000]
+synonym: "lip" RELATED []
+relationship: part_of BTO:0000163 ! corolla
+relationship: part_of BTO:0000169 ! calyx
+created_by: Marion
+creation_date: 2013-11-06T09:57:19Z
+
+[Term]
+id: BTO:0005525
+name: plant primordium
+namespace: BrendaTissueOBO
+def: "A cell or organ in its initial stage of development." [Plant_Anatomy_Glossary:http\://www.uri.edu/cels/bio/plant_anatomy/glossary.html]
+relationship: part_of BTO:0001461 ! whole plant
+created_by: Marion
+creation_date: 2013-11-06T10:48:14Z
+
+[Term]
+id: BTO:0005526
+name: axillary bud primordium
+namespace: BrendaTissueOBO
+def: "It arises in the axil of a leaf primordium." [Plant_Anatomy_Glossary:http\://www.uri.edu/cels/bio/plant_anatomy/glossary.html]
+relationship: part_of BTO:0004103 ! leaf primordium
+created_by: Marion
+creation_date: 2013-11-06T10:53:30Z
+
+[Term]
+id: BTO:0005527
+name: lateral root primordium
+namespace: BrendaTissueOBO
+def: "It arises in the pericycle." [Plant_Anatomy_Glossary:http\://www.uri.edu/cels/bio/plant_anatomy/glossary.html]
+is_a: BTO:0004791 ! root primordium
+created_by: Marion
+creation_date: 2013-11-06T10:55:02Z
+
+[Term]
+id: BTO:0005528
+name: plant secretory cell
+namespace: BrendaTissueOBO
+def: "Plant secretory cells are derived from parenchyma cells and may function on their own or as a tissue.  Examples: oils in citrus, pine resin, latex, opium, nectar, perfumes and plant hormones." [Biology-Online_Dictionary:http\://www.biology-online.org/dictionary/]
+is_a: BTO:0001461 ! whole plant
+created_by: Marion
+creation_date: 2013-11-06T11:02:44Z
+
+[Term]
+id: BTO:0005529
+name: plant hair
+namespace: BrendaTissueOBO
+def: "A common type of trichome is a hair. Plant hairs may be unicellular or multicellular, branched or unbranched. Multicellular hairs may have one or several layers of cells. Branched hairs can be dendritic (tree-like), tufted, or stellate (star-shaped)." [Wikipedia:The_Free_Encyclopedia]
+synonym: "hair" RELATED []
+is_a: BTO:0001395 ! trichome
+created_by: Marion
+creation_date: 2013-11-06T11:13:50Z
+
+[Term]
+id: BTO:0005530
+name: plant glandular hair
+namespace: BrendaTissueOBO
+def: "Any of the various types of hairs may be glandular." [Wikipedia:The_Free_Encyclopedia]
+synonym: "glandular hair" RELATED []
+is_a: BTO:0005529 ! plant hair
+created_by: Marion
+creation_date: 2013-11-06T11:15:41Z
+
+[Term]
+id: BTO:0005531
+name: plant scale
+namespace: BrendaTissueOBO
+def: "A common type of trichome is the scale or peltate hair: a plate or shield-shaped cluster of cells attached directly to the surface or borne on a stalk of some kind." [Wikipedia:The_Free_Encyclopedia]
+synonym: "peltate hair" RELATED []
+synonym: "plant peltate hair" RELATED []
+synonym: "scale" RELATED []
+is_a: BTO:0001395 ! trichome
+created_by: Marion
+creation_date: 2013-11-06T11:17:29Z
+
+[Term]
+id: BTO:0005532
+name: plant zygote
+namespace: BrendaTissueOBO
+def: "The initial cell formed when two gamete cells are joined by means of sexual reproduction.  In land plants, the zygote is formed within a chamber called the archegonium." [Wikipedia:The_Free_Encyclopedia]
+synonym: "zygote" RELATED []
+is_a: BTO:0001233 ! plant embryo
+relationship: related_to BTO:0003375 ! archegonium
+created_by: Marion
+creation_date: 2013-11-06T13:45:06Z
+
+[Term]
+id: BTO:0005533
+name: fungal primordium
+namespace: BrendaTissueOBO
+def: "A mushroom develops from a nodule, or pinhead, less than two millimeters in diameter, called a primordium, which is typically found on or near the surface of the substrate. It is formed within the mycelium, the mass of threadlike hyphae that make up the fungus. The primordium enlarges into a roundish structure of interwoven hyphae roughly resembling an egg, called a button." [Wikipedia:The_Free_Encyclopedia]
+synonym: "primordium" RELATED []
+relationship: part_of BTO:0001494 ! fungus
+created_by: Marion
+creation_date: 2013-11-07T08:49:53Z
+
 [Typedef]
 id: develops_from
 name: derives from/develops from
@@ -44866,5 +45726,4 @@ namespace: BrendaTissueOBO
 id: related_to
 name: related to
 namespace: BrendaTissueOBO
-
 

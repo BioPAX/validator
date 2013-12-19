@@ -11,7 +11,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>3.0.3-SNAPSHOT</version>
+		<version>3.0.3</version>
 	</parent>
 
 	<build>
@@ -19,7 +19,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>1.3</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -32,14 +31,8 @@
 					<clearOutputDir>false</clearOutputDir>
 					<packageName>net.biomodels.miriam</packageName>
 					<schemaDirectory>${basedir}/src/main/resources</schemaDirectory>
+<!-- 					<arguments>-enableIntrospection</arguments> -->
 				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>xerces</groupId>
-						<artifactId>xercesImpl</artifactId>
-						<version>2.8.1</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 		</plugins>
 	</build>

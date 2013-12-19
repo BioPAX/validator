@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>3.0.3-SNAPSHOT</version>
+		<version>3.0.3</version>
 	</parent>
 
 	<artifactId>validator-core</artifactId>
@@ -15,30 +15,48 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>1.5</version>
 				<executions>
 					<execution>
 						<goals>
 							<goal>schemagen</goal>
 						</goals>
+						<!-- do in or after the compile phase, as the beans refer other interfaces in the project, e.g., Rule  -->
 						<phase>compile</phase>
 						<configuration>
 							<includes>
 								<include>org/biopax/validator/api/beans/*.java</include>
 							</includes>
 							<verbose>true</verbose>
-							<outputDirectory>${project.build.directory}/classes/org/biopax/validator/api/schema</outputDirectory>
+							<outputDirectory>${project.build.directory}/generated-resources/schemas</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>javax.xml.bind</groupId>
-						<artifactId>jaxb-api</artifactId>
-						<version>2.2.7</version>
-					</dependency>
-				</dependencies>
-			</plugin>		
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<!-- run in or after the above (schema) is done -->
+						<phase>process-classes</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.outputDirectory}/org/biopax/validator/api/schema</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}/generated-resources/schemas</directory>
+									<includes>
+										<include>**/*.xsd</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

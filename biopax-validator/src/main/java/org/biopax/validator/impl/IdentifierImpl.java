@@ -28,7 +28,7 @@ package org.biopax.validator.impl;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
-import org.biopax.validator.api.Identifier;
+import org.biopax.validator.api.beans.Validation.Identifier;
 
 /**
  * BioPAX object domain specific implementation 
@@ -42,7 +42,6 @@ public final class IdentifierImpl implements Identifier {
 	/* (non-Javadoc)
 	 * @see org.biopax.validator.api.Identifier#getId(java.lang.Object)
 	 */
-	@Override
 	public String identify(Object obj) {
     	String id = "";
     	
