@@ -319,6 +319,6 @@ blockquote{
 	display: none;
 	list-style: decimal;
 }
-#vOwl {
+.vOwl {
 	list-style: inside;
 }
