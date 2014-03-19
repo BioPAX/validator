@@ -91,18 +91,23 @@ public class AOPAspectJLTWIntegrationTest {
      
     
     @Test
-    public void testSyntaxErrors() throws IOException {
+    public void testUnknownProperty() throws IOException {
     	Validation validation = new Validation(new IdentifierImpl());
     	validator.importModel(validation, getClass()
     		.getResourceAsStream("testSyntaxErrors.xml")); 
     	validator.getResults().clear(); // clean after itself
-    	assertEquals(1, validation.countErrors(null, null, "unknown.property", null, false, false));
-    	
-
-    	validation = new Validation(new IdentifierImpl());
+    	assertEquals(1, validation.countErrors(null, null, "unknown.property", null, false, false));   	
+    }
+    
+    
+//    @Ignore("worked with paxtools 4.2.1; but paxtools 4.3.0-SNAPSHOT dependency breaks it; fixed 19-Mar-2014")
+    @Test
+    public void testSyntaxErrors() throws IOException {
+    	Validation validation = new Validation(new IdentifierImpl());
     	validator.importModel(validation, getClass()
-    		.getResourceAsStream("testBiochemPathwayStepOneConversionRule.owl")); 
+    		.getResourceAsStream("testBiochemPathwayStepOneConversionRule.owl")); //misplaced.step.conversion
     	validator.getResults().clear(); // clean after itself
+    	assertFalse(validation.getError().isEmpty());
     	assertEquals(1, validation.countErrors(null, null, "syntax.error", null, false, false));   	
     }
 
