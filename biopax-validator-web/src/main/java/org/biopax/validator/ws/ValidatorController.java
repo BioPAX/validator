@@ -111,7 +111,9 @@ public class ValidatorController {
     		@RequestParam(required=false) Behavior filter,
     		@RequestParam(required=false) Integer maxErrors,
     		@RequestParam(required=false) String profile, 
-    		@ModelAttribute("normalizer") Normalizer normalizer) 	throws IOException  
+    		//normalizer!=null when called from the JSP; 
+    		//but it's usually null when from the validator-client or a web script
+    		@ModelAttribute("normalizer") Normalizer normalizer) throws IOException  
     {
     	Resource resource = null; // a resource to validate
     	
@@ -213,18 +215,27 @@ public class ValidatorController {
     	}
     
     	boolean isFix = Boolean.TRUE.equals(autofix);
+    	
     	Validation validationResult = 
     		new Validation(new IdentifierImpl(), resultName, isFix, errorLevel, errMax, profile);
     	
-		validator.importModel(validationResult, biopaxResource.getInputStream());
+		//run the biopax-validator (this updates the validationResult object)
+    	validator.importModel(validationResult, biopaxResource.getInputStream());
 		validator.validate(validationResult);
     	validator.getResults().remove(validationResult);   	    	
 	
-       	if(isFix && normalizer != null) { // do normalize too
+    	if(isFix) { // do normalize too
+    		if(normalizer == null) {//e.g., when '/check' called from a client/script, not JSP
+    			normalizer = new Normalizer();
+    			normalizer.setInferPropertyDataSource(false);
+    	    	normalizer.setInferPropertyOrganism(false);
+    		}   		
        		org.biopax.paxtools.model.Model m = (org.biopax.paxtools.model.Model) validationResult.getModel();
-   			normalizer.normalize(m);
+   			normalizer.normalize(m);//this further modifies the validated and auto-fixed model
+   			//update the serialized model (BioPAX RDF/XML)
+   			//for the client to get it (to possibly, unmarshall)
    			validationResult.setModelData(SimpleIOHandler.convertToOwl(m));
-       	} else if(!isFix) {
+       	} else {
        		validationResult.setModelData(null);
        		validationResult.setModel(null);
        	}

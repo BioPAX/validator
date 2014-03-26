@@ -50,11 +50,12 @@ public class Validation implements Serializable {
 	private final Properties properties;
 	// getting object's ID strategy (for error reporting)
 	@XmlTransient
-	private final Identifier idCalc;
-	
-	
+	private final Identifier idCalc;		
+	@XmlTransient
+	private String modelDataFile;
+
 	@XmlElement(required=false)
-	private String modelData;
+	private String modelData; //cannot store more than ~1Gb data.
 	@XmlElement
 	private final Set<ErrorType> error;
 	@XmlAttribute(required=false)
@@ -193,16 +194,25 @@ public class Validation implements Serializable {
 		error.addAll(errors);
 	}
 
-	
+
+	/**
+	 * This method should never be used
+	 * outside this framework;
+	 * this is for the biopax-validator Web
+	 * server and client applications only.
+	 * 
+	 * @return BioPAX RDF/XML
+	 */
 	public String getModelData() 
 	{
 		return modelData;
 	}
-
 	
 	/**
 	 * This method should never be used
-	 * (this is for OXM frameworks only)!
+	 * outside this framework;
+	 * this is for the biopax-validator Web 
+	 * server and client applications only.
 	 *
 	 * @param modelData
 	 */
@@ -210,33 +220,36 @@ public class Validation implements Serializable {
 		this.modelData = modelData;
 	}
 
+	/**
+	 * A local file name where the modified BioPAX RDF/XML is stored.
+	 *
+	 */
+	public String getModelDataFile() {
+		return modelDataFile;
+	}
+	
+	/**
+	 * This method should never be used
+	 *
+	 * @param modelDataFile where to save modified BioPAX RDF/XML
+	 */
+	public void setModelDataFile(String modelDataFile) {
+		this.modelDataFile = modelDataFile;
+	}
+
 
 	/**
 	 * Returns the data as HTML-escaped string 
-	 * (to show on web pages).
+	 * (to show on a web page).
 	 * 
 	 * @return
 	 */
 	@XmlTransient
 	public String getModelDataHtmlEscaped() {
-		return (modelData != null)
+		return (modelDataFile != null)
 				? StringEscapeUtils.escapeHtml(getModelData())
 					.replaceAll(System.getProperty("line.separator"), 
 						System.getProperty("line.separator")+"<br/>")
-				: null;
-	}
-
-
-	/**
-	 * Returns the data as XML-escaped string 
-	 * (to embed inside a XML element).
-	 * 
-	 * @return
-	 */
-	@XmlTransient
-	public String getModelDataXmlEscaped() {
-		return (modelData != null) 
-			? StringEscapeUtils.escapeXml(getModelData())
 				: null;
 	}
 

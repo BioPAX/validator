@@ -181,7 +181,6 @@ public class Main {
 					Normalizer normalizer = new Normalizer();
 					normalizer.setXmlBase(xmlBase); //if xmlBase is null, the model's one is used
 					normalizer.normalize(model);
-					result.setModelData(SimpleIOHandler.convertToOwl(model));
 				}
 				
 				if(output != null)
@@ -196,11 +195,8 @@ public class Main {
 			
 			// save modified (normalized) biopax if the option was used
 			if (autofix) {
-				writer = new PrintWriter(filename + EXT);
-				String owl = result.getModelData();
-				writer.write(owl, 0, owl.length());
-				writer.write(System.getProperty ( "line.separator" ));
-				writer.flush();
+				Model model = (Model) result.getModel();
+				(new SimpleIOHandler()).convertToOWL(model, new FileOutputStream(filename + EXT));
 			}
 			
 			// remove the BioPAX data before writing report

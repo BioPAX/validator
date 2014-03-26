@@ -99,8 +99,8 @@
 		<div class="form-row">
 		<label>Validation Profile:</label><br/>
 		<select name="profile">
-			<option label="Default (Best Practice)" value="" selected="selected">Default (Best Practice)</option>
-			<option label="Alternative (Less Strict)" value="notstrict">Alternative (Less Strict)</option>
+			<option label="Default (Best Practice)" value="">Default (Best Practice)</option>
+			<option label="Alternative (Less Strict)" value="notstrict" selected="selected">Alternative (Less Strict)</option>
 		</select>
 		<br/><br/>		
 		<label>Error Case Filter (Level):</label><br/>

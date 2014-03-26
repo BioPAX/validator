@@ -154,7 +154,7 @@ public class BiopaxValidatorClient {
     	}
     	
     	HttpEntity httpEntity = meb.build();
-//    	httpEntity.writeTo(System.err);
+//    	if(log.isDebugEnabled()) httpEntity.writeTo(System.err);
     	String content = Executor.newInstance()
     			.execute(Request.Post(url).body(httpEntity))
     				.returnContent().asString();  	

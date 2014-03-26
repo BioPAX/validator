@@ -200,9 +200,6 @@ public class ValidatorImpl implements Validator {
 		validation.addComment("number of pathways : "
 				+ model.getObjects(Pathway.class).size());
 		
-		//Refresh 'modelData' property: 		
-		validation.setModelData(SimpleIOHandler.convertToOwl(model));
-		
 		//update all error counts (total, fixed, notfixed)
 		for(ErrorType errorType : validation.getError()) {
 			errorType.setTotalCases(errorType.countErrors(null, null, false));
