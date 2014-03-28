@@ -36,9 +36,6 @@
 
 	<context:annotation-config/>
 
-	<mvc:view-controller path="/home.html"/>
-	<mvc:view-controller path="/ws.html"/>
-
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
@@ -78,6 +75,12 @@
 		</constructor-arg>
 		<constructor-arg ref="extraDbSynonyms"/>
 	</bean>   
+
+	<!-- enable static resources/pages -->
+	<mvc:view-controller path="/home.html"/>
+	<mvc:view-controller path="/ws.html"/>	
+	<!-- makes static css/scripts/img available when web.xml has '/' as the url-pattern -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
 
 	<mvc:annotation-driven/>
 

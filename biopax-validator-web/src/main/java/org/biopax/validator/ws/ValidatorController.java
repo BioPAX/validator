@@ -234,6 +234,7 @@ public class ValidatorController {
    			normalizer.normalize(m);//this further modifies the validated and auto-fixed model
    			//update the serialized model (BioPAX RDF/XML)
    			//for the client to get it (to possibly, unmarshall)
+   			validationResult.setModel(m);
    			validationResult.setModelData(SimpleIOHandler.convertToOwl(m));
        	} else {
        		validationResult.setModelData(null);

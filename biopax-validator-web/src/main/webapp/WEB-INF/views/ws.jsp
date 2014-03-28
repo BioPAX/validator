@@ -1,55 +1,27 @@
-<%--
-  #%L
-  BioPAX Validator Web Application
-  %%
-  Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
-  %%
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Lesser General Public License as 
-  published by the Free Software Foundation, either version 3 of the 
-  License, or (at your option) any later version.
-  
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Lesser Public License for more details.
-  
-  You should have received a copy of the GNU General Lesser Public 
-  License along with this program.  If not, see
-  <http://www.gnu.org/licenses/lgpl-3.0.html>.
-  #L%
-  --%>
+<%@page language="java" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8"%>
 
 <!DOCTYPE html>
 <html>
 <head>
-   <meta charset="utf-8" />
-	<meta name="author" content="BioPAX" />
-	<meta name="description" content="BioPAX Validator" />
-	<meta name="keywords" content="BioPAX, Validation, Validator, Rule, OWL, Exchange" />
-	<link rel="stylesheet" type="text/css" href="styles/style.css" media="screen" />
-	<link rel="shortcut icon" href="images/favicon.ico" />
-	<script type="text/javascript" src="scripts/rel.js"></script>
-	<title>BioPAX Validator: webservice</title>
+	<title>BioPAX Validator: web service</title>
+	<jsp:include page="head.jsp"/>
 </head>
 <body>
 
-<div id="wrap">
-  <jsp:include page="/templates/header.jsp"/>
-  <div id="content">
-    <div id="left">
+<jsp:include page="header.jsp"/>
 
+<h2>The BioPAX Validator Web Service</h2>
 
-<h2>BioPAX Validator Webservice</h2>
-
-<div>
-
+<div class="row">
+<div class="jumbotron">
 <h3>Check</h3>
 To validate and, optionally, auto-fix and normalize local or remote BioPAX file(s), 
-submit a multipart/form-data HTTP POST request to <a href="<c:url value='/check.html'/>">this page</a>
+submit a multipart/form-data HTTP POST request to <a href="<c:url value='check.html'/>">this page</a>
+</div>
+</div>
 
+<div class="row">
 <h4>Parameters:</h4>
 <ul>
 <li><em>file</em> (actually, parameter name does not matter here, - simply submit an array of files) OR <em>url</em> (value: a URL to data in BioPAX format)</li>
@@ -60,33 +32,25 @@ submit a multipart/form-data HTTP POST request to <a href="<c:url value='/check.
 value: a positive integer; "0" (default) means "unlimited", "1" - fail-fast mode, i.e., stop after the first serious issue, "10" - collect up to ten error cases, etc.</li>
 <li><em>profile</em> - use an alternative, pre-configured validation profile; currently, there is only one value available: "notstrict" (for particular rules to report 'warning' or nothing instead of 'error' - in the default configuration)</li>
 </ul>
+</div>
 
+<div class="row">
 <h4>Output Formats:</h4>
 <ul>
 <li>HTML - stand-alone HTML+JavaScript validation results page to save locally and view off-line</li>
-<li>XML - results in the XML format defined by the <a href="<c:url value='/schema.html'/>">XML schema</a></li>
+<li>XML - results in the XML format defined by the <a href="<c:url value='schema.html'/>">XML schema</a></li>
 <li>OWL - modified BioPAX L3 data (fixed and normalized)</li>
 </ul>
-
 </div>
 
 <br/>
 
-<div>
+<div class="row">
 As an example, there is a basic BioPAX validator client module (it connects to the http://www.biopax.org/biopax-validator/check.html), and the 
 <a href="http://sourceforge.net/p/biopax/validator/ci/default/tree/biopax-validator-client/">sources are here</a> (see test classes there as well:).
 </div>
 
-      </div>
-    <div id="right">
-      <jsp:include page="/templates/menu.jsp"/>
-      <jsp:include page="/templates/box.jsp"/>
-    </div>
-    <div id="clear"></div>
-  </div>
-
-  <jsp:include page="/templates/footer.jsp"/>
-</div>
+<jsp:include page="footer.jsp"/>
 
 </body>
 </html>

@@ -8,8 +8,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>biopax-validator-web</artifactId>
 	<packaging>war</packaging>
-	<name>BioPAX Validator Web Application</name>
-	<description>BioPAX Validator Web Application (UI and Web Service)</description>
+	<name>BioPAX Validator Web</name>
+	<description>BioPAX Validator Web Application and Web Service</description>
 
 	<build>
 		<finalName>biopax-validator</finalName>
@@ -21,8 +21,8 @@
 					<webResources>
 						<resource>
 							<filtering>true</filtering>
-							<targetPath>templates</targetPath>
-							<directory>src/main/webapp/templates</directory>
+							<targetPath>WEB-INF/views</targetPath>
+							<directory>src/main/webapp/WEB-INF/views</directory>
 							<includes>
 								<include>*.jsp</include>
 							</includes>
@@ -37,7 +37,7 @@
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.0</version>
+				<version>2.1</version>
 				<executions>
 					<execution>
 						<id>tomcat-run</id>
@@ -79,8 +79,8 @@
 							<webResources>
 								<resource>
 									<filtering>true</filtering>
-									<targetPath>templates</targetPath>
-									<directory>src/main/webapp/templates</directory>
+									<targetPath>WEB-INF/views</targetPath>
+									<directory>src/main/webapp/WEB-INF/views</directory>
 									<includes>
 										<include>*.jsp</include>
 									</includes>

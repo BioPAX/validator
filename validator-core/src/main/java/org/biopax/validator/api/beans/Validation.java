@@ -51,9 +51,8 @@ public class Validation implements Serializable {
 	// getting object's ID strategy (for error reporting)
 	@XmlTransient
 	private final Identifier idCalc;		
-	@XmlTransient
-	private String modelDataFile;
-
+	
+	
 	@XmlElement(required=false)
 	private String modelData; //cannot store more than ~1Gb data.
 	@XmlElement
@@ -221,24 +220,6 @@ public class Validation implements Serializable {
 	}
 
 	/**
-	 * A local file name where the modified BioPAX RDF/XML is stored.
-	 *
-	 */
-	public String getModelDataFile() {
-		return modelDataFile;
-	}
-	
-	/**
-	 * This method should never be used
-	 *
-	 * @param modelDataFile where to save modified BioPAX RDF/XML
-	 */
-	public void setModelDataFile(String modelDataFile) {
-		this.modelDataFile = modelDataFile;
-	}
-
-
-	/**
 	 * Returns the data as HTML-escaped string 
 	 * (to show on a web page).
 	 * 
@@ -246,8 +227,8 @@ public class Validation implements Serializable {
 	 */
 	@XmlTransient
 	public String getModelDataHtmlEscaped() {
-		return (modelDataFile != null)
-				? StringEscapeUtils.escapeHtml(getModelData())
+		return (modelData != null)
+				? StringEscapeUtils.escapeHtml(modelData)
 					.replaceAll(System.getProperty("line.separator"), 
 						System.getProperty("line.separator")+"<br/>")
 				: null;

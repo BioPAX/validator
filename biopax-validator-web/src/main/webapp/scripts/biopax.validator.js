@@ -19,18 +19,6 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-function externalLinks() {
- if (!document.getElementsByTagName) return;
- var anchors = document.getElementsByTagName("a");
- for (var i=0; i<anchors.length; i++) {
-   var anchor = anchors[i];
-   if (anchor.getAttribute("href") &&
-       anchor.getAttribute("rel") == "external")
-     anchor.target = "_blank";
- }
-}
-
-window.onload = function init() { externalLinks; switchNormalizerOptions();};
 
 function switchInput() {
 	  var f = document.getElementById('file');
