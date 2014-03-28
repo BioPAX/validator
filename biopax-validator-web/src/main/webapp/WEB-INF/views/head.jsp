@@ -14,7 +14,7 @@
 <!--[if lt IE 9]><script src='<c:url value="scripts/html5shiv.js"/>'></script><![endif]-->
 <script>
   <%-- get the server-side jvm property --%>
-  var gaCode = <%= System.getProperty("biopax.validator.ga.code") %>;
+  var gaCode = "<%= System.getProperty("biopax.validator.ga.code") %>";
   if(gaCode) {
   	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

@@ -36,8 +36,8 @@ It always converts BioPAX Level1, Level2 to Level3, before it checks the Level3 
 <div class="row">
 <p>
 Please feel free to post your comments and suggestions at the 
-<a href="http://www.biopax.org/wiki/index.php?title=BioPAXValidator">Validator Wiki</a> or 
-<a href="http://sourceforge.net/p/biopax/_list/tickets">BioPAX issue tracker</a>.
+<a target="_blank" href="http://www.biopax.org/wiki/index.php?title=BioPAXValidator">Validator Wiki</a> or 
+<a target="_blank" href="http://sourceforge.net/p/biopax/_list/tickets">BioPAX issue tracker</a>.
 </p>
 </div>
 
