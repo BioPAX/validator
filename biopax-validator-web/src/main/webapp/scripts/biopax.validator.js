@@ -66,7 +66,7 @@ function updateValidatorOptions() {
 
 
 function switchit(id) {
-	var el = $(id);
+	var el = document.getElementById(id);
 	if (!el.style.display || el.style.display == "none") {
 		el.style.display = "block";
 	} else {
