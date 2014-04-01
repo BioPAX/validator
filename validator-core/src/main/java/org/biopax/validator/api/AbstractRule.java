@@ -73,16 +73,6 @@ public abstract class AbstractRule<T> implements Rule<T> {
     	// w/o changing the no. args
     	args = parseArgs(validation, args);
     	   	
-		if (validation.isMaxErrorsSet() 
-				&& validation.getNotFixedErrors() > validation.getMaxErrors()) 
-		{
-			logger.info("Max errors exceeded (" + validation.getMaxErrors() +
-				", " + validation.getDescription() + "); Skipping for " + 
-				code  + ", obj:" + thingId + "(fixed:" + setFixed + 
-				"), args:" + Arrays.toString(args));
-			return;	
-		}
-  	    	
     	// create and add/update the error case using current validation profile
     	ErrorType error = (utils != null) 
     			? utils.createError(

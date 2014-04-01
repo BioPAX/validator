@@ -12,63 +12,66 @@
 <jsp:include page="header.jsp"/>
 
 <h2>Validation Results</h2>
-
 <p><label class="errorMsg">${error}</label></p>
-<ul id="validations">
+
 <c:forEach var="result" items="${response.validationResult}" varStatus="rstatus">
-	<li title="Click to see more detail">
-		<a href="javascript:switchit('result${rstatus.index}')">Resource:&nbsp;${result.description}</a>;&nbsp;${result.summary}
-	</li>
-  <ul style="display: block;">
+
+  <div class="row">
+  <h3>Model: ${result.description}</h3> 
+  <ul class="list-inline">
 	<li>
 	  <c:forEach var="comment" items="${result.comment}">
-		${comment}&nbsp;
+		${comment}; 
 	  </c:forEach>
 	</li>
-	<li>
-	  <c:choose>
-		<c:when test="${result.profile != null}">profile: ${result.profile};&nbsp;</c:when>
-		<c:otherwise>profile: default;&nbsp;</c:otherwise>
-	  </c:choose>
-	  auto-fix: ${result.fix}
-	</li>
-	<li>
-	  errors/warnings: ${result.totalProblemsFound};&nbsp;- not fixed: ${result.notFixedProblems};&nbsp; 
-	  <c:choose>
-		<c:when test="${result.maxErrors > 0}">
-			errors limit: ${result.maxErrors} (not fixed)
-		</c:when>
-		<c:otherwise>
-			errors not fixed: ${result.notFixedErrors}
-		</c:otherwise>
-	  </c:choose>
-	</li>
-	
-	<c:if test="${result.fix}">
-	  	<li><a href="javascript:switchit('result${rstatus.index}owl')">Modified BioPAX</a>&nbsp;(HTML-escaped BioPAX RDF/XML)</li>
-		<ul id="result${rstatus.index}owl" class="vOwl">
-			<li><div>${result.modelDataHtmlEscaped}</div></li>
-		</ul>
-	</c:if>
-  </ul>
-	
-	<ul id="result${rstatus.index}">
+  </ul>	
+  <table class="table table-bordered">
+  	<thead>
+  		<tr>
+  			<th>Problems</th><th>Cases</th><th>Not fixed</th>
+  			<th><c:choose><c:when test="${result.maxErrors > 0}">Max Errors (not fixed)</c:when>
+				<c:otherwise>Not fixed ERRORs</c:otherwise></c:choose></th>
+			<th>Profile</th><th>Auto-fix</th>
+  		</tr>
+  	</thead>
+  	<tbody>
+  		<tr>
+  			<td>${result.summary}</td>
+  			<td><span class="badge">${result.totalProblemsFound}</span></td>
+  			<td><span class="badge">${result.notFixedProblems}</span></td>
+  			<td><c:choose><c:when test="${result.maxErrors > 0}">${result.maxErrors}</c:when>
+				<c:otherwise><span class="badge badge-error">${result.notFixedErrors}</span></c:otherwise>
+				</c:choose>
+			</td>
+			<td>
+  				<c:choose>
+				<c:when test="${result.profile != null}">${result.profile}</c:when>
+				<c:otherwise>default</c:otherwise>
+	  			</c:choose>
+  			</td>
+  			<td>${result.fix}</td>
+  		</tr>
+  	</tbody>
+  </table>
+		
+	<h4>Issues</h4>	
+	<ul>
 	  <c:forEach var="errorType" items="${result.error}" varStatus="estatus">
-		<li title="Click to see the error cases">
-			<a href="javascript:switchit('result${rstatus.index}type${estatus.index}')">
-			${errorType.type}: <em>${errorType.code}</em>,&nbsp;category: <em>${errorType.category}</em>,
-			&nbsp;cases: <em>${errorType.totalCases}</em>,&nbsp;
+		<li>
+			<h4>${errorType.type}: <code>${errorType.code}</code>, category: <em>${errorType.category}</em>, 
+			cases: <span class="badge"><em>${errorType.totalCases}</em></span>,  
 			<c:choose>
 				<c:when test="${errorType.notFixedCases > 0}">
-				not fixed: <em>${errorType.notFixedCases}</em>
+				not fixed: <span class="badge ${errorType.type}"><em>${errorType.notFixedCases}</em></span>
 				</c:when>
 				<c:otherwise>
 				all fixed!
 				</c:otherwise>
 	  		</c:choose>
-			</a><br/>${errorType.message}
+			</h4>
+			${errorType.message}
 		</li>
-		<ul id="result${rstatus.index}type${estatus.index}">
+		<ul>
 		<c:forEach var="errorCase" items="${errorType.errorCase}">
 			<li>
 				<c:if test="${errorCase.fixed}"><b>[FIXED!]</b>&nbsp;</c:if>
@@ -79,23 +82,18 @@
 		</ul>
 	  </c:forEach>
 	</ul>
-	<br/>
+	
+	<c:if test="${result.fix}">
+	  	<h4>Modified BioPAX model</h4>
+	  	<button class="btn btn-small btn-default" onclick="javascript:switchit('normalizedBiopax${rstatus.index}');">Show/Hide</button>
+		<div style="display:none;" class="normalized-biopax" id="normalizedBiopax${rstatus.index}"><code>${result.modelDataHtmlEscaped}</code></div>
+	</c:if>	
+	
+	</div>
+	<hr/>
 </c:forEach>
-</ul>
 
 <jsp:include page="footer.jsp"/>
-
-<!-- the script is here for the page to switch lists' view mode when used off-line too-->
-<script type="text/javascript"> <!-- this function is here (not in a separate .js file) for off-line use -->
-	function switchit(list) {
-		var listElementStyle = document.getElementById(list).style;
-		if (listElementStyle.display == "none") {
-			listElementStyle.display = "block";
-		} else {
-			listElementStyle.display = "none";
-		}
-	}
-</script>
 
 </body>
 </html>

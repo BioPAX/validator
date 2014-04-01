@@ -21,9 +21,9 @@ For batch validation, consider using the console version of the validator.</em><
 <script type="text/javascript" src="scripts/bootstrap.min.js"></script>
 <script type="text/javascript" src="scripts/jquery.placeholder.js"></script>
 
+<script type="text/javascript" src="scripts/biopax.validator.js"></script>
+
 <!--[if lt IE 8]>
 	<script src='<c:url value="js/icon-font-ie7.js"/>'></script>
 	<script src='<c:url value="js/icon-font-ie7-24.js"/>'></script>
 <![endif]-->
-    
-<script type="text/javascript" src="scripts/biopax.validator.js"></script>

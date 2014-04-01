@@ -11,16 +11,31 @@
 
 <jsp:include page="header.jsp"/>
 
-<h2>BioPAX Semantic Rules (as Java classes)</h2>
+<h2>BioPAX Semantic Rules</h2>
 
-<dl>
+<div class="row">
+<h4>Currently available (loaded) validation rules and corresponding
+level of error they report in each validation profile (mode).</h4>
+<table class="table table-striped table-bordered">
+<thead>
+<tr><th colspan="2"></th><th colspan="2">Profile and level</th></tr>
+<tr>
+<th>Rule (class name)</th><th>Description</th><th>"default"</th><th>"notstrict"</th>
+</tr>
+</thead>
+<tbody>
   <c:forEach var="rule" items="${rules}">
-  	<dt>name:&nbsp;<dfn>${rule.name}</dfn></dt>
-    <dd><p>description:&nbsp;<dfn>${rule.tip}</dfn><br/>
-        profiles:&nbsp;<dfn>${rule.stdProfile} ("default"), ${rule.altProfile} ("notstrict")</dfn></p>
-    </dd>   
+  	<tr>
+  	<td><dfn>${rule.name}</dfn></td>
+    <td>${rule.tip}</td>
+    <td>${rule.stdProfile}</td>
+    <td>${rule.altProfile}</td>  
+    </tr> 
   </c:forEach>
-</dl>
+ </tbody>
+</table>
+
+</div>
 	
 <jsp:include page="footer.jsp"/>
 

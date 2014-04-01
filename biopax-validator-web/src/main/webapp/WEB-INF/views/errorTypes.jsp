@@ -14,7 +14,6 @@
 <h2>Validation Error Classes</h2>
 
 <div class="row">
-<div class="jumbotron">
 <p>
 Every class of error &lt;code&gt; is defined in the error-codes.properties as follows: 
 </p>
@@ -25,20 +24,28 @@ Every class of error &lt;code&gt; is defined in the error-codes.properties as fo
 <li><b>&lt;code&gt;.category</b>=<em>one of: syntax, specification, recommendation, information</em></li>
 </ul>
 </div>
-</div>
 
 <div class="row">
 <h3>
-Following error classes (codes) can be reported by the BioPAX rules:
+Following error classes (codes) are reported by the BioPAX rules:
 </h3>
-<dl>
+<table class="table table-striped table-bordered">
+<thead>
+<tr>
+<th>Code</th><th>Category</th><th>Common Message</th><th>Details (template)</th>
+</tr>
+</thead>
+<tbody>
   <c:forEach var="err" items="${errorTypes}">
-    <dt>code:&nbsp;<dfn>${err.code}</dfn>, category:&nbsp;<dfn>${err.category}</dfn></dt>
-    <dd><p>common message:&nbsp;<dfn>${err.defaultMsg}</dfn><br/>
-        case-specific template:&nbsp;<code>${err.caseMsgTemplate}</code></p>
-	</dd>
+   <tr>
+    <td><dfn>${err.code}</dfn></td>
+    <td>${err.category}</td>
+    <td>${err.defaultMsg}</td>
+    <td><code>${err.caseMsgTemplate}</code></td>
+   </tr>
   </c:forEach>
-</dl>
+</tbody>
+</table>
 </div>
 
 <jsp:include page="footer.jsp"/>

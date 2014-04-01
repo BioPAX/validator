@@ -177,7 +177,7 @@ public class Validation implements Serializable {
 	 * 
 	 * @return
 	 */
-	public synchronized Collection<ErrorType> getError() {
+	public Collection<ErrorType> getError() {
 		return error;
 	}
 
@@ -256,9 +256,11 @@ public class Validation implements Serializable {
 	 * 
 	 * @param e Error type
 	 */
-	public void addError(ErrorType e) {	
+	public synchronized void addError(ErrorType e) {	
 		
-		if(isMaxErrorsSet() && getNotFixedErrors() >= getMaxErrors())
+		int numNotFixedErrors = countErrors(null, null, null, null, true, true);
+
+		if(isMaxErrorsSet() && numNotFixedErrors >= getMaxErrors())
 		{
 			log.info("Won't save the case: max. errors " +
 				"limit exceeded for " + getDescription());

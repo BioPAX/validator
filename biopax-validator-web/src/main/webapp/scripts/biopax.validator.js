@@ -64,11 +64,12 @@ function updateValidatorOptions() {
 		}
 };
 
-function switchit(list) {
-	var listElementStyle = document.getElementById(list).style;
-	if (listElementStyle.display == "none") {
-		listElementStyle.display = "block";
+
+function switchit(id) {
+	var el = $(id);
+	if (!el.style.display || el.style.display == "none") {
+		el.style.display = "block";
 	} else {
-		listElementStyle.display = "none";
+		el.style.display = "none";
 	}
 };

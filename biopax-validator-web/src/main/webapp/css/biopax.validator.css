@@ -1,5 +1,8 @@
 /*prevent navbar overlapping with content*/
-body { padding-top: 70px; padding-bottom: 70px;}
+body { padding-top: 60px; padding-bottom: 90px;}
+
+#normalizerOptions {display: none;}
+.normalized-biopax {display: none;}
 
 .navbar strong {color: red;}
 
@@ -7,19 +10,10 @@ body { padding-top: 70px; padding-bottom: 70px;}
 
 .nav-target div {padding-top: 50px;}
 
-#aboutFix {
-	display: none;
-}
-#normalizerOptions {
-	display: none;
-}
 .errorMsg {
 	color: red;
 }
-#validations ul {
-	display: none;
-	list-style: decimal;
-}
-.vOwl {
-	list-style: inside;
-}
+
+.badge-error {background-color: #CC0033; color: black;}
+.ERROR {background-color: #CC0033; color: black;}
+.WARNING {background-color: #FFCC33; color: black;}

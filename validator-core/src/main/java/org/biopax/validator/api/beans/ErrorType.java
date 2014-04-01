@@ -211,7 +211,7 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	 * @param ignoreFixed skip fixed if true
 	 * @return
 	 */
-	public synchronized int countErrors(String forObject, String reportedBy, boolean ignoreFixed) {
+	public int countErrors(String forObject, String reportedBy, boolean ignoreFixed) {
 		int count = 0;
 		
 		for(ErrorCaseType ec: errorCase) {
