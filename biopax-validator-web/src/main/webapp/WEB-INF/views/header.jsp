@@ -11,7 +11,6 @@
 				  <span class="icon-bar"></span>
 				</button>
 				<a class="navbar-brand" href="http://www.biopax.org" target="_blank">
-<!-- 				 <img alt="Logo" src="http://www.gravatar.com/avatar/1f1d48050e49170eed934a29f35efd24.png" id="team-logo"/> -->
 				 BioPAX.org
 				</a>
 			  </div>              
@@ -35,7 +34,7 @@
                   		<ul class="dropdown-menu">
 							<li><a href="http://www.biopax.org/wiki/index.php?title=BioPAXValidator" target="_blank">Wiki (Validator)</a></li>
 							<li><a href="http://www.biopax.org/wiki/index.php?title=BioPAXRules" target="_blank">Wiki (Rules)</a></li>
-							<li><a href="http://www.biopax.org/m2site/validator-${project.version}/" target="_blank">Generated Docs</a></li>
+							<li><a href="http://www.biopax.org/m2site/" target="_blank">Generated Docs</a></li>
 							<li><a href="http://www.pathwaycommons.org" target="_blank">Pathway Commons</a></li>
 							<li><a href="http://www.ebi.ac.uk/miriam/" target="_blank">MIRIAM</a></li>
 							<li><a href="http://www.obofoundry.org/" target="_blank">OBO</a></li>
