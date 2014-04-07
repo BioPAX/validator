@@ -129,7 +129,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
     protected void process() {
 
         //returns unmodifiable set, so need to create a modifiable one
-        Set terms = new HashSet();
+        Set<OBOObject> terms = new HashSet<OBOObject>();
 
         //sanity check
         if (parser == null) {
@@ -137,7 +137,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
         }
 
         //tmp collection to store terms
-        Collection toAdd;
+        Collection<OBOObject> toAdd;
 
         //add all terms - this will include obsolete and roots
         //sanity check to avoid NPE
@@ -1097,10 +1097,10 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
         }
 
         //check for alt_ids
-        Set altIDs = obj.getSecondaryIDs();
+        Set<String> altIDs = obj.getSecondaryIDs();
         String altID;
-        for (Iterator i = altIDs.iterator(); i.hasNext(); ) {
-            altID = (String) i.next();
+        for ( Iterator<String> i = altIDs.iterator(); i.hasNext(); ) {
+            altID = i.next();
             TermSynonymBean tsb = new TermSynonymBean();
             //link parent term
             tsb.setParentTerm(trm);

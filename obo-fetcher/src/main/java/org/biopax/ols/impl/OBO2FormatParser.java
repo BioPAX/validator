@@ -76,15 +76,10 @@ public class OBO2FormatParser implements Parser {
         HashSet<OBOObject> terms = new HashSet<OBOObject>();
         for (IdentifiedObject io : lnkDb.getObjects()) {
             //do not return built-in obo: constructs
-
-            if ((io instanceof OBOClass || io instanceof Instance) && !io.getID().startsWith("obo:")) {
+            if ((io instanceof OBOClass || io instanceof Instance) 
+            		&& !io.getID().toLowerCase().startsWith("obo:")) {
                 terms.add((OBOObject) io);
             }
-//            else {
-//                if (io instanceof OBOProperty){
-//                    System.out.println(((OBOProperty) io).getID());
-//                }
-//            }
         }
         return terms;
 
