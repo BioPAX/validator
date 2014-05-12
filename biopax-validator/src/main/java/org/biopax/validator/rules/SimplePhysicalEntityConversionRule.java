@@ -22,7 +22,6 @@ package org.biopax.validator.rules;
  * #L%
  */
 
-import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.ComplexAssembly;
 import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.Degradation;
@@ -82,14 +81,7 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
 					&& that.getEntityReference() != null
 					&& that.getEntityReference().isEquivalent(spe.getEntityReference())) 
 					return true;
-			} else if(value instanceof Complex){ // Complex
-				if(sameKindEntityExists(spe, ((Complex)value).getComponent()))
-					return true;
 			}
-			
-	    	//still false - check member PEs as well ;)
-	    	if(sameKindEntityExists(spe, value.getMemberPhysicalEntity()))
-	    		return true;
 		}
   	
    		return ret;

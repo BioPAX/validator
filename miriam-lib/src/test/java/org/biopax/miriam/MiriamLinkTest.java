@@ -108,7 +108,7 @@ public class MiriamLinkTest {
 	public final void testGetDataResources() {
 		String[] drs = MiriamLink.getDataResources(MI);
 		assertEquals(2, drs.length);
-		assertTrue(Arrays.asList(drs).contains("http://www.ebi.ac.uk/ontology-lookup/"));
+		assertTrue(Arrays.asList(drs).contains("http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI"));
 	}
 
 	@Test
