@@ -89,10 +89,6 @@
 			<value>PIR-SSD</value>
 		</list>
 		<list>
-			<value>ECOCYC</value>
-			<value>ECOO157CYC</value>
-		</list>
-		<list>
 			<value>GO</value>
 			<value>GENE ONTOLOGY</value>
 			<value>GENE_ONTOLOGY</value>
