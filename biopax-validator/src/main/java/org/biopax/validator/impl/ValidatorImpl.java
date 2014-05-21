@@ -131,50 +131,48 @@ public class ValidatorImpl implements Validator {
 		
 		assert(model != null && model.getLevel() == BioPAXLevel.L3);
 
-		//we'll check rules concurrently
+		// Check/fix Rule<? extends BioPAXElement> rules concurrently (low risk of getting CMEx), 
+		// because they normally do minor changes and simply cannot add/remove
+		// elements in the Model (though, can alter a property of any biopax object)
 		ExecutorService exec = Executors.newFixedThreadPool(30);
 
-		//First, check/fix individual objects
-		// copy the elements collection to avoid concurrent modification
-		// (rules can add/remove objects)!
-		final Set<BioPAXElement> elements = Collections
-				.unmodifiableSet(new HashSet<BioPAXElement>(model.getObjects()));
-		
-		for (BioPAXElement el : elements) 
+		// First, check/fix individual objects
+		// (no need to copy; these rules cannot add/remove objects in model)
+		for (BioPAXElement el : model.getObjects()) 
 		{	
 			// rules can check/fix specific elements
-			for (final Rule<?> rule : rules) {
-				
+			for (Rule rule : rules) {				
 				Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
 		        if (behavior == Behavior.IGNORE) continue; // skip					
 				
 				// skip if cannot check
-				if (rule.canCheck(el)) {				
+				if (rule.canCheck(el)) {
 					execute(exec, rule, validation, (Object) el);
 				}
 			}
 		}
-		exec.shutdown(); //end accepting new jobs
 		
+		exec.shutdown(); //end accepting new jobs
 		try {
 			exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			throw new ValidatorException("Interrupted unexpectedly!");
-		}
+		}		
 		
-		exec = Executors.newFixedThreadPool(30);
-		//Second, check/fix <Model> rules
-		for (Rule<?> rule : rules) 
+		//Second, apply all Rule<Model> rules -
+		//run Rule<Model> rules concurrently
+		exec = Executors.newFixedThreadPool(10);		
+		for (Rule rule : rules) 
 		{
 			if (rule.canCheck(model)) {
 				Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
-		        if (behavior == Behavior.IGNORE) continue; // skip
-		        
-				execute(exec, rule, validation, model);
+		        if (behavior == Behavior.IGNORE) 
+		        	continue; // skip		        
+		        execute(exec, rule, validation, model);
 			}
 		}
+		
 		exec.shutdown(); //end accepting jobs
-
 		try {
 			exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {

@@ -18,18 +18,16 @@
 <div class="jumbotron">
 <p>
 High quality biological pathway knowledge is easier to analyze and integrate  
-at a much greater level of detail and with standard tools. 
-To help detect and fix syntax and semantic issues introduced in the course of 
-biological pathway data modeling and exporting to BioPAX, 
-we created this BioPAX Validator, with dozens of custom criteria, 
-some of which cannot be expressed in OWL or rule definition languages.
-These rules originate from the BioPAX specification and the community best practice, 
-are expressed in Java as generic classes built mostly around the 
-<a href="http://www.ncbi.nlm.nih.gov/pubmed/24068901" target="_blank">Paxtools</a> API, 
-and embraced by the aspect-oriented framework (AOP). It reports all the issues at once, 
-in several categories and levels, and the normalized BioPAX Level3 model (optional),
-auto-converting BioPAX Level 1, 2 to 3 if required (before it checks the rules).
-There are also Java console and library version of the BioPAX Validator.
+at a greater level of detail and with standard software.
+The BioPAX Validator applies dozens of custom criteria, some of which 
+cannot be expressed in OWL or rule definition languages, to deal with 
+syntax and semantic errors introduced in the course of pathway data modeling.
+Rules originate from the BioPAX Level3 specification and the community best practice, 
+are expressed as generic Java classes built around the 
+<a href="http://www.ncbi.nlm.nih.gov/pubmed/24068901" target="_blank">Paxtools</a> API 
+and Spring framework, report errors or warnings in several categories,  
+and can optionally normalize BioPAX models, always auto-converting BioPAX Level 1, 2 to 3.
+There are also console and Java library version of this tool.
 </p>
 <a href="check.html" class="btn btn-primary btn-large">Start Validating</a>
 </div>

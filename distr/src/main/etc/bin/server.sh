@@ -14,4 +14,4 @@ VALIDATOR_OPTS="-Xmx2g -Dfile.encoding=UTF-8 -Dpaxtools.CollectionProvider=org.b
 # $1 - can be -httpPort=8080, $2 - can be -ajpPort=8009 (or whatever ports we want it use)
 
 
-$JAVA_HOME/bin/java $VALIDATOR_OPTS -jar biopax-validator-web.jar "$1" "$2"
+$JAVA_HOME/bin/java -server $VALIDATOR_OPTS -jar biopax-validator-web.jar "$1" "$2"

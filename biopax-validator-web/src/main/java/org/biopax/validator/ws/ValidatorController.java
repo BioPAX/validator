@@ -87,6 +87,7 @@ public class ValidatorController {
      * 
      * Framework's built-in parameters:
      * @param request the web request object (may contain multi-part data, i.e., multiple files uploaded)
+     * @param response 
      * @param mvcModel Spring MVC Model
      * @param writer HTTP response writer
      * 
@@ -103,8 +104,9 @@ public class ValidatorController {
      */
     @RequestMapping(value="/check", method=RequestMethod.POST)
     public String check( 
-    		//use of smth. like @ModelAttribute("validation") Validation validation is inconvenient when multiple files...
-    		HttpServletRequest request, Model mvcModel, Writer writer, 
+    		//use like @ModelAttribute("validation") Validation validation is inconvenient for multiple files...
+    		HttpServletRequest request, HttpServletResponse response, 
+    		Model mvcModel, Writer writer,
     		@RequestParam(required=false) String url, 
     		@RequestParam(required=false) String retDesired,
     		@RequestParam(required=false) Boolean autofix,
@@ -167,6 +169,7 @@ public class ValidatorController {
 		}
 		
     	if("xml".equalsIgnoreCase(retDesired)) {
+    		response.setContentType("application/xml");
         	ValidatorUtils.write(validatorResponse, writer, null);
     	} else if("html".equalsIgnoreCase(retDesired)) {
     		/* could also use ValidatorUtils.write with a xml-to-html xslt source
@@ -174,6 +177,7 @@ public class ValidatorController {
 			mvcModel.addAttribute("response", validatorResponse);
 			return "groupByCodeResponse";
 		} else { // owl only
+			response.setContentType("text/plain");
 			// write all the OWL results one after another TODO any better solution?
 			for(Validation result : validatorResponse.getValidationResult()) 
 			{

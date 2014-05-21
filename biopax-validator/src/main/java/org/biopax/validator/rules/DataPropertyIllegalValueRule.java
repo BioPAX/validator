@@ -27,14 +27,18 @@ import java.util.Collection;
 
 import org.biopax.validator.api.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
+import org.biopax.paxtools.controller.PrimitivePropertyEditor;
 import org.biopax.paxtools.controller.SimpleEditorMap;
-import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
+import org.biopax.paxtools.controller.StringPropertyEditor;
+import org.biopax.paxtools.controller.Traverser;
+import org.biopax.paxtools.controller.Visitor;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Level3Element;
+import org.biopax.paxtools.util.Filter;
 import org.springframework.stereotype.Component;
 
 /**
@@ -58,23 +62,24 @@ public class DataPropertyIllegalValueRule extends AbstractRule<BioPAXElement> {
 			? SimpleEditorMap.get(BioPAXLevel.L3)
 				: SimpleEditorMap.get(BioPAXLevel.L2);
 		
-		AbstractTraverser checker = new AbstractTraverser(editorMap) {
+		Traverser checker = new Traverser(editorMap, new Visitor() {
 			@Override
-			protected void visit(Object value, BioPAXElement parent,
-					Model model, PropertyEditor editor) {
-				if (value != null && !(value instanceof BioPAXElement)) {
-					if (warnOnDataPropertyValues.contains(value.toString().trim().toUpperCase())) {
-						error(validation, parent, "illegal.property.value", validation.isFix(), editor.getProperty(), value);
-						if(validation.isFix()) {
-							if(editor.isMultipleCardinality())
-								editor.removeValueFromBean(value, parent);
-							else
-								editor.setValueToBean(null, parent);
-						}
+			public void visit(BioPAXElement domain, Object range, Model model, PropertyEditor editor) {
+				if (range != null) {
+					if (warnOnDataPropertyValues.contains(range.toString().trim().toUpperCase())) {
+						error(validation, domain, "illegal.property.value", 
+								validation.isFix(), editor.getProperty(), range);
 					}
 				}
 			}
-		};
+		}, new Filter<PropertyEditor> () {
+			@Override
+			public boolean filter(PropertyEditor ed) {
+				return (ed instanceof PrimitivePropertyEditor)
+						|| (ed instanceof StringPropertyEditor);
+			}
+			
+		});
 		
 		checker.traverse(bpe, null);
 	}

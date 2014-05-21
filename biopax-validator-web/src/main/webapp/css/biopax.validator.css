@@ -1,9 +1,6 @@
 /*prevent navbar overlapping with content*/
 body { padding-top: 60px; padding-bottom: 90px;}
 
-#normalizerOptions {display: none;}
-.normalized-biopax {display: none;}
-
 .navbar strong {color: red;}
 
 .navbar-brand img {width: 33px; height: 33px;}

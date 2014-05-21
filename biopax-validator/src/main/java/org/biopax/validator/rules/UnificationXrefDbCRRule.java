@@ -22,18 +22,18 @@ package org.biopax.validator.rules;
  * #L%
  */
 
-import org.biopax.paxtools.model.level3.RelationshipXref;
+import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.validator.impl.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**
- * Checks: RelationshipXref.id has value (should be warning)
+ * Checks: UnificationXref.db has value
  * 
  * @author rodche
  */
 @Component
-public class XrefIdCRRule extends CardinalityAndRangeRule<RelationshipXref> {
-	public XrefIdCRRule() {
-		super(RelationshipXref.class, "id", 1, 1, String.class);
+public class UnificationXrefDbCRRule extends CardinalityAndRangeRule<UnificationXref> {
+	public UnificationXrefDbCRRule() {
+		super(UnificationXref.class, "db", 1, 1, String.class);
 	}
 }

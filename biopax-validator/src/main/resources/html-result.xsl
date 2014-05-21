@@ -36,15 +36,7 @@
 				<meta name="author" content="biopax.org" />
 				<meta name="description" content="BioPAX Validator Response as HTML" />
 				<meta name="keywords" content="BioPAX, Validation, Validator, Results" />
-				<script type="text/javascript">
-		function switchit(lid) {
-			var listElementStyle = document.getElementById(lid).style;
-			if (listElementStyle.display == "none") {
-				listElementStyle.display = "block";
-			} else {
-				listElementStyle.display = "none";
-			}
-		}</script>
+				<style type="text/css">.hidden { display: none; }</style>				
 				<title>Validation Results</title>
 			</head>
 			
@@ -52,6 +44,18 @@
             	<ul>
             		<xsl:apply-templates/>
 				</ul>
+				
+				<script type="text/javascript">
+					$(function() {       
+	    				$('.hider').on('click', function(){
+	        				var $hider = $(this);
+	        				var hideeid = $hider.attr('hide-id');
+	       					var $hidee = $('#' + hideeid);
+	        				$hidee.toggleClass('hidden');
+	        				return false; /*prevent following the fake link*/
+	    				});    
+					});
+				</script>
             </body>
             
         </html>
@@ -59,8 +63,8 @@
     </xsl:template>
     
     <xsl:template match="validation">
-    	<li style="text-decoration: underline" title="Click to see more detail">
-			<a href="javascript:switchit('{generate-id()}')">Resource: <xsl:value-of select="@description"/>; <xsl:value-of select="@summary"/></a>
+    	<li style="text-decoration: underline">
+			Resource: <xsl:value-of select="@description"/>; <xsl:value-of select="@summary"/>
 		</li>		
 		<ul>
 		  	<li><xsl:for-each select="comment" >
@@ -75,13 +79,13 @@
 			</li>
 	
 			<xsl:if test="(@fix='true') or (@normalize='true')">
-	  			<li><a href="javascript:switchit('{generate-id()}owl')">Modified BioPAX</a>&#xa0;
+	  			<li><a href="#" class="hider" hide-id="{generate-id()}owl">Modified BioPAX</a>&#xa0;
 	  			("escaped" RDF in HTML; choose BioPAX or XML as return if you plan to process it)</li>
-				<ul id="{generate-id()}owl" style="display: none"><li><div><xsl:value-of select="@modelSerializedHtmlEscaped"/></div></li></ul>
+				<ul id="{generate-id()}owl" class="hidden"><li><div><xsl:value-of select="@modelSerializedHtmlEscaped"/></div></li></ul>
 			</xsl:if>
 		</ul>
 		
-    	<ul id="{generate-id()}" style="display: none; list-style: decimal;">
+    	<ul style="list-style: decimal;">
     		<xsl:apply-templates select="error"/>
     	</ul>
     
@@ -89,8 +93,9 @@
     
     <xsl:template match="error">
 		<li title="Click to see the error cases">
-			<a href="javascript:switchit('{generate-id()}')">
-			<xsl:value-of select="@type"/>: <em><xsl:value-of select="@code"/></em>,&#xa0;category: <em><xsl:value-of select="@category"/></em>,
+			<a href="#" class="hider" hide-id="{generate-id()}">
+			<xsl:value-of select="@type"/>: <em><xsl:value-of select="@code"/></em></a>
+			,&#xa0;category: <em><xsl:value-of select="@category"/></em>,
 			&#xa0;cases: <em><xsl:value-of select="@totalCases"/></em>,&#xa0;
 			<xsl:choose>
 				<xsl:when test="@notFixedCases>0">
@@ -100,11 +105,10 @@
 				all fixed!
 				</xsl:otherwise>
 	  		</xsl:choose>
-			</a>
 			<br/><xsl:value-of select="@message"/>
 		</li>
 		
-		<ul id="{generate-id()}" style="display: none">
+		<ul id="{generate-id()}" class="hidden">
 			<xsl:apply-templates/>
 		</ul>
 		<br/>

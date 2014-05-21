@@ -22,9 +22,8 @@ package org.biopax.validator.impl;
  * #L%
  */
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
@@ -71,72 +70,47 @@ public abstract class AbstractCardinalityAndRangeRule<E extends BioPAXElement>
 	}
 	
 	public void check(Validation validation, E thing) {
-		try {
-			Class<? extends BioPAXElement> face 
-				= ((BioPAXElement)thing).getModelInterface();
-			PropertyEditor editor = 
-				editorMap.getEditorForProperty(property, face);
-			if(editor == null) {
-				throw new ValidatorException(
-					"Flaw in the " + getClass().getSimpleName()
-					+ " rule definition: no editor for the property: " 
-					+ property + " of " + domain);
-			}
-			
-			Method method = editor.getGetMethod();
-			Object ret = method.invoke(thing, new Object[] {});
-			if (ret != null) {
-				if (editor.isMultipleCardinality()) {
-					int size = ((Collection<?>) ret).size();
-					if (maxCardinality == minCardinality) {
-						// exact cardinality check
-						if (maxCardinality  > 0 
-							&& maxCardinality < Integer.MAX_VALUE 
-							&& size != maxCardinality) 
-						{
-							error(validation, thing, 
-								"cardinality.violated", false, editor.getProperty(), maxCardinality);
-						}
-					} else {
-						// min. cardinality check
-						if (minCardinality > 0 && size == 0) {
-							error(validation, thing, 
-								"min.cardinality.violated", false, editor.getProperty(), minCardinality);
-						}
-						// max. cardinality check
-						if (maxCardinality > 0
-								&& maxCardinality < Integer.MAX_VALUE
-								&& size > maxCardinality) {
-							error(validation, thing, 
-								"max.cardinality.violated", false, editor.getProperty(), maxCardinality);
-						}
-					}
-					// check range
-					for (Object val : (Collection<?>)ret) {
-						checkRange(validation, thing, val);
-					}
-					
-				} else {
-					checkRange(validation, thing, ret);
-				}
-			} else { // null
-				if (minCardinality > 0) {
-					String code = (minCardinality==maxCardinality) 
-						? "cardinality.violated" 
-						: "min.cardinality.violated" ;
-					error(validation, thing, code, false, editor.getProperty(), minCardinality);
-				}
-			}
+		PropertyEditor editor = 
+			editorMap.getEditorForProperty(property, thing.getModelInterface());
+		if(editor == null) {
+			throw new ValidatorException(
+				"BUG in " + getClass().getSimpleName() +
+				" rule: no editor exists for property '" + 
+						property + "' of " + domain);
+		}
 
-		} catch (IllegalAccessException e) {
-			throw new ValidatorException(e, getProperty(), 
-					domain.getSimpleName());
-		} catch (InvocationTargetException e) {
-			throw new ValidatorException(e, getProperty(), 
-					domain.getSimpleName());
-		} 
+		//get value(s) from the property of the biopax obj; copy to avoid CMEx...
+		Set<?> ret = new HashSet<Object>(editor.getValueFromBean(thing));
+		
+		int size = ret.size();
+		if (maxCardinality == minCardinality) {
+			// exact cardinality check
+			if (maxCardinality  > 0 
+					&& maxCardinality < Integer.MAX_VALUE 
+					&& size != maxCardinality) 
+			{
+				error(validation, thing, 
+						"cardinality.violated", false, editor.getProperty(), maxCardinality);
+			}
+		} else {
+			// min. cardinality check
+			if (minCardinality > 0 && size == 0) {
+				error(validation, thing, 
+						"min.cardinality.violated", false, editor.getProperty(), minCardinality);
+			}
+			// max. cardinality check
+			if (maxCardinality > 0
+					&& maxCardinality < Integer.MAX_VALUE
+					&& size > maxCardinality) {
+				error(validation, thing, 
+						"max.cardinality.violated", false, editor.getProperty(), maxCardinality);
+			}
+		}
+		// check range
+		for (Object val : ret) {
+			checkRange(validation, thing, val);
+		}
 	}
-
 	
 	private void checkRange(Validation validation, E thing, Object p) {
 		boolean isViolated = true;

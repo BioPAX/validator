@@ -165,7 +165,7 @@ public abstract class CvTermsRule<T extends Level3Element>
 					 * 4) multiple terms (accession numbers) can result from searching by (synonym) name
 					 *    
 					 *    Well, let's try to fix, anyway (and modifying ValidatorImpl as well)!
-					 *    That's awesome!!!
+					 *    That's awesome!
 					 */
 						Set<OntologyTermI> validTermIs = ontologyManager.getValidTerms(this);
 						for (String name : noXrefTerms.keySet()) {

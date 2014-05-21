@@ -6,6 +6,7 @@
 <head>
 	<title>Validation Results</title>
 	<jsp:include page="head.jsp"/>
+	<style type="text/css">.hidden { display: none; }</style>
 </head>
 <body>
 
@@ -53,12 +54,13 @@
   		</tr>
   	</tbody>
   </table>
-		
-	<h4>Issues</h4>	
+	<h4>Issues</h4>
 	<ul>
 	  <c:forEach var="errorType" items="${result.error}" varStatus="estatus">
 		<li>
-			<h4>${errorType.type}: <code>${errorType.code}</code>, category: <em>${errorType.category}</em>, 
+			<h4><a class="hider" hide-id="result${rstatus.index}type${estatus.index}" href="#">
+			${errorType.type}: <code>${errorType.code}</code></a>
+			, category: <em>${errorType.category}</em>, 
 			cases: <span class="badge"><em>${errorType.totalCases}</em></span>,  
 			<c:choose>
 				<c:when test="${errorType.notFixedCases > 0}">
@@ -71,7 +73,7 @@
 			</h4>
 			${errorType.message}
 		</li>
-		<ul>
+		<ul class="hidden" id="result${rstatus.index}type${estatus.index}">
 		<c:forEach var="errorCase" items="${errorType.errorCase}">
 			<li>
 				<c:if test="${errorCase.fixed}"><b>[FIXED!]</b>&nbsp;</c:if>
@@ -85,8 +87,8 @@
 	
 	<c:if test="${result.fix}">
 	  	<h4>Modified BioPAX model</h4>
-	  	<button class="btn btn-small btn-default" onclick="javascript:switchit('normalizedBiopax${rstatus.index}');">Show/Hide</button>
-		<div style="display:none;" class="normalized-biopax" id="normalizedBiopax${rstatus.index}"><code>${result.modelDataHtmlEscaped}</code></div>
+	  	<a href="#" class="hider" hide-id="owl${rstatus.index}">Show/Hide</a>
+		<div class="hidden" id="owl${rstatus.index}"><code>${result.modelDataHtmlEscaped}</code></div>
 	</c:if>	
 	
 	</div>
@@ -94,6 +96,18 @@
 </c:forEach>
 
 <jsp:include page="footer.jsp"/>
+
+<script>
+$(function() {       
+    $('.hider').on('click', function(){
+        var $hider = $(this);
+        var hideeid = $hider.attr('hide-id');
+        var $hidee = $('#' + hideeid);
+        $hidee.toggleClass('hidden');
+        return false;
+    });    
+});
+</script>
 
 </body>
 </html>
