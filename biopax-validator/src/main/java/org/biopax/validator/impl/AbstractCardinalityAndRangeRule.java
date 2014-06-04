@@ -80,8 +80,12 @@ public abstract class AbstractCardinalityAndRangeRule<E extends BioPAXElement>
 		}
 
 		//get value(s) from the property of the biopax obj; copy to avoid CMEx...
-		Set<?> ret = new HashSet<Object>(editor.getValueFromBean(thing));
-		
+		Set<?> ret = null;
+		//sync to get the property values (there're other rules in separate threads that might check/fix the same thing and property)
+		synchronized (thing) {
+			ret = new HashSet<Object>(editor.getValueFromBean(thing));
+		}
+			
 		int size = ret.size();
 		if (maxCardinality == minCardinality) {
 			// exact cardinality check

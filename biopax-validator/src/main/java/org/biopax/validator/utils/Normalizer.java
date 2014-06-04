@@ -541,6 +541,12 @@ public final class Normalizer {
 		// process the rest of utility classes (selectively though)
 		for(UtilityClass bpe : model.getObjects(UtilityClass.class)) 
 		{
+			//skip those with already normalized URIs
+			if(normalized(bpe)) {
+				log.info("Skip already normalized: " + bpe.getRDFId());
+				continue;
+			}
+			
 			if(bpe instanceof ControlledVocabulary || bpe instanceof BioSource) 
 			{
 				//note: it does not check/fix the CV term name if wrong or missing though...
@@ -558,9 +564,27 @@ public final class Normalizer {
 		doSubs(model);
 	}
 	
+	private boolean normalized(UtilityClass bpe) {
+		if(bpe.getRDFId().startsWith("http://identifiers.org/")
+				&& (bpe instanceof BioSource || bpe instanceof ControlledVocabulary
+					|| bpe instanceof EntityReference || bpe instanceof PublicationXref
+					|| bpe instanceof Provenance))
+			return true;
+		else 
+			return false;
+	}
+
+
 	private void normalizeERs(Model model) {
 		// process the rest of utility classes (selectively though)
 		for (EntityReference bpe : model.getObjects(EntityReference.class)) {
+			
+			//skip those with already normalized URIs
+			if(normalized(bpe)) {
+				log.info("Skip already normalized: " + bpe.getRDFId());
+				continue;
+			}			
+			
 			UnificationXref uref = getFirstUnificationXref(bpe);
 			if (uref != null)
 				normalizeID(model, bpe, uref);

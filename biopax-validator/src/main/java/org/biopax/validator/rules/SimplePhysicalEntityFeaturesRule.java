@@ -22,11 +22,13 @@ package org.biopax.validator.rules;
  * #L%
  */
 
+import org.biopax.paxtools.controller.ShallowCopy;
 import org.biopax.paxtools.model.level3.EntityFeature;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.validator.api.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
+import org.biopax.validator.utils.Normalizer;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -44,21 +46,40 @@ public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysica
 
     public void check(final Validation validation, SimplePhysicalEntity thing) {
         EntityReference er = thing.getEntityReference();
-        //wrap er.getEntityFeature() in a new hashset because it can be modified (also in other threads)
-        Set<EntityFeature> erefs =  new HashSet<EntityFeature>(er.getEntityFeature());
-        Set<EntityFeature> peefs = new HashSet<EntityFeature>();
+        //sync: this er can belong to many SPEs, and this rule can be called from another thread for the other SPE
+        synchronized (er) {	
+        	Set<EntityFeature> erFeatures =  new HashSet<EntityFeature>(er.getEntityFeature());//defensive copy
+        	
+        	Set<EntityFeature> peFeaturesAndNotFeatures = new HashSet<EntityFeature>();
+        	peFeaturesAndNotFeatures.addAll(thing.getFeature());
+        	peFeaturesAndNotFeatures.addAll(thing.getNotFeature());
 
-        peefs.addAll(thing.getFeature());
-        peefs.addAll(thing.getNotFeature());
+        	for(EntityFeature ef: peFeaturesAndNotFeatures) {
+        		if(!erFeatures.contains(ef)) {
+        			if(validation.isFix()) {
+        				if(ef.getEntityFeatureOf() != null) {//belongs to the other ER
+        					//copy, replace with the new copy in all owner SPEs
+        					ShallowCopy shallowCopy = new ShallowCopy();
+        					//trying to generate a new unique URI
+        					String uri = Normalizer.uri(er.getRDFId()+"_", null, ef.getRDFId(), ef.getModelInterface());
+        					EntityFeature newEf = shallowCopy.copy(ef, uri);
+        					if(thing.getFeature().contains(ef)) {
+        						thing.removeFeature(ef);
+        						thing.addFeature(newEf);
+        					} else {
+        						thing.removeNotFeature(ef);
+        						thing.addNotFeature(newEf);
+        					}
+        					er.addEntityFeature(newEf);
+        				} else {
+        					er.addEntityFeature(ef);
+        				}
+        			}
 
-        for(EntityFeature ef: peefs) {
-            if(!erefs.contains(ef)) {
-                if(validation.isFix())
-                    er.addEntityFeature(ef);
-
-                error(validation, thing, "improper.feature.use", validation.isFix(), ef.getRDFId(), er.getRDFId());
-            }
-        }
+        			error(validation, thing, "improper.feature.use", validation.isFix(), ef.getRDFId(), er.getRDFId());
+        		}
+        	}        
+        }             
     }
 
     public boolean canCheck(Object thing) {

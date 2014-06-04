@@ -84,6 +84,17 @@ public class XrefRule extends AbstractRule<Xref>{
 								error(validation, x, "invalid.id.format", true);
 								break;
 							} 
+						} // guess it's in fact a PSI-MOD despite PSI-MI is used
+						else if (preferedDbName.equalsIgnoreCase("MOLECULAR INTERACTIONS ONTOLOGY")) {
+							if (id.toUpperCase().startsWith("MOD")
+								&& xrefHelper.checkIdFormat("MOD", id.toUpperCase())) 
+							{
+								x.setDb("PSI-MOD");
+								x.setId(id.toUpperCase());
+								// update the error case, set fixed=true
+								error(validation, x, "invalid.id.format", true);
+								break;
+							} 
 						}
 							
 						// guess, the illegal id is like 'id_ver' and split then -

@@ -12,6 +12,12 @@
 <link rel="stylesheet" type="text/css" href="css/biopax.validator.css" />
 <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
 <!--[if lt IE 9]><script src='<c:url value="scripts/html5shiv.js"/>'></script><![endif]-->
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> -->
+<script type="text/javascript" src="scripts/jquery.min.js"></script>
+<!-- <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script> -->
+<script type="text/javascript" src="scripts/bootstrap.min.js"></script>
+<script type="text/javascript" src="scripts/jquery.placeholder.js"></script>
+<script type="text/javascript" src="scripts/biopax.validator.js"></script>
 <script>
   <%-- get the server-side jvm property --%>
   var gaCode = "<%= System.getProperty("biopax.validator.ga.code") %>";
@@ -24,3 +30,7 @@
   	ga('send', 'pageview');
   }
 </script>
+<!--[if lt IE 8]>
+	<script src='<c:url value="js/icon-font-ie7.js"/>'></script>
+	<script src='<c:url value="js/icon-font-ie7-24.js"/>'></script>
+<![endif]-->

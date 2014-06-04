@@ -36,7 +36,8 @@
 				<meta name="author" content="biopax.org" />
 				<meta name="description" content="BioPAX Validator Response as HTML" />
 				<meta name="keywords" content="BioPAX, Validation, Validator, Results" />
-				<style type="text/css">.hidden { display: none; }</style>				
+				<style type="text/css">.hidden { display: none; }</style>
+				<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>	
 				<title>Validation Results</title>
 			</head>
 			
