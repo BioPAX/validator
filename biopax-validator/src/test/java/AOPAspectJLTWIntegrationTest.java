@@ -96,7 +96,8 @@ public class AOPAspectJLTWIntegrationTest {
     	validator.importModel(validation, getClass()
     		.getResourceAsStream("testSyntaxErrors.xml")); 
     	validator.getResults().clear(); // clean after itself
-    	assertEquals(1, validation.countErrors(null, null, "unknown.property", null, false, false));   	
+    	assertEquals(1, validation.countErrors(null, null, "unknown.property", null, false, false));
+    	assertEquals(1, validation.countErrors(null, null, "syntax.error", null, false, false));  
     }
     
     
