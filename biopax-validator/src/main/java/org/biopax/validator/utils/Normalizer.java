@@ -35,6 +35,7 @@ import org.biopax.paxtools.converter.LevelUpgrader;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
+import org.biopax.paxtools.util.BPCollections;
 import org.biopax.paxtools.util.ClassFilterSet;
 
 /**
@@ -47,10 +48,7 @@ import org.biopax.paxtools.util.ClassFilterSet;
 public final class Normalizer {
 	private static final Log log = LogFactory.getLog(Normalizer.class);
 	
-	private SimpleIOHandler biopaxReader;
-	private ShallowCopy copier;
-	private final Map<BioPAXElement,BioPAXElement> subs;
-	private Model subsModel;
+	private SimpleIOHandler biopaxReader;	
 	private String description = "";
 	private boolean fixDisplayName;
 	private boolean inferPropertyOrganism;
@@ -71,9 +69,6 @@ public final class Normalizer {
 	public Normalizer() {
 		biopaxReader = new SimpleIOHandler(BioPAXLevel.L3);
 		biopaxReader.mergeDuplicates(true);
-		copier = new ShallowCopy(BioPAXLevel.L3);
-		subs = new HashMap<BioPAXElement, BioPAXElement>();
-		subsModel = biopaxReader.getFactory().createModel();
 		fixDisplayName = true;
 		inferPropertyOrganism = true;
 		inferPropertyDataSource = true;
@@ -135,6 +130,9 @@ public final class Normalizer {
 	 * @param model
 	 */
 	private void normalizeXrefs(Model model) {
+		
+		NormalizerMap map = new NormalizerMap(model);
+		
 		final String xmlBase = getXmlBase(model); //current base, the default or model's one, if set.
 		
 		// use a copy of the xrefs set (to avoid concurrent modif. exception)
@@ -195,11 +193,11 @@ public final class Normalizer {
 			String uri = Normalizer.uri(xmlBase, ref.getDb(), idPart, ref.getModelInterface());	
 						
 			// mark for replacing
-			addToReplacementMap(model, ref, uri);						
+			map.put(ref, uri);						
 		}
 		
-		// update/replace xrefs now
-		doSubs(model);
+		// execute update-replace xrefs now!
+		map.doSubs();
 	}	
 
 
@@ -271,27 +269,6 @@ public final class Normalizer {
 		// create URI using the xml:base and digest of other values:
 		return ((xmlBase!=null)?xmlBase:"") + localPart;		
 	}
-	
-	
-	/*
-	 * Replaces rdfid; removes the element from the model if (with new rdfid) it becomes duplicate
-	 * Note: model loses its integrity (object properties fix is required after this)
-	 */
-	private void addToReplacementMap(Model model, BioPAXElement bpe, String newRdfid) 
-	{
-		// model has another object with the same (new) ID?
-		if(model.containsID(newRdfid)) {
-			// replace with the existing element (having new id)
-			subs.put(bpe, model.getByID(newRdfid));
-		} else if(subsModel.containsID(newRdfid)) {
-			subs.put(bpe, subsModel.getByID(newRdfid));
-		} else {
-			// replace with its own copy that has new id
-			BioPAXElement copy = copier.copy(bpe, newRdfid);
-			subs.put(bpe, copy);
-			subsModel.add(copy);
-		}
-	}
 
 	
 	/**
@@ -311,47 +288,6 @@ public final class Normalizer {
 		this.description = description;
 	}
 
-
-	/**
-	 * Sets a new standard URI, if possible, 
-	 * for a utility class object (except for Xref types).
-	 * 
-	 * @param model the BioPAX model
-	 * @param bpe a utility class element, except for xref, to normalize
-	 * @param uxref a unification xref to create new URI from its properties
-	 * 
-	 */
-	private void normalizeID(Model model, UtilityClass bpe, UnificationXref uxref) 
-	{	
-		if(bpe instanceof Xref) {
-			log.error("normalizeID is not supposed to " +
-				"be called for Xrefs." + description);
-			return;
-		}
-		
-		final String db = uxref.getDb();
-		final String id = uxref.getId();
-		// not using dbVersion, idVersion prop...
-		
-		// get the standard ID
-		String uri = null;
-		try {
-			// make a new ID for the element
-			uri = MiriamLink.getIdentifiersOrgURI(db, id);
-
-		} catch (Exception e) {
-			log.error("Cannot get a Miriam standard ID for " + bpe 
-				+ " (" + bpe.getModelInterface().getSimpleName()
-				+ ") " + ", using " + db + ":" + id 
-				+ ". " + e + ". " + description);
-			return;
-		}
-		
-		// if different id, edit the element
-		if(uri != null)
-			addToReplacementMap(model, bpe, uri);
-	}
-	
 	
 	private void fixDisplayName(Model model) {
 		log.info("Trying to auto-fix 'null' displayName...");
@@ -486,12 +422,12 @@ public final class Normalizer {
 			throw new IllegalArgumentException("Not Level3 model. " +
 				"Consider converting it first (e.g., with the PaxTools).");
 		
-		//TODO fix PE generics? (auto-generate ERs and memberERs); or - better put: using pe.memberPhysicalEntity is a very BAD idea!
+		//TODO fix PE generics? (auto-generate ERs and memberERs; using pe.memberPhysicalEntity is a BAD idea)
 //		ModelUtils.normalizeGenerics(model);
 		
-		// clean/normalize xrefs first, because they gets used next;
-		// also, - because some of original xrefs might have already "normalized" URIs 
-		// that are, in fact, supposed to be used for other biopax types (e.g., CV or ProteinReference)
+		// clean/normalize/merge all xrefs first, because we need these next;
+		// (also because some of original xrefs might have "normalized" URIs 
+		// that are, in fact, to be used for other biopax types, such as CV or ProteinReference)
 		log.info("Normalizing xrefs..." + description);
 		normalizeXrefs(model);
 		
@@ -503,9 +439,6 @@ public final class Normalizer {
 			
 		log.info("Normalizing CVs and organisms..." + description);
 		normalizeCVsAndBioSource(model);
-		
-//		log.info("Normalizing data sources (Provenance)..." + extraInfo());
-//		normalizeProvenance(model);
 		
 		log.info("Normalizing entity references..." + description);
 		normalizeERs(model);
@@ -538,6 +471,9 @@ public final class Normalizer {
 
 	
 	private void normalizeCVsAndBioSource(Model model) {
+		
+		NormalizerMap map = new NormalizerMap(model);
+		
 		// process the rest of utility classes (selectively though)
 		for(UtilityClass bpe : model.getObjects(UtilityClass.class)) 
 		{
@@ -552,7 +488,7 @@ public final class Normalizer {
 				//note: it does not check/fix the CV term name if wrong or missing though...
 				UnificationXref uref = getFirstUnificationXref((XReferrable) bpe);
 				if (uref != null) 
-					normalizeID(model, bpe, uref); // no idVersion for a CV or BS!
+					map.put(bpe, uref); // no idVersion for a CV or BS!
 				else 
 					log.info("Cannot normalize " + bpe.getModelInterface().getSimpleName() 
 						+ " : no unification xrefs found in " + bpe.getRDFId()
@@ -561,7 +497,7 @@ public final class Normalizer {
 		}
 		
 		// replace/update elements in the model
-		doSubs(model);
+		map.doSubs();
 	}
 	
 	private boolean normalized(UtilityClass bpe) {
@@ -576,6 +512,9 @@ public final class Normalizer {
 
 
 	private void normalizeERs(Model model) {
+		
+		NormalizerMap map = new NormalizerMap(model);
+		
 		// process the rest of utility classes (selectively though)
 		for (EntityReference bpe : model.getObjects(EntityReference.class)) {
 			
@@ -587,7 +526,7 @@ public final class Normalizer {
 			
 			UnificationXref uref = getFirstUnificationXref(bpe);
 			if (uref != null)
-				normalizeID(model, bpe, uref);
+				map.put(bpe, uref);
 			else
 				log.info("Cannot normalize EntityReference: "
 					+ "no unification xrefs found in " + bpe.getRDFId()
@@ -595,43 +534,9 @@ public final class Normalizer {
 		}
 		
 		// replace/update elements in the model
-		doSubs(model);
+		map.doSubs();
 	}
 	
-
-	/**
-	 * Executes the batch replace/update 
-	 * to the normalized equivalent objects.
-	 * 
-	 * @param model
-	 */
-	private void doSubs(Model model) {
-		for(BioPAXElement e : subs.keySet()) {
-			model.remove(e);
-		}
-		
-		try {
-			ModelUtils.replace(model, subs);
-		} catch (Exception e) {
-			log.error("Failed to replace IDs. " + description, e);
-			return;
-		}
-		
-		for(BioPAXElement e : subs.values()) {
-			if(!model.contains(e))
-				model.add(e);
-		}
-	
-		for(BioPAXElement e : model.getObjects()) {
-			ModelUtils.fixDanglingInverseProperties(e, model);
-		}
-		
-		
-		// clear internal tmp stuff
-		subs.clear();
-		subsModel = biopaxReader.getFactory().createModel();
-	}
-
 	
 	/**
 	 * Auto-generates standard and other names for the datasource
@@ -775,4 +680,130 @@ public final class Normalizer {
 	public void setXmlBase(String xmlBase) {
 		this.xmlBase = xmlBase;
 	}
+
+	
+	/**
+	 * Helper class, to associate original 
+	 * and new (either copy or existing) objects 
+	 * within some biopax model and then execute 
+	 * batch replace.
+	 * 
+	 * @author rodche
+	 */
+	private static class NormalizerMap {
+
+		//a model to modify by replacing biopax objects
+		final Model model;
+		
+		// this is the biopax elements substitution map (old->new)
+		final Map<BioPAXElement,BioPAXElement> subs;
+		
+		//the next map is to make sure the subs.values()  all have different URIs
+		final Map<String,BioPAXElement> uriToSub;
+		
+		final ShallowCopy copier;
+				
+		NormalizerMap(Model model) {
+			subs = BPCollections.I.createMap();
+			uriToSub = BPCollections.I.createMap();
+			this.model = model;
+			copier = new ShallowCopy();
+		}
+
+		
+		/**
+		 * Creates (by standard Xref, generating a new URI from its properties) 
+		 * and saves the replacement object, if possible, 
+		 * but does not replace yet (call doSubs to replace).
+		 * 
+		 * @param bpe - any utility class, except Xref types.
+		 * @param uxref - unification xref to use for generating new bpe's URI
+		 * @throws IllegalArgumentException when the first parameter is Xref
+		 */
+		void put(UtilityClass bpe, UnificationXref uxref) {
+			if(bpe instanceof Xref) {
+				throw new IllegalArgumentException("put(bpe,xref): the first arg was Xref.");
+			}
+
+			final String db = uxref.getDb();
+			final String id = uxref.getId();
+			
+			// get the standard ID
+			String uri = null;
+			try { // make a new ID for the element
+				uri = MiriamLink.getIdentifiersOrgURI(db, id);
+			} catch (Exception e) {
+				log.error("Cannot get a Miriam standard ID for " + bpe 
+						+ " (" + bpe.getModelInterface().getSimpleName()
+						+ ") " + ", using " + db + ":" + id 
+						+ ". " + e + ". ");
+				return;
+			}
+
+			if(uri != null) {
+				put(bpe, uri);
+			}
+		}
+
+		/**
+		 * Creates (by URI) and saves the replacement object,
+		 * but does not replace yet (call doSubs to replace).
+		 * 
+		 * @param bpe
+		 * @param newUri
+		 */
+		void put(BioPAXElement bpe, String newUri) 
+		{
+			if(model.containsID(newUri)) {
+				// will use existing original (model) object that has the new Uri
+				map(bpe, model.getByID(newUri));
+			} else if(containsNewUri(newUri)) {
+				// re-use the new object that's already added to replace another original
+				map(bpe, uriToSub.get(newUri));
+			} else {
+				// will use the object's shallow copy that gets new Uri
+				BioPAXElement copy = copier.copy(bpe, newUri);
+				map(bpe, copy);
+			}
+		}		
+		
+		/**
+		 * Executes the batch replace - migrating  
+		 * to the normalized equivalent objects.
+		 * 
+		 * @param model
+		 * @param subs
+		 */
+		void doSubs() {
+			for(BioPAXElement e : subs.keySet()) {
+				model.remove(e);
+			}
+			
+			try {
+				ModelUtils.replace(model, subs);
+			} catch (Exception e) {
+				log.error("Failed to replace BioPAX elements.", e);
+				return;
+			}
+			
+			for(BioPAXElement e : subs.values()) {
+				if(!model.contains(e))
+					model.add(e);
+			}
+		
+			for(BioPAXElement e : model.getObjects()) {
+				ModelUtils.fixDanglingInverseProperties(e, model);
+			}
+		}
+
+		private void map(BioPAXElement bpe, BioPAXElement newBpe) {
+			subs.put(bpe, newBpe);
+			uriToSub.put(newBpe.getRDFId(), newBpe);
+		}
+		
+		private boolean containsNewUri(String uri) {
+			return uriToSub.containsKey(uri);
+		}		
+	}
+	
 }

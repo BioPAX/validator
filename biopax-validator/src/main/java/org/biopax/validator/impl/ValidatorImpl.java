@@ -134,24 +134,22 @@ public class ValidatorImpl implements Validator {
 		// Check/fix Rule<? extends BioPAXElement> rules concurrently (low risk of getting CMEx), 
 		// because they normally do minor changes and simply cannot add/remove
 		// elements in the Model (though, can alter a property of any biopax object)
-		ExecutorService exec = Executors.newFixedThreadPool(30);
+		ExecutorService exec = Executors.newFixedThreadPool(100);
 
 		// First, check/fix individual objects
 		// (no need to copy; these rules cannot add/remove objects in model)
 		for (BioPAXElement el : model.getObjects()) 
 		{	
 			// rules can check/fix specific elements
-			for (Rule rule : rules) {				
-				Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
-		        if (behavior == Behavior.IGNORE) continue; // skip					
-				
-				// skip if cannot check
-				if (rule.canCheck(el)) {
-					execute(exec, rule, validation, (Object) el);
-				}
-			}
-		}
-		
+//			for (Rule rule : rules) {				
+//				Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
+//		        if (behavior == Behavior.IGNORE) 
+//		        	continue; // skip					
+//				execute(exec, rule, validation, (Object) el);
+//			}
+			//sequentially apply all (capable,enabled) rules to the object in a separate thread
+			execute(exec, rules, validation, (Object) el);			
+		}		
 		exec.shutdown(); //end accepting new jobs
 		try {
 			exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
@@ -161,17 +159,15 @@ public class ValidatorImpl implements Validator {
 		
 		//Second, apply all Rule<Model> rules -
 		//run Rule<Model> rules concurrently
-		exec = Executors.newFixedThreadPool(10);		
+		exec = Executors.newFixedThreadPool(50);		
 		for (Rule rule : rules) 
 		{
-			if (rule.canCheck(model)) {
-				Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
-		        if (behavior == Behavior.IGNORE) 
-		        	continue; // skip		        
-		        execute(exec, rule, validation, model);
-			}
-		}
-		
+			Behavior behavior = utils
+				.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
+	        if (behavior == Behavior.IGNORE) 
+	        	continue; // skip disabled rule	        
+	        execute(exec, rule, validation, model);
+		}		
 		exec.shutdown(); //end accepting jobs
 		try {
 			exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
@@ -217,7 +213,8 @@ public class ValidatorImpl implements Validator {
 			@SuppressWarnings("unchecked") //obj can be either Model or a BPE
 			public void run() {
 				try {
-					rule.check(validation, obj);
+					if (rule.canCheck(obj))
+						rule.check(validation, obj);
 				} catch (Throwable t) { 
 					//if we're here, there is probably a bug in the rule or validator!
 					String id = validation.identify(obj);
@@ -230,7 +227,36 @@ public class ValidatorImpl implements Validator {
 			}
 		});
 	}
-
+	
+	private void execute(ExecutorService exec, final Set<Rule<?>> rules,
+			final Validation validation, final Object obj) 
+	{
+		exec.execute(new Runnable() {
+			@SuppressWarnings("unchecked") //obj can be either Model or a BPE
+			public void run() {
+				for(Rule rule : rules) {
+					Behavior behavior = utils
+						.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
+				    if (behavior == Behavior.IGNORE) 
+				    	continue; // skip disabled rule
+				    
+				    try {
+				    	if (rule.canCheck(obj))
+				    		rule.check(validation, obj);					
+				    } catch (Throwable t) { 
+				    	//if we're here, there is probably a bug in the rule or validator!
+				    	String id = validation.identify(obj);
+				    	log.fatal(rule + ".check(" + id 
+				    			+ ") threw the exception: " + t.toString(), t);
+				    	// anyway, report it almost normally (for a user to see this in the results too)
+				    	validation.addError(utils.createError(id, "exception", 
+				    			rule.getClass().getName(), null, false, t));
+				    }
+				}
+			}
+		});
+	}	
+	
 
 	public void importModel(Validation validation, InputStream inputStream) {
 		// add the parser

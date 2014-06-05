@@ -55,14 +55,26 @@ public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysica
         	peFeaturesAndNotFeatures.addAll(thing.getNotFeature());
 
         	for(EntityFeature ef: peFeaturesAndNotFeatures) {
-        		if(!erFeatures.contains(ef)) {
+        		if(!erFeatures.contains(ef)) { //the ER does not have this EF...
         			if(validation.isFix()) {
-        				if(ef.getEntityFeatureOf() != null) {//belongs to the other ER
-        					//copy, replace with the new copy in all owner SPEs
-        					ShallowCopy shallowCopy = new ShallowCopy();
-        					//trying to generate a new unique URI
+        				if(ef.getEntityFeatureOf() != null) {//it belongs to the other ER
+        					//trying to generate a new unique URI for the EF copy, for any ER,EF pair is unique 
+        					//(considering one-to-many, inverse functional constraints of the entityFeature prop.):
         					String uri = Normalizer.uri(er.getRDFId()+"_", null, ef.getRDFId(), ef.getModelInterface());
-        					EntityFeature newEf = shallowCopy.copy(ef, uri);
+        					EntityFeature newEf = null; //check if there is one with this URI already; use that one then
+        					for(EntityFeature f : er.getEntityFeature()) {
+        						if(uri.equals(f.getRDFId())) {
+        							newEf = f;
+        							break;
+        						}
+        					}
+        					if(newEf == null) {
+        						//make a copy
+        						newEf = (new ShallowCopy()).copy(ef, uri);
+        						assert newEf.getEntityFeatureOf() == null 
+        							: "getEntityFeatureOf of a shallow copy of EF is not null...";
+        					}
+        					//replace the EF in the SPE's feature or notFeature set
         					if(thing.getFeature().contains(ef)) {
         						thing.removeFeature(ef);
         						thing.addFeature(newEf);
@@ -70,8 +82,10 @@ public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysica
         						thing.removeNotFeature(ef);
         						thing.addNotFeature(newEf);
         					}
+        					// add the new one to the ER
         					er.addEntityFeature(newEf);
         				} else {
+        					// add the one to the ER
         					er.addEntityFeature(ef);
         				}
         			}
@@ -83,6 +97,7 @@ public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysica
     }
 
     public boolean canCheck(Object thing) {
-        return thing instanceof SimplePhysicalEntity && ((SimplePhysicalEntity) thing).getEntityReference() != null;
+        return (thing instanceof SimplePhysicalEntity) 
+        		&& (((SimplePhysicalEntity) thing).getEntityReference() != null);
     }
 }
