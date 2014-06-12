@@ -103,8 +103,7 @@ public abstract class CvTermsRule<T extends Level3Element>
 				//TODO (an advanced feature, a separate rule - ) to check if multiple terms are synonyms (equivalent)...
 				
 				final Set<String> badTerms = new HashSet<String>(); // initially - none
-				final Map<String, Set<OntologyTermI>> noXrefTerms = new HashMap<String, Set<OntologyTermI>>();
-				
+				final Map<String, Set<OntologyTermI>> noXrefTerms = new HashMap<String, Set<OntologyTermI>>();				
 				//original terms set to iterate over (to avoid concurrent modification exceptions - other rules can modify the set simultaneously)
 				final Set<String> terms = Collections.unmodifiableSet(new HashSet<String>(cv.getTerm()));
 				
@@ -116,8 +115,32 @@ public abstract class CvTermsRule<T extends Level3Element>
 						badTerms.add(name);
 					}
 				}
+				// report but keep original perhaps illegal terms
+				if (!badTerms.isEmpty()) {	
+					String badTermInfo = badTerms.toString();
+					error(validation, thing, "illegal.cv.term", false, badTermInfo, cvRuleInfo);
+				}								
 				
-				// second, check valid terms have uni.xrefs
+				/* check if unif. xref.id points to invalid term, 
+				 * and, if so, report 'illegal.cv.xref' error
+				 */
+				final Set<UnificationXref> badXrefs = new HashSet<UnificationXref>();
+				for (UnificationXref x : new ClassFilterSet<Xref,UnificationXref>(
+						cv.getXref(), UnificationXref.class)) 
+				{
+					OntologyTermI ot = ((OntologyManager) ontologyManager).findTermByAccession(x.getId());
+					if(ot == null || !getValidTerms().contains(ot.getPreferredName().toLowerCase())) {
+						badXrefs.add(x);
+					}
+				}				
+				// report wrong uni.xrefs
+				if(!badXrefs.isEmpty()) {
+					String bads = badXrefs.toString();
+					// report as not fixed error case (won't fix/remove such xrefs, keep original)
+					error(validation, thing, "illegal.cv.xref", false, bads, cvRuleInfo);
+				}				
+				
+				// check valid terms have a uni.xref
 				for(String name : terms) 
 				{
 					// only for valid terms
@@ -144,8 +167,7 @@ public abstract class CvTermsRule<T extends Level3Element>
 					}
 				}
 				
-				// note: at this point, 'noXrefTerms' (valid terms only) map is defined...
-				
+				// note: at this point, 'noXrefTerms' (valid terms only) map is defined...				
 				if (!noXrefTerms.isEmpty()) {		
 					String noXrefTermsInfo = noXrefTerms.toString();
 					boolean fixed = false;
@@ -209,62 +231,19 @@ public abstract class CvTermsRule<T extends Level3Element>
 					error(validation, thing, "no.xref.cv.terms", 
 						fixed, noXrefTermsInfo, cvRuleInfo);
 				}
-				
-				/* check if valid terms that can be inferred from the xref.id, 
-				 * and report 'illegal.cv.xref' otherwise!
-				 */
-				final Set<UnificationXref> badXrefs = new HashSet<UnificationXref>(); // initially - none
-				for (UnificationXref x : new ClassFilterSet<Xref,UnificationXref>(
-						cv.getXref(), UnificationXref.class)) {
-					OntologyTermI ot = ((OntologyManager) ontologyManager).findTermByAccession(x.getId());
-					if(ot == null || !getValidTerms().contains(ot.getPreferredName().toLowerCase())) {
-						badXrefs.add(x);
-					}
+			}
+			
+			//if fixing, finally, add valid preferred term by xref
+			if (validation!=null && validation.isFix()) {
+				Set<String> addTerms = createTermsFromUnificationXrefs(cv);
+				if (!addTerms.isEmpty()) {
+					cv.getTerm().addAll(addTerms);
 				}
-				
-				// fix / cleanup and report wrong uni.xrefs (important: before fixing wrong terms!)
-				if(!badXrefs.isEmpty()) {
-					String bads = badXrefs.toString();
-					if(validation.isFix()) {
-						cv.getXref().removeAll(badXrefs);
-						bads += " were removed!";
-						error(validation, thing, "illegal.cv.xref", // fixed!
-								true, bads, cvRuleInfo);
-					} else {
-						error(validation, thing, "illegal.cv.xref", // not fixed!
-								false, bads, cvRuleInfo);
-					}
-				}
-									
-				// fix / report wrong terms
-				if (!badTerms.isEmpty()) {	
-					boolean fixed = false;
-					String badTermInfo = badTerms.toString();
-					if (validation.isFix()) {
-						/* remove illegal terms only if addTerms (to add) is not empty,
-						 * otherwise - do not fix!
-						 */
-						// try infer term names from the valid unification xrefs
-						Set<String> addTerms = createTermsFromUnificationXrefs(cv);
-						if (!addTerms.isEmpty()) {
-							cv.getTerm().removeAll(badTerms);
-							badTermInfo += " were removed";
-							cv.getTerm().addAll(addTerms);
-							badTermInfo += "; terms added " +
-								"(inferred from the unification xref(s)): "
-									+ addTerms.toString();
-							fixed = true;
-						}
-					}
-					// report
-					error(validation, thing, "illegal.cv.term", fixed, badTermInfo, cvRuleInfo);
-				}
-
-			} 
+			}
 		}
 	}
 		
-	
+	//discover valid terms by unification xrefs (invalid xrefs won't get you anything)
 	private Set<String> createTermsFromUnificationXrefs(
 			ControlledVocabulary cv) 
 	{		
@@ -274,7 +253,8 @@ public abstract class CvTermsRule<T extends Level3Element>
 		{
 			OntologyTermI ot = ((OntologyManager) ontologyManager)
 					.findTermByAccession(x.getId());
-			if (ot != null) {
+			//if found and valid
+			if (ot != null && getValidTerms().contains(ot.getPreferredName().toLowerCase())) {
 				inferred.add(ot.getPreferredName());
 			} 
 			else {
