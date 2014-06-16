@@ -231,14 +231,19 @@ public abstract class CvTermsRule<T extends Level3Element>
 					error(validation, thing, "no.xref.cv.terms", 
 						fixed, noXrefTermsInfo, cvRuleInfo);
 				}
-			}
-			
-			//if fixing, finally, add valid preferred term by xref
-			if (validation!=null && validation.isFix()) {
-				Set<String> addTerms = createTermsFromUnificationXrefs(cv);
-				if (!addTerms.isEmpty()) {
-					cv.getTerm().addAll(addTerms);
-				}
+				
+				//if in the fixing mode, 
+				if (validation != null && validation.isFix() 
+						//and there were some errors found, 
+						&& !(badTerms.isEmpty() && noXrefTerms.isEmpty())) 
+				{
+					//then add/infer the valid preferred term from the unification xrefs -
+					Set<String> addTerms = createTermsFromUnificationXrefs(cv);
+					if (!addTerms.isEmpty()) {
+						cv.getTerm().addAll(addTerms);
+					}
+				}				
+				
 			}
 		}
 	}

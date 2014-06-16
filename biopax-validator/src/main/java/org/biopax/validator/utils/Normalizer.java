@@ -233,7 +233,8 @@ public final class Normalizer {
 				
 				// a shortcut: a standard and resolvable URI exists for some BioPAX types
 				if (type.equals(PublicationXref.class) || ControlledVocabulary.class.isAssignableFrom(type)
-						|| type.equals(BioSource.class) || EntityReference.class.isAssignableFrom(type)) {
+						|| type.equals(BioSource.class) || EntityReference.class.isAssignableFrom(type)) 
+				{	//get the standard URI and quit (success), or fail and continue making a new URI below...
 					return MiriamLink.getIdentifiersOrgURI(dbName, idPart);
 				} 
 				
@@ -242,32 +243,33 @@ public final class Normalizer {
 			}
 		}
 
-		// if not returned above this point, then -
-		// let's consistently build a new URI from args, anyway
-		StringBuilder sb = new StringBuilder();
+		// If not returned above this point yet -
+		// no standard URI (Identifiers.org) was found for this object, class -
+		// then let's consistently build a new URI from args, anyway, the other way around:
 		
+		StringBuilder sb = new StringBuilder();		
 		if (dbName != null)
 			sb.append(dbName.toLowerCase()); //lowercase for consistency 		
 		
 		if (idPart != null)
-			sb.append(idPart);
-				
-		String localPart;
+			sb.append("_").append(idPart);
+		
+		String localPart = sb.toString();
 		String strategy = System
 			.getProperty(PROPERTY_NORMALIZER_URI_STRATEGY, VALUE_NORMALIZER_URI_STRATEGY_MD5);
-		if(VALUE_NORMALIZER_URI_STRATEGY_SIMPLE.equals(strategy)) {
-			sb.insert(0, type.getSimpleName());
-			try {
-				localPart = URLEncoder.encode(sb.toString(), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException(e);
-			}
+		if(VALUE_NORMALIZER_URI_STRATEGY_SIMPLE.equals(strategy) 
+				//for xrefs, always use the simple URI strategy (makes them human-readable)
+				|| Xref.class.isAssignableFrom(type)) 
+		{
+			//simply replace "unsafe" symbols with underscore (some uri clashes might be possible but rare...)
+			localPart = localPart.replaceAll("[^-\\w]", "_");
 		} else {
-			localPart = type.getSimpleName() + "_" + ModelUtils.md5hex(sb.toString());
+			//replace the local part with its md5 sum string (32-byte)
+			localPart = ModelUtils.md5hex(localPart);
 		}
 		
 		// create URI using the xml:base and digest of other values:
-		return ((xmlBase!=null)?xmlBase:"") + localPart;		
+		return ((xmlBase!=null)?xmlBase:"") + type.getSimpleName() + "_" + localPart;		
 	}
 
 	
