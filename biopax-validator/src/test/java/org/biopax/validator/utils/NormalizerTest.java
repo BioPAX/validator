@@ -206,20 +206,24 @@ public class NormalizerTest {
 		bpe = model.getByID("http://identifiers.org/uniprot/Q0VCL1");
 		assertTrue(bpe instanceof ProteinReference);
 		
-		//check xref's ID gets normalized
-		// get the expected xref URI first
-		normUri = Normalizer.uri(model.getXmlBase(), "REFSEQ", "NP_001734", RelationshipXref.class);
-		bpe = model.getByID(normUri);
-		assertEquals(1, ((Xref)bpe).getXrefOf().size());
-
-		// same xref.id but different xref.idVersion=1 should be still a different URI xref
-		// get the expected xref URI first
-		normUri = Normalizer.uri(model.getXmlBase(), "REFSEQ", "NP_001734"+"1", RelationshipXref.class);
-		bpe = model.getByID(normUri);
-		assertEquals(1, ((Xref)bpe).getXrefOf().size());
+// following lines are commented out due to change inthe xref normalization 
+// (not all RXs are going to be normalized; only those having potentially conflicting URIs...)
+//		//check xref's ID gets normalized
+//		// get the expected xref URI first
+//		normUri = Normalizer.uri(model.getXmlBase(), "REFSEQ", "NP_001734", RelationshipXref.class);
+//		bpe = model.getByID(normUri);
+//		assertNotNull(bpe);
+//		assertEquals(1, ((Xref)bpe).getXrefOf().size());
+//
+//		// same xref.id but different xref.idVersion=1 should be still a different URI xref
+//		// get the expected xref URI first
+//		normUri = Normalizer.uri(model.getXmlBase(), "REFSEQ", "NP_001734"+"_1", RelationshipXref.class);
+//		bpe = model.getByID(normUri);
+//		assertEquals(1, ((Xref)bpe).getXrefOf().size());
+				
+		assertTrue(model.containsID("Xref7"));
 		
 		//test BioSource
-		assertFalse(model.containsID("Xref7"));
 		assertFalse(model.containsID("BioSource_Mouse_Tissue"));
 		bpe = model.getByID("http://identifiers.org/taxonomy/10090");
 		assertTrue(bpe instanceof BioSource);
@@ -232,15 +236,6 @@ public class NormalizerTest {
 		
 		// Provenance is no more normalized (Miriam is not enough for this task)!
 		assertEquals(2, model.getObjects(Provenance.class).size());
-//		pro1 = (Provenance) model.getByID("urn:miriam:pid.pathway");
-//		assertNotNull(pro1);
-//		assertTrue(pro1.getName().contains("PID"));
-//		assertTrue(pro1.getName().contains("foo"));
-//		assertFalse(pro1.getStandardName().equals("foo"));
-//		pro2 = (Provenance) model.getByID("urn:miriam:signaling-gateway");
-//		assertNotNull(pro2);
-//		assertNotNull(pro2.getStandardName());
-//		assertTrue(pro2.getName().contains("SGMP"));
 		
 		// check dataSource property has been inferred
 		pw2 = (Pathway) model.getByID("sub_pathway");

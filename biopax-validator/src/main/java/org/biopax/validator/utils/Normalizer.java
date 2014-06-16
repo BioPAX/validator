@@ -23,7 +23,6 @@ package org.biopax.validator.utils;
  */
 
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
@@ -142,11 +141,16 @@ public final class Normalizer {
 			
 			//there can be several RelationshipXref with the same db/id but different rel. type!
 			if(ref instanceof RelationshipXref) {
-				RelationshipTypeVocabulary cv = ((RelationshipXref) ref)
-						.getRelationshipType();
+				//skip (won't reset URI) for RX that already has "safe" URI
+				//(i.e., the URI won't conflict with other normalized UtilityClass objects,
+				//such as CVs and ERs)
+				if(!ref.getRDFId().startsWith("http://identifiers.org/")
+						&& !ref.getRDFId().startsWith("urn:miriam:"))
+					continue;
+				
+				RelationshipTypeVocabulary cv = ((RelationshipXref) ref).getRelationshipType();
 				if(cv != null && !cv.getTerm().isEmpty())
-					otherId = StringUtils.join(cv.getTerm(), ',')
-						.toLowerCase();
+					otherId = StringUtils.join(cv.getTerm(), '_').toLowerCase();
 			}
 			
 			// More good we can do for valid unification xrefs -
@@ -189,7 +193,7 @@ public final class Normalizer {
 			
 			}			
 			
-			String idPart = ref.getId() + ((otherId != null) ? otherId : "");
+			String idPart = ref.getId() + ((otherId != null) ? "_"+otherId : "");
 			String uri = Normalizer.uri(xmlBase, ref.getDb(), idPart, ref.getModelInterface());	
 						
 			// mark for replacing
