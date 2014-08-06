@@ -750,4 +750,47 @@ public class Level3RulesUnitTest {
 
         writeExample("testSharedUnificationXrefRule.owl", m);       
     }
+    
+    @Test
+    public void testEntityFeatureInverseFunctionalRule() {
+        Rule<Model> rule = new EntityFeatureInverseFunctionalRule();
+        Model m = level3.createModel();
+        SimplePhysicalEntity p1 = m.addNew(Protein.class, "protein1");
+        SimplePhysicalEntity p2 = m.addNew(Protein.class, "protein2");
+        EntityReference pr1 = m.addNew(ProteinReference.class, "proteinreference1");
+        EntityReference pr2 = m.addNew(ProteinReference.class, "proteinreference2");
+        EntityFeature ef1 = m.addNew(ModificationFeature.class, "modfeature1");
+
+        //p1 (a state of pr1) and pr1 do correctly use ef1 so far -
+        p1.setEntityReference(pr1);
+        pr1.addEntityFeature(ef1);
+        p1.addNotFeature(ef1);
+        //ef1 can be used as feature or notFeature of another PEs, but should not belong to other ERs
+        //(unfortunately, current Paxtools allows to do this, though it logs a warning)!
+   
+        //however p2 refers to pr2
+        p2.setEntityReference(pr2);
+        //and pr2 call intentionally (for testing) violates the inverse functional constraint
+        //on property 'entityFeature' and effectively re-sets ef1.entityFeatureOf=pr2 (was pr1 above)
+        //but pr1 still owns the ef1 too (an this is the rule must fix among other things)
+        pr2.addEntityFeature(ef1);  
+        //and uses ef1 too
+        p2.addFeature(ef1);       
+
+        //Let's check the model by applying the rule (only one)...
+        Validation v = new Validation(new IdentifierImpl());
+		rule.check(v, m);
+		assertEquals(1, v.countErrors(ef1.getRDFId(), null, "inverse.functional.violated", null, false, false));
+        writeExample("testEntityFeatureInverseFunctionalRule.owl", m);
+        
+        //Now, let's apply the same rule but tell the validator to fix the model...
+		//expected result: in the modified model, a new feature must be created 
+		//that replaces ef1 in the corresponding properties of p1 and pr1;
+		//whereas p2 and pr2 should stay untouched
+        v = new Validation(new IdentifierImpl(),"", true, null, 0, null);
+        rule.check(v, m);
+		assertEquals(1, v.countErrors(ef1.getRDFId(), null, "inverse.functional.violated", null, false, false));
+		assertEquals(0, v.countErrors(ef1.getRDFId(), null, "inverse.functional.violated", null, false, true));       
+        writeExample("testEntityFeatureInverseFunctionalRuleFixed.owl", m);
+    }
 }

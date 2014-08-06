@@ -78,7 +78,8 @@ public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysica
         					if(thing.getFeature().contains(ef)) {
         						thing.removeFeature(ef);
         						thing.addFeature(newEf);
-        					} else {
+        					} 
+        					if(thing.getNotFeature().contains(ef)) {
         						thing.removeNotFeature(ef);
         						thing.addNotFeature(newEf);
         					}
