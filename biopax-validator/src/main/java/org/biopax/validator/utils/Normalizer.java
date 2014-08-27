@@ -428,12 +428,9 @@ public final class Normalizer {
 			throw new IllegalArgumentException("Not Level3 model. " +
 				"Consider converting it first (e.g., with the PaxTools).");
 		
-		//TODO fix PE generics? (auto-generate ERs and memberERs; using pe.memberPhysicalEntity is a BAD idea)
-//		ModelUtils.normalizeGenerics(model);
-		
-		// clean/normalize/merge all xrefs first, because we need these next;
+		// Normalize/merge xrefs, first, and then CVs
 		// (also because some of original xrefs might have "normalized" URIs 
-		// that are, in fact, to be used for other biopax types, such as CV or ProteinReference)
+		// that, in fact, must be used for other biopax types, such as CV or ProteinReference)
 		log.info("Normalizing xrefs..." + description);
 		normalizeXrefs(model);
 		
@@ -443,8 +440,12 @@ public final class Normalizer {
 			fixDisplayName(model);
 		}
 			
-		log.info("Normalizing CVs and organisms..." + description);
-		normalizeCVsAndBioSource(model);
+		log.info("Normalizing CVs..." + description);
+		normalizeCVs(model);
+		
+		//normalize BioSource objects (better, as it is here, go after Xrefs and CVs)
+		log.info("Normalizing organisms..." + description);
+		normalizeBioSources(model);
 		
 		log.info("Normalizing entity references..." + description);
 		normalizeERs(model);
@@ -476,35 +477,60 @@ public final class Normalizer {
 	}
 
 	
-	private void normalizeCVsAndBioSource(Model model) {
+	private void normalizeCVs(Model model) {
 		
 		NormalizerMap map = new NormalizerMap(model);
 		
-		// process the rest of utility classes (selectively though)
-		for(UtilityClass bpe : model.getObjects(UtilityClass.class)) 
+		// process ControlledVocabulary objects (all sub-classes)
+		for(ControlledVocabulary cv : model.getObjects(ControlledVocabulary.class)) 
 		{
 			//skip those with already normalized URIs
-			if(normalized(bpe)) {
-				log.info("Skip already normalized: " + bpe.getRDFId());
+			if(normalized(cv)) {
+				log.info("Skip already normalized: " + cv.getRDFId());
 				continue;
 			}
 			
-			if(bpe instanceof ControlledVocabulary || bpe instanceof BioSource) 
-			{
-				//note: it does not check/fix the CV term name if wrong or missing though...
-				UnificationXref uref = getFirstUnificationXref((XReferrable) bpe);
-				if (uref != null) 
-					map.put(bpe, uref); // no idVersion for a CV or BS!
-				else 
-					log.info("Cannot normalize " + bpe.getModelInterface().getSimpleName() 
-						+ " : no unification xrefs found in " + bpe.getRDFId()
-						+ ". " + description);
-			} 
-		}
+			//it does not check/fix the CV terms though (but a validation rule can do)...
+			UnificationXref uref = getFirstUnificationXref(cv);//usually, there's only one such xref
+			if (uref != null) 
+				map.put(cv, uref);
+			else 
+				log.info("Cannot normalize " + cv.getModelInterface().getSimpleName() 
+					+ " : no unification xrefs found in " + cv.getRDFId()
+					+ ". " + description);
+		} 
 		
 		// replace/update elements in the model
 		map.doSubs();
 	}
+	
+	
+	private void normalizeBioSources(Model model) {
+		
+		NormalizerMap map = new NormalizerMap(model);
+		
+		for(BioSource bs : model.getObjects(BioSource.class)) 
+		{
+			//skip normalized and hard-to-normalize
+			if(bs.getCellType()!=null || bs.getTissue() != null || normalized(bs)) {
+				log.debug("Skipped BioSource: " + bs.getRDFId());
+				continue;
+			}
+			
+			UnificationXref uref = getFirstUnificationXref(bs);
+			//normally, the xref db is 'Taxonomy' (or a valid synonym)
+			if (uref != null
+					&& (uref.getDb().toLowerCase().contains("taxonomy") || uref.getDb().equalsIgnoreCase("newt")))
+						map.put(bs, uref); 
+			else 
+				log.debug("Cannot normalize BioSource" 
+					+ " : no suitable unification xref found in " + bs.getRDFId()
+					+ ". " + description);
+		} 
+		
+		map.doSubs();
+	}
+	
 	
 	private boolean normalized(UtilityClass bpe) {
 		if(bpe.getRDFId().startsWith("http://identifiers.org/")
