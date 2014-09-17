@@ -262,9 +262,10 @@ public abstract class CvTermsRule<T extends Level3Element>
 			if (ot != null && getValidTerms().contains(ot.getPreferredName().toLowerCase())) {
 				inferred.add(ot.getPreferredName());
 			} 
-			else {
-				logger.warn("Could not find a term by the xref.id: " + x.getId());
-			}
+			else if(ot == null)
+				logger.warn("No term found by the xref.id: " + x.getId());
+			else 
+				logger.debug("Invalid (for this CV context) term: " + x.getId());
 		}
 		
 		return inferred;
