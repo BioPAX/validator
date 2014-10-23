@@ -72,7 +72,10 @@ public class NormalizerTest {
 		 //wrong id (case-sens.)
 		 assertFalse("http://identifiers.org/chebi/CHEBI:12345".equals(Normalizer.uri("", "chebi", "chebi:12345", SmallMoleculeReference.class)));
 		 //no 'pubchem' namespace there
-		 assertFalse("http://identifiers.org/pubchem/12345".equals(Normalizer.uri("", "pubchem-substance", "12345", UnificationXref.class))); 
+		 assertFalse("http://identifiers.org/pubchem/12345".equals(Normalizer.uri("", "pubchem-substance", "12345", UnificationXref.class)));
+		 
+		 //when there're special symbols, spaces in the 'id' part
+		 assertEquals("UnificationXref_foo_bar", Normalizer.uri(null, null, "foo bar", UnificationXref.class));
 	}
 	
 	

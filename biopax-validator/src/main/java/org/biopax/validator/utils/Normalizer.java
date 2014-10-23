@@ -252,11 +252,13 @@ public final class Normalizer {
 		// then let's consistently build a new URI from args, anyway, the other way around:
 		
 		StringBuilder sb = new StringBuilder();		
-		if (dbName != null)
-			sb.append(dbName.toLowerCase()); //lowercase for consistency 		
+		if (dbName != null) //lowercase for consistency
+			sb.append(dbName.toLowerCase()); 	
 		
-		if (idPart != null)
-			sb.append("_").append(idPart);
+		if (idPart != null) {
+			if (dbName != null) sb.append("_");
+			sb.append(idPart);
+		}
 		
 		String localPart = sb.toString();
 		String strategy = System
