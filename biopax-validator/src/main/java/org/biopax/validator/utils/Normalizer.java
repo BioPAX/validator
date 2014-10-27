@@ -236,8 +236,12 @@ public final class Normalizer {
 				dbName = MiriamLink.getName(dbName);
 				
 				// a shortcut: a standard and resolvable URI exists for some BioPAX types
-				if (type.equals(PublicationXref.class) || ControlledVocabulary.class.isAssignableFrom(type)
-						|| type.equals(BioSource.class) || EntityReference.class.isAssignableFrom(type)) 
+				if (type.equals(PublicationXref.class) 
+// Let's NOT make identifiers.org URIs for BioSource and CV 
+//(because this would ignore the CV's type and BioSource's tissue, cellType)
+//						|| ControlledVocabulary.class.isAssignableFrom(type)
+//						|| type.equals(BioSource.class) 
+						|| EntityReference.class.isAssignableFrom(type)) 
 				{	//get the standard URI and quit (success), or fail and continue making a new URI below...
 					return MiriamLink.getIdentifiersOrgURI(dbName, idPart);
 				} 
@@ -486,20 +490,16 @@ public final class Normalizer {
 		// process ControlledVocabulary objects (all sub-classes)
 		for(ControlledVocabulary cv : model.getObjects(ControlledVocabulary.class)) 
 		{
-			//skip those with already normalized URIs
-			if(normalized(cv)) {
-				log.info("Skip already normalized: " + cv.getRDFId());
-				continue;
-			}
-			
-			//it does not check/fix the CV terms though (but a validation rule can do)...
-			UnificationXref uref = getFirstUnificationXref(cv);//usually, there's only one such xref
-			if (uref != null) 
-				map.put(cv, uref);
-			else 
-				log.info("Cannot normalize " + cv.getModelInterface().getSimpleName() 
-					+ " : no unification xrefs found in " + cv.getRDFId()
-					+ ". " + description);
+			//it does not check/fix the CV terms though (but a validation rule can do if run before the normalizer)...
+			UnificationXref uref = getFirstUnificationXref(cv); //usually, there's only one such xref
+			if (uref != null) {
+				// so let's generate a safe URI instead of standard identifiers.org
+				map.put(cv, uri(xmlBase, uref.getDb(), uref.getId(), cv.getModelInterface()));
+			} else if(!cv.getTerm().isEmpty()) {
+				map.put(cv, uri(xmlBase, null, cv.getTerm().iterator().next(), cv.getModelInterface()));
+			} else log.info("Cannot normalize " + cv.getModelInterface().getSimpleName() 
+				+ " : no unification xrefs nor terms found in " + cv.getRDFId()
+				+ ". " + description);
 		} 
 		
 		// replace/update elements in the model
@@ -513,37 +513,27 @@ public final class Normalizer {
 		
 		for(BioSource bs : model.getObjects(BioSource.class)) 
 		{
-			//skip normalized and hard-to-normalize
-			if(bs.getCellType()!=null || bs.getTissue() != null || normalized(bs)) {
-				log.debug("Skipped BioSource: " + bs.getRDFId());
-				continue;
-			}
-			
 			UnificationXref uref = getFirstUnificationXref(bs);
 			//normally, the xref db is 'Taxonomy' (or a valid synonym)
 			if (uref != null
-					&& (uref.getDb().toLowerCase().contains("taxonomy") || uref.getDb().equalsIgnoreCase("newt")))
-						map.put(bs, uref); 
-			else 
-				log.debug("Cannot normalize BioSource" 
-					+ " : no suitable unification xref found in " + bs.getRDFId()
+					&& (uref.getDb().toLowerCase().contains("taxonomy") || uref.getDb().equalsIgnoreCase("newt"))) 
+			{	
+				String 	idPart = uref.getId(); //tissue/cellType terms can be added below:
+				if(bs.getTissue()!=null && !bs.getTissue().getTerm().isEmpty()) 
+					idPart += "_" + bs.getTissue().getTerm().iterator().next();
+				if(bs.getCellType()!=null && !bs.getCellType().getTerm().isEmpty()) 
+					idPart += "_" + bs.getCellType().getTerm().iterator().next();
+				
+				String uri = uri(xmlBase, uref.getDb(), idPart, BioSource.class);	
+				map.put(bs, uri);
+			} else 
+				log.debug("Won't normalize BioSource" 
+					+ " : no taxonomy unification xref found in " + bs.getRDFId()
 					+ ". " + description);
 		} 
 		
 		map.doSubs();
 	}
-	
-	
-	private boolean normalized(UtilityClass bpe) {
-		if(bpe.getRDFId().startsWith("http://identifiers.org/")
-				&& (bpe instanceof BioSource || bpe instanceof ControlledVocabulary
-					|| bpe instanceof EntityReference || bpe instanceof PublicationXref
-					|| bpe instanceof Provenance))
-			return true;
-		else 
-			return false;
-	}
-
 
 	private void normalizeERs(Model model) {
 		
@@ -553,7 +543,7 @@ public final class Normalizer {
 		for (EntityReference bpe : model.getObjects(EntityReference.class)) {
 			
 			//skip those with already normalized URIs
-			if(normalized(bpe)) {
+			if(bpe.getRDFId().startsWith("http://identifiers.org/")) {
 				log.info("Skip already normalized: " + bpe.getRDFId());
 				continue;
 			}			

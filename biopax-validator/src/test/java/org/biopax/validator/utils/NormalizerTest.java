@@ -64,11 +64,11 @@ public class NormalizerTest {
 		 
 		 assertEquals("http://identifiers.org/chebi/CHEBI:12345",Normalizer.uri("", "chebi", "CHEBI:12345", SmallMoleculeReference.class));
 		 assertEquals("http://identifiers.org/pubchem.substance/12345",Normalizer.uri("", "pubchem-substance", "12345", SmallMoleculeReference.class));
-		 assertEquals("http://identifiers.org/psimod/MOD:12345",Normalizer.uri("", "PSI-mod", "MOD:12345", SequenceModificationVocabulary.class));
-		 assertEquals("http://identifiers.org/psimod/MOD:12345",Normalizer.uri("", "MOD", "MOD:12345", ControlledVocabulary.class));
-		 //wrong (4-digit only) id -
-		 assertFalse("http://identifiers.org/psimod/MOD:12345".equals(Normalizer.uri("", "MOD", "MOD:1234", ControlledVocabulary.class)));
 		 
+		 System.setProperty("biopax.normalizer.uri.strategy", Normalizer.VALUE_NORMALIZER_URI_STRATEGY_SIMPLE);
+		 assertEquals("SequenceModificationVocabulary_protein_modification_ontology_MOD_12345",Normalizer.uri("", "PSI-mod", "MOD:12345", SequenceModificationVocabulary.class));
+		 assertEquals("ControlledVocabulary_protein_modification_ontology_MOD_12345",Normalizer.uri("", "MOD", "MOD:12345", ControlledVocabulary.class));
+		 System.setProperty("biopax.normalizer.uri.strategy", Normalizer.VALUE_NORMALIZER_URI_STRATEGY_MD5);
 		 //wrong id (case-sens.)
 		 assertFalse("http://identifiers.org/chebi/CHEBI:12345".equals(Normalizer.uri("", "chebi", "chebi:12345", SmallMoleculeReference.class)));
 		 //no 'pubchem' namespace there
@@ -207,28 +207,13 @@ public class NormalizerTest {
 		
 		// check PR
 		bpe = model.getByID("http://identifiers.org/uniprot/Q0VCL1");
-		assertTrue(bpe instanceof ProteinReference);
-		
-// following lines are commented out due to change inthe xref normalization 
-// (not all RXs are going to be normalized; only those having potentially conflicting URIs...)
-//		//check xref's ID gets normalized
-//		// get the expected xref URI first
-//		normUri = Normalizer.uri(model.getXmlBase(), "REFSEQ", "NP_001734", RelationshipXref.class);
-//		bpe = model.getByID(normUri);
-//		assertNotNull(bpe);
-//		assertEquals(1, ((Xref)bpe).getXrefOf().size());
-//
-//		// same xref.id but different xref.idVersion=1 should be still a different URI xref
-//		// get the expected xref URI first
-//		normUri = Normalizer.uri(model.getXmlBase(), "REFSEQ", "NP_001734"+"_1", RelationshipXref.class);
-//		bpe = model.getByID(normUri);
-//		assertEquals(1, ((Xref)bpe).getXrefOf().size());
-				
+		assertTrue(bpe instanceof ProteinReference);				
 		assertTrue(model.containsID("Xref7"));
 		
 		//test BioSource
 		assertFalse(model.containsID("BioSource_Mouse_Tissue"));
-		bpe = model.getByID("http://identifiers.org/taxonomy/10090");
+//		bpe = model.getByID("http://identifiers.org/taxonomy/10090");
+		bpe = model.getByID(Normalizer.uri(model.getXmlBase(), "Taxonomy", "10090", BioSource.class)); //"taxonomy" - capitalization can be any
 		assertTrue(bpe instanceof BioSource);
 		normUri = Normalizer.uri(model.getXmlBase(), "TAXONOMY", "10090", UnificationXref.class);
 		bpe = model.getByID(normUri);

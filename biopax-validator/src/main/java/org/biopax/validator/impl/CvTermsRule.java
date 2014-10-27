@@ -62,6 +62,7 @@ public abstract class CvTermsRule<T extends Level3Element>
     }
    
     @PostConstruct
+    @Override
     public void init() {
     	super.init();
 		this.editor = (property != null && !ControlledVocabulary.class.isAssignableFrom(domain)) 
