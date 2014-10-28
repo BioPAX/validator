@@ -210,8 +210,8 @@ public final class Normalizer {
 	 * using given URI namespace (xml:base), BioPAX class, 
 	 * and two different identifiers (at least one is required).
 	 * Miriam registry is used to get the standard db name and 
-	 * identifiers.org URI, if possible, for controlled vocabulary, 
-	 * publication xref, bio source, and entity reference types.
+	 * identifiers.org URI, if possible, only for relationship type vocabulary, 
+	 * publication xref, and entity reference types.
 	 * 
 	 * @param xmlBase xml:base (common URI prefix for a BioPAX model), case-sensitive
 	 * @param dbName a bio data collection name or synonym, case-insensitive
@@ -237,11 +237,8 @@ public final class Normalizer {
 				
 				// a shortcut: a standard and resolvable URI exists for some BioPAX types
 				if (type.equals(PublicationXref.class) 
-// Let's NOT make identifiers.org URIs for BioSource and CV 
-//(because this would ignore the CV's type and BioSource's tissue, cellType)
-//						|| ControlledVocabulary.class.isAssignableFrom(type)
-//						|| type.equals(BioSource.class) 
-						|| EntityReference.class.isAssignableFrom(type)) 
+					|| type.equals(RelationshipTypeVocabulary.class)
+					|| EntityReference.class.isAssignableFrom(type)) 
 				{	//get the standard URI and quit (success), or fail and continue making a new URI below...
 					return MiriamLink.getIdentifiersOrgURI(dbName, idPart);
 				} 
