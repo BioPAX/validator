@@ -122,7 +122,7 @@ public final class Normalizer {
 
 	/**
 	 * Normalizes all xrefs (not unification xrefs only) to help normalizing/merging other objects, 
-	 * and also because some of the original xref URIs (might have already been "normalized")
+	 * and also because some of the original xref URIs ("normalized")
 	 * are in fact to be used for other biopax types (e.g., CV or ProteinReference); therefore
 	 * this method will replace URI also for "bad" xrefs, i.e., those with empty/illegal 'db' or 'id' values.
 	 * 
@@ -136,71 +136,75 @@ public final class Normalizer {
 		
 		// use a copy of the xrefs set (to avoid concurrent modif. exception)
 		Set<? extends Xref> xrefs = new HashSet<Xref>(model.getObjects(Xref.class));
-		for(Xref ref : xrefs) {
-			String otherId = ref.getIdVersion();
-			
-			//there can be several RelationshipXref with the same db/id but different rel. type!
-			if(ref instanceof RelationshipXref) {
-				//skip (won't reset URI) for RX that already has "safe" URI
-				//(i.e., the URI won't conflict with other normalized UtilityClass objects,
-				//such as CVs and ERs)
-				if(!ref.getRDFId().startsWith("http://identifiers.org/")
-						&& !ref.getRDFId().startsWith("urn:miriam:"))
-					continue;
-				
-				RelationshipTypeVocabulary cv = ((RelationshipXref) ref).getRelationshipType();
-				if(cv != null && !cv.getTerm().isEmpty())
-					otherId = StringUtils.join(cv.getTerm(), '_').toLowerCase();
+		for(Xref ref : xrefs) {			
+			String idPart = null;
+			if(ref.getId() != null) { 
+				idPart = ref.getId();
+				if(ref.getIdVersion()!=null)
+					idPart += "_" + ref.getIdVersion();
 			}
 			
-			// More good we can do for valid unification xrefs -
-			if(ref instanceof UnificationXref // and -
-					&& ref.getDb() != null && ref.getId() != null) 
+			if(ref instanceof PublicationXref) 
 			{
-				// try to normalize db name (if known in Miriam)
+				//skip if db or id is null
+				if(ref.getDb() == null || ref.getId() == null)
+					continue;	
+			}		
+			else if(ref instanceof RelationshipXref) 
+			{
+				//only do RXs that potentially clash with normalized CVs or ERs
+				if(ref.getRDFId().startsWith("http://identifiers.org/")) {
+					//RXs might have the same db,id but different type.	
+					RelationshipTypeVocabulary cv = ((RelationshipXref) ref).getRelationshipType();
+					if(cv != null && !cv.getTerm().isEmpty()) {
+						if(idPart!=null)
+							idPart += "_" + StringUtils.join(cv.getTerm(), '_').toLowerCase();
+						else 
+							idPart = StringUtils.join(cv.getTerm(), '_').toLowerCase();
+					}
+				}
+			}
+			else if(ref instanceof UnificationXref) 
+			{
+				if(ref.getDb() == null || ref.getId() == null)
+					continue; //skip not well-defined ones			
+				
+				// try to normalize db name (if known to MIRIAM EBI registry)
 				String db = ref.getDb();
 				try {
 					db = MiriamLink.getName(ref.getDb());
-					if(db != null) // be safe
+					if(db != null) 
 						ref.setDb(db);
-				} catch (IllegalArgumentException e) {
-				}
+				} catch (IllegalArgumentException e) {}
 			
-				// a hack for uniprot isoform xrefs that were previously cut off the isoform part...
-				if (db.toUpperCase().startsWith("UNIPROT") && ref.getId() != null) {
-					if (ref.getIdVersion() != null) {
-						final String isoformId = ref.getId().toUpperCase() + "-" + ref.getIdVersion();
-						String testUri = Normalizer.uri(xmlBase,
-							"UniProt Isoform", isoformId, ProteinReference.class);
-						if (testUri.startsWith("http://identifiers.org/uniprot.isoform/")) {
+				// a hack for uniprot isoform xrefs that were previously cut off the isoform number part...
+				if (db.toUpperCase().startsWith("UNIPROT")) {
+					//fix for possibly incorrect db name
+					if (Normalizer.uri(xmlBase, "UniProt Isoform", ref.getId(), ProteinReference.class)
+							.startsWith("http://identifiers.org/uniprot.isoform/")) 
+					{
+						ref.setDb("UniProt Isoform");
+						idPart = ref.getId();
+					} 
+					else if (ref.getIdVersion() != null) {
+						final String isoformId = ref.getId() + "-" + ref.getIdVersion();
+						if(Normalizer.uri(xmlBase, "UniProt Isoform", isoformId, ProteinReference.class)
+								.startsWith("http://identifiers.org/uniprot.isoform/")) 
+						{
 							ref.setDb("UniProt Isoform");
 							ref.setId(isoformId);
 							ref.setIdVersion(null);
-							otherId = null;
+							idPart = isoformId;
 						}
-					} else { //fix for possibly incorrect db name
-						//(this is not required if the data were already validated by the latest validator with auto-fix=true option)
-						if (!Normalizer.uri(xmlBase, "UniProt", ref.getId(), ProteinReference.class)
-									.startsWith("http://identifiers.org/uniprot/") &&
-							Normalizer.uri(xmlBase, "UniProt Isoform", ref.getId(), ProteinReference.class)
-									.startsWith("http://identifiers.org/uniprot.isoform/")
-								) {
-							// update db name
-							ref.setDb("UniProt Isoform");
-						}
-					}
-				}
-			
-			}			
-			
-			String idPart = ref.getId() + ((otherId != null) ? "_"+otherId : "");
-			String uri = Normalizer.uri(xmlBase, ref.getDb(), idPart, ref.getModelInterface());	
+					} 
+				}	
+			}
 						
-			// mark for replacing
-			map.put(ref, uri);						
+			// shelve it for URI replace
+			map.put(ref, Normalizer.uri(xmlBase, ref.getDb(), idPart, ref.getModelInterface()));						
 		}
 		
-		// execute update-replace xrefs now!
+		// execute replace xrefs
 		map.doSubs();
 	}	
 

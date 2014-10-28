@@ -208,7 +208,8 @@ public class NormalizerTest {
 		// check PR
 		bpe = model.getByID("http://identifiers.org/uniprot/Q0VCL1");
 		assertTrue(bpe instanceof ProteinReference);				
-		assertTrue(model.containsID("Xref7"));
+//		assertTrue(model.containsID("Xref7"));
+		assertTrue(model.containsID(Normalizer.uri(model.getXmlBase(), "PUBMED", "2549346", RelationshipXref.class)));
 		
 		//test BioSource
 		assertFalse(model.containsID("BioSource_Mouse_Tissue"));
@@ -235,7 +236,8 @@ public class NormalizerTest {
 		// get the expected xref URI first
 		normUri = Normalizer.uri(model.getXmlBase(), "uniprot isoform", "P68250-2", UnificationXref.class);
 		bpe = model.getByID(normUri);
-		assertEquals(1, ((Xref)bpe).getXrefOf().size()); //of two PRs
+		assertNotNull(bpe);
+		assertEquals(1, ((Xref)bpe).getXrefOf().size());
 	}
 
 	
