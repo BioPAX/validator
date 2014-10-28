@@ -208,8 +208,8 @@ public class NormalizerTest {
 		// check PR
 		bpe = model.getByID("http://identifiers.org/uniprot/Q0VCL1");
 		assertTrue(bpe instanceof ProteinReference);				
-//		assertTrue(model.containsID("Xref7"));
-		assertTrue(model.containsID(Normalizer.uri(model.getXmlBase(), "PUBMED", "2549346", RelationshipXref.class)));
+		assertTrue(model.containsID("Xref7")); //RX is not normalized unless (by mistake) it has identifiers.org uri
+//		assertTrue(model.containsID(Normalizer.uri(model.getXmlBase(), "PUBMED", "2549346", RelationshipXref.class)));
 		
 		//test BioSource
 		assertFalse(model.containsID("BioSource_Mouse_Tissue"));

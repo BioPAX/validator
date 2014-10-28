@@ -163,6 +163,7 @@ public final class Normalizer {
 							idPart = StringUtils.join(cv.getTerm(), '_').toLowerCase();
 					}
 				}
+				else continue;
 			}
 			else if(ref instanceof UnificationXref) 
 			{
