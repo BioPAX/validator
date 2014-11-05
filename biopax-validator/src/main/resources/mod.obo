@@ -1,7 +1,7 @@
 format-version: 1.2
-date: 18:10:2013 08:03
-saved-by: J.S. Garavelli
-auto-generated-by: OBO-Edit 2.3-beta5
+date: 30:05:2014 00:48
+saved-by: John S. Garavelli
+auto-generated-by: FormulaOBO.PL
 subsetdef: PSI-MOD-slim "subset of protein modifications"
 synonymtypedef: DeltaMass-label "Label from MS DeltaMass" EXACT
 synonymtypedef: OMSSA-label "Short label from OMSSA" EXACT
@@ -17,9 +17,9 @@ synonymtypedef: UniMod-description "Description (full_name) from UniMod" RELATED
 synonymtypedef: UniMod-interim "Interim label from UniMod" RELATED
 synonymtypedef: UniProt-feature "Protein feature description from UniProtKB" EXACT
 default-namespace: PSI-MOD
-remark: PSI-MOD version: 1.012.0
-remark: RESID release: 74.00
-remark: ISO-8601 date: 2011-09-16 14:34Z
+remark: PSI-MOD version: 1.013.0
+remark: RESID release: 75.00
+remark: ISO-8601 date: 2014-01-28 14:22Z
 remark: Annotation note 1 - "[PSI-MOD:ref]" has been replaced by PubMed:18688235.
 remark: Annotation note 2 - When an entry in the RESID Database is annotated with different sources because the same modification can arise from different encoded amino acids, then the PSI-MOD definition for each different source instance carries the RESID cross-reference followed by a hash symbol "#" and a 3 or 4 character label. When an entry in the RESID Database is annotated as a general modification with the same enzymatic activity producing different chemical structures depending on natural variation in the nonproteinaceous substrate, on secondary modifications that do not change the nature of the primary modification, or on a combination of a primary and one or more secondary modifications on the same residue, then the PSI-MOD definition for each different instance carries the RESID cross-reference followed by the special tag "#var".
 remark: Annotation note 3 - When an entry in the UniMod database is annotated as a general modification, and one or more instance sites are listed, then the PSI-MOD definition for each different site instance carries the UniMod cross-reference followed by a hash symbol and an amino acid code, "N-term" or "C-term".
@@ -3437,7 +3437,6 @@ xref: Origin: "G, N"
 xref: Source: "natural"
 xref: TermSpec: "N-term"
 is_a: MOD:00903 ! modified L-asparagine residue
-is_a: MOD:00908 ! modified glycine residue
 is_a: MOD:00946 ! crosslinked residues with loss of ammonia
 is_a: MOD:01928 ! N-(L-isoaspartyl)-glycine
 
@@ -4187,7 +4186,6 @@ xref: Source: "natural"
 xref: TermSpec: "none"
 is_a: MOD:00433 ! glucosylated residue
 is_a: MOD:00761 ! monohexosylated (Hex1)
-is_a: MOD:00919 ! modified L-tyrosine residue
 is_a: MOD:01927 ! O-glycosyl-L-tyrosine
 
 [Term]
@@ -4727,7 +4725,6 @@ xref: Origin: "S"
 xref: Source: "natural"
 xref: TermSpec: "none"
 is_a: MOD:00416 ! phosphorylation of an hydroxyl amino acid with prompt loss of phosphate
-is_a: MOD:00704 ! dehydrated residue
 is_a: MOD:00916 ! modified L-serine residue
 is_a: MOD:01168 ! dehydroalanine
 
@@ -4765,7 +4762,6 @@ xref: Origin: "T"
 xref: Source: "natural"
 xref: TermSpec: "none"
 is_a: MOD:00416 ! phosphorylation of an hydroxyl amino acid with prompt loss of phosphate
-is_a: MOD:00704 ! dehydrated residue
 is_a: MOD:00917 ! modified L-threonine residue
 is_a: MOD:01703 ! dehydrobutyrine
 
@@ -5785,7 +5781,7 @@ synonym: "epsilon-5'-guanylic-L-lysine" EXACT RESID-alternate []
 synonym: "L-lysine monoanhydride with 5'-guanylic acid" EXACT RESID-alternate []
 synonym: "lysine guanosine-5'-monophosphate" EXACT RESID-alternate []
 synonym: "N(zeta)-5'-guanylic-lysine" EXACT RESID-alternate []
-synonym: "N6-(5'-guanylyl)-lysine " EXACT RESID-alternate []
+synonym: "N6-(5'-guanylyl)-lysine" EXACT RESID-alternate []
 synonym: "N6-(phospho-5'-guanosine)-L-lysine" EXACT RESID-name []
 synonym: "N6-L-lysine 5'-guanosine phosphoramidester" EXACT RESID-alternate []
 synonym: "N6GMPLys" EXACT PSI-MOD-label []
@@ -7863,8 +7859,8 @@ xref: MassMono: "216.020478"
 xref: Origin: "C, D"
 xref: Source: "natural"
 xref: TermSpec: "none"
-is_a: MOD:00687 ! thioether crosslinked residues
 is_a: MOD:00904 ! modified L-aspartic acid residue
+is_a: MOD:01993 ! beta-carbon thioether crosslinked residues
 
 [Term]
 id: MOD:00320
@@ -8243,8 +8239,8 @@ xref: MassMono: "202.041213"
 xref: Origin: "C, T"
 xref: Source: "natural"
 xref: TermSpec: "none"
-is_a: MOD:00687 ! thioether crosslinked residues
 is_a: MOD:00917 ! modified L-threonine residue
+is_a: MOD:01993 ! beta-carbon thioether crosslinked residues
 relationship: has_functional_parent MOD:01981 ! 3-methyllanthionine
 
 [Term]
@@ -8327,12 +8323,12 @@ id: MOD:00339
 name: L-cysteinyl hydrogenase diiron subcluster
 def: "A protein modification that effectively converts an L-cysteine residue to L-cysteinyl hydrogenase diiron subcluster." [PubMed:10694885, PubMed:9836629, RESID:AA0334, UniMod:439#C]
 comment: incidental to RESID:AA0140.
-synonym: "1,7-biscarbonyl-1-(cystein-S-yl)-8-oxo-4-oxa-2lambda(3),6 lambda(3)-dithia-1,7-diferratricyclo[4.2.0.0(2,7)]octane-1,7-dicarbonitrile" EXACT RESID-alternate []
+synonym: "1,7-biscarbonyl-1-(cystein-S-yl)-8-oxo-4-aza-2lambda(3),6 lambda(3)-dithia-1,7-diferratricyclo[4.2.0.0(2,7)]octane-1,7-dicarbonitrile" EXACT RESID-alternate []
 synonym: "Diironsubcluster" RELATED PSI-MS-label []
 synonym: "hydrogenase diiron subcluster" RELATED UniMod-description []
 synonym: "L-cysteinyl hydrogenase diiron subcluster" EXACT RESID-name []
 synonym: "METAL Diiron subcluster" EXACT UniProt-feature []
-synonym: "mu-carbonyl-dicarbonyl-1kappaC,2kappaC-dicyanido-1kappaC,2kappaC-cysteinato-1kS-1,2-oxydimethanthiol-1kS,2kS'-diiron" EXACT RESID-systematic []
+synonym: "mu-carbonyl-dicarbonyl-1kappaC,2kappaC-dicyanido-1kappaC,2kappaC-cysteinato-1kS-1,2-azadimethanthiol-1kS,2kS'-diiron" EXACT RESID-systematic []
 xref: DiffAvg: "342.87"
 xref: DiffFormula: "C 5 Fe 2 H -1 N 2 O 5 S 2"
 xref: DiffMono: "342.786913"
@@ -8492,8 +8488,8 @@ xref: MassMono: "248.061949"
 xref: Origin: "C, F"
 xref: Source: "natural"
 xref: TermSpec: "none"
-is_a: MOD:00687 ! thioether crosslinked residues
 is_a: MOD:00914 ! modified L-phenylalanine residue
+is_a: MOD:01992 ! alpha-carbon thioether crosslinked residues
 
 [Term]
 id: MOD:00346
@@ -8514,8 +8510,9 @@ xref: MassMono: "248.061949"
 xref: Origin: "C, F"
 xref: Source: "natural"
 xref: TermSpec: "none"
-is_a: MOD:00687 ! thioether crosslinked residues
+is_a: MOD:00664 ! stereoisomerized residue
 is_a: MOD:00914 ! modified L-phenylalanine residue
+is_a: MOD:01992 ! alpha-carbon thioether crosslinked residues
 
 [Term]
 id: MOD:00347
@@ -8523,7 +8520,7 @@ name: 2-(S-L-cysteinyl)-D-allo-threonine
 def: "A protein modification that effectively cross-links an L-cysteine residue and an L-threonine residue by a thioether bond to form 2-(S-L-cysteinyl)-D-allo-threonine." [PubMed:12696888, PubMed:3936839, RESID:AA0342]
 comment: Cross-link 2.
 synonym: "(2R,5S,6R)-2,5-diamino-5-carboxy-6-hydroxy-4-thiaheptanoic acid" EXACT RESID-alternate []
-synonym: "(2S,3R)-2-amino-2-[(R)-2-amino-2-carboxyethyl]sulfanyl-3-hydroxybutanoic acid" EXACT RESID-systematic []
+synonym: "(2S,3R)-2-amino-2-[(2R)-2-amino-2-carboxyethyl]sulfanyl-3-hydroxybutanoic acid" EXACT RESID-systematic []
 synonym: "2-(L-cystein-S-yl)-D-allo-threonine" EXACT RESID-name []
 synonym: "alpha-(L-cystein-S-yl)-D-allo-threonine" EXACT RESID-alternate []
 synonym: "CROSSLNK 2-cysteinyl-D-allo-threonine (Cys-Thr)" EXACT UniProt-feature []
@@ -8536,8 +8533,9 @@ xref: MassMono: "202.041213"
 xref: Origin: "C, T"
 xref: Source: "natural"
 xref: TermSpec: "none"
-is_a: MOD:00687 ! thioether crosslinked residues
+is_a: MOD:00664 ! stereoisomerized residue
 is_a: MOD:00917 ! modified L-threonine residue
+is_a: MOD:01992 ! alpha-carbon thioether crosslinked residues
 
 [Term]
 id: MOD:00348
@@ -8855,11 +8853,11 @@ synonym: "tetra-mu3-sulfido(S-adenosylmethion-N,O-diyliron)tris(S-cysteinyliron)
 synonym: "tris-L-cysteinyl S-adenosylmethion-N,O-diyl tetrairon tetrasulfide" EXACT RESID-name []
 xref: DiffAvg: "747.03"
 xref: DiffFormula: "C 15 Fe 4 H 19 N 6 O 5 S 5"
-xref: DiffMono: "746.741249"
+xref: DiffMono: "746.742346"
 xref: FormalCharge: "1-"
 xref: Formula: "C 24 Fe 4 H 34 N 9 O 8 S 8"
 xref: MassAvg: "1056.45"
-xref: MassMono: "1055.768803"
+xref: MassMono: "1055.769901"
 xref: Origin: "C, C, C"
 xref: Source: "natural"
 xref: TermSpec: "none"
@@ -10693,7 +10691,6 @@ is_obsolete: true
 id: MOD:00451
 name: alpha-amino propanoylated residue
 def: "A protein modification that effectively replaces a residue alpha-amino- or alpha-imino-hydrogen with a propanoyl group." [PubMed:11857757, PubMed:11999733, PubMed:12175151, UniMod:58#N-term]
-subset: PSI-MOD-slim
 synonym: "Propionate labeling reagent light form (N-term & K)" RELATED UniMod-description []
 synonym: "Propionyl" RELATED PSI-MS-label []
 xref: DiffAvg: "56.06"
@@ -10711,7 +10708,6 @@ is_a: MOD:01894 ! propanoylated residue
 id: MOD:00452
 name: alpha-amino 3x(13)C-labeled propanoylated residue
 def: "A protein modification that effectively replaces a residue alpha-amino- or alpha-imino-hydrogen with a 3x(13)C-labeled propanoyl group." [PubMed:11857757, PubMed:11999733, PubMed:12175151, UniMod:59#N-term]
-subset: PSI-MOD-slim
 synonym: "Propionate labeling reagent heavy form (+3amu), N-term & K" RELATED UniMod-description []
 synonym: "Propionyl:13C(3)" RELATED PSI-MS-label []
 xref: DiffAvg: "59.04"
@@ -10828,7 +10824,6 @@ xref: Origin: "X"
 xref: Source: "artifact"
 xref: TermSpec: "N-term"
 is_a: MOD:00457 ! alpha-amino succinylated residue
-is_a: MOD:00848 ! reagent derivatized residue
 
 [Term]
 id: MOD:00459
@@ -10845,7 +10840,6 @@ xref: MassMono: "none"
 xref: Origin: "X"
 xref: TermSpec: "none"
 is_a: MOD:00457 ! alpha-amino succinylated residue
-is_a: MOD:00848 ! reagent derivatized residue
 
 [Term]
 id: MOD:00460
@@ -11910,7 +11904,7 @@ is_a: MOD:00903 ! modified L-asparagine residue
 [Term]
 id: MOD:00517
 name: Hex1HexNAc1NeuAc1 glycosylated residue
-def: "A protein modification that effectively replaces a hydrogen atom of an amino acid residue or of a modifying group with a carbohydrate-like group composed of Hex1HexNAc1NeuAc1 linked through a glycosidic bond." [DeltaMass:0, RESID:AA0151#var, UniMod:149]
+def: "A protein modification that effectively replaces a hydrogen atom of an amino acid residue or of a modifying group with a carbohydrate-like group composed of Hex1HexNAc1NeuAc1 linked through a glycosidic bond." [DeltaMass:0, UniMod:149]
 comment: From DeltaMass: Average Mass: 657
 synonym: "Hex(1)HexNAc(1)NeuAc(1)" RELATED PSI-MS-label []
 synonym: "Hex1HexNAc1NeuAc1" RELATED UniMod-description []
@@ -11921,7 +11915,7 @@ xref: DiffMono: "657.235437"
 xref: Formula: "none"
 xref: MassAvg: "none"
 xref: MassMono: "none"
-xref: Origin: "N"
+xref: Origin: "X"
 xref: Source: "natural"
 xref: TermSpec: "none"
 is_a: MOD:00725 ! complex glycosylation
@@ -12101,7 +12095,7 @@ is_a: MOD:00725 ! complex glycosylation
 [Term]
 id: MOD:00528
 name: Hex1HexNAc1NeuAc2 glycosylated residue
-def: "A protein modification that effectively replaces a hydrogen atom of an amino acid residue or of a modifying group with a carbohydrate-like group composed of Hex1HexNAc1NeuAc2 linked through a glycosidic bond." [RESID:AA0151#var, UniMod:160]
+def: "A protein modification that effectively replaces a hydrogen atom of an amino acid residue or of a modifying group with a carbohydrate-like group composed of Hex1HexNAc1NeuAc2 linked through a glycosidic bond." [UniMod:160]
 synonym: "Hex(1)HexNAc(1)NeuAc(2)" RELATED PSI-MS-label []
 synonym: "Hex1HexNAc1NeuAc2" RELATED UniMod-description []
 xref: DiffAvg: "947.85"
@@ -12110,7 +12104,7 @@ xref: DiffMono: "947.323029"
 xref: Formula: "none"
 xref: MassAvg: "none"
 xref: MassMono: "none"
-xref: Origin: "N"
+xref: Origin: "X"
 xref: Source: "natural"
 xref: TermSpec: "none"
 is_a: MOD:00725 ! complex glycosylation
@@ -14127,6 +14121,12 @@ name: acetylated L-serine
 def: "A protein modification that effectively converts an L-serine residue to either N-acetyl-L-serine, O-acetyl-L-serine, or N,O-diacetyl-L-serine." [PubMed:18688235]
 subset: PSI-MOD-slim
 synonym: "AcSer" EXACT PSI-MOD-label []
+xref: DiffAvg: "42.04"
+xref: DiffFormula: "C 2 H 2 N 0 O 1"
+xref: DiffMono: "42.010565"
+xref: Formula: "none"
+xref: MassAvg: "none"
+xref: MassMono: "none"
 xref: Origin: "S"
 xref: Source: "natural"
 is_a: MOD:00394 ! acetylated residue
@@ -15060,12 +15060,14 @@ name: L-methionine sulfoxide
 def: "A protein modification that oxygenates an L-methionine residue to one of the diastereomeric L-methionine sulfoxide residues." [DeltaMass:177, OMSSA:1, PubMed:21406390, PubMed:22116028, RESID:AA0581, UniMod:35#M]
 comment: From DeltaMass: Average Mass: 147 Formula:C5H9O1N2S Monoisotopic Mass Change:147.035 Average Mass Change:147.195 (formula incorrect, N and O reversed) References:PE Sciex.
 subset: PSI-MOD-slim
-synonym: "(2S)-2-amino-4-[(R)-methylsulfinyl]butanoic acid " EXACT PSI-MOD-alternate []
+synonym: "(2S)-2-amino-4-[(R)-methylsulfinyl]butanoic acid" EXACT RESID-systematic []
+synonym: "L-methionine (R)-S-oxide" EXACT RESID-alternate []
+synonym: "L-methionine (R)-sulfoxide" EXACT RESID-name []
 synonym: "L-methionine S-oxide" EXACT PSI-MOD-alternate []
 synonym: "L-methionine sulfoxide" EXACT PSI-MOD-alternate []
 synonym: "Methionyl Sulfoxide" EXACT DeltaMass-label []
 synonym: "MetO" EXACT PSI-MOD-label []
-synonym: "MOD_RES Methionine sulfoxide" EXACT UniProt-feature []
+synonym: "MOD_RES Methionine (R)-sulfoxide" EXACT UniProt-feature []
 synonym: "Oxidation" RELATED PSI-MS-label []
 synonym: "oxym" EXACT OMSSA-label []
 xref: DiffAvg: "16.00"
@@ -15084,7 +15086,7 @@ is_a: MOD:01854 ! sulfur monooxygenated residue
 id: MOD:00720
 name: L-methionine (R)-sulfoxide
 def: "A protein modification that effectively oxygenates an L-methionine residue to L-methionine sulfoxide R-diastereomer." [ChEBI:45764, PubMed:21406390, PubMed:22116028, PubMed:23911929, RESID:AA0581]
-synonym: "(2S)-2-amino-4-[(R)-methylsulfinyl]butanoic acid " EXACT RESID-systematic []
+synonym: "(2S)-2-amino-4-[(R)-methylsulfinyl]butanoic acid" EXACT RESID-systematic []
 synonym: "L-methionine (R)-S-oxide" EXACT RESID-alternate []
 synonym: "L-methionine (R)-sulfoxide" EXACT RESID-name []
 synonym: "MOD_RES Methionine (R)-sulfoxide" EXACT UniProt-feature []
@@ -15604,7 +15606,6 @@ xref: Origin: "P"
 xref: Source: "natural"
 xref: TermSpec: "none"
 is_a: MOD:00448 ! N-acetylaminoglucosylated residue
-is_a: MOD:00915 ! modified L-proline residue
 is_a: MOD:01677 ! O4-(N-acetylamino)hexosyl-L-hydroxyproline
 
 [Term]
@@ -16289,11 +16290,11 @@ synonym: "L-cysteinyl-L-histidino-homocitryl octairon nonasulfide carbide" EXACT
 synonym: "nitrogenase iron-iron cofactor" EXACT RESID-alternate []
 xref: DiffAvg: "937.42"
 xref: DiffFormula: "C 7 Fe 8 H 6 N 0 O 7 S 9"
-xref: DiffMono: "937.239491"
+xref: DiffMono: "937.240588"
 xref: FormalCharge: "2-"
 xref: Formula: "C 16 Fe 8 H 18 N 4 O 9 S 10"
 xref: MassAvg: "1177.70"
-xref: MassMono: "1177.307588"
+xref: MassMono: "1177.308685"
 xref: Origin: "C, H"
 xref: Source: "hypothetical"
 xref: TermSpec: "none"
@@ -16350,8 +16351,8 @@ xref: MassMono: "264.056863"
 xref: Origin: "C, Y"
 xref: Source: "natural"
 xref: TermSpec: "none"
-is_a: MOD:00687 ! thioether crosslinked residues
 is_a: MOD:00919 ! modified L-tyrosine residue
+is_a: MOD:01993 ! beta-carbon thioether crosslinked residues
 
 [Term]
 id: MOD:00804
@@ -18724,7 +18725,7 @@ is_a: MOD:00947 ! DeltaMass
 [Term]
 id: MOD:00949
 name: desmosine
-def: "modification from DeltaMass" [DeltaMass:0]
+def: "OBSOLETE because redundant and identical to MOD:01933. Remap to MOD:01933." [DeltaMass:0]
 comment: From DeltaMass: Average Mass: -58
 xref: DiffAvg: "none"
 xref: DiffFormula: "none"
@@ -18805,6 +18806,7 @@ name: O-(L-isoglutamyl)-L-serine (Glu-Ser)
 def: "A protein modification that effectively crosslinks an L-glutamic acid residue and an L-serine residue by an ester bond and releasing water to form O-(L-isoglutamyl)-L-serine." [DeltaMass:0, PubMed:19035375, RESID:AA0597#ESX]
 comment: Cross-link 2; From DeltaMass: with no citation.
 synonym: "(2S)-2-amino-5-[(2S)-2-amino-2-carboxyethoxy]-5-oxopentanoic acid" EXACT RESID-systematic []
+synonym: "CROSSLNK isoglutamyl serine ester (Ser-Glu)" EXACT UniProt-feature []
 synonym: "O(beta)-(gamma-glutamyl)serine" EXACT RESID-alternate []
 synonym: "O-(L-isoglutamyl)-L-serine" EXACT RESID-name []
 synonym: "O-gamma-Glutamyl- (Crosslink to Serine)" EXACT DeltaMass-label []
@@ -18819,7 +18821,6 @@ xref: Origin: "E, S"
 xref: Source: "artifact"
 xref: TermSpec: "none"
 is_a: MOD:00906 ! modified L-glutamic acid residue
-is_a: MOD:00916 ! modified L-serine residue
 is_a: MOD:00954 ! crosslinked residues with loss of water
 is_a: MOD:01977 ! O-(L-isoglutamyl)-L-serine
 
@@ -19034,14 +19035,14 @@ is_a: MOD:00918 ! modified L-tryptophan residue
 id: MOD:00967
 name: syndesine
 def: "A protein modification that effectively cross-links two L-lysine residues to form syndesine, hydroxylysinohydroxynorleucine." [DeltaMass:35, PubMed:75151974]
-comment: Cross-link 2; From DeltaMass: Average Mass: 13 Average Mass Change: 13 References:TITLE Crosslink in bone collagen in Paget's disease. AUTHOR(S) Misra DPSOURCE (BIBLIOGRAPHIC CITATION)J-Clin-Pathol.1975 Apr; 28(4): 305-8.INTERNATIONAL STANDARD SERIAL NUMBER 0021-9746 ABSTRACT The crosslink in bone collagen was analysed in specimens of bone obtained at necropsy from cases of Paget's disease and compared with normal bone collagen of the same age. The specimens were stored at -20 degrees C before analysis. The predominant crosslink in a normal bone collagen was hydroxylysinohydroxynorleucine (di OH-LNL) (F1), which was designated syndesine in the past; another fraction, hydroxylysinorleucine (HLNL) (F2), much less prominent than di OH-LNL, was also noted in a normal bone collagen. Both fractions were reduced in bone tissue of advancing age. The peak corresponding to HLNL was considerably increased in Paget's disease. This abnormality was constantly seen in specimens of bone from cases of Paget'sdisease, but the significance of the finding could not be assessed from the present investigation. Calcitonin has been shown to produce complete remission in Paget's disease and the crosslink pattern was found to be normal in specimens examined froma calcitonin-treated patient. This shows that calcitonin has some effect on the metabolism of collagen and a normal crosslink in such a situation lends support to this idea.
+comment: Cross-link 2; From DeltaMass: Average Mass: 13 Average Mass Change: 13 (incorrect) [JSG].
 synonym: "hydroxylysinohydroxynorleucine" EXACT PSI-MOD-alternate []
-xref: DiffAvg: "none"
-xref: DiffFormula: "none"
-xref: DiffMono: "none"
-xref: Formula: "none"
-xref: MassAvg: "none"
-xref: MassMono: "none"
+xref: DiffAvg: "16.96"
+xref: DiffFormula: "C 0 H -3 N -2 O 3"
+xref: DiffMono: "16.955121"
+xref: Formula: "C 12 H 21 N 2 O 5"
+xref: MassAvg: "273.31"
+xref: MassMono: "273.145047"
 xref: Origin: "K, K"
 xref: Source: "none"
 xref: TermSpec: "none"
@@ -20680,7 +20681,7 @@ xref: MassAvg: "none"
 xref: MassMono: "none"
 xref: Origin: "none"
 xref: Source: "none"
-xref: TermSpec: "N-terminal"
+xref: TermSpec: "N-term"
 is_a: MOD:00767 ! glycated residue
 
 [Term]
@@ -21343,9 +21344,9 @@ synonym: "formyl tryptophanyl" EXACT DeltaMass-label []
 xref: DiffAvg: "28.01"
 xref: DiffFormula: "C 1 H 0 N 0 O 1"
 xref: DiffMono: "27.994915"
-xref: Formula: "none"
-xref: MassAvg: "none"
-xref: MassMono: "none"
+xref: Formula: "C 12 H 10 N 2 O 2"
+xref: MassAvg: "214.22"
+xref: MassMono: "214.074228"
 xref: Origin: "W"
 xref: Source: "artifact"
 xref: TermSpec: "none"
@@ -22627,7 +22628,6 @@ is_a: MOD:00904 ! modified L-aspartic acid residue
 id: MOD:01179
 name: N,N-dimethyl-L-alanine
 def: "A protein modification that effectively converts an L-alanine residue to N,N-dimethyl-L-alanine." [PubMed:17691833, PubMed:387091, RESID:AA0433]
-subset: PSI-MOD-slim
 synonym: "(S)-1-carboxy-N,N-dimethylaminoethane" EXACT RESID-alternate []
 synonym: "(S)-2-(dimethylamino)propanoic acid" EXACT RESID-systematic []
 synonym: "MOD_RES N,N-dimethylalanine" EXACT UniProt-feature []
@@ -23273,7 +23273,7 @@ name: N6-(morpholine-2-acetyl)-lysine
 def: "A protein modification that effectively converts an L-lysine residue to N6-(morpholine-2-acetyl)-lysine." [PubMed:10446193, UniMod:29#K]
 comment: The UniMod name "N-Succinimidyl-3-morpholine acetate" appears to have been a typographical error [JSG].
 synonym: "N-Succinimidyl-2-morpholine acetate" RELATED UniMod-description []
-synonym: "N-succinimidylmorpholine-2-acetate N6-derivatized lysine " EXACT PSI-MOD-alternate []
+synonym: "N-succinimidylmorpholine-2-acetate N6-derivatized lysine" EXACT PSI-MOD-alternate []
 synonym: "SMA" RELATED PSI-MS-label []
 xref: DiffAvg: "127.14"
 xref: DiffFormula: "C 6 H 9 N 1 O 2"
@@ -23284,7 +23284,6 @@ xref: MassMono: "255.158292"
 xref: Origin: "K"
 xref: Source: "artifact"
 xref: TermSpec: "none"
-is_a: MOD:00912 ! modified L-lysine residue
 is_a: MOD:01813 ! morpholine-2-acetylated residue
 is_a: MOD:01875 ! N6-acylated L-lysine
 
@@ -23689,7 +23688,7 @@ is_a: MOD:01398 ! N6-propanoyl-L-lysine
 [Term]
 id: MOD:01233
 name: 3x(2)H labeled N6-acetyl-L-lysine
-def: "modification from UniMod Isotopic label -" [PubMed:11857757, PubMed:11999733, PubMed:12175151, UniMod:56#K]
+def: "A protein modification that effectively converts an L-lysine residue to 3x(2)H labeled N6-acetyl-L-lysine." [PubMed:11857757, PubMed:11999733, PubMed:12175151, UniMod:56#K]
 subset: PSI-MOD-slim
 synonym: "Acetate labeling reagent (N-term & K) (heavy form, +3amu)" RELATED UniMod-description []
 synonym: "Acetyl:2H(3)" RELATED PSI-MS-label []
@@ -25205,7 +25204,6 @@ xref: MassMono: "232.136114"
 xref: Origin: "K"
 xref: Source: "artifact"
 xref: TermSpec: "none"
-is_a: MOD:00912 ! modified L-lysine residue
 is_a: MOD:01819 ! N6-succinyl-L-lysine
 
 [Term]
@@ -25223,7 +25221,6 @@ xref: MassMono: "232.124426"
 xref: Origin: "K"
 xref: Source: "artifact"
 xref: TermSpec: "none"
-is_a: MOD:00912 ! modified L-lysine residue
 is_a: MOD:01819 ! N6-succinyl-L-lysine
 
 [Term]
@@ -27221,7 +27218,6 @@ xref: Source: "natural"
 xref: TermSpec: "none"
 is_a: MOD:00687 ! thioether crosslinked residues
 is_a: MOD:00690 ! oxazole/thiazole ring crosslinked residues
-is_a: MOD:00905 ! modified L-cysteine residue
 
 [Term]
 id: MOD:01421
@@ -30981,7 +30977,6 @@ xref: Origin: "C, G"
 xref: Source: "hypothetical"
 xref: TermSpec: "C-term"
 is_a: MOD:00395 ! thioester crosslinked residues
-is_a: MOD:00905 ! modified L-cysteine residue
 is_a: MOD:00908 ! modified glycine residue
 is_a: MOD:00954 ! crosslinked residues with loss of water
 
@@ -31023,7 +31018,6 @@ xref: Source: "natural"
 xref: TermSpec: "none"
 is_a: MOD:00005 ! O-glycosyl-L-threonine
 is_a: MOD:00595 ! mannosylated residue
-is_a: MOD:00917 ! modified L-threonine residue
 
 [Term]
 id: MOD:01618
@@ -32340,7 +32334,6 @@ id: MOD:01686
 name: alpha-amino dimethylated residue
 def: "A protein modification that effectively replaces two alpha amino hydrogen atoms with two methyl group." [OMSSA:38, UniMod:36#N-term]
 comment: For alpha-amino acids, both N-alpha-monomethylation and complete N-alpha protonation and trimethylation have been observed, but incomplete dimethylation has not been reported as a natural process. For N-terminal proline residues, dimethylation can only be effectively accomplished with a protonated imino group, whereas this process accounts only for dimethylation and not protonation. See MOD:00889.
-subset: PSI-MOD-slim
 synonym: "di-Methylation" RELATED UniMod-description []
 synonym: "Dimethyl" RELATED PSI-MS-label []
 synonym: "N2Me2Res" EXACT PSI-MOD-label []
@@ -34217,11 +34210,11 @@ id: MOD:01780
 name: N6-(beta-lysyl)-L-5-hydroxylysine
 def: "A protein modification that effectively converts an L-lysine residue to N6-(beta-lysyl)-L-5-hydroxylysine by formation of an isopeptide bond between the carboxyl group of a free beta-lysine and the N6-amino group of a peptidyl L-lysine." [PubMed:18201202, PubMed:20729861, RESID:AA0531]
 synonym: "(2S)-2-amino-6-([(3R)-3,6-diaminohexanoyl]amino)-5-hydroxyhexanoic acid" EXACT RESID-systematic []
+synonym: "5-hydroxy-N6-(beta-lysyl)-L-lysine" EXACT RESID-name []
 synonym: "5-hydroxy-N6-[(3R)-beta-lysyl]lysine" EXACT RESID-alternate []
 synonym: "EF-P lysine derivative" EXACT RESID-alternate []
 synonym: "lysyl spermidine derivative [misidentification]" EXACT RESID-alternate []
 synonym: "MOD_RES N6-(3,6-diaminohexanoyl)-5-hydroxylysine" EXACT UniProt-feature []
-synonym: "N6-(beta-lysyl)-L-5-hydroxylysine" EXACT RESID-name []
 synonym: "N6-[(3R)-3,6-diaminohexanoyl]-L-5-hydroxylysine" EXACT RESID-alternate []
 xref: DiffAvg: "144.17"
 xref: DiffFormula: "C 6 H 12 N 2 O 2"
@@ -34238,7 +34231,7 @@ is_a: MOD:01875 ! N6-acylated L-lysine
 [Term]
 id: MOD:01781
 name: N6-butanoyl-L-lysine
-def: "A protein modification that effectively converts an L-lysine residue to N6-butanoyl-L-lysine." [PubMed:17267393, PubMed:20715035, RESID:AA0532]
+def: "A protein modification that effectively converts an L-lysine residue to N6-butanoyl-L-lysine." [PubMed:17267393, PubMed:20715035, RESID:AA0532, UniMod:1289]
 comment: The binding of histone peptides with butanoylated lysine to nuclear bromodomain proteins is non-specific and weaker than binding to the corresponding acetylated lysine peptides [JSG].
 synonym: "(2S)-2-amino-6-(butanoylamino)hexanoic acid" EXACT RESID-systematic []
 synonym: "(2S)-2-azanyl-6-(butanoylamino)hexanoic acid" EXACT RESID-alternate []
@@ -34259,6 +34252,7 @@ xref: Origin: "K"
 xref: Source: "hypothetical"
 xref: TermSpec: "none"
 is_a: MOD:01875 ! N6-acylated L-lysine
+is_a: MOD:01997 ! N-butanoylated residue
 
 [Term]
 id: MOD:01782
@@ -34285,7 +34279,6 @@ is_a: MOD:01800 ! N-methylated serine
 id: MOD:01783
 name: N,N-dimethyl-L-serine
 def: "A protein modification that effectively converts an L-serine residue to N,N-dimethyl-L-serine." [PubMed:20668449, RESID:AA0534]
-subset: PSI-MOD-slim
 synonym: "(2S)-2-(dimethylamino)propanoic acid" EXACT RESID-systematic []
 synonym: "MOD_RES N,N-dimethylserine" EXACT UniProt-feature []
 synonym: "N,N-dimethyl-L-serine" EXACT RESID-name []
@@ -34716,7 +34709,6 @@ xref: Origin: "D, G"
 xref: Source: "natural"
 xref: TermSpec: "N-term"
 is_a: MOD:00904 ! modified L-aspartic acid residue
-is_a: MOD:00908 ! modified glycine residue
 is_a: MOD:00954 ! crosslinked residues with loss of water
 is_a: MOD:01928 ! N-(L-isoaspartyl)-glycine
 
@@ -34724,7 +34716,6 @@ is_a: MOD:01928 ! N-(L-isoaspartyl)-glycine
 id: MOD:01806
 name: N,N-dimethyl-L-leucine
 def: "A protein modification that effectively converts an L-leucine residue to N,N-dimethyl-L-leucine." [PubMed:19522542, RESID:AA0538]
-subset: PSI-MOD-slim
 synonym: "(2S)-2-(dimethylamino)-4-methylpentanoic acid" EXACT RESID-systematic []
 synonym: "2-(dimethylamino)-4-methylvaleric acid" EXACT RESID-alternate []
 synonym: "2-(dimethylazanyl)-4-methylpentanoic acid" EXACT RESID-alternate []
@@ -34882,8 +34873,6 @@ xref: MassMono: "223.017738"
 xref: Origin: "C, S, S"
 xref: Source: "natural"
 xref: TermSpec: "none"
-is_a: MOD:00905 ! modified L-cysteine residue
-is_a: MOD:00916 ! modified L-serine residue
 is_a: MOD:01425 ! pyridinyl ring crosslinked residues
 
 [Term]
@@ -34904,7 +34893,6 @@ xref: MassMono: "212.025563"
 xref: Origin: "C, E"
 xref: Source: "natural"
 xref: TermSpec: "none"
-is_a: MOD:00905 ! modified L-cysteine residue
 is_a: MOD:00906 ! modified L-glutamic acid residue
 is_a: MOD:01420 ! thiazole/thiazoline ring croslinked residues
 is_a: MOD:01888 ! didehydrogenated residue
@@ -34927,7 +34915,6 @@ xref: MassMono: "202.074228"
 xref: Origin: "W"
 xref: Source: "artifact"
 xref: TermSpec: "none"
-is_a: MOD:00918 ! modified L-tryptophan residue
 is_a: MOD:01622 ! monohydroxylated tryptophan
 
 [Term]
@@ -35423,7 +35410,7 @@ xref: MassMono: "172.030649"
 xref: Origin: "C, X"
 xref: Source: "artifact"
 xref: TermSpec: "none"
-is_a: MOD:00687 ! thioether crosslinked residues
+is_a: MOD:01993 ! beta-carbon thioether crosslinked residues
 
 [Term]
 id: MOD:01842
@@ -35688,9 +35675,9 @@ xref: MassMono: "232.034020"
 xref: Origin: "C, M"
 xref: Source: "natural"
 xref: TermSpec: "none"
-is_a: MOD:00687 ! thioether crosslinked residues
 is_a: MOD:00905 ! modified L-cysteine residue
 is_a: MOD:00913 ! modified L-methionine residue
+is_a: MOD:01992 ! alpha-carbon thioether crosslinked residues
 
 [Term]
 id: MOD:01858
@@ -36104,7 +36091,7 @@ def: "modification from RESID" [ChEBI:50038, PubMed:16452303, RESID:AA0564]
 synonym: "(2S)-2-amino-6-[(4-aminobutyl)amino]hexanoic acid" EXACT RESID-systematic []
 synonym: "deoxyhypusine" EXACT RESID-alternate []
 synonym: "L-deoxyhypusine" EXACT RESID-name []
-synonym: "N6-(4-aminobutyl)lysine " EXACT RESID-alternate []
+synonym: "N6-(4-aminobutyl)lysine" EXACT RESID-alternate []
 xref: DiffAvg: "71.12"
 xref: DiffFormula: "C 4 H 9 N 1 O 0"
 xref: DiffMono: "71.073499"
@@ -36339,7 +36326,6 @@ is_a: MOD:01875 ! N6-acylated L-lysine
 id: MOD:01894
 name: propanoylated residue
 def: "A protein modification that effectively replaces a hydrogen atom with an propanoyl group." [PubMed:11857757, PubMed:11999733, PubMed:12175151, UniMod:58]
-subset: PSI-MOD-slim
 synonym: "Propionate labeling reagent light form (N-term & K)" RELATED UniMod-description []
 synonym: "Propionyl" RELATED PSI-MS-label []
 xref: DiffAvg: "56.06"
@@ -36357,7 +36343,6 @@ is_a: MOD:00649 ! acylated residue
 id: MOD:01895
 name: alpha-amino 3x(12)C-labeled propanoylated residue
 def: "A protein modification that effectively replaces a residue alpha-amino- or alpha-imino-hydrogen with a 3x(12)C-labeled propanoyl group." [PubMed:11857757, PubMed:11999733, PubMed:12175151, UniMod:58#N-term]
-subset: PSI-MOD-slim
 synonym: "Propionate labeling reagent light form (N-term & K)" RELATED UniMod-description []
 synonym: "Propionyl" RELATED PSI-MS-label []
 xref: DiffAvg: "56.03"
@@ -36504,7 +36489,7 @@ id: MOD:01902
 name: L-isoleucine oxazole-4-carboxylic acid
 def: "A protein modification that effectively crosslinks an L-isoleucine residue and an L-serine residue to form L-cysteine oxazole-4-carboxylic acid." [PubMed:21568297, PubMed:21950656, RESID:AA0573]
 comment: Cross-link 2.
-synonym: "2-[(1S,2S)-1-amino-2-methylbutyl]-1,3-oxazole-4-carboxylic acid " EXACT RESID-systematic []
+synonym: "2-[(1S,2S)-1-amino-2-methylbutyl]-1,3-oxazole-4-carboxylic acid" EXACT RESID-systematic []
 synonym: "2-[(1S,2S)-1-azanyl-2-methylbutyl]-1,3-oxazole-4-carboxylic acid" EXACT RESID-alternate []
 synonym: "CROSSLNK Oxazole-4-carboxylic acid (Ile-Ser)" EXACT UniProt-feature []
 synonym: "L-isoleucine oxazole-4-carboxylic acid" EXACT RESID-name []
@@ -36527,7 +36512,7 @@ name: L-serine oxazole-4-carboxylic acid
 def: "A protein modification that effectively crosslinks two L-serine residues to form serine oxazole-4-carboxylic acid." [PubMed:21568297, PubMed:21950656, RESID:AA0574]
 comment: Cross-link 2.
 synonym: "2-[(1S)-1-amino-2-hydroxyethyl]-1,3-oxazole-4-carboxylic acid" EXACT RESID-systematic []
-synonym: "2-[(1S)-1-azanyl-2-hydroxyethyl]-1,3-oxazole-4-carboxylic acid " EXACT RESID-alternate []
+synonym: "2-[(1S)-1-azanyl-2-hydroxyethyl]-1,3-oxazole-4-carboxylic acid" EXACT RESID-alternate []
 synonym: "CROSSLNK Oxazole-4-carboxylic acid (Ser-Ser)" EXACT UniProt-feature []
 synonym: "L-serine oxazole-4-carboxylic acid" EXACT RESID-name []
 xref: DiffAvg: "-20.03"
@@ -36664,7 +36649,7 @@ is_a: MOD:00880 ! 6x(13)C labeled 4-sulfophenyl isothiocyanate derivatized resid
 [Term]
 id: MOD:01910
 name: monofluorinated residue
-def: "A protein modification that effectively substitutes one hydrogen atom of a residue with one fluorine atom." [PubMed:18688235, UniMod:127]
+def: "A protein modification that effectively substitutes one hydrogen atom of a residue with one fluorine atom." [UniMod:127]
 synonym: "F1Res" EXACT PSI-MOD-label []
 xref: DiffAvg: "17.99"
 xref: DiffFormula: "C 0 F 1 H -1 N 0 O 0"
@@ -36680,7 +36665,7 @@ is_a: MOD:00498 ! fluorinated residue
 [Term]
 id: MOD:01911
 name: monochlorinated residue
-def: "A protein modification that effectively substitutes one hydrogen atom of a residue with one chlorine atom." [PubMed:18688235, UniMod:936]
+def: "A protein modification that effectively substitutes one hydrogen atom of a residue with one chlorine atom." [UniMod:936]
 synonym: "Cl1Res" EXACT PSI-MOD-label []
 xref: DiffAvg: "34.44"
 xref: DiffFormula: "C 0 Cl 1 H -1 N 0 O 0"
@@ -36696,7 +36681,7 @@ is_a: MOD:00753 ! chlorinated residue
 [Term]
 id: MOD:01912
 name: monobrominated residue
-def: "A protein modification that effectively substitutes one hydrogen atom of a residue with one bromine atom." [PubMed:18688235, UniMod:340]
+def: "A protein modification that effectively substitutes one hydrogen atom of a residue with one bromine atom." [UniMod:340]
 synonym: "Br1Res" EXACT PSI-MOD-label []
 xref: DiffAvg: "78.90"
 xref: DiffFormula: "Br 1 C 0 H -1 N 0 O 0"
@@ -37156,11 +37141,11 @@ synonym: "6-[4-(4-amino-4-carboxybutyl)-3,5-bis(3-amino-3-carboxypropyl)pyridini
 synonym: "desmosine" EXACT RESID-name []
 xref: DiffAvg: "-58.15"
 xref: DiffFormula: "C 0 H -16 N -3 O 0"
-xref: DiffMono: "-58.134423"
+xref: DiffMono: "-58.134971"
 xref: FormalCharge: "1+"
 xref: Formula: "C 24 H 32 N 5 O 4"
 xref: MassAvg: "454.55"
-xref: MassMono: "454.245430"
+xref: MassMono: "454.244881"
 xref: Origin: "K, K, K, K"
 xref: Source: "natural"
 xref: TermSpec: "none"
@@ -37177,11 +37162,11 @@ synonym: "6-[2-(4-amino-4-carboxybutyl)-3,5-bis(3-amino-3-carboxypropyl)pyridini
 synonym: "isodesmosine" EXACT RESID-name []
 xref: DiffAvg: "-58.15"
 xref: DiffFormula: "C 0 H -16 N -3 O 0"
-xref: DiffMono: "-58.134423"
+xref: DiffMono: "-58.134971"
 xref: FormalCharge: "1+"
 xref: Formula: "C 24 H 32 N 5 O 4"
 xref: MassAvg: "454.55"
-xref: MassMono: "454.245430"
+xref: MassMono: "454.244881"
 xref: Origin: "K, K, K, K"
 xref: Source: "natural"
 xref: TermSpec: "none"
@@ -37445,8 +37430,8 @@ xref: MassMono: "241.052112"
 xref: Origin: "C, S, S"
 xref: Source: "natural"
 xref: TermSpec: "none"
-is_a: MOD:00687 ! thioether crosslinked residues
 is_a: MOD:00916 ! modified L-serine residue
+is_a: MOD:01993 ! beta-carbon thioether crosslinked residues
 
 [Term]
 id: MOD:01949
@@ -37506,7 +37491,6 @@ xref: Origin: "Q, S"
 xref: Source: "natural"
 xref: TermSpec: "none"
 is_a: MOD:00907 ! modified L-glutamine residue
-is_a: MOD:00916 ! modified L-serine residue
 is_a: MOD:00946 ! crosslinked residues with loss of ammonia
 is_a: MOD:01977 ! O-(L-isoglutamyl)-L-serine
 
@@ -37687,7 +37671,8 @@ id: MOD:01960
 name: tris-L-cysteinyl L-glutamin-O6-yl tetrairon tetrasulfide
 def: "A protein modification that effectively converts three L-cysteine residues, an L-glutamine residue and a four-iron four-sulfur cluster to tris-L-cysteinyl L-glutamin-O6-yl tetrairon tetrasulfide." [PubMed:11796730, RESID:AA0605]
 comment: Cross-link 4.
-synonym: "tris-L-cysteinyl glutamin-O6-yl tetrairon tetrasulfide" EXACT RESID-name []
+synonym: "METAL Iron-sulfur (4Fe-4S)" EXACT UniProt-feature []
+synonym: "tris-L-cysteinyl L-glutamin-O6-yl tetrairon tetrasulfide" EXACT RESID-name []
 synonym: "tris-mu3-sulfido-tris(cysteinato)-1kappaS,2kappaS,3kappaS-glutaminato-4kappaN(5)-tetrairon" EXACT RESID-systematic []
 xref: DiffAvg: "347.59"
 xref: DiffFormula: "C 0 Fe 4 H -4 N 0 O 0 S 4"
@@ -37792,7 +37777,7 @@ is_a: MOD:00002 ! O-glycosyl-L-serine
 [Term]
 id: MOD:01965
 name: 2xC(13),3x(2)H labeled N6-acetyl-L-lysine
-def: "A protein modification that effectively converts an L-lysine residue to N6-acetyl-L-lysine." [PubMed:18688235]
+def: "A protein modification that effectively converts an L-lysine residue to 2xC(13),3x(2)H labeled N6-acetyl-L-lysine." [PubMed:18688235]
 synonym: "Acetate labeling reagent (K) (heavy form, +5amu)" EXACT PSI-MOD-alternate []
 synonym: "COFRADIC heavy acetyl 13C2 2H3" EXACT PSI-MOD-alternate []
 xref: DiffAvg: "47.04"
@@ -37812,7 +37797,7 @@ is_a: MOD:01431 ! (2)H deuterium tagged reagent
 id: MOD:01966
 name: L-methionine (R)-sulfoxide
 def: "OBSOLETE because redundant and identical to MOD:00720. Remap to MOD:00720." [ChEBI:45764, PubMed:21406390, PubMed:22116028, PubMed:23911929, RESID:AA0581]
-synonym: "(2S)-2-amino-4-[(R)-methylsulfinyl]butanoic acid " EXACT RESID-systematic []
+synonym: "(2S)-2-amino-4-[(R)-methylsulfinyl]butanoic acid" EXACT RESID-systematic []
 synonym: "L-methionine (R)-S-oxide" EXACT RESID-alternate []
 synonym: "L-methionine (R)-sulfoxide" EXACT RESID-name []
 synonym: "MOD_RES Methionine (R)-sulfoxide" EXACT UniProt-feature []
@@ -38003,13 +37988,13 @@ synonym: "S-methyl-L-methionine" EXACT RESID-name []
 synonym: "S-methylmethionine" EXACT RESID-alternate []
 synonym: "S-methylmethioninium" EXACT RESID-alternate []
 synonym: "vitamin U" EXACT RESID-alternate []
-xref: DiffAvg: "15.04"
+xref: DiffAvg: "15.03"
 xref: DiffFormula: "C 1 H 3 N 0 O 0 S 0"
-xref: DiffMono: "15.023475"
+xref: DiffMono: "15.022927"
 xref: FormalCharge: "1+"
 xref: Formula: "C 6 H 12 N 1 O 1 S 1"
 xref: MassAvg: "146.23"
-xref: MassMono: "146.063960"
+xref: MassMono: "146.063411"
 xref: Origin: "M"
 xref: Source: "natural"
 xref: TermSpec: "none"
@@ -38022,6 +38007,7 @@ def: "A protein modification that effectively converts an L-cysteine residue to 
 synonym: "(alpha)-([(2R)-2-amino-2-carboxyethyl]sulfanyl)-(omega)-[(3R)-3-hydroxybutanoyl]-poly([(3R)-3-methyl-1-oxopropane-1,3-diyl]oxy)" EXACT RESID-systematic []
 synonym: "S-poly(3-hydroxybutanoate)cysteine" EXACT RESID-alternate []
 synonym: "S-poly(3-hydroxybutanoic acid)cysteine" EXACT RESID-alternate []
+synonym: "S-poly(3-hydroxybutyrate)-L-cysteine" EXACT RESID-name []
 synonym: "S-poly(3-hydroxybutyrate)cysteine" EXACT RESID-alternate []
 synonym: "S-poly(3-hydroxybutyric acid)cysteine" EXACT RESID-alternate []
 synonym: "S-poly(beta-hydroxybutyrate)cysteine" EXACT RESID-alternate []
@@ -38044,6 +38030,7 @@ name: O3-(poly-3-hydroxybutyrate)-L-serine
 def: "A protein modification that effectively converts an L-serine residue to O3-(poly-3-hydroxybutyrate)-L-serine." [PubMed:17659252, PubMed:20004640, RESID:AA0618]
 subset: PSI-MOD-slim
 synonym: "(2S)-2-amino-3-[([(3R)-3-hydroxybutanoyl]oxy)-poly([(3R)-3-methyl-1-oxopropane-1,3-diyl]oxy)]propanoic acid" EXACT RESID-systematic []
+synonym: "O3-(poly-3-hydroxybutyrate)-L-serine" EXACT RESID-name []
 synonym: "O3-poly(3-hydroxybutanoate)serine" EXACT RESID-alternate []
 synonym: "O3-poly(3-hydroxybutanoic acid)serine" EXACT RESID-alternate []
 synonym: "O3-poly(3-hydroxybutyrate)serine" EXACT RESID-alternate []
@@ -38091,7 +38078,6 @@ def: "A protein modification that effectively converts an L-threonine residue to
 comment: This is a threonine active intermediate and not an ester cross-link of peptides [JSG].
 synonym: "(2S)-2-amino-4-([(1S,2R)-1-amino-1-carboxypropan-2-yl]oxy)-4-oxobutanoic acid" EXACT RESID-systematic []
 synonym: "(2S,3R)-2-amino-3-([(4S)-3-amino-3-carboxypropanoyl]oxy)propanoic acid" EXACT RESID-alternate []
-synonym: "ACT_SITE O-isoaspartyl threonine intermediate" EXACT UniProt-feature []
 synonym: "O(beta)-(beta-aspartyl)threonine" EXACT RESID-alternate []
 synonym: "O-(L-isoaspartyl)-L-threonine" EXACT RESID-name []
 synonym: "O3-(isoaspartyl)-threonine" EXACT RESID-alternate []
@@ -38152,12 +38138,11 @@ id: MOD:01981
 name: 3-methyllanthionine
 def: "A protein modification that effectively cross-links an L-cysteine residue and an L-threonine residue by a thioether bond to form 3-methyllanthionine with unresolved stereospecificity." [PubMed:18688235]
 comment: Cross-link 2.
+synonym: "2,6-diamino-3-methyl-4-thiaheptanedioic acid" EXACT PSI-MOD-alternate []
 synonym: "2-amino-3-([2-amino-2-carboxyethyl]sulfanyl)butanoic acid" EXACT PSI-MOD-alternate []
 synonym: "2-amino-3-[(2-amino-2-carboxyethyl)thio]butanoic acid" EXACT PSI-MOD-alternate []
-synonym: "3-methyllanthionine" EXACT PSI-MOD-alternate []
-synonym: "2,6-diamino-3-methyl-4-thiaheptanedioic acid" EXACT PSI-MOD-alternate []
-synonym: "3-methyllanthionine" EXACT PSI-MOD-alternate []
 synonym: "2-azanyl-3-[(2-azanyl-2-carboxyethyl)sulfanyl]butanoic acid" EXACT PSI-MOD-alternate []
+synonym: "3-methyllanthionine" EXACT PSI-MOD-alternate []
 synonym: "cysteine-3-L-butyrine thioether" EXACT PSI-MOD-alternate []
 xref: DiffAvg: "-18.02"
 xref: DiffFormula: "C 0 H -2 N 0 O -1 S 0"
@@ -38168,9 +38153,350 @@ xref: MassMono: "186.046299"
 xref: Origin: "C, T"
 xref: Source: "natural"
 xref: TermSpec: "none"
-is_a: MOD:00687 ! thioether crosslinked residues
 is_a: MOD:00917 ! modified L-threonine residue
 is_a: MOD:00954 ! crosslinked residues with loss of water
+is_a: MOD:01993 ! beta-carbon thioether crosslinked residues
+
+[Term]
+id: MOD:01982
+name: N,N,N-trimethylglycine
+def: "modification from RESID" [ChEBI:17750, PubMed:23818633, PubMed:23978223, RESID:AA0619]
+subset: PSI-MOD-slim
+synonym: "(trimethylammonio)ethanoic acid" EXACT RESID-alternate []
+synonym: "1-carboxy-N,N,N-trimethylmethanazanium" EXACT RESID-alternate []
+synonym: "2-trimethylammonioacetate" EXACT RESID-alternate []
+synonym: "betaine" EXACT RESID-alternate []
+synonym: "carboxy-N,N,N-trimethylmethanaminium" EXACT RESID-systematic []
+synonym: "carboxymethyl-trimethylazanium" EXACT RESID-alternate []
+synonym: "glycine betaine" EXACT RESID-alternate []
+synonym: "MOD_RES N,N,N-trimethylglycine" EXACT UniProt-feature []
+synonym: "N,N,N-trimethylglycine cation" EXACT RESID-alternate []
+synonym: "N,N,N-trimethylglycinium" EXACT RESID-alternate []
+synonym: "N2Me3+Gly" EXACT PSI-MOD-label []
+xref: DiffAvg: "43.09"
+xref: DiffFormula: "C 3 H 7 N 0 O 0"
+xref: DiffMono: "43.054775"
+xref: Formula: "C 5 H 11 N 1 O 1"
+xref: MassAvg: "101.15"
+xref: MassMono: "101.084064"
+xref: Origin: "G"
+xref: Source: "natural"
+xref: TermSpec: "N-term"
+is_a: MOD:00714 ! methylated glycine
+is_a: MOD:01698 ! alpha-amino trimethylated protonated-residue
+
+[Term]
+id: MOD:01983
+name: N,N-dimethylglycine
+def: "A protein modification that effectively converts a glycine residue to N,N-dimethyllglycine." [ChEBI:17724, PubMed:23818633, PubMed:23978223, RESID:AA0620]
+synonym: "(dimethylamino)ethanoic acid" EXACT RESID-systematic []
+synonym: "1-carboxy-N,N-dimethylaminomethane" EXACT RESID-alternate []
+synonym: "2-(dimethylamino)acetic acid" EXACT RESID-alternate []
+synonym: "MOD_RES N,N-dimethylglycine" EXACT UniProt-feature []
+synonym: "vitamin B16" EXACT RESID-alternate []
+xref: DiffAvg: "28.05"
+xref: DiffFormula: "C 2 H 4 N 0 O 0"
+xref: DiffMono: "28.031300"
+xref: Formula: "C 4 H 8 N 1 O 1"
+xref: MassAvg: "86.11"
+xref: MassMono: "86.060589"
+xref: Origin: "G"
+xref: Source: "natural"
+xref: TermSpec: "N-term"
+is_a: MOD:00714 ! methylated glycine
+is_a: MOD:01686 ! alpha-amino dimethylated residue
+
+[Term]
+id: MOD:01984
+name: 2-(L-cystein-S-yl)-L-alanine
+def: "A protein modification that effectively cross-links an L-cysteine residue and an L-alanine residue by a thioether bond to form 2-(S-L-cysteinyl)-L-alanine." [PubMed:21526839, RESID:AA0621]
+comment: Cross-link 2.
+synonym: "(2R)-2-amino-2-[(2R)-2-amino-2-carboxyethyl]sulfanyl-3-hydroxybutanoic acid" EXACT RESID-systematic []
+synonym: "(2R,5R)-2,5-diamino-5-methyl-4-thiahexanedioic acid" EXACT RESID-alternate []
+synonym: "alpha-(L-cystein-S-yl)-L-alanine" EXACT RESID-alternate []
+xref: DiffAvg: "-2.02"
+xref: DiffFormula: "C 0 H -2 N 0 O 0 S 0"
+xref: DiffMono: "-2.015650"
+xref: Formula: "C 6 H 8 N 2 O 2 S 1"
+xref: MassAvg: "172.20"
+xref: MassMono: "172.030649"
+xref: Origin: "A, C"
+xref: Source: "natural"
+xref: TermSpec: "none"
+is_a: MOD:00901 ! modified L-alanine residue
+is_a: MOD:01992 ! alpha-carbon thioether crosslinked residues
+
+[Term]
+id: MOD:01985
+name: 2-(L-cystein-S-yl)-D-asparagine
+def: "A protein modification that effectively cross-links an L-cysteine residue and an L-asparagine residue by a thioether bond to form 2-(S-L-cysteinyl)-D-asparagine." [PubMed:21786372, RESID:AA0622]
+comment: Cross-link 2.
+synonym: "(2S)-2,4-diamino-2-([(2R)-2-amino-2-carboxyethyl]sulfanyl)-4-oxobutanoic acid" EXACT RESID-systematic []
+synonym: "alpha-(L-cystein-S-yl)-D-asparagine" EXACT RESID-alternate []
+xref: DiffAvg: "-2.02"
+xref: DiffFormula: "C 0 H -2 N 0 O 0 S 0"
+xref: DiffMono: "-2.015650"
+xref: Formula: "C 7 H 9 N 3 O 3 S 1"
+xref: MassAvg: "215.23"
+xref: MassMono: "215.036462"
+xref: Origin: "C, N"
+xref: Source: "natural"
+xref: TermSpec: "none"
+is_a: MOD:00664 ! stereoisomerized residue
+is_a: MOD:00903 ! modified L-asparagine residue
+is_a: MOD:01992 ! alpha-carbon thioether crosslinked residues
+
+[Term]
+id: MOD:01986
+name: 2-(L-cystein-S-yl)-L-serine
+def: "A protein modification that effectively cross-links an L-cysteine residue and an L-serine residue by a thioether bond to form 2-(S-L-cysteinyl)-L-serine." [PubMed:21526839, RESID:AA0623]
+comment: Cross-link 2.
+synonym: "(2R)-2-amino-2-([(2R)-2-amino-2-carboxyethyl]sulfanyl)-3-hydroxypropanoic acid" EXACT RESID-systematic []
+synonym: "(2R,5R)-2,5-diamino-5-carboxy-6-hydroxy-4-thiahexanoic acid" EXACT RESID-alternate []
+xref: DiffAvg: "-2.02"
+xref: DiffFormula: "C 0 H -2 N 0 O 0 S 0"
+xref: DiffMono: "-2.015650"
+xref: Formula: "C 6 H 8 N 2 O 3 S 1"
+xref: MassAvg: "188.20"
+xref: MassMono: "188.025563"
+xref: Origin: "C, S"
+xref: Source: "natural"
+xref: TermSpec: "none"
+is_a: MOD:00916 ! modified L-serine residue
+is_a: MOD:01992 ! alpha-carbon thioether crosslinked residues
+
+[Term]
+id: MOD:01987
+name: 2-(L-cystein-S-yl)-D-serine
+def: "A protein modification that effectively cross-links an L-cysteine residue and an L-serine residue by a thioether bond to form 2-(S-L-cysteinyl)-D-serine." [PubMed:21786372, RESID:AA0624]
+comment: Cross-link 2.
+synonym: "(2R,5S)-2,5-diamino-5-carboxy-6-hydroxy-4-thiahexanoic acid" EXACT RESID-alternate []
+synonym: "(2S)-2-amino-2-([(2R)-2-amino-2-carboxyethyl]sulfanyl)-3-hydroxypropanoic acid" EXACT RESID-systematic []
+xref: DiffAvg: "-2.02"
+xref: DiffFormula: "C 0 H -2 N 0 O 0 S 0"
+xref: DiffMono: "-2.015650"
+xref: Formula: "C 6 H 8 N 2 O 3 S 1"
+xref: MassAvg: "188.20"
+xref: MassMono: "188.025563"
+xref: Origin: "C, S"
+xref: Source: "natural"
+xref: TermSpec: "none"
+is_a: MOD:00664 ! stereoisomerized residue
+is_a: MOD:00916 ! modified L-serine residue
+is_a: MOD:01992 ! alpha-carbon thioether crosslinked residues
+
+[Term]
+id: MOD:01988
+name: 2-(L-cystein-S-yl)-L-threonine
+def: "A protein modification that effectively cross-links an L-cysteine residue and an L-threonine residue by a thioether bond to form 2-(S-L-cysteinyl)-L-threonine." [PubMed:21526839, RESID:AA0625]
+comment: Cross-link 2.
+synonym: "(2R,3R)-2-amino-2-[(2R)-2-amino-2-carboxyethyl]sulfanyl-3-hydroxybutanoic acid" EXACT RESID-systematic []
+synonym: "(2R,5R,6R)-2,5-diamino-5-carboxy-6-hydroxy-4-thiaheptanoic acid" EXACT RESID-alternate []
+synonym: "alpha-(L-cystein-S-yl)-L-threonine" EXACT RESID-alternate []
+xref: DiffAvg: "-2.02"
+xref: DiffFormula: "C 0 H -2 N 0 O 0 S 0"
+xref: DiffMono: "-2.015650"
+xref: Formula: "C 7 H 10 N 2 O 3 S 1"
+xref: MassAvg: "202.23"
+xref: MassMono: "202.041213"
+xref: Origin: "C, T"
+xref: Source: "natural"
+xref: TermSpec: "none"
+is_a: MOD:00917 ! modified L-threonine residue
+is_a: MOD:01992 ! alpha-carbon thioether crosslinked residues
+
+[Term]
+id: MOD:01989
+name: 2-(L-cystein-S-yl)-D-tyrosine
+def: "A protein modification that effectively cross-links an L-cysteine residue and an L-tyrosine residue by a thioether bond to form 2-(S-L-cysteinyl)-D-tyrosine." [PubMed:21526839, RESID:AA0626]
+comment: Cross-link 2.
+synonym: "(2R,5S)-2,5-diamino-5-carboxyl-6-(hydroxyphenyl)-4-thiahexanoic acid" EXACT RESID-alternate []
+synonym: "(2S)-2-amino-2-([(2R)-2-amino-2-carboxyethyl]sulfanyl)-3-(4-hydroxyphenyl)propanoic acid" EXACT RESID-systematic []
+synonym: "alpha-(L-cystein-S-yl)-D-tyrosine" EXACT RESID-alternate []
+xref: DiffAvg: "-2.02"
+xref: DiffFormula: "C 0 H -2 N 0 O 0 S 0"
+xref: DiffMono: "-2.015650"
+xref: Formula: "C 12 H 12 N 2 O 3 S 1"
+xref: MassAvg: "264.30"
+xref: MassMono: "264.056863"
+xref: Origin: "C, Y"
+xref: Source: "natural"
+xref: TermSpec: "none"
+is_a: MOD:00664 ! stereoisomerized residue
+is_a: MOD:00919 ! modified L-tyrosine residue
+is_a: MOD:01992 ! alpha-carbon thioether crosslinked residues
+
+[Term]
+id: MOD:01990
+name: protonated glycine (glycinium) residue
+def: "A protein modification that effectively converts a glycine residue to a glycinium (protonated glycine)." [ChEBI:64723, PubMed:18688235]
+subset: PSI-MOD-slim
+xref: DiffAvg: "1.01"
+xref: DiffFormula: "C 0 H 1 N 0 O 0"
+xref: DiffMono: "1.007276"
+xref: FormalCharge: "1+"
+xref: Formula: "C 2 H 5 N 1 O 1"
+xref: MassAvg: "59.07"
+xref: MassMono: "59.036565"
+xref: Origin: "G"
+xref: Source: "natural"
+xref: TermSpec: "N-term"
+is_a: MOD:00908 ! modified glycine residue
+is_a: MOD:01700 ! alpha-amino protonated residue
+
+[Term]
+id: MOD:01991
+name: N,N,N-trimethylglycine (from glycinium)
+def: "A protein modification that effectively converts a glycinium (protonated glycine) residue to an N,N,N-trimethylglycine." [ChEBI:17750, PubMed:23818633, PubMed:23978223, RESID:AA0619]
+comment: For amino acids residues, amine trimethylation can effectively only be accomplished with an aminium, protonated primary amino, group. This process accounts only for trimethylation and not protonation. The alternative N2Me3+Gly process (MOD:01982) accounts for both protonation and trimethylation.
+subset: PSI-MOD-slim
+synonym: "N2Me3Gly" EXACT PSI-MOD-label []
+xref: DiffAvg: "42.08"
+xref: DiffFormula: "C 3 H 6 N 0 O 0"
+xref: DiffMono: "42.046402"
+xref: FormalCharge: "1+"
+xref: Formula: "C 5 H 11 N 1 O 1"
+xref: MassAvg: "101.15"
+xref: MassMono: "101.083515"
+xref: Origin: "MOD:01990"
+xref: Source: "natural"
+xref: TermSpec: "N-term"
+is_a: MOD:01687 ! alpha-amino trimethylated residue
+relationship: derives_from MOD:01990 ! protonated glycine (glycinium) residue
+
+[Term]
+id: MOD:01992
+name: alpha-carbon thioether crosslinked residues
+def: "A protein modification that crosslinks two residues by formation of a thioether bond between a cysteine thiol and the alpha-carbon of another amino acid residue." [PubMed:18688235]
+is_a: MOD:00687 ! thioether crosslinked residues
+
+[Term]
+id: MOD:01993
+name: beta-carbon thioether crosslinked residues
+def: "A protein modification that crosslinks two residues by formation of a thioether bond between a cysteine thiol and the beta-carbon of another amino acid residue." [PubMed:18688235]
+comment: These are typical lanthionine-like crosslinks.
+is_a: MOD:00687 ! thioether crosslinked residues
+
+[Term]
+id: MOD:01994
+name: N1'-formyl-L-tryptophan
+def: "A protein modification that effectively converts an L-tryptophan residue to N1'-formyl-L-tryptophan." [PubMed:18688235]
+comment: This modifications has not been reported as commonly encountered [JSG].
+synonym: "N1'FoTrp" EXACT PSI-MOD-label []
+xref: DiffAvg: "28.01"
+xref: DiffFormula: "C 1 H 0 N 0 O 1"
+xref: DiffMono: "27.994915"
+xref: Formula: "C 12 H 10 N 2 O 2"
+xref: MassAvg: "214.22"
+xref: MassMono: "214.074228"
+xref: Origin: "W"
+xref: Source: "hypothetical"
+xref: TermSpec: "none"
+is_a: MOD:01106 ! N-formyl-L-tryptophan
+
+[Term]
+id: MOD:01995
+name: N2-formyl-L-tryptophan
+def: "A protein modification that effectively converts an L-tryptophan residue to N2-formyl-L-tryptophan." [PubMed:18688235]
+comment: This modifications has not been reported as commonly encountered [JSG].
+synonym: "N2FoTrp" EXACT PSI-MOD-label []
+xref: DiffAvg: "28.01"
+xref: DiffFormula: "C 1 H 0 N 0 O 1"
+xref: DiffMono: "27.994915"
+xref: Formula: "C 12 H 11 N 2 O 2"
+xref: MassAvg: "215.23"
+xref: MassMono: "215.082053"
+xref: Origin: "W"
+xref: Source: "hypothetical"
+xref: TermSpec: "N-term"
+is_a: MOD:01106 ! N-formyl-L-tryptophan
+
+[Term]
+id: MOD:01996
+name: butanoylated residue
+def: "A protein modification that effectively replaces a hydrogen atom with an butanoyl group." [PubMed:18688235]
+comment: Amino hydrogens are replaced to produce amides; hydroxyl hydrogens are replaced to produce esters; and hydrosulfanyl (thiol) hydrogens are replaced to produce sulfanyl esters (thiol esters).
+synonym: "ButRes" EXACT PSI-MOD-label []
+synonym: "Butyryl" RELATED UniMod-interim []
+synonym: "butyrylation" EXACT PSI-MOD-alternate []
+xref: DiffAvg: "70.09"
+xref: DiffFormula: "C 4 H 6 O 1"
+xref: DiffMono: "70.041865"
+xref: Formula: "none"
+xref: MassAvg: "none"
+xref: MassMono: "none"
+xref: Origin: "X"
+xref: Source: "none"
+xref: TermSpec: "none"
+is_a: MOD:00649 ! acylated residue
+
+[Term]
+id: MOD:01997
+name: N-butanoylated residue
+def: "A protein modification that effectively replaces a residue amino or imino hydrogen with a butanoyl group." [PubMed:18688235]
+synonym: "N-butanoyl" EXACT PSI-MOD-alternate []
+synonym: "N-butanoylation" EXACT PSI-MOD-alternate []
+synonym: "N-butyryl" EXACT PSI-MOD-alternate []
+synonym: "N-butyrylation" EXACT PSI-MOD-alternate []
+synonym: "NButRes" EXACT PSI-MOD-label []
+xref: DiffAvg: "70.09"
+xref: DiffFormula: "C 4 H 6 N 0 O 1"
+xref: DiffMono: "70.041865"
+xref: Formula: "none"
+xref: MassAvg: "none"
+xref: MassMono: "none"
+xref: Origin: "X"
+xref: Source: "none"
+xref: TermSpec: "none"
+is_a: MOD:01996 ! butanoylated residue
+
+[Term]
+id: MOD:01998
+name: alpha-amino butanoylated residue
+def: "A protein modification that effectively replaces a residue alpha-amino- or alpha-imino-hydrogen with a butanoyl group." [PubMed:18688235]
+synonym: "N2ButRes" EXACT PSI-MOD-label []
+xref: DiffAvg: "70.09"
+xref: DiffFormula: "C 4 H 6 N 0 O 1"
+xref: DiffMono: "70.041865"
+xref: Formula: "none"
+xref: MassAvg: "none"
+xref: MassMono: "none"
+xref: Origin: "X"
+xref: Source: "artifact"
+xref: TermSpec: "N-term"
+is_a: MOD:01997 ! N-butanoylated residue
+
+[Term]
+id: MOD:01999
+name: N6-(11-cis)-retinylidene-L-lysine
+def: "A protein modification that effectively converts an L-lysine residue to N6-retinylidene-(11-cis)-L-lysine." [PubMed:18688235]
+synonym: "(2S)-2-amino-6-[(2E,4Z,6E,8E)-3,7-dimethyl-9-(2,6,6-trimethylcyclohex-1-en-1-yl)-2,4,6,8-nonatetraenylidene]aminohexanoic acid" EXACT PSI-MOD-alternate []
+xref: DiffAvg: "266.43"
+xref: DiffFormula: "C 20 H 26 N 0 O 0"
+xref: DiffMono: "266.203451"
+xref: Formula: "C 26 H 38 N 2 O 1"
+xref: MassAvg: "394.60"
+xref: MassMono: "394.298414"
+xref: Origin: "K"
+xref: Source: "natural"
+xref: TermSpec: "none"
+is_a: MOD:02000 ! N6-retinylidene-L-lysine (unspecified geometric isomer)
+
+[Term]
+id: MOD:02000
+name: N6-retinylidene-L-lysine (unspecified geometric isomer)
+def: "A protein modification that effectively converts an L-lysine residue to N6-retinylidene-L-lysine (unspecified geometric isomer)." [PubMed:18688235]
+synonym: "(2S)-2-amino-6-[3,7-dimethyl-9-(2,6,6-trimethylcyclohex-1-en-1-yl)-2,4,6,8-nonatetraenylidene]aminohexanoic acid" EXACT PSI-MOD-alternate []
+xref: DiffAvg: "266.43"
+xref: DiffFormula: "C 20 H 26 N 0 O 0"
+xref: DiffMono: "266.203451"
+xref: Formula: "C 26 H 38 N 2 O 1"
+xref: MassAvg: "394.60"
+xref: MassMono: "394.298414"
+xref: Origin: "K"
+xref: Source: "natural"
+xref: TermSpec: "none"
+is_a: MOD:00912 ! modified L-lysine residue
 
 [Typedef]
 id: contains
@@ -38197,4 +38523,3 @@ id: part_of
 name: part of
 def: "'Entity A' part_of 'Entity B' implies that 'Entity A' is a part of the structure of 'Entity B'." [PubMed:18688235]
 is_transitive: true
-
