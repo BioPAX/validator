@@ -51,7 +51,7 @@ import org.springframework.stereotype.Component;
 public class DataPropertyIllegalValueRule extends AbstractRule<BioPAXElement> {
 
 	private static final Collection<String> warnOnDataPropertyValues = 
-			Arrays.asList("0", "-1", "NULL", "NIL");
+			Arrays.asList("0", "-1", "NULL", "NIL", "NONE", "N/A");
 	
 	public boolean canCheck(Object thing) {
 		return thing instanceof BioPAXElement;

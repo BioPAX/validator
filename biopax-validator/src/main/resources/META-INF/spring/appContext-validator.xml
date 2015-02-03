@@ -51,6 +51,10 @@
 	-->
 	<util:set id="extraDbSynonyms">
 		<list>
+			<value>PDB</value>
+			<value>RCSB PDB</value>
+		</list>
+		<list>
 			<value>ENTREZ GENE</value>
 			<value>ENTREZ_GENE</value>
 			<value>LOCUS_LINK</value>
