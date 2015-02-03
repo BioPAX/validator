@@ -69,6 +69,12 @@ public class DataPropertyIllegalValueRule extends AbstractRule<BioPAXElement> {
 					if (warnOnDataPropertyValues.contains(range.toString().trim().toUpperCase())) {
 						error(validation, domain, "illegal.property.value", 
 								validation.isFix(), editor.getProperty(), range);
+						if(validation.isFix()) {
+							if(editor.isMultipleCardinality())
+								editor.removeValueFromBean(range, domain);
+							if(!editor.isMultipleCardinality())
+								editor.setValueToBean(null, domain);
+						}
 					}
 				}
 			}
