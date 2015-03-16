@@ -59,28 +59,33 @@ public class SimplePhysicalEntityConversionRule extends AbstractRule<SimplePhysi
     			   || conversion instanceof Degradation) {
     		   continue; //ignore these conversion types
     	   }
-    	   Set<PhysicalEntity> side = conversion.getLeft();
-    	   if(side.contains(spe))
-    		   side = conversion.getRight();
+    	   
+    	   Set<SimplePhysicalEntity> side = 
+    			   new ClassFilterSet<PhysicalEntity,SimplePhysicalEntity>(
+    					   conversion.getLeft(), SimplePhysicalEntity.class);
+    	   
+    	   if(side.contains(spe)) //then compare with the other side
+    		   side = new ClassFilterSet<PhysicalEntity,SimplePhysicalEntity>(
+					   conversion.getRight(), SimplePhysicalEntity.class);
   
     	   if(!sameKindEntityExists(spe, side))
     		   error(validation, spe, "illegal.conversion", false, conversion);
     	}
     }
     
-    boolean sameKindEntityExists(SimplePhysicalEntity spe, Set<PhysicalEntity> side) 
+    boolean sameKindEntityExists(SimplePhysicalEntity spe, Set<SimplePhysicalEntity> side) 
     {    	
     	assert !(spe instanceof SmallMolecule);
     	
     	boolean ret = false;
     	
-    	for (PhysicalEntity value : side) {
-			if (value instanceof SimplePhysicalEntity) {
-				SimplePhysicalEntity that = (SimplePhysicalEntity) value;
-				if( !(value instanceof SmallMolecule)
-					&& that.getEntityReference() != null
-					&& that.getEntityReference().isEquivalent(spe.getEntityReference())) 
-					return true;
+    	for (SimplePhysicalEntity value : side) 
+    	{
+			if (!(value instanceof SmallMolecule)) 
+			{
+				if(value.getEntityReference() != null
+					&& value.getEntityReference().isEquivalent(spe.getEntityReference())) 
+						return true;
 			}
 		}
   	
