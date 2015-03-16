@@ -1,5 +1,5 @@
 format-version: 1.2
-date: 09:04:2014 14:03
+date: 22:10:2014 18:45
 saved-by: Marion
 auto-generated-by: OBO-Edit 2.3-beta5
 synonymtypedef: GE "LANGUAGE GERMAN"
@@ -5450,7 +5450,7 @@ is_a: BTO:0001131 ! BHK cell
 id: BTO:0000675
 name: SW-620 cell
 namespace: BrendaTissueOBO
-def: "Human, Caucasian, colon, adenocarcinoma cell line; established from the tissue of a 51-year-old Caucasian male." [HyperCLDB:http\://www.biotech.ist.unige.it/]
+def: "Human, Caucasian, colon, adenocarcinoma cell line, established from the tissue of a 51-year-old Caucasian male." [HyperCLDB:http\://www.biotech.ist.unige.it/]
 synonym: "SW620 cell" RELATED []
 is_a: BTO:0001913 ! colonic adenocarcinoma cell line
 
@@ -8030,7 +8030,7 @@ namespace: BrendaTissueOBO
 def: "Acute megakaryocytic leukemia is a rare subtype of acute myeloid leukemia evolving from primitive megakaryoblasts." [PMID:11001891]
 synonym: "AMegL cell line" RELATED []
 is_a: BTO:0000737 ! leukemia cell line
-is_a: BTO:0001549 ! megakaryocytic cell line
+is_a: BTO:0001549 ! megakaryocyte cell line
 
 [Term]
 id: BTO:0001001
@@ -8783,7 +8783,7 @@ is_a: BTO:0000214 ! cell culture
 id: BTO:0001092
 name: KATO-III cell
 namespace: BrendaTissueOBO
-def: "Species: human, Mongoloid male 55-year-old; Tissue: stomach; Tumor: carcinoma." [HyperCLDB:http\://www.biotech.ist.unige.it/]
+def: "Human stomach carcinoma cell line, established from a 55 years old mongoloid male." [HyperCLDB:http\://www.biotech.ist.unige.it/]
 synonym: "KATO III cell" RELATED []
 is_a: BTO:0000787 ! gastric cancer cell line
 
@@ -9062,6 +9062,7 @@ id: BTO:0001127
 name: primary culture
 namespace: BrendaTissueOBO
 def: "Freshly isolated cultures from mammalian tissues are known as primary cultures until sub-cultured. At this stage, cells are usually heterogeneous but still closely represent the parent cell types as well as in the expression of tissue specific properties. After several sub-cultures onto fresh media, the cell line will either die out or transform to become a continuous cell line. Such cell lines show many alterations from the primary cultures including change in morphology, chromosomal variation and increase in capacity to give rise to tumors in hosts with week immune systems." [University_of_British_Columbia_Biotechnology_Laboratory:http\://www.biotech.ubc.ca/db/TEACH/TLEF/006.html]
+synonym: "primary cell culture" RELATED []
 is_a: BTO:0000214 ! cell culture
 
 [Term]
@@ -10281,7 +10282,7 @@ id: BTO:0001280
 name: BmN4-IR cell
 namespace: BrendaTissueOBO
 def: "Silkworm, Bombyx mori, cell line derived from ovary." [RIKEN_BioResource_Center:http\://www2.brc.riken.jp/]
-is_a: BTO:0001267 ! BmN cell
+relationship: develops_from BTO:0005690 ! BmN4 cell
 created_by: XPMUser
 creation_date: 2011-02-23T09:31:21Z
 
@@ -12398,8 +12399,9 @@ is_a: BTO:0001203 ! salivary gland
 
 [Term]
 id: BTO:0001549
-name: megakaryocytic cell line
+name: megakaryocyte cell line
 namespace: BrendaTissueOBO
+synonym: "megakaryocytic cell line" RELATED []
 relationship: develops_from BTO:0000843 ! megakaryocyte
 
 [Term]
@@ -12407,7 +12409,7 @@ id: BTO:0001550
 name: Dami cell
 namespace: BrendaTissueOBO
 def: "Human megakaryocytic cell line." [PMID:12670444, PMID:9804859]
-is_a: BTO:0001549 ! megakaryocytic cell line
+is_a: BTO:0001549 ! megakaryocyte cell line
 
 [Term]
 id: BTO:0001551
@@ -13072,6 +13074,7 @@ name: arachnoid mater
 namespace: BrendaTissueOBO
 def: "A delicate membrane that encloses the spinal cord and brain and lies between the pia mater and dura mater." [The_American_Heritage_Dictionary_of_the_English_Language:Fourth_Edition._2000.]
 synonym: "arachnoid" RELATED []
+synonym: "arachnoid membrane" RELATED []
 synonym: "arachnoidea mater" RELATED []
 relationship: part_of BTO:0001634 ! leptomeninx
 
@@ -13676,6 +13679,7 @@ id: BTO:0001710
 name: corpora quadrigemina
 namespace: BrendaTissueOBO
 def: "Two pairs of colliculi on the dorsal surface of the midbrain composed of white matter externally and gray matter within, the superior pair containing correlation centers for optic reflexes and the inferior pair containing correlation centers for auditory reflexes." [Fast_Health_Medical_Dictionary:http\://www.fasthealth.com/dictionary/]
+synonym: "midbrain colliculus" RELATED []
 relationship: part_of BTO:0001793 ! tectum mesencephali
 
 [Term]
@@ -13729,7 +13733,7 @@ id: BTO:0001717
 name: BmN4-DR cell
 namespace: BrendaTissueOBO
 def: "Silkworm, Bombyx mori, cell line derived from ovary." [RIKEN_BioResource_Center:http\://www2.brc.riken.jp/]
-is_a: BTO:0001267 ! BmN cell
+relationship: develops_from BTO:0005690 ! BmN4 cell
 created_by: XPMUser
 creation_date: 2011-02-23T09:32:12Z
 
@@ -17167,6 +17171,7 @@ namespace: BrendaTissueOBO
 def: "A thin membranous, sometimes alveolated sac in the dorsal portion of the abdominal cavity. Contains a varying mixture of gases, not identical to the composition of air. May be one, two or three chambered. May be connected to the gut by a tube, the ductus pneumaticus (then called physostomous) or unconnected (then called physoclistous). May function as one or more of:- hydrostatic organ, sound producing organ, sound receptor, respiratory organ. Found in Actinopterygii. Often lacking in bottom fishes." [Dictionary_of_Ichthyology:http\://www.briancoad.com/Dictionary/Introduction.htm]
 is_a: BTO:0000123 ! bladder
 relationship: part_of BTO:0000020 ! abdomen
+
 
 [Term]
 id: BTO:0002149
@@ -23958,16 +23963,18 @@ is_a: BTO:0001033 ! prostate cancer cell line
 
 [Term]
 id: BTO:0002998
-name: LNCaP-C42B4 cell
+name: LNCaP-C4-2B4 cell
 namespace: BrendaTissueOBO
 def: "Androgen-insensitive subline of LNCaP." [PMID:17426117]
+synonym: "C4-2B4cell" RELATED []
 relationship: develops_from BTO:0001321 ! LNCaP cell
 
 [Term]
 id: BTO:0002999
-name: 22Rv1 cell
+name: 22Rv-1 cell
 namespace: BrendaTissueOBO
 def: "Human prostate carcinoma cell line; derived from a human prostate carcinoma xenograft (CWR22R) that was serially propagated in nude mice after castration-induced regression and relapse of the parental, androgen-dependent CWR22 xenograft." [Deutsche_Sammlung_von_Mikroorganismen_und_Zellkulturen_GmbH:DSMZ]
+synonym: "22Rv1 cell" RELATED []
 synonym: "CWR22-Rv1 cell" RELATED []
 synonym: "CWR22R-V1 cell" RELATED []
 synonym: "CWR22Rv1 cell" RELATED []
@@ -24868,11 +24875,12 @@ relationship: develops_from BTO:0000801 ! macrophage
 
 [Term]
 id: BTO:0003108
-name: CL-1 prostate cancer cell
+name: ChaGo-K-1 cell
 namespace: BrendaTissueOBO
-def: "Human prostate cancer cell line." [PMID:15967408]
-synonym: "CL1 cell" RELATED []
-is_a: BTO:0001033 ! prostate cancer cell line
+def: "Human lung bronchus carcinoma cell line, derived from a bronchogenic carcinoma of a 45-year-old male." [ATCC_American_Cell_Type_Culture_Collection:http\://www.lgcstandards-atcc.org/]
+is_a: BTO:0000762 ! lung cancer cell line
+created_by: Marion
+creation_date: 2014-09-05T10:41:55Z
 
 [Term]
 id: BTO:0003109
@@ -26204,8 +26212,8 @@ is_a: BTO:0000741 ! lymphocytic leukemia cell line
 id: BTO:0003277
 name: H2.35 cell
 namespace: BrendaTissueOBO
-def: "Epithelial-like cell line derived from a primary hepatocyte culture. Cells were collected from the livers of 6 week old female BALB/c mice, incubated at 33C, and infected with tsA255 (a temperature-sensitive mutant of SV40 virus)." [ATCC_American_Cell_Type_Culture_Collection:http\://www.lgcstandards-atcc.org/]
-is_a: BTO:0000224 ! liver cell line
+def: "Mouse epithelial-like hepatoma cell line derived from a primary hepatocyte culture from the livers of 6 week old female BALB/c mice." [ATCC_American_Cell_Type_Culture_Collection:http\://www.lgcstandards-atcc.org/]
+is_a: BTO:0000578 ! hepatoma cell line
 
 [Term]
 id: BTO:0003278
@@ -26755,10 +26763,12 @@ is_a: BTO:0003221 ! corneal cell line
 
 [Term]
 id: BTO:0003347
-name: C4-2 cell
+name: HEK-293 Tet-On 3G cell
 namespace: BrendaTissueOBO
-def: "Human prostate cancer cell line." [PMID:16434977]
-is_a: BTO:0001033 ! prostate cancer cell line
+def: "HEK 293 Tet-On 3G is a transformed human embryonic kidney-derived cell line that expresses the tetracycline (Tet)- regulated transactivator Tet-On 3G." [Clontech:http\://www.clontech.com/US/Products/Inducible_Systems/Tetracycline-Inducible_Expression/Tet-On_3G_Cell_Lines]
+relationship: develops_from BTO:0000007 ! HEK-293 cell
+created_by: Marion
+creation_date: 2014-09-05T10:51:05Z
 
 [Term]
 id: BTO:0003348
@@ -31278,10 +31288,10 @@ relationship: part_of BTO:0000713 ! leaf
 
 [Term]
 id: BTO:0003939
-name: lutein cell
+name: luteal cell
 namespace: BrendaTissueOBO
 def: "A cell of the corpus luteum of the ovary." [Medical_Dictionary:http\://medical-dictionary.thefreedictionary.com/]
-synonym: "luteal cell" RELATED []
+synonym: "lutein cell" RELATED []
 relationship: part_of BTO:0000292 ! corpus luteum
 
 [Term]
@@ -40327,9 +40337,10 @@ creation_date: 2010-10-28T12:29:08Z
 
 [Term]
 id: BTO:0004959
-name: C4-2B cell
+name: LNCAP-C4-2B cell
 namespace: BrendaTissueOBO
 def: "LNCaP-derivative C4-2B prostate cancer cell line." [PMID:11351351]
+synonym: "C4-2B cell" RELATED []
 synonym: "LNCAP C4-2B cell" RELATED []
 relationship: develops_from BTO:0001321 ! LNCaP cell
 created_by: Marion Gremse
@@ -40361,7 +40372,7 @@ namespace: BrendaTissueOBO
 def: "Acute megakaryocytic leukemia is a rare subtype of acute myeloid leukemia evolving from primitive megakaryoblasts." [PMID:11001891]
 synonym: "AMegL cell" RELATED []
 is_a: BTO:0001271 ! leukemia cell
-is_a: BTO:0001549 ! megakaryocytic cell line
+is_a: BTO:0001549 ! megakaryocyte cell line
 created_by: Marion Gremse
 creation_date: 2010-10-28T12:45:45Z
 
@@ -42978,6 +42989,7 @@ id: BTO:0005238
 name: T-REx 293 cell
 namespace: BrendaTissueOBO
 def: "Human embryonic kidney cell line stably expressing the tetracycline (Tet) repressor." [PMID:19667409]
+synonym: "T-REx  HEK-293 cell" RELATED []
 relationship: develops_from BTO:0000007 ! HEK-293 cell
 created_by: XPMUser
 creation_date: 2011-09-24T11:06:39Z
@@ -46967,6 +46979,298 @@ relationship: part_of BTO:0005661 ! buccal mass
 created_by: Marion
 creation_date: 2014-04-09T10:49:07Z
 
+[Term]
+id: BTO:0005663
+name: culture condition:autotrophically-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: Marion
+creation_date: 2014-09-02T09:26:00Z
+
+[Term]
+id: BTO:0005664
+name: COGA-1A cell
+namespace: BrendaTissueOBO
+def: "A moderately differentiated human colon cancer cell line." [PMID:24176760]
+synonym: "Coga-1A cell" RELATED []
+synonym: "Coga1A cell" RELATED []
+is_a: BTO:0000797 ! colonic cancer cell line
+created_by: Marion
+creation_date: 2014-09-05T08:00:59Z
+
+[Term]
+id: BTO:0005665
+name: COGA-13 cell
+namespace: BrendaTissueOBO
+def: "Human colon cancer cell line." [PMID:22940288]
+synonym: "Coga-13 cell" RELATED []
+synonym: "Coga13 cell" RELATED []
+is_a: BTO:0000797 ! colonic cancer cell line
+created_by: Marion
+creation_date: 2014-09-05T08:06:23Z
+
+[Term]
+id: BTO:0005666
+name: Caco-2/AQ cell
+namespace: BrendaTissueOBO
+def: "A differentiated human colon cancer cell line." [PMID:24176760]
+synonym: "Caco2/AQ cell" RELATED []
+is_a: BTO:0000195 ! CACO-2 cell
+created_by: Marion
+creation_date: 2014-09-05T08:09:10Z
+
+[Term]
+id: BTO:0005667
+name: NCI-H889 cell
+namespace: BrendaTissueOBO
+def: "Human small cell lung cancer cell line, established from a 69 years old caucasian female, derived from the lymph node, stage E carcinoma." [ATCC_American_Cell_Type_Culture_Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "H-889 cell" RELATED []
+synonym: "H889 cell" RELATED []
+is_a: BTO:0002206 ! small cell lung cancer cell line
+created_by: Marion
+creation_date: 2014-09-05T08:24:17Z
+
+[Term]
+id: BTO:0005668
+name: DMS-53 cell
+namespace: BrendaTissueOBO
+def: "Human small cell lung cancer cell line, established from a 54 years old caucasian male." [ATCC_American_Cell_Type_Culture_Collection:http\://www.lgcstandards-atcc.org/]
+synonym: "DMS 53 cell" RELATED []
+synonym: "DMS53 cell" RELATED []
+is_a: BTO:0002206 ! small cell lung cancer cell line
+created_by: Marion
+creation_date: 2014-09-05T08:28:47Z
+
+[Term]
+id: BTO:0005669
+name: NCI-H295A cell
+namespace: BrendaTissueOBO
+def: "NCI-H295A cells are an adherent subline of human adrenocortical carcinoma NCI-H295 cells that express all adrenal steroidogenic enzymes in a physiologically appropriate, hormonal responsive fashion." [PMID:23836902]
+synonym: "H295A cell" RELATED []
+relationship: develops_from BTO:0002587 ! NCI-H295 cell
+created_by: Marion
+creation_date: 2014-09-05T08:38:16Z
+
+[Term]
+id: BTO:0005670
+name: C-20/A4 cell
+namespace: BrendaTissueOBO
+def: "Human chondrocyte cell line, derived from juvenile costal chondrocytes by immortalization with origin-defective simian virus 40 large T antigen." [PMID:15604530]
+is_a: BTO:0003858 ! chondrocyte cell line
+created_by: Marion
+creation_date: 2014-09-05T10:12:22Z
+
+[Term]
+id: BTO:0005671
+name: KGN cell
+namespace: BrendaTissueOBO
+def: "A steroidogenic human ovarian granulosa-like tumor cell line, from a patient with invasive ovarian granulosa cell carcinoma." [PMID:11145608]
+is_a: BTO:0002285 ! granulosa cell line
+created_by: Marion
+creation_date: 2014-09-05T10:19:11Z
+
+[Term]
+id: BTO:0005672
+name: LNCaP-C4-2 cell
+namespace: BrendaTissueOBO
+def: "LNCaP and its derivative cell lines, which include C4-2 and the related C4-2B and CL1, are used as models of prostate cancer." [PMID:15162376]
+synonym: "C4-2 cell" RELATED []
+synonym: "LNCaP-C4-2 cell" RELATED []
+relationship: develops_from BTO:0001321 ! LNCaP cell
+created_by: Marion
+creation_date: 2014-09-05T10:26:51Z
+
+[Term]
+id: BTO:0005673
+name: LNCaP-CL1 cell
+namespace: BrendaTissueOBO
+def: "LNCaP and its derivative cell lines, which include C4-2 and the related C4-2B and CL1, are used as models of prostate cancer." [PMID:15162376]
+synonym: "CL-1 prostate cancer cell" RELATED []
+synonym: "CL1 cell" RELATED []
+synonym: "LNCaP-C4-2 cell" RELATED []
+relationship: develops_from BTO:0001321 ! LNCaP cell
+created_by: Marion
+creation_date: 2014-09-05T10:30:22Z
+
+[Term]
+id: BTO:0005674
+name: SW-60 cell
+namespace: BrendaTissueOBO
+def: "Human colorectal tumor cell line." [PMID:15806169]
+is_a: BTO:0001616 ! colorectal cancer cell line
+created_by: Marion
+creation_date: 2014-09-05T11:01:14Z
+
+[Term]
+id: BTO:0005675
+name: BNL-HCC cell
+namespace: BrendaTissueOBO
+def: "Mouse hepatoma cell line derived from the normal BALB/c embryonic liver cell line BNL CL2." [PMID:22427965]
+is_a: BTO:0000578 ! hepatoma cell line
+created_by: Marion
+creation_date: 2014-09-05T11:10:09Z
+
+[Term]
+id: BTO:0005676
+name: vaginal mucosa
+namespace: BrendaTissueOBO
+def: "The mucosal layer of the vagina." [Medical_Dictionary:http\://medical-dictionary.thefreedictionary.com/]
+synonym: "mucosa of vagina" RELATED []
+synonym: "mucous membrane of vagina" RELATED []
+synonym: "tunica mucosa vaginae" RELATED []
+is_a: BTO:0000243 ! vagina
+created_by: Marion
+creation_date: 2014-09-10T13:19:26Z
+
+[Term]
+id: BTO:0005677
+name: BmN4-SID1 cell
+namespace: BrendaTissueOBO
+def: "Silkworm ovary-derived cell line, ectopically expressing Caenorhabditis elegans transmembrane protein SID-1, which functions as a channel for the transport of dsRNA." [PMID:24773378]
+relationship: develops_from BTO:0005690 ! BmN4 cell
+created_by: Marion
+creation_date: 2014-09-05T11:17:51Z
+
+[Term]
+id: BTO:0005678
+name: cervicovaginal cell
+namespace: BrendaTissueOBO
+def: "Cell of or relating to the uterine cervix and the vagina." [From_Merriam-Webster's_Online_Dictionary_at_www.Merriam-Webster.com:http\://www.merriam-webster.com/dictionary/cervicovaginal]
+relationship: part_of BTO:0000243 ! vagina
+relationship: part_of BTO:0001424 ! uterus
+created_by: Marion
+creation_date: 2014-09-10T13:24:49Z
+
+[Term]
+id: BTO:0005679
+name: small luteal cell
+namespace: BrendaTissueOBO
+def: "Small luteal cells are derived from follicular theca cells." [curators:mgr]
+synonym: "thecal-lutein cell" RELATED []
+is_a: BTO:0003939 ! luteal cell
+created_by: Marion
+creation_date: 2014-09-10T13:35:57Z
+
+[Term]
+id: BTO:0005680
+name: large luteal cell
+namespace: BrendaTissueOBO
+def: "Large luteal cells are derived from  follicular granulosa cells." [curators:mgr]
+synonym: "granulosal-lutein cell" RELATED []
+is_a: BTO:0003939 ! luteal cell
+created_by: Marion
+creation_date: 2014-09-10T13:38:41Z
+
+[Term]
+id: BTO:0005681
+name: storage root
+namespace: BrendaTissueOBO
+def: "A modified root for storage of food or water, such as carrots and beets." [Wikipedia:The_Free_Encyclopedia]
+is_a: BTO:0001188 ! root
+created_by: Marion
+creation_date: 2014-09-10T14:00:43Z
+
+[Term]
+id: BTO:0005682
+name: 2B4-T cell
+namespace: BrendaTissueOBO
+def: "Mouse 2B4 T hybridoma cell line." [PMID:17850179]
+synonym: "2B4 T cell" RELATED []
+synonym: "2B4-T hybridoma cell" RELATED []
+is_a: BTO:0001926 ! hybridoma cell line
+created_by: Marion
+creation_date: 2014-09-10T14:06:45Z
+
+[Term]
+id: BTO:0005683
+name: VK-2/E6E7 cell
+namespace: BrendaTissueOBO
+def: "The vaginal epithelial cell line VK-2/E6E7 was derived from epithelial cells of vaginal mucosal tissue from a 32-years-old premenopausal woman undergoing anterior-posterior repair and was demonstrated to have structural and functional properties similar to those of their parental primary cells." [PMID:23153564]
+is_a: BTO:0002936 ! vaginal cell line
+created_by: Marion
+creation_date: 2014-09-12T14:22:33Z
+
+[Term]
+id: BTO:0005684
+name: MYP-30 cell
+namespace: BrendaTissueOBO
+def: "A pig endothelial cell line." [PMID:22564646]
+synonym: "MYP30 cell" RELATED []
+is_a: BTO:0001519 ! endothelial cell line
+created_by: Marion
+creation_date: 2014-09-12T14:42:19Z
+
+[Term]
+id: BTO:0005685
+name: culture condition:4-hydroxybutyrate-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: Marion
+creation_date: 2014-10-21T08:58:19Z
+
+[Term]
+id: BTO:0005686
+name: culture condition:heterotrophically-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: Marion
+creation_date: 2014-10-21T09:00:15Z
+
+[Term]
+id: BTO:0005687
+name: culture condition:D-tagatose-grown cell
+namespace: BrendaTissueOBO
+is_a: BTO:0001479 ! culture condition:-grown cell
+created_by: Marion
+creation_date: 2014-10-21T09:01:32Z
+
+[Term]
+id: BTO:0005688
+name: shoot meristem
+namespace: BrendaTissueOBO
+def: "The tissue that produces all aerial parts of the plant, which include the stem as well as lateral structures, such as leaves and flowers." [Dictionary_Biology-Forums:http\://biology-forums.com/definitions/index.php?title=Shoot_meristem]
+is_a: BTO:0000852 ! meristem
+relationship: part_of BTO:0001243 ! shoot
+created_by: Marion
+creation_date: 2014-10-21T10:32:19Z
+
+[Term]
+id: BTO:0005689
+name: atrioventricular node
+namespace: BrendaTissueOBO
+def: "A small mass of specialized cardiac muscle fibers, located in the wall of the right atrium of the heart, that receives heartbeat impulses from the sinoatrial node and directs them to the walls of the ventricles." [The_American_Heritage_Dictionary_of_the_English_Language:Fourth_Edition_copyright_2000]
+relationship: part_of BTO:0001703 ! right atrium
+created_by: Marion
+creation_date: 2014-10-21T11:14:00Z
+
+[Term]
+id: BTO:0005690
+name: BmN4 cell
+namespace: BrendaTissueOBO
+def: "Bombyx mori ovary-derived cultured cell line." [PMID:19460866]
+relationship: develops_from BTO:0001267 ! BmN cell
+created_by: Marion
+creation_date: 2014-10-22T18:07:00Z
+
+[Term]
+id: BTO:0005691
+name: RCC-4 cell
+namespace: BrendaTissueOBO
+def: "Renal cell carcinoma cell line stably transfected with an empty expression vector, pcDNA3, conferring neomycin resistance." [European_collection_of_cell_cultures:ECACC]
+synonym: "RCC4 cell" RELATED []
+is_a: BTO:0000383 ! renal cell carcinoma cell line
+created_by: Marion
+creation_date: 2014-10-22T18:13:27Z
+
+[Term]
+id: BTO:0005692
+name: column
+namespace: BrendaTissueOBO
+def: "Sheath or structure formed by the uniting of stamens around the pistil." [Plant_Glossary:http\://www.vplants.org/plants/glossary/]
+relationship: develops_from BTO:0001559 ! stamen
+created_by: Marion
+creation_date: 2014-10-22T18:44:09Z
+
 [Typedef]
 id: develops_from
 name: derives from/develops from
@@ -46986,4 +47290,5 @@ namespace: BrendaTissueOBO
 id: related_to
 name: related to
 namespace: BrendaTissueOBO
+
 
