@@ -182,7 +182,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
         }
         logger.info("Relationship processing done");
 
-        //add to Ontology
+        //add to OntologyAccess
         ontBean.setTerms(ontologyTerms.values());
 
     }
@@ -1252,16 +1252,16 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
 
 
     /**
-     * returns the Ontology that has been loaded from file.
+     * returns the OntologyAccess that has been loaded from file.
      *
-     * @return returns the Ontology that has been loaded from file.
+     * @return returns the OntologyAccess that has been loaded from file.
      * @throws IllegalStateException if the bean has not been properly initialized.
      */
     public Ontology getOntology() throws IOException {
         if (ontBean != null)
             return ontBean;
         else {
-            throw new IllegalStateException("Ontology bean not properly initialized. Did you call the proper sequence of methods: configure(), parse(), process()?");
+            throw new IllegalStateException("OntologyAccess bean not properly initialized. Did you call the proper sequence of methods: configure(), parse(), process()?");
         }
     }
 

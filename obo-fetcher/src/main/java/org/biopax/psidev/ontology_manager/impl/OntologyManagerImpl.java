@@ -25,22 +25,20 @@ package org.biopax.psidev.ontology_manager.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.psidev.ontology_manager.Ontology;
+import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyManager;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
-
-import java.io.File;
 import java.net.*;
 import java.util.*;
 
 /**
- * Central access to configured Ontology.
+ * Central access to configured OntologyAccess.
  *
  * @author Florian Reisinger
- * @Samuel Kerrien (skerrien@ebi.ac.uk)
+ * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @author rodche (baderlab.org) - re-factored for the BioPAX Validator
  * @since 2.0.0
  */
@@ -52,19 +50,19 @@ public class OntologyManagerImpl implements OntologyManager {
     
     /**
      * The Map that holds the Ontologies.
-     * The key is the ontology ID and the value is a ontology inplementing the Ontology interface.
+     * The key is the ontology ID and the value is a ontology inplementing the OntologyAccess interface.
      */
-    private Map<String, Ontology> ontologies;
+    private Map<String, OntologyAccess> ontologyMap;
 
     /**
-     * Create a new OntologyManagerImpl with no configuration (no associated ontologies).
+     * Create a new OntologyManagerImpl with no configuration (no associated ontologyAccess).
      */
     public OntologyManagerImpl() {
-        ontologies = new HashMap<String, Ontology>();
+    	ontologyMap = new HashMap<String, OntologyAccess>();
     }
 
     /** 
-     * Creates a new OntologyManagerImpl managing the ontologies specified in the config map.
+     * Creates a new OntologyManagerImpl managing the ontologyAccess specified in the config map.
      *
      * @param cfg configuration properties for the manager (ID=resource_location).
      * @throws OntologyLoaderException if the config file could not be parsed or the loading of a ontology failed.
@@ -78,31 +76,26 @@ public class OntologyManagerImpl implements OntologyManager {
 	}
 
 
-    public Ontology putOntology( String ontologyID, Ontology ontology ) {
-        if ( ontologies.containsKey( ontologyID ) ) {
-            log.warn( "Ontology with the ID '" + ontologyID + "' already exists. Overwriting!" );
+    public void putOntology( String ontologyID, OntologyAccess ontologyAccess ) {
+        if ( ontologyMap.containsKey( ontologyID ) ) {
+            log.warn( "OntologyAccess with the ID '" + ontologyID + "' already exists. Overwriting!" );
         }
-        return ontologies.put( ontologyID, ontology );
+        ontologyMap.put( ontologyID, ontologyAccess );
     }
 
 
     public Set<String> getOntologyIDs() {
-        return ontologies.keySet();
+        return ontologyMap.keySet();
     }
 
 
-    public Ontology getOntology( String ontologyID ) {
-        return ontologies.get( ontologyID );
-    }
-
-
-    public void setOntologyDirectory( File ontologyDirectory ) {
-        OntologyManagerContext.getInstance().setOntologyDirectory( ontologyDirectory );
+    public OntologyAccess getOntology( String ontologyID ) {
+        return ontologyMap.get( ontologyID );
     }
 
 
     public boolean containsOntology( String ontologyID ) {
-        return ontologies.containsKey( ontologyID );
+        return ontologyMap.containsKey( ontologyID );
     }
 
     
@@ -116,8 +109,7 @@ public class OntologyManagerImpl implements OntologyManager {
             	try {
                 	URI uri = LOADER.getResource(config.getProperty(key)).getURI();
                		log.info( "Loading ontology: ID= " + ontId + ", uri=" + uri);
-
-                    Ontology oa = fetchOntology( key, "OBO", uri );
+                    OntologyAccess oa = fetchOntology( key, "OBO", uri );
                     putOntology(key, oa);
                 } catch ( Throwable e ) { //using Throwable because StackOverflowError is also possible here
                     throw new OntologyLoaderException("Failed loading/parsing ontology " + key 
@@ -125,13 +117,13 @@ public class OntologyManagerImpl implements OntologyManager {
                 }
             }
         } else {
-        	throw new OntologyLoaderException("Ontology configuration map is missing or empty (map)!");
+        	throw new OntologyLoaderException("OntologyAccess configuration map is missing or empty (map)!");
         }
     }
     
-    protected Ontology fetchOntology( String ontologyID, String format, URI uri ) 
+    protected OntologyAccess fetchOntology( String ontologyID, String format, URI uri ) 
     	throws OntologyLoaderException {
-    	Ontology oa = null;
+    	OntologyAccess oa = null;
     	
         // check the format
         if ( "OBO".equals( format ) ) {
@@ -146,9 +138,9 @@ public class OntologyManagerImpl implements OntologyManager {
                 }
 
                 // parse the URL and load the ontology
-                OboLoader loader = new OboLoader( );
+                OboLoader loader = new OboLoader();
                 try {
-                    log.debug( "Parsing URL: " + url );
+                    log.debug( "Parsing ontology at URL: " + url );
                     oa = loader.parseOboFile( url, ontologyID );
                     oa.setName(ontologyID);
                 } catch ( Exception e ) {
@@ -159,7 +151,7 @@ public class OntologyManagerImpl implements OntologyManager {
             throw new OntologyLoaderException( "Unsupported ontology format: " + format );
         }
 
-        log.info( "Successfully created OntologyImpl from values: ontology="
+        log.info( "Successfully created OntologyAccessImpl from values: ontology="
               + ontologyID + " format=" + format + " location=" + uri );
         
         return oa;
@@ -180,7 +172,7 @@ public class OntologyManagerImpl implements OntologyManager {
 			ontologyIDs.retainAll(ontologies);
 		
 		for(String ontologyId: ontologyIDs) {
-			Ontology oa = getOntology(ontologyId);
+			OntologyAccess oa = getOntology(ontologyId);
 			for(OntologyTermI term : oa.getOntologyTerms()) {
 				String prefName = term.getPreferredName();
 				if(prefName == null) {
@@ -213,5 +205,22 @@ public class OntologyManagerImpl implements OntologyManager {
 		
 		return term;
 	}
+	
+    /**
+     * Collect all available names in the given collection of OntologyAccess terms.
+     * @param terms the terms for which we want the names.
+     * @return a non null collection of names.
+     */
+    protected static Collection<String> getTermNames(  Collection<OntologyTermI> terms ) {
+        if ( terms == null ) {
+            return Collections.emptyList();
+        }
+        Collection<String> names = new ArrayList<String>( terms.size() );
+        for ( OntologyTermI term : terms ) {
+            names.add( term.getPreferredName() );
+            names.addAll( term.getNameSynonyms() );
+        }
+        return names;
+    }
 
 }

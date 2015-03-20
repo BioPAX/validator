@@ -25,7 +25,7 @@ package org.biopax.psidev.ontology_manager.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.psidev.ontology_manager.Ontology;
+import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
 
 
@@ -39,14 +39,14 @@ import java.util.*;
  * @author rodche (baderlab.org) - re-factored/simplified for the BioPAX validator
  * @since 2.0.0
  */
-public class OntologyImpl implements Ontology {
+public class OntologyAccessImpl implements OntologyAccess {
 
-    public static final Log log = LogFactory.getLog( OntologyImpl.class );
+    public static final Log log = LogFactory.getLog( OntologyAccessImpl.class );
     
     private String name;
 
-    public OntologyImpl() {
-   		log.info( "Creating new OntologyImpl..." );
+    public OntologyAccessImpl() {
+   		log.info( "Creating new OntologyAccessImpl..." );
     }
 
     public void setName(String name) {
@@ -111,7 +111,7 @@ public class OntologyImpl implements Ontology {
     /**
      * Add a new Term in the pool. It will be indexed by its ID.
      *
-     * @param term the OntologyTerm to add in that Ontology.
+     * @param term the OntologyTerm to add in that OntologyAccess.
      */
     public void addTerm( OntologyTermI term ) {
 
@@ -228,7 +228,7 @@ public class OntologyImpl implements Ontology {
     /**
      * Get all OboTerm.
      *
-     * @return all Ontology term found in the Ontology.
+     * @return all OntologyAccess term found in the OntologyAccess.
      */
     public Collection<OntologyTermI> getOntologyTerms() {
         return Collections.unmodifiableCollection( ontologyTerms );

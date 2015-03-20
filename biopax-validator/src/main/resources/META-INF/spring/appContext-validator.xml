@@ -237,8 +237,6 @@
 		 <constructor-arg index="0">
 		 	<util:properties local-override="false" location="classpath:obo.properties"/>
 		 </constructor-arg>
-		 <constructor-arg index="1"><null/></constructor-arg>
-		 <constructor-arg index="2" value="true"/>
 	</bean>
 	
 	<!-- a helper and a proxy to access MIRIAM and MI database citation and regexps 

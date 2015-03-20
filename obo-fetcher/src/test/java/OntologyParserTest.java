@@ -21,10 +21,10 @@
  */
 import static org.junit.Assert.*;
 
-import org.biopax.psidev.ontology_manager.Ontology;
+import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyManager;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
-import org.biopax.psidev.ontology_manager.impl.OntologyImpl;
+import org.biopax.psidev.ontology_manager.impl.OntologyAccessImpl;
 import org.biopax.psidev.ontology_manager.impl.OntologyLoaderException;
 import org.biopax.psidev.ontology_manager.impl.OntologyManagerContext;
 import org.biopax.psidev.ontology_manager.impl.OntologyManagerImpl;
@@ -38,7 +38,6 @@ public class OntologyParserTest {
 	 
 	@Test
 	public void ontologyLoading() throws OntologyLoaderException {
-		OntologyManagerContext.getInstance().setStoreOntologiesLocally(true);
 		
 		final Properties cfg = new Properties();
 		cfg.put("SO", "classpath:so.obo");
@@ -52,9 +51,9 @@ public class OntologyParserTest {
 		assertTrue(ontologyIDs.contains("SO"));
 		assertTrue(ontologyIDs.contains("MI"));
 
-		Ontology oa2 = manager.getOntology("MOD");
+		OntologyAccess oa2 = manager.getOntology("MOD");
 		assertNotNull(oa2);
-		assertTrue(oa2 instanceof OntologyImpl);
+		assertTrue(oa2 instanceof OntologyAccessImpl);
 		
 		OntologyTermI t = oa2.getTermForAccession("MOD:00048");
 		assertNotNull(t);
@@ -64,10 +63,10 @@ public class OntologyParserTest {
 
 		oa2 = manager.getOntology("SO");
 		Assert.assertNotNull(oa2);
-		Assert.assertTrue(oa2 instanceof OntologyImpl);
+		Assert.assertTrue(oa2 instanceof OntologyAccessImpl);
 
 		oa2 = manager.getOntology("MI");
 		assertNotNull(oa2);
-		assertTrue(oa2 instanceof OntologyImpl);
+		assertTrue(oa2 instanceof OntologyAccessImpl);
 	}
 }

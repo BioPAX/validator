@@ -33,7 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.biopax.miriam.MiriamLink;
-import org.biopax.psidev.ontology_manager.Ontology;
+import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
 import org.biopax.psidev.ontology_manager.impl.OntologyTermImpl;
 
@@ -128,7 +128,7 @@ public class XrefHelper {
 		}
     	
 		// load all names from MI 'database citation'
-		Ontology mi = ontologyManager.getOntology("MI");
+		OntologyAccess mi = ontologyManager.getOntology("MI");
 		Collection<OntologyTermI> terms = mi.getAllChildren(new OntologyTermImpl("MI:0444")); 
 		for (OntologyTermI term : terms) {
 			List<String> synonyms = new ArrayList<String>();

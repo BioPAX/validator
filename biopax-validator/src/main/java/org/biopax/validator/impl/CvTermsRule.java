@@ -199,7 +199,7 @@ public abstract class CvTermsRule<T extends Level3Element>
 							for (OntologyTermI term : ots) {
 								// skip terms that are not applicable although having the same synonym name
 								if(validTermIs.contains(term)) {
-									Ontology ont = ((OntologyManager)ontologyManager).getOntology(term.getOntologyId());
+									OntologyAccess ont = ((OntologyManager)ontologyManager).getOntology(term.getOntologyId());
 									//if term's parents does not contain any of these terms
 									if(Collections.disjoint(ots, ont.getAllParents(term))) {
 										topvalids.add(term);

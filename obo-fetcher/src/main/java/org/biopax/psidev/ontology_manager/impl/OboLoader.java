@@ -36,7 +36,7 @@ import org.biopax.ols.TermSynonym;
 import org.biopax.ols.impl.BaseOBO2AbstractLoader;
 import org.biopax.ols.impl.OBO2FormatParser;
 import org.biopax.ols.impl.TermBean;
-import org.biopax.psidev.ontology_manager.Ontology;
+import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
 
 
@@ -69,95 +69,13 @@ public class OboLoader extends BaseOBO2AbstractLoader {
     }
 
 
-    //////////////////////////////
-    // User's methods
-
-    private Ontology buildOntology(String ontologyID) {
-
-        Ontology ontology = new OntologyImpl();
-
-        // 1. convert and index all terms (note: at this stage we don't handle the hierarchy)
-        for ( Iterator iterator = ontBean.getTerms().iterator(); iterator.hasNext(); ) {
-            TermBean term = ( TermBean ) iterator.next();
-
-            /*
-             * Quick workaround for that
-             * we want to ignore the PSI-MOD terms that are included into PSI-MI files!
-             */
-            if("PSI-MOD".equals(term.getNamespace()) 
-            		&& ("PSI-MI".equals(ontologyID) || "MI".equals(ontologyID)))
-            	continue; // skip
-            
-            // convert term into a OboTerm
-            OntologyTermI ontologyTerm = new OntologyTermImpl(ontologyID, term.getIdentifier(), 
-            		term.getName() );
-// the "unescape" workaround is not required anymore - after obo-fetcher internal implementation changed!
-//            		StringEscapeUtils.unescapeXml(term.getName()) ); 
-//            //- unescapeXml above and below is a workaround the bug in ols-1.18 OBO parser (org.biopax.ols.loader..), 
-//            // which returns, e.g., "O4&;apos;-phospho-L-tyrosine" instead "O4'-phospho-L-tyrosine")
-            
-            final Collection<TermSynonym> synonyms = (Collection<TermSynonym>) term.getSynonyms();
-            if( synonyms != null ) {
-                for ( TermSynonym synonym : synonyms ) {
-//                    ontologyTerm.getNameSynonyms().add( StringEscapeUtils.unescapeXml(synonym.getSynonym()) );
-                    ontologyTerm.getNameSynonyms().add( synonym.getSynonym() );
-                }
-            }
-
-            ontology.addTerm( ontologyTerm );
-
-            if ( term.isObsolete() ) {
-                ontology.addObsoleteTerm( ontologyTerm );
-            }
-        }
-
-        // 2. build hierarchy based on the relations of the Terms
-        for ( Iterator iterator = ontBean.getTerms().iterator(); iterator.hasNext(); ) {
-            TermBean term = ( TermBean ) iterator.next();
-
-            /*
-             * Quick workaround an issue that
-             * we want to ignore PSI-MOD included in PSI-MI
-             */
-            if("PSI-MOD".equals(term.getNamespace()) 
-            		&& ("PSI-MI".equals(ontologyID) || "MI".equals(ontologyID)))
-            	continue; // skip
-            
-            if ( term.getRelationships() != null ) {
-                for ( Iterator iterator1 = term.getRelationships().iterator(); iterator1.hasNext(); ) {
-                    TermRelationship relation = ( TermRelationship ) iterator1.next();
-                    
-                   // one more step to ignore PSI-MOD included in PSI-MI
-                   /*
-                    String nso = relation.getObjectTerm().getNamespace();
-                    String nss = relation.getSubjectTerm().getNamespace();
-                    if(("PSI-MI".equals(ontologyID) || "MI".equals(ontologyID)))
-                    	if("PSI-MOD".equals(nso) || "PSI-MOD".equals(nss)
-                    		|| "MOD".equals(nso) || "MOD".equals(nss))
-                    		continue; // skip the external relation
-                    */
-                    // - better simply to check for NPE - 
-                    try {
-                    	ontology.addLink( relation.getObjectTerm().getIdentifier(),
-                    					  relation.getSubjectTerm().getIdentifier() );
-                    } catch (NullPointerException e) {
-                   		log.warn("Skipping terms relationship "  
-                   			+ relation + "; " + e);
-					}
-                }
-            }
-        }
-
-        return ontology;
-    }
-
     /**
      * Parse the given OBO file and build a representation of the DAG into an IntactOntology.
      *
      * @param file the input file. It has to exist and to be readable, otherwise it will break.
      * @return a non null IntactOntology.
      */
-    public Ontology parseOboFile( File file, String ontologyID) {
+    public OntologyAccess parseOboFile( File file, String ontologyID) {
 
         if ( !file.exists() ) {
             throw new IllegalArgumentException( file.getAbsolutePath() + " doesn't exist." );
@@ -176,27 +94,8 @@ public class OboLoader extends BaseOBO2AbstractLoader {
 
         return buildOntology(ontologyID);
     }
-
     
-    private File getRegistryFile() throws OntologyLoaderException {
-        File ontologyDirectory = OntologyManagerContext.getInstance().getOntologyDirectory();
-
-        File[] registry = ontologyDirectory.listFiles( new FileFilter() {
-            public boolean accept( File pathname ) {
-                return ONTOLOGY_REGISTRY_NAME.equals( pathname.getName() );
-            }
-        } );
-
-        if ( registry.length == 1 ) {
-            // found our file
-            File validatorRegistry = registry[0];
-            return validatorRegistry;
-        } else {
-            // create it
-            return new File( ontologyDirectory.getAbsolutePath() + File.separator + ONTOLOGY_REGISTRY_NAME );
-        }
-    }
-
+    
     /**
      * Load an OBO file from an URL.
      *
@@ -204,7 +103,7 @@ public class OboLoader extends BaseOBO2AbstractLoader {
      * @return an ontology
      * @see #parseOboFile(File file)
      */
-    public Ontology parseOboFile( URL url, String ontologyID ) throws OntologyLoaderException {
+    public OntologyAccess parseOboFile( URL url, String ontologyID ) throws OntologyLoaderException {
 
         // load config file (ie. a map)
         // check if that URL has already been loaded
@@ -225,17 +124,17 @@ public class OboLoader extends BaseOBO2AbstractLoader {
         if( isKeepDownloadedOntologiesOnDisk ) {
 
             if ( ontologyDirectory == null ) {
-                throw new IllegalArgumentException( "Ontology directory cannot be null, " +
+                throw new IllegalArgumentException( "OntologyAccess directory cannot be null, " +
                 		"please set it using OntologyManagerContext" );
             }
 
             if ( !ontologyDirectory.exists() ) {
-                throw new IllegalArgumentException( "Ontology directory " + 
+                throw new IllegalArgumentException( "OntologyAccess directory " + 
                 		ontologyDirectory.getPath() + " must exist" );
             }
 
             if ( !ontologyDirectory.canWrite() ) {
-                throw new IllegalArgumentException( "Ontology directory " +
+                throw new IllegalArgumentException( "OntologyAccess directory " +
                 		ontologyDirectory.getPath() + " must be writeable" );
             }
 
@@ -388,4 +287,105 @@ public class OboLoader extends BaseOBO2AbstractLoader {
             throw new OntologyLoaderException( "Error while loading URL (" + url + ")", e );
         }
     }
+    
+    
+    private OntologyAccess buildOntology(String ontologyID) {
+
+        OntologyAccess ontologyAccess = new OntologyAccessImpl();
+
+        // 1. convert and index all terms (note: at this stage we don't handle the hierarchy)
+        for ( Iterator iterator = ontBean.getTerms().iterator(); iterator.hasNext(); ) {
+            TermBean term = ( TermBean ) iterator.next();
+
+            /*
+             * Quick workaround for that
+             * we want to ignore the PSI-MOD terms that are included into PSI-MI files!
+             */
+            if("PSI-MOD".equals(term.getNamespace()) 
+            		&& ("PSI-MI".equals(ontologyID) || "MI".equals(ontologyID)))
+            	continue; // skip
+            
+            // convert term into a OboTerm
+            OntologyTermI ontologyTerm = new OntologyTermImpl(ontologyID, term.getIdentifier(), 
+            		term.getName() );
+// the "unescape" workaround is not required anymore - after obo-fetcher internal implementation changed!
+//            		StringEscapeUtils.unescapeXml(term.getName()) ); 
+//            //- unescapeXml above and below is a workaround the bug in ols-1.18 OBO parser (org.biopax.ols.loader..), 
+//            // which returns, e.g., "O4&;apos;-phospho-L-tyrosine" instead "O4'-phospho-L-tyrosine")
+            
+            final Collection<TermSynonym> synonyms = (Collection<TermSynonym>) term.getSynonyms();
+            if( synonyms != null ) {
+                for ( TermSynonym synonym : synonyms ) {
+//                    ontologyTerm.getNameSynonyms().add( StringEscapeUtils.unescapeXml(synonym.getSynonym()) );
+                    ontologyTerm.getNameSynonyms().add( synonym.getSynonym() );
+                }
+            }
+
+            ontologyAccess.addTerm( ontologyTerm );
+
+            if ( term.isObsolete() ) {
+                ontologyAccess.addObsoleteTerm( ontologyTerm );
+            }
+        }
+
+        // 2. build hierarchy based on the relations of the Terms
+        for ( Iterator iterator = ontBean.getTerms().iterator(); iterator.hasNext(); ) {
+            TermBean term = ( TermBean ) iterator.next();
+
+            /*
+             * Quick workaround an issue that
+             * we want to ignore PSI-MOD included in PSI-MI
+             */
+            if("PSI-MOD".equals(term.getNamespace()) 
+            		&& ("PSI-MI".equals(ontologyID) || "MI".equals(ontologyID)))
+            	continue; // skip
+            
+            if ( term.getRelationships() != null ) {
+                for ( Iterator iterator1 = term.getRelationships().iterator(); iterator1.hasNext(); ) {
+                    TermRelationship relation = ( TermRelationship ) iterator1.next();
+                    
+                   // one more step to ignore PSI-MOD included in PSI-MI
+                   /*
+                    String nso = relation.getObjectTerm().getNamespace();
+                    String nss = relation.getSubjectTerm().getNamespace();
+                    if(("PSI-MI".equals(ontologyID) || "MI".equals(ontologyID)))
+                    	if("PSI-MOD".equals(nso) || "PSI-MOD".equals(nss)
+                    		|| "MOD".equals(nso) || "MOD".equals(nss))
+                    		continue; // skip the external relation
+                    */
+                    // - better simply to check for NPE - 
+                    try {
+                    	ontologyAccess.addLink( relation.getObjectTerm().getIdentifier(),
+                    					  relation.getSubjectTerm().getIdentifier() );
+                    } catch (NullPointerException e) {
+                   		log.warn("Skipping terms relationship "  
+                   			+ relation + "; " + e);
+					}
+                }
+            }
+        }
+
+        return ontologyAccess;
+    }
+
+    
+    private File getRegistryFile() throws OntologyLoaderException {
+        File ontologyDirectory = OntologyManagerContext.getInstance().getOntologyDirectory();
+
+        File[] registry = ontologyDirectory.listFiles( new FileFilter() {
+            public boolean accept( File pathname ) {
+                return ONTOLOGY_REGISTRY_NAME.equals( pathname.getName() );
+            }
+        } );
+
+        if ( registry.length == 1 ) {
+            // found our file
+            File validatorRegistry = registry[0];
+            return validatorRegistry;
+        } else {
+            // create it
+            return new File( ontologyDirectory.getAbsolutePath() + File.separator + ONTOLOGY_REGISTRY_NAME );
+        }
+    }    
+    
 }

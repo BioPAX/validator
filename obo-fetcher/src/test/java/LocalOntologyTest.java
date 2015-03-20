@@ -25,19 +25,17 @@ import org.biopax.psidev.ontology_manager.*;
 import org.biopax.psidev.ontology_manager.impl.*;
 import org.junit.*;
 
-
 import java.util.*;
 
 //@Ignore
 public class LocalOntologyTest {
 
 	static OntologyManager manager;
-	static Ontology mod;
-	static Ontology mi;
-	static Ontology so;
+	static OntologyAccess mod;
+	static OntologyAccess mi;
+	static OntologyAccess so;
 
 	static {
-		OntologyManagerContext.getInstance().setStoreOntologiesLocally(true);
 		final Properties cfg = new Properties();
 		cfg.put("SO", "classpath:so.obo");
 		cfg.put("MI", "classpath:mi.obo");
@@ -93,7 +91,7 @@ public class LocalOntologyTest {
 
 		// different approach
 		Collection<String> names;
-		names = OntologyUtils.getTermNames(terms);
+		names = getTermNames(terms);
 		assertTrue(names.contains("phosphorylation"));
 		assertTrue(names.contains("phosphorylation reaction"));
 	}
@@ -298,7 +296,25 @@ public class LocalOntologyTest {
 	public void getModChildren01157() throws OntologyLoaderException {
 		Set<OntologyTermI> terms = mod.getValidTerms("MOD:01157", true, false);
 		assertFalse(terms.isEmpty());
-		assertTrue(OntologyUtils.getAccessions(terms).contains("MOD:00036"));
-		assertTrue(OntologyUtils.getTermNames(terms).contains("(2S,3R)-3-hydroxyaspartic acid"));
+		assertTrue(getAccessions(terms).contains("MOD:00036"));
+		assertTrue(getTermNames(terms).contains("(2S,3R)-3-hydroxyaspartic acid"));
 	}
+	
+
+    static Collection<String> getAccessions(  Collection<OntologyTermI> terms ) {
+        Collection<String> accessions = new ArrayList<String>( terms.size() );
+        for ( OntologyTermI term : terms ) {
+            accessions.add( term.getTermAccession() );
+        }
+        return accessions;
+    }
+    
+    static Collection<String> getTermNames(  Collection<OntologyTermI> terms ) {
+        Collection<String> names = new ArrayList<String>( terms.size() );
+        for ( OntologyTermI term : terms ) {
+            names.add( term.getPreferredName() );
+            names.addAll( term.getNameSynonyms() );
+        }
+        return names;
+    }
 }

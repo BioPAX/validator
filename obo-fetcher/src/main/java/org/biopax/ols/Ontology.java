@@ -27,7 +27,7 @@ import java.util.Collection;
 
 /**
  * @author R. Cote
- * @version $Id: Ontology.java,v 1.8 2006/06/07 09:28:26 rglcote Exp $
+ * @version $Id: OntologyAccess.java,v 1.8 2006/06/07 09:28:26 rglcote Exp $
  */
 public interface Ontology {
 

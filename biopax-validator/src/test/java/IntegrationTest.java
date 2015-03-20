@@ -136,7 +136,7 @@ public class IntegrationTest {
 	 * 
 	 * In the MIRIAM (resources/Miriam.xml) we have:
 	 *  <datatype id="MIR:00000022" startChar="^GO:\d{7}$">
-	 * 	<name>Gene Ontology</name>
+	 * 	<name>Gene OntologyAccess</name>
 	 *	<synonyms>
 	 * 		<synonym>GO</synonym>
 	 * 	</synonyms>
@@ -172,7 +172,7 @@ public class IntegrationTest {
     public void testPrimarySynonym() {
     	//not in Miriam: PIR
     	assertEquals("UNIPROT KNOWLEDGEBASE", xrefHelper.getSynonymsForDbName("pir").get(0));
-    	//Miriam: Gene Ontology
+    	//Miriam: Gene OntologyAccess
     	assertEquals("GENE ONTOLOGY", xrefHelper.getSynonymsForDbName("go").get(0));
     }
     

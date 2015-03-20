@@ -22,17 +22,14 @@ package org.biopax.validator.utils;
  * #L%
  */
 
-import java.io.File;
 import java.util.*;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.biopax.psidev.ontology_manager.Ontology;
+import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
-import org.biopax.psidev.ontology_manager.impl.OntologyManagerContext;
 import org.biopax.psidev.ontology_manager.impl.OntologyManagerImpl;
-import org.biopax.psidev.ontology_manager.impl.OntologyUtils;
 import org.biopax.validator.api.CvRestriction;
 import org.biopax.validator.api.CvRule;
 import org.biopax.validator.api.CvValidator;
@@ -41,7 +38,7 @@ import org.biopax.validator.api.CvRestriction.UseChildTerms;
 
 /**
  * Access to BioPAX controlled vocabularies.
- * This component is built from a modified PSIDEV tool, Ontology Manager, 
+ * This component is built from a modified PSIDEV tool, OntologyAccess Manager, 
  * by extending it and adding several "proxy" methods that allow to extract 
  * validator-specific data only once and free the memory after it, if required.
  * However, it does not hide base class's methods.
@@ -56,27 +53,11 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	
 	/**
 	 * Constructor
-	 * 
 	 * @param ontologiesConfigXml
-	 * @param ontDir
-	 * @param isReuseAndStoreOntologiesLocally
 	 * 
 	 */
-	public BiopaxOntologyManager(Properties ontologiesConfig, String ontDir, 
-			boolean isReuseAndStoreOntologiesLocally)
+	public BiopaxOntologyManager(Properties ontologiesConfig)
 	{
-		if(ontDir != null) {
-			File dir = new File(ontDir);
-			if(!dir.exists()) {
-				dir.mkdir();
-			} else if(!dir.isDirectory() || !dir.canWrite()) {
-				throw new RuntimeException("Is not a directory name or not writable : " + ontDir);
-			}
-			OntologyManagerContext.getInstance().setOntologyDirectory(dir);
-		}
-		
-		OntologyManagerContext.getInstance().setStoreOntologiesLocally(isReuseAndStoreOntologiesLocally);
-		
 		try {
 			loadOntologies(ontologiesConfig);
 		} catch (Throwable e) {
@@ -105,7 +86,7 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	public Set<String> getValidTermNames(Collection<CvRestriction> restrictions) {
 		Set<String> names = new HashSet<String>();
 		Set<OntologyTermI> terms = getValidTerms(restrictions);
-		names.addAll(OntologyUtils.getTermNames(terms));
+		names.addAll(getTermNames(terms));
 		return names;
 	}
 		
@@ -128,7 +109,7 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	public Set<String> getTermNames(CvRestriction restriction) {
 		Set<OntologyTermI> terms = getTerms(restriction);
 		Set<String> names = new HashSet<String>();
-		names.addAll(OntologyUtils.getTermNames(terms));
+		names.addAll(getTermNames(terms));
 		return names;
 	}
    
@@ -163,7 +144,7 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	 */
 	public Set<OntologyTermI> getTerms(CvRestriction restriction) {
 		Set<OntologyTermI> terms = new HashSet<OntologyTermI>();
-		Ontology ontologyAccess = getOntology(restriction.getOntologyId());
+		OntologyAccess ontologyAccess = getOntology(restriction.getOntologyId());
 		if(ontologyAccess == null) {
 			throw new IllegalArgumentException(
 					"Cannot get access to the ontology using ID: " 
@@ -174,7 +155,7 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 		OntologyTermI term = ontologyAccess.getTermForAccession(restriction.getId());
 		if(term == null) {
 			log.error("Cannot Get " + restriction.getOntologyId()
-					+ " Ontology Term for the Accession: " + restriction.getId());
+					+ " OntologyAccess Term for the Accession: " + restriction.getId());
 			return terms;
 		}
 		
@@ -200,4 +181,5 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 		
 		return terms;
 	}
+
 }

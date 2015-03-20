@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.File;
 
 /**
- * Ontology manager context that is only valid for the current thread (uses ThreadLocal)
+ * OntologyAccess manager context that is only valid for the current thread (uses ThreadLocal)
  *
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @version $Id$
@@ -58,9 +58,11 @@ public class OntologyManagerContext {
     private OntologyManagerContext() {
         // initialize here default configuration
         storeOntologiesLocally = false;
-        ontologyDirectory = new File( System.getProperty( "java.io.tmpdir" ) );
-
-        log.debug( "Default directory for storing ontologies set to " + ontologyDirectory.getAbsolutePath() );
+        ontologyDirectory = new File( System.getProperty( "java.io.tmpdir" ) 
+        		+ File.separator + "ontologies" );
+        ontologyDirectory.deleteOnExit();
+        log.info( "(default) ontology working directory: " 
+        		+ ontologyDirectory.getAbsolutePath() );
     }
 
     ///////////////////////////
@@ -85,7 +87,7 @@ public class OntologyManagerContext {
         }
         this.ontologyDirectory = ontologyDirectory;
         
-		log.info("Using ontologies cache directory : " + 
+		log.info("setOntologyDirectory: reset ontology working directory to: " + 
 			this.ontologyDirectory.getAbsolutePath());
     }
 }

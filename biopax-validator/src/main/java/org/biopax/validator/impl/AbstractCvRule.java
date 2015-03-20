@@ -141,7 +141,7 @@ public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRu
 	}
 	
 	/**
-	 * Ontology IDs used to check this CV rule.
+	 * OntologyAccess IDs used to check this CV rule.
 	 * These can be extracted from the CV rescrictions 
 	 * used to define the rule.
 	 * (other ontologies are not used).

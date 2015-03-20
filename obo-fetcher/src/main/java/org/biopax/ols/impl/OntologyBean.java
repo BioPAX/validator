@@ -215,9 +215,9 @@ public class OntologyBean implements Ontology {
      *
      * @param oboFilePath - The fully qualified path to the file on disk to be parsed [Mandatory]
      * @param shortName   - The short label of the ontology (eg "GO", "MI", etc...) [Mandatory]
-     * @param fullName    - The full name of the ontology (eg Gene Ontology)  [Optional]
+     * @param fullName    - The full name of the ontology (eg Gene OntologyAccess)  [Optional]
      * @param definition  - The definition of the ontology [Optional]
-     * @return a fully build Ontology object.
+     * @return a fully build OntologyAccess object.
      * @throws IllegalArgumentException if the shortName is null or an empty string
      * @throws IOException              on parse errors
      */
@@ -245,9 +245,9 @@ public class OntologyBean implements Ontology {
      *
      * @param oboFileURL - The URL of the OBO file to be read (remote or local) [Mandatory]
      * @param shortName  - The short label of the ontology (eg "GO", "MI", etc...) [Mandatory]
-     * @param fullName   - The full name of the ontology (eg Gene Ontology)  [Optional]
+     * @param fullName   - The full name of the ontology (eg Gene OntologyAccess)  [Optional]
      * @param definition - The definition of the ontology [Optional]
-     * @return a fully build Ontology object.
+     * @return a fully build OntologyAccess object.
      * @throws IllegalArgumentException if the shortName is null or an empty string
      * @throws IOException              if the URL cannot be read or on parse errors
      */
@@ -355,9 +355,9 @@ public class OntologyBean implements Ontology {
      *
      * @param oboFile    - The File object to be parsed [Mandatory]
      * @param shortName  - The short label of the ontology (eg "GO", "MI", etc...) [Mandatory]
-     * @param fullName   - The full name of the ontology (eg Gene Ontology)  [Optional]
+     * @param fullName   - The full name of the ontology (eg Gene OntologyAccess)  [Optional]
      * @param definition - The definition of the ontology [Optional]
-     * @return a fully build Ontology object.
+     * @return a fully build OntologyAccess object.
      * @throws IllegalArgumentException if the shortName is null or an empty string
      * @throws IOException              on parse errors
      */

@@ -22,7 +22,6 @@ package org.biopax.psidev.ontology_manager;
  * #L%
  */
 
-import java.io.File;
 import java.util.Properties;
 import java.util.Set;
 
@@ -31,17 +30,13 @@ import org.biopax.psidev.ontology_manager.impl.OntologyLoaderException;
 
 public interface OntologyManager {
 
-	Ontology putOntology(String ontologyID,
-			Ontology ontology);
+	void putOntology(String ontologyID, OntologyAccess ontologyAccess);
 
 
 	Set<String> getOntologyIDs();
 
 
-	Ontology getOntology(String ontologyID);
-
-
-	void setOntologyDirectory(File ontologyDirectory);
+	OntologyAccess getOntology(String ontologyID);
 
 	
 	boolean containsOntology(String ontologyID);

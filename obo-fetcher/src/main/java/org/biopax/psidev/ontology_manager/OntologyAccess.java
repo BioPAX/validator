@@ -34,7 +34,7 @@ import java.util.Set;
  * @author rodche (baberlab.org) - re-factoring
  * @since 2.0.0
  */
-public interface Ontology {
+public interface OntologyAccess {
 
     /**
      * This method builds a set of all allowed terms based on the specified parameters.
