@@ -55,14 +55,14 @@ public class OntologyManagerImpl implements OntologyManager {
     private Map<String, OntologyAccess> ontologyMap;
 
     /**
-     * Create a new OntologyManagerImpl with no configuration (no associated ontologyAccess).
+     * Create a new OntologyManagerImpl with no configuration (no associated ontology).
      */
     public OntologyManagerImpl() {
     	ontologyMap = new HashMap<String, OntologyAccess>();
     }
 
     /** 
-     * Creates a new OntologyManagerImpl managing the ontologyAccess specified in the config map.
+     * Creates a new OntologyManagerImpl managing the ontology specified in the config map.
      *
      * @param cfg configuration properties for the manager (ID=resource_location).
      * @throws OntologyLoaderException if the config file could not be parsed or the loading of a ontology failed.

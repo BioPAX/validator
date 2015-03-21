@@ -100,7 +100,7 @@
 
 		<!-- dependencies versions -->
 		<spring.version>3.2.8.RELEASE</spring.version>
-		<paxtools.version>4.3.1-SNAPSHOT</paxtools.version>
+		<paxtools.version>[4.3.1-SNAPSHOT,5)</paxtools.version>
 		<license.licenseName>lgpl_v3</license.licenseName>
 		<junit.version>4.10</junit.version>
 		<commons-lang.version>2.4</commons-lang.version>
@@ -242,40 +242,15 @@
 
 	<!-- How to deploy and site-deploy: 
 		1) for maven artifacts deployment (mvn 
-		deploy), e.g. by Jenkins, have biopax.snapshot.url and biopax.release.url 
-		set in your .m2/settings.xml and point to a local directory, which then can 
-		be synchronized (rsync) with the remote public biopax repositories as needed 
+		deploy), e.g. by Jenkins, define biopax.snapshot.url and biopax.release.url 
+		in your .m2/settings.xml to point to two local directories, which then can 
+		be synchronized (rsync -avzPL) with the remote public biopax repositories  
 		(recommended method, which is quick, does not require you start the remote 
 		shell service in advance, and also respects your intranet/firewall/security 
-		policies). So, do NOT: mvn deploy -Psourceforge, because it's slow, may violate 
-		network policy (brute force), etc. 
+		policies). 
 		2) try: mvn clean site site:stage -DstagingDirectory=/some/local/path/paxtools-${version} 
 		(though some of resulting links won't be right), but not site-stage...; finally, 
-		once satisfied, start sf.net shell and do: mvn clean site-deploy -Psourceforge 
-		(this deploys directly to the public website, where all links should work) -->
-	<profiles>
-		<profile>
-			<id>sourceforge</id>
-			<distributionManagement>
-				<site>
-					<id>biopax.sf.net</id>
-					<name>BioPAX Sourceforge site</name>
-					<url>${siteDeployUrl}</url>
-				</site>
-				<snapshotRepository>
-					<id>biopax.snapshots</id>
-					<name>BioPAX Snapshots Repository</name>
-					<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/snapshots</url>
-				</snapshotRepository>
-				<repository>
-					<id>biopax.releases</id>
-					<name>BioPAX Releases Repository</name>
-					<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/releases</url>
-				</repository>
-			</distributionManagement>
-		</profile>
-	</profiles>
-
+		once satisfied, rsync the staged directory with the remote site dir -->
 	<distributionManagement>
 		<site>
 			<id>biopax.sf.net</id>
@@ -298,7 +273,7 @@
 		<repository>
 			<id>biopax.snapshots</id>
 			<name>BioPAX Snapshots Repository at Sourceforge</name>
-			<url>http://biopax.sourceforge.net/m2repo/snapshots/</url>
+			<url>http://www.biopax.org/m2repo/snapshots/</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
@@ -308,7 +283,7 @@
 		<repository>
 			<id>biopax.releases</id>
 			<name>BioPAX Repository at Sourceforge</name>
-			<url>http://biopax.sourceforge.net/m2repo/releases/</url>
+			<url>http://www.biopax.org/m2repo/releases/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
