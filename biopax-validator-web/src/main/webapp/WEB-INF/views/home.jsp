@@ -51,9 +51,8 @@ There are also console and Java library version of this tool.
 <div class="row">
 <h4>Feedback</h4>
 <p>
-Please feel free to post your comments and suggestions at the 
-<a target="_blank" href="http://www.biopax.org/wiki/index.php?title=BioPAXValidator">Validator Wiki</a> or 
-<a target="_blank" href="http://sourceforge.net/p/biopax/_list/tickets">BioPAX issue tracker</a>.
+Please comment or report issues to the 
+<a target="_blank" href="https://github.com/BioPAX/validator">BioPAX Validator project</a> on GitHub.
 </p>
 </div>
 

@@ -40,7 +40,7 @@
 							<li><a href="http://www.obofoundry.org/" target="_blank">OBO</a></li>
                     	</ul>
                 	</li>
-					<li><a href="http://sourceforge.net/p/biopax/bugs/" target="_blank">Report</a></li>
+					<li><a href="https://github.com/BioPAX/validator/issues" target="_blank">Report</a></li>
 					<li><a href="#" class="top-scroll">Top</a></li>
                   </ul>
           	  </div> <!-- collapse -->
