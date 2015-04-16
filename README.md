@@ -1,2 +1,2 @@
 # validator
-The BioPAX Validator (migrating from http://hg.code.sf.net/p/biopax/validator)
+The BioPAX Validator (migrating from hg.code.sf.net/p/biopax/validator)
