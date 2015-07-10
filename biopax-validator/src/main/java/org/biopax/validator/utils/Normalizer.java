@@ -241,7 +241,7 @@ public final class Normalizer {
 				dbName = MiriamLink.getName(dbName);
 				
 				// a shortcut: a standard and resolvable URI exists for some BioPAX types
-				if (type.equals(PublicationXref.class) 
+				if ((type.equals(PublicationXref.class) && "pubmed".equalsIgnoreCase(dbName))
 					|| type.equals(RelationshipTypeVocabulary.class)
 					|| EntityReference.class.isAssignableFrom(type)) 
 				{	//get the standard URI and quit (success), or fail and continue making a new URI below...
@@ -404,19 +404,23 @@ public final class Normalizer {
 			toReturn = orderedUrefs.iterator().next(); 
 			return toReturn;
 		} else {
-			for(UnificationXref uref : orderedUrefs) 
-				if(uref.getDb().toLowerCase().startsWith(preferredDb)) {
+			for(UnificationXref uref : orderedUrefs) {
+				if(uref.getDb().toLowerCase().startsWith(preferredDb) 
+						&& uref.getId()!=null) {
 					toReturn = uref;
 					break;
 				}
+			}
 		}
 		
 		if(toReturn == null && bpe instanceof ProteinReference)
-			for(UnificationXref uref : orderedUrefs) 
-				if(uref.getDb().toLowerCase().startsWith("refseq")) {
+			for(UnificationXref uref : orderedUrefs) {
+				if(uref.getDb().toLowerCase().startsWith("refseq") 
+						&& uref.getId()!=null) {
 					toReturn = uref;
 					break;
 				}
+			}
 		
 		return toReturn;
 	}
@@ -551,9 +555,28 @@ public final class Normalizer {
 			}			
 			
 			UnificationXref uref = getFirstUnificationXref(bpe);
-			if (uref != null)
-				map.put(bpe, uref);
-			else
+			if (uref != null) {
+				// Create (with a new URI made from a unif. xref) 
+				// and save the replacement object, if possible, 
+				// but do not replace yet (will call doSubs later, for all).
+				final String db = uref.getDb();
+				final String id = uref.getId();
+				// get the standard ID
+				String uri = null;
+				try { // make a new ID for the element
+					uri = MiriamLink.getIdentifiersOrgURI(db, id);
+				} catch (Exception e) {
+					log.error("Cannot get a Miriam standard ID for " + bpe 
+							+ " (" + bpe.getModelInterface().getSimpleName()
+							+ ") " + ", using " + db + ":" + id 
+							+ ". " + e + ". ");
+					return;
+				}
+
+				if(uri != null) {
+					map.put(bpe, uri);
+				}	
+			} else
 				log.info("Cannot normalize EntityReference: "
 					+ "no unification xrefs found in " + bpe.getRDFId()
 					+ ". " + description);
@@ -736,40 +759,6 @@ public final class Normalizer {
 			copier = new ShallowCopy();
 		}
 
-		
-		/**
-		 * Creates (by standard Xref, generating a new URI from its properties) 
-		 * and saves the replacement object, if possible, 
-		 * but does not replace yet (call doSubs to replace).
-		 * 
-		 * @param bpe - any utility class, except Xref types.
-		 * @param uxref - unification xref to use for generating new bpe's URI
-		 * @throws IllegalArgumentException when the first parameter is Xref
-		 */
-		void put(UtilityClass bpe, UnificationXref uxref) {
-			if(bpe instanceof Xref) {
-				throw new IllegalArgumentException("put(bpe,xref): the first arg was Xref.");
-			}
-
-			final String db = uxref.getDb();
-			final String id = uxref.getId();
-			
-			// get the standard ID
-			String uri = null;
-			try { // make a new ID for the element
-				uri = MiriamLink.getIdentifiersOrgURI(db, id);
-			} catch (Exception e) {
-				log.error("Cannot get a Miriam standard ID for " + bpe 
-						+ " (" + bpe.getModelInterface().getSimpleName()
-						+ ") " + ", using " + db + ":" + id 
-						+ ". " + e + ". ");
-				return;
-			}
-
-			if(uri != null) {
-				put(bpe, uri);
-			}
-		}
 
 		/**
 		 * Creates (by URI) and saves the replacement object,
@@ -783,7 +772,7 @@ public final class Normalizer {
 			if(model.containsID(newUri)) {
 				// will use existing original (model) object that has the new Uri
 				map(bpe, model.getByID(newUri));
-			} else if(containsNewUri(newUri)) {
+			} else if(uriToSub.containsKey(newUri)) {
 				// re-use the new object that's already added to replace another original
 				map(bpe, uriToSub.get(newUri));
 			} else {
@@ -825,11 +814,7 @@ public final class Normalizer {
 		private void map(BioPAXElement bpe, BioPAXElement newBpe) {
 			subs.put(bpe, newBpe);
 			uriToSub.put(newBpe.getRDFId(), newBpe);
-		}
-		
-		private boolean containsNewUri(String uri) {
-			return uriToSub.containsKey(uri);
-		}		
+		}	
 	}
 	
 }

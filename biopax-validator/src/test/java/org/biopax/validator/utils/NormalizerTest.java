@@ -328,6 +328,26 @@ public class NormalizerTest {
 	}
 	
 	
+	@Test
+	public final void testNormalizeInoh() {
+		//there're two Protein objects that have entityReference 
+		//rdf:ID="IMR_0100366_G_alpha_s_Canonical" (ProteinReference); 
+		//and that PR has two UniProt UnificationXref, and the P63092 one
+		//should be used to generate a new Identifiers.org URI for the PR.
+		//There was a bug when replacing the PR's URI (warning: IllegalBioPAXArgumentException: Incompatible type!..)
+		//The cause is that there was a (weird, invalid) PublicationXref having db:id as UniProt:P63092 that gets the same URI!
+		//To avoid such issues altogether (despite illegal pub. xrefs), the Normalizer won't use Identifiers.org for PublicationXrefs anymore.
+		
+		Model model = simpleIO.convertFromOWL(getClass().getResourceAsStream("/INOH_GPCR_signaling-pertussis_toxin.cleaned.owl"));
+		Normalizer normalizer = new Normalizer();
+		normalizer.setXmlBase("");
+		normalizer.normalize(model);
+			
+		assertTrue(model.containsID("http://identifiers.org/uniprot/P63092"));
+		assertEquals("ProteinReference", model.getByID("http://identifiers.org/uniprot/P63092").getModelInterface().getSimpleName());	
+		assertFalse(model.containsID(model.getXmlBase() + "IMR_0100366_G_alpha_s_Canonical"));		
+	}
+	
 	private void print(XReferrable xr, Model m) {
 		System.out.println("model=" + m.contains(xr) + ":\t" 
 			+ xr.getRDFId() + 

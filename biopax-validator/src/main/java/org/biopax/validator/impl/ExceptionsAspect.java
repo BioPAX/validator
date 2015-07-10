@@ -24,12 +24,12 @@ package org.biopax.validator.impl;
 
 import java.lang.reflect.Method;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
-
 import org.springframework.beans.factory.annotation.Configurable;
-
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.io.SimpleIOHandler.Triple;
@@ -48,6 +48,8 @@ import org.biopax.validator.api.AbstractAspect;
 @Configurable
 @Aspect
 public class ExceptionsAspect extends AbstractAspect {
+	
+	private static final Log log = LogFactory.getLog(ExceptionsAspect.class);
     
     /**
      * This captures the exceptions that occur 
@@ -92,6 +94,9 @@ public class ExceptionsAspect extends AbstractAspect {
     @Around("execution(private void org.biopax.paxtools.io.SimpleIOHandler.bindValue(..))" +
     		" && args(triple, model)")
     public void adviseBindValue(ProceedingJoinPoint jp, Triple triple, Model model) {
+    	if(log.isDebugEnabled())
+    		log.debug("adviseBindValue, triple: " + triple);
+    	
     	SimpleIOHandler reader = (SimpleIOHandler) jp.getTarget();
     	// try to find the best object to report about...
     	Object o = reader;

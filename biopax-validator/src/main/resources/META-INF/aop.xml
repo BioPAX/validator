@@ -23,7 +23,7 @@
 <aspectj>
 	<weaver options="-verbose -showWeaveInfo 
 		-XmessageHandlerClass:org.springframework.aop.aspectj.AspectJWeaverMessageHandler 
-			-Xreweavable -Xlint:ignore">
+		-Xlint:ignore"> <!--removed: -Xreweavable option-->
         <!-- only weave classes within packages that match listed -->
         <include within="org.biopax.paxtools.io.*" />
         <include within="org.biopax.paxtools.controller.*" />

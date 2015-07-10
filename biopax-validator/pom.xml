@@ -17,11 +17,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<forkMode>once</forkMode>
-					<argLine>-Xmx1g -javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar 
-					-ea</argLine> <!-- try: -Dbiopax.normalizer.uri.strategy=simple when debugging ;) -->
+<!-- <forkMode>once</forkMode> deprecated since the plugin v2.14-->
+					<reuseForks>false</reuseForks>
+        			<forkCount>1</forkCount>
+					<argLine>-ea -Xmx1g -javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</argLine>
+					<!-- try: -Dbiopax.normalizer.uri.strategy=simple when debugging ;) -->
+					<useSystemClassloader>true</useSystemClassloader>
 				</configuration>
-			</plugin>	
+			</plugin>
 		</plugins>
 	</build>
 
@@ -105,8 +108,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-instrument</artifactId>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-
 </project>
