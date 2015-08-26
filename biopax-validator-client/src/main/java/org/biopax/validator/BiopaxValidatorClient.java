@@ -134,8 +134,10 @@ public class BiopaxValidatorClient {
     	
     	if(autofix)
     		meb.addTextBody("autofix", "true");
-//TODO add extra options (normalizer.fixDisplayName, normalizer.inferPropertyOrganism, normalizer.inferPropertyDataSource, normalizer.xmlBase)?
-    	if(profile != null && !profile.isEmpty())
+
+		//TODO add extra options (normalizer.fixDisplayName, normalizer.xmlBase)?
+
+		if(profile != null && !profile.isEmpty())
     		meb.addTextBody("profile", profile);
     	if(retFormat != null)
     		meb.addTextBody("retDesired", retFormat.toString().toLowerCase());

@@ -75,8 +75,6 @@ public class ValidatorController {
     @RequestMapping(value="/check", method=RequestMethod.GET)
     public void check(Model model) {
     	Normalizer normalizer = new Normalizer();
-    	normalizer.setInferPropertyDataSource(false);
-    	normalizer.setInferPropertyOrganism(false);
     	model.addAttribute("normalizer", normalizer);
     }   
     
@@ -231,9 +229,7 @@ public class ValidatorController {
     	if(isFix) { // do normalize too
     		if(normalizer == null) {//e.g., when '/check' called from a client/script, not JSP
     			normalizer = new Normalizer();
-    			normalizer.setInferPropertyDataSource(false);
-    	    	normalizer.setInferPropertyOrganism(false);
-    		}   		
+    		}
        		org.biopax.paxtools.model.Model m = (org.biopax.paxtools.model.Model) validationResult.getModel();
    			normalizer.normalize(m);//this further modifies the validated and auto-fixed model
    			//update the serialized model (BioPAX RDF/XML)

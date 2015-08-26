@@ -39,8 +39,6 @@
 		<label for="normalizerOptions">Fix and Normalize</label>
 		<ul id="normalizerOptions" title="Options">
 			<li><form:checkbox path="normalizer.fixDisplayName"/>&nbsp;<label>fix property: <em>displayName</em> (from names)</label></li>
-			<li><form:checkbox path="normalizer.inferPropertyOrganism"/>&nbsp;<label>infer property: <em>organism</em></label></li>
-			<li><form:checkbox path="normalizer.inferPropertyDataSource"/>&nbsp;<label>infer property: <em>dataSource</em></label></li>
 			<li><em>xml:base</em> for generated URIs:<form:input path="normalizer.xmlBase"/><label>&nbsp;(leave empty to use a value from the BioPAX RDF/XML header)</label></li>
 		</ul>
 		<p><small>-auto-fix for xrefs, vocabularies, <em>displayName</em>, duplicate and dangling elements removal, etc.

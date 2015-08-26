@@ -226,9 +226,9 @@ public class NormalizerTest {
 		// Provenance is no more normalized (Miriam is not enough for this task)!
 		assertEquals(2, model.getObjects(Provenance.class).size());
 		
-		// check dataSource property has been inferred
+		// dataSource property is not inferred/inherited from pw1 anymore (prop. inference feature was removed)
 		pw2 = (Pathway) model.getByID("sub_pathway");
-		assertEquals(2, pw2.getDataSource().size());
+		assertEquals(1, pw2.getDataSource().size());
 		pw1 = (Pathway) model.getByID("pathway");
 		assertEquals(1, pw1.getDataSource().size());
 		

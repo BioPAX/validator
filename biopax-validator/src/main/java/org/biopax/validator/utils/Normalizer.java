@@ -50,8 +50,6 @@ public final class Normalizer {
 	private SimpleIOHandler biopaxReader;	
 	private String description = "";
 	private boolean fixDisplayName;
-	private boolean inferPropertyOrganism;
-	private boolean inferPropertyDataSource;
 	private String xmlBase;
 	
 	
@@ -69,8 +67,6 @@ public final class Normalizer {
 		biopaxReader = new SimpleIOHandler(BioPAXLevel.L3);
 		biopaxReader.mergeDuplicates(true);
 		fixDisplayName = true;
-		inferPropertyOrganism = true;
-		inferPropertyDataSource = true;
 		xmlBase = "";
 	}
 	
@@ -468,24 +464,6 @@ public final class Normalizer {
 		
 		log.info("Optional tasks (reasoning)..." + description);
 		
-		// auto-set dataSource property for all entities (top-down)
-		if(inferPropertyDataSource) {
-			ModelUtils.inferPropertyFromParent(model, "dataSource");//, Entity.class);
-		}
-		
-		if(inferPropertyOrganism) {
-			ModelUtils.inferPropertyFromParent(model, "organism");//, Gene.class, SequenceEntityReference.class, Pathway.class);
-		}		 
-		
-		/* 
-		 * We could also "fix" organism property, where it's null,
-		 * a swell (e.g., using the value from the pathway);
-		 * also - check those values in protein references actually
-		 * correspond to what can be found in the UniProt by using
-		 * unification xrefs's 'id'... But this, fortunately, 
-		 * happens in the CPathMerger (a ProteinReference 
-		 * comes from the Warehouse with organism property already set!)
-		 */
 	}
 
 	
@@ -705,24 +683,7 @@ public final class Normalizer {
 	public void setFixDisplayName(boolean fixDisplayName) {
 		this.fixDisplayName = fixDisplayName;
 	}
-	
-	
-	public boolean isInferPropertyOrganism() {
-		return inferPropertyOrganism;
-	}
-	public void setInferPropertyOrganism(boolean inferPropertyOrganism) {
-		this.inferPropertyOrganism = inferPropertyOrganism;
-	}
-	
-	
-	public boolean isInferPropertyDataSource() {
-		return inferPropertyDataSource;
-	}
-	public void setInferPropertyDataSource(boolean inferPropertyDataSource) {
-		this.inferPropertyDataSource = inferPropertyDataSource;
-	}
-	
-	
+
 	public String getXmlBase() {
 		return xmlBase;
 	}
@@ -785,9 +746,6 @@ public final class Normalizer {
 		/**
 		 * Executes the batch replace - migrating  
 		 * to the normalized equivalent objects.
-		 * 
-		 * @param model
-		 * @param subs
 		 */
 		void doSubs() {
 			for(BioPAXElement e : subs.keySet()) {
