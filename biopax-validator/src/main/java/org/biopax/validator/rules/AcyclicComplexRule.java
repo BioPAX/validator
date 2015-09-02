@@ -65,9 +65,8 @@ public class AcyclicComplexRule extends AbstractRule<Complex> {
 			@Override
 			protected void visit(Object range, BioPAXElement domain, Model model,
 					PropertyEditor editor) {
-				assert range instanceof PhysicalEntity; // - because of filter and mul.cardinality
 				if (thing.equals(range)) {
-					error(validation, thing, "cyclic.inclusion", false, getVisited().toString());
+					error(validation, thing, "cyclic.inclusion", false, "is a component of itself or its componets... : " + domain.getRDFId());
 				} else if(range instanceof Complex) {
 					traverse((Complex) range, model);
 				}
@@ -76,6 +75,5 @@ public class AcyclicComplexRule extends AbstractRule<Complex> {
 		
 		traverser.traverse(thing, null);
 	}
-
 
 }
