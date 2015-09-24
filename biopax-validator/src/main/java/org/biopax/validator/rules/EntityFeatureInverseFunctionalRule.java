@@ -43,7 +43,7 @@ public class EntityFeatureInverseFunctionalRule extends AbstractRule<Model>{
        			
        			if(validation.isFix()) {     		    	
    		    		//do fix (make a new EF copy, replace in the properties)
-   		    		String newUri = Normalizer.uri(er.getRDFId() + "_", null, ef.getRDFId(), ef.getModelInterface());
+   		    		String newUri = Normalizer.uri(er.getUri() + "_", null, ef.getUri(), ef.getModelInterface());
    		    		EntityFeature newEf = (new ShallowCopy()).copy(ef, newUri);
    		    		model.add(newEf);
    		    		er.removeEntityFeature(ef);

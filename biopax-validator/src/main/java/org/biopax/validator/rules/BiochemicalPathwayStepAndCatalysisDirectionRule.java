@@ -73,7 +73,7 @@ public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRul
 					if(cdir != null && cdir != correctDir) {
 						error(validation, step, "direction.conflict", validation.isFix(), 
 								"stepDirection=" + step.getStepDirection()  
-								+ ", but " + proc.getRDFId() + " has catalysisDirection=" + cdir);
+								+ ", but " + proc.getUri() + " has catalysisDirection=" + cdir);
 						if(validation.isFix()) {
 							fix(step, proc, null);
 						}
@@ -88,7 +88,7 @@ public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRul
 			{
 				error(validation, step, "direction.conflict", validation.isFix(), 
 						"stepDirection=" + step.getStepDirection() 
-						+ ", but  " + con.getRDFId() + " has conversionDirection=" 
+						+ ", but  " + con.getUri() + " has conversionDirection="
 						+ con.getConversionDirection() + " (must be REVERSIBLE or empty)");
 				if(validation.isFix()) {
 					fix(step, con, null);

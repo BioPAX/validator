@@ -37,7 +37,7 @@ public class BiopaxElementIdLengthRule extends AbstractRule<BioPAXElement> {
 	}
 
 	public void check(final Validation validation, BioPAXElement thing) {
-		String rdfid = thing.getRDFId();
+		String rdfid = thing.getUri();
 		if(rdfid != null && rdfid.length() > URI_MAX_LENGTH)
 			error(validation, thing, "too.long.id", false, rdfid.length(), URI_MAX_LENGTH);
 	}

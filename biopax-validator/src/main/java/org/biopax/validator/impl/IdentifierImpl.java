@@ -54,8 +54,8 @@ public final class IdentifierImpl implements Identifier {
 	    		id = r.getXmlStreamInfo(); //location
 			}
 		} else if (obj instanceof BioPAXElement 
-				&& ((BioPAXElement)obj).getRDFId() != null) {
-			id = ((BioPAXElement) obj).getRDFId().replaceFirst("^.+#", "");	
+				&& ((BioPAXElement)obj).getUri() != null) {
+			id = ((BioPAXElement) obj).getUri().replaceFirst("^.+#", "");
 			// - strictly spk., does not always get the local part (depends on xml:base) but is OK.
 		} else if(obj instanceof Model) {
 			id = obj + "; xml:base=" + ((Model) obj).getXmlBase();

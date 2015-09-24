@@ -66,7 +66,7 @@ public class AcyclicComplexRule extends AbstractRule<Complex> {
 			protected void visit(Object range, BioPAXElement domain, Model model,
 					PropertyEditor editor) {
 				if (thing.equals(range)) {
-					error(validation, thing, "cyclic.inclusion", false, "is a component of itself or its componets... : " + domain.getRDFId());
+					error(validation, thing, "cyclic.inclusion", false, "is a component of itself or its componets... : " + domain.getUri());
 				} else if(range instanceof Complex) {
 					traverse((Complex) range, model);
 				}

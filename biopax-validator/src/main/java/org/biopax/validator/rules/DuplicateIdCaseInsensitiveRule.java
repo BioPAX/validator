@@ -43,7 +43,7 @@ public class DuplicateIdCaseInsensitiveRule extends	AbstractRule<Model> {
 		Cluster<BioPAXElement> algorithm = new Cluster<BioPAXElement>() {
 			@Override
 			public boolean match(BioPAXElement a, BioPAXElement b) {
-				return !a.equals(b) && a.getRDFId().equalsIgnoreCase(b.getRDFId());
+				return !a.equals(b) && a.getUri().equalsIgnoreCase(b.getUri());
 			}
 		};
 		

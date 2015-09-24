@@ -149,7 +149,7 @@ public final class Normalizer {
 			else if(ref instanceof RelationshipXref) 
 			{
 				//only do RXs that potentially clash with normalized CVs or ERs
-				if(ref.getRDFId().startsWith("http://identifiers.org/")) {
+				if(ref.getUri().startsWith("http://identifiers.org/")) {
 					//RXs might have the same db,id but different type.	
 					RelationshipTypeVocabulary cv = ((RelationshipXref) ref).getRelationshipType();
 					if(cv != null && !cv.getTerm().isEmpty()) {
@@ -351,7 +351,7 @@ public final class Normalizer {
 				// report error, try next xref
 				log.warn("Won't consider the UnificationXref " +
 					"having NULL 'db' or 'id' property: " + 
-					ux + ", " + ux.getRDFId() + ". " + description);
+					ux + ", " + ux.getUri() + ". " + description);
 				urefs.remove(ux);
 			} 
 		}
@@ -482,7 +482,7 @@ public final class Normalizer {
 			} else if(!cv.getTerm().isEmpty()) {
 				map.put(cv, uri(xmlBase, null, cv.getTerm().iterator().next(), cv.getModelInterface()));
 			} else log.info("Cannot normalize " + cv.getModelInterface().getSimpleName() 
-				+ " : no unification xrefs nor terms found in " + cv.getRDFId()
+				+ " : no unification xrefs nor terms found in " + cv.getUri()
 				+ ". " + description);
 		} 
 		
@@ -512,7 +512,7 @@ public final class Normalizer {
 				map.put(bs, uri);
 			} else 
 				log.debug("Won't normalize BioSource" 
-					+ " : no taxonomy unification xref found in " + bs.getRDFId()
+					+ " : no taxonomy unification xref found in " + bs.getUri()
 					+ ". " + description);
 		} 
 		
@@ -527,8 +527,8 @@ public final class Normalizer {
 		for (EntityReference bpe : model.getObjects(EntityReference.class)) {
 			
 			//skip those with already normalized URIs
-			if(bpe.getRDFId().startsWith("http://identifiers.org/")) {
-				log.info("Skip already normalized: " + bpe.getRDFId());
+			if(bpe.getUri().startsWith("http://identifiers.org/")) {
+				log.info("Skip already normalized: " + bpe.getUri());
 				continue;
 			}			
 			
@@ -556,7 +556,7 @@ public final class Normalizer {
 				}	
 			} else
 				log.info("Cannot normalize EntityReference: "
-					+ "no unification xrefs found in " + bpe.getRDFId()
+					+ "no unification xrefs found in " + bpe.getUri()
 					+ ". " + description);
 		}
 		
@@ -572,16 +572,16 @@ public final class Normalizer {
 	 * @param pro
 	 */
 	public static void autoName(Provenance pro) {
-		if(!(pro.getRDFId().startsWith("urn:miriam:") || pro.getRDFId().startsWith("http://identifiers.org/"))
+		if(!(pro.getUri().startsWith("urn:miriam:") || pro.getUri().startsWith("http://identifiers.org/"))
 				&& pro.getName().isEmpty()) {
-			log.info("Skipping: cannot normalize Provenance: " + pro.getRDFId());
+			log.info("Skipping: cannot normalize Provenance: " + pro.getUri());
 		}
 		else { // i.e., 'name' is not empty or ID is the URN
 			final SortedSet<String> names = new TreeSet<String>();
 			
 			String key = null;
-			if(pro.getRDFId().startsWith("urn:miriam:") || pro.getRDFId().startsWith("http://identifiers.org/")) {
-				key = pro.getRDFId();
+			if(pro.getUri().startsWith("urn:miriam:") || pro.getUri().startsWith("http://identifiers.org/")) {
+				key = pro.getUri();
 			} else if (pro.getStandardName() != null) {
 				key = pro.getStandardName();
 			} else {
@@ -771,7 +771,7 @@ public final class Normalizer {
 
 		private void map(BioPAXElement bpe, BioPAXElement newBpe) {
 			subs.put(bpe, newBpe);
-			uriToSub.put(newBpe.getRDFId(), newBpe);
+			uriToSub.put(newBpe.getUri(), newBpe);
 		}	
 	}
 	

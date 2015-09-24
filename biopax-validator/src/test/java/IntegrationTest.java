@@ -238,7 +238,7 @@ public class IntegrationTest {
         assertTrue(instance.canCheck(lcv));
         Validation v = new Validation(new IdentifierImpl());
 		instance.check(v, lcv);
-		assertEquals(1, v.countErrors(lcv.getRDFId(), null, null, null, false, false));
+		assertEquals(1, v.countErrors(lcv.getUri(), null, null, null, false, false));
     }
     
     @Test
@@ -265,12 +265,12 @@ public class IntegrationTest {
         x.setDb("ILLEGAL DB NAME");
         Validation v = new Validation(new IdentifierImpl());
 		instance.check(v,x);
-		assertEquals(1, v.countErrors(x.getRDFId(), null, "unknown.db", null, false, false));
+		assertEquals(1, v.countErrors(x.getUri(), null, "unknown.db", null, false, false));
 		
         x.setDb("NCBI"); //ambiguous
         v = new Validation(new IdentifierImpl());
 		instance.check(v, x);
-		assertEquals(1, v.countErrors(x.getRDFId(), null, "unknown.db", null, false, false));
+		assertEquals(1, v.countErrors(x.getUri(), null, "unknown.db", null, false, false));
     }
     
 
@@ -282,7 +282,7 @@ public class IntegrationTest {
         x.setId("0000000");
         Validation v = new Validation(new IdentifierImpl());
 		instance.check(v, x);
-		assertEquals(1, v.countErrors(x.getRDFId(), null, "invalid.id.format", null, false, false));
+		assertEquals(1, v.countErrors(x.getUri(), null, "invalid.id.format", null, false, false));
     }
     
     /*
@@ -358,7 +358,7 @@ public class IntegrationTest {
         
         v = new Validation(new IdentifierImpl());
 		instance.check(v, iv);
-		assertEquals(1, v.countErrors(iv.getRDFId(), null, "illegal.cv.term", null, false, false));
+		assertEquals(1, v.countErrors(iv.getUri(), null, "illegal.cv.term", null, false, false));
         
         writeExample("testInteractionTypeRule.owl", m);
     } 
@@ -398,7 +398,7 @@ public class IntegrationTest {
         x.setId("0000000");
         Validation v = new Validation(new IdentifierImpl());
 		instance.check(v, x);
-		assertEquals(1, v.countErrors(x.getRDFId(), null, "db.name.spelling", null, false, false));
+		assertEquals(1, v.countErrors(x.getUri(), null, "db.name.spelling", null, false, false));
 		
         // use one of its official synonyms
         x.setDb("entre-zgene");
@@ -412,7 +412,7 @@ public class IntegrationTest {
         x.setId("0000000");
         v = new Validation(new IdentifierImpl());
 		instance.check(v, x);
-		assertEquals(1, v.countErrors(x.getRDFId(), null, null, null, false, false));
+		assertEquals(1, v.countErrors(x.getUri(), null, null, null, false, false));
         // use one of its official synonyms
         x.setDb("go");
         x.setId("0000000");

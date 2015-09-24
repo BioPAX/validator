@@ -60,10 +60,10 @@ public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysica
         				if(ef.getEntityFeatureOf() != null) {//it belongs to the other ER
         					//trying to generate a new unique URI for the EF copy, for any ER,EF pair is unique 
         					//(considering one-to-many, inverse functional constraints of the entityFeature prop.):
-        					String uri = Normalizer.uri(er.getRDFId()+"_", null, ef.getRDFId(), ef.getModelInterface());
+        					String uri = Normalizer.uri(er.getUri()+"_", null, ef.getUri(), ef.getModelInterface());
         					EntityFeature newEf = null; //check if there is one with this URI already; use that one then
         					for(EntityFeature f : er.getEntityFeature()) {
-        						if(uri.equals(f.getRDFId())) {
+        						if(uri.equals(f.getUri())) {
         							newEf = f;
         							break;
         						}
@@ -91,7 +91,7 @@ public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysica
         				}
         			}
 
-        			error(validation, thing, "improper.feature.use", validation.isFix(), ef.getRDFId(), er.getRDFId());
+        			error(validation, thing, "improper.feature.use", validation.isFix(), ef.getUri(), er.getUri());
         		}
         	}        
         }             

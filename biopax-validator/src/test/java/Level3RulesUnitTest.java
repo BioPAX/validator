@@ -111,7 +111,7 @@ public class Level3RulesUnitTest {
 		
 		v = new Validation(new IdentifierImpl());
 		rule.check(v, reaction);
-		assertEquals(1, v.countErrors(reaction.getRDFId(), null, "participant.location.changed", null, false, false));
+		assertEquals(1, v.countErrors(reaction.getUri(), null, "participant.location.changed", null, false, false));
 		
 		// different complex, another location is ok for this rule,
 		// but this is another problem (other rule will catch this)
@@ -127,7 +127,7 @@ public class Level3RulesUnitTest {
 		// check for: same entity (names intersection), diff. location
 		v = new Validation(new IdentifierImpl());
 		rule.check(v, reaction);
-		assertEquals(1, v.countErrors(reaction.getRDFId(), null, "participant.location.changed", null, false, false));
+		assertEquals(1, v.countErrors(reaction.getUri(), null, "participant.location.changed", null, false, false));
 
 		// generate the example OWL
 		Model m = level3.createModel();
@@ -194,7 +194,7 @@ public class Level3RulesUnitTest {
 		right.setCellularLocation(cl); 
 		v = new Validation(new IdentifierImpl());
 		rule.check(v, reaction); 
-		assertEquals(1, v.countErrors(reaction.getRDFId(), null, "transport.location.same", null, false, false));
+		assertEquals(1, v.countErrors(reaction.getUri(), null, "transport.location.same", null, false, false));
 		
 		m.add(left); m.add(right);
 		m.add(rnaReference);
@@ -298,7 +298,7 @@ public class Level3RulesUnitTest {
     	
     	Validation v = new Validation(new IdentifierImpl());
     	rule.check(v, pr);
-    	assertEquals(1, v.countErrors(pr.getRDFId(), null, "cardinality.violated", null, false, false));
+    	assertEquals(1, v.countErrors(pr.getUri(), null, "cardinality.violated", null, false, false));
 
        	// write the example
        	Model m = level3.createModel();
@@ -330,7 +330,7 @@ public class Level3RulesUnitTest {
 		ca.addComment("error: illegal controlType");
 		v = new Validation(new IdentifierImpl());
 		rule.check(v, ca); 
-		assertEquals(1, v.countErrors(ca.getRDFId(), null, "range.violated", null, false, false));
+		assertEquals(1, v.countErrors(ca.getUri(), null, "range.violated", null, false, false));
 		
 		TemplateReactionRegulation tr = level3.create(TemplateReactionRegulation.class, "regulation1");
 		tr.setControlType(ControlType.INHIBITION);
@@ -341,7 +341,7 @@ public class Level3RulesUnitTest {
 		tr.addComment("error: illegal controlType");
 		v = new Validation(new IdentifierImpl());
 		rule.check(v, tr); 
-		assertEquals(1, v.countErrors(tr.getRDFId(), null, "range.violated", null, false, false));
+		assertEquals(1, v.countErrors(tr.getUri(), null, "range.violated", null, false, false));
 		
 		// write the example XML
 		Model m = level3.createModel();
@@ -365,7 +365,7 @@ public class Level3RulesUnitTest {
 		dg.addComment("error: illegal conversionDirection");
 		v = new Validation(new IdentifierImpl());
 		rule.check(v, dg); 
-		assertEquals(1, v.countErrors(dg.getRDFId(), null, "range.violated", null, false, false));
+		assertEquals(1, v.countErrors(dg.getUri(), null, "range.violated", null, false, false));
 		
 		// write the example
 		Model m = level3.createModel();
@@ -510,7 +510,7 @@ public class Level3RulesUnitTest {
 
         Validation v = new Validation(new IdentifierImpl());
 		rule.check(v, c2);
-		assertEquals(1, v.countErrors(c2.getRDFId(), null, "wrong.conversion.class", null, false, false));
+		assertEquals(1, v.countErrors(c2.getUri(), null, "wrong.conversion.class", null, false, false));
 
         writeExample("testConversionToComplexAssemblyRule.owl", m);
     }
@@ -530,7 +530,7 @@ public class Level3RulesUnitTest {
 
         Validation v = new Validation(new IdentifierImpl());
 		rule.check(v, p1);
-		assertEquals(1, v.countErrors(p1.getRDFId(), null, "ambiguous.feature", null, false, false));
+		assertEquals(1, v.countErrors(p1.getUri(), null, "ambiguous.feature", null, false, false));
 
         writeExample("testPhysicalEntityAmbiguousFeatureRule.owl", m);
     }
@@ -551,14 +551,14 @@ public class Level3RulesUnitTest {
 
         Validation v = new Validation(new IdentifierImpl());
 		rule.check(v, p);
-		assertEquals(1, v.countErrors(p.getRDFId(), null, "improper.feature.use", null, false, false));
+		assertEquals(1, v.countErrors(p.getUri(), null, "improper.feature.use", null, false, false));
 
         writeExample("testSimplePhysicalEntityFeaturesRule.owl", m);
 
         v = new Validation(new IdentifierImpl(),"",true,null,0, null);
         rule.check(v, p);
-		assertEquals(1, v.countErrors(p.getRDFId(), null, "improper.feature.use", null, false, false));
-		assertEquals(0, v.countErrors(p.getRDFId(), null, "improper.feature.use", null, false, true));
+		assertEquals(1, v.countErrors(p.getUri(), null, "improper.feature.use", null, false, false));
+		assertEquals(0, v.countErrors(p.getUri(), null, "improper.feature.use", null, false, true));
         
         writeExample("testSimplePhysicalEntityFeaturesRuleFixed.owl", m);
     }
@@ -580,7 +580,7 @@ public class Level3RulesUnitTest {
 
         Validation v = new Validation(new IdentifierImpl()); //default is: no auto-fix 
 		rule.check(v, complex);
-		assertEquals(1, v.countErrors(complex.getRDFId(), null, "cyclic.inclusion", null, false, true));
+		assertEquals(1, v.countErrors(complex.getUri(), null, "cyclic.inclusion", null, false, true));
 //			System.out.println(e + " " + Arrays.toString(e.getMsgArgs()));
 
         writeExample("testAcyclicComplexRule.owl", m);
@@ -637,7 +637,7 @@ public class Level3RulesUnitTest {
         //Let's check the model by applying the rule (only one)...
         Validation v = new Validation(new IdentifierImpl());
 		rule.check(v, m);
-		assertEquals(1, v.countErrors(ef1.getRDFId(), null, "inverse.functional.violated", null, false, false));
+		assertEquals(1, v.countErrors(ef1.getUri(), null, "inverse.functional.violated", null, false, false));
         writeExample("testEntityFeatureInverseFunctionalRule.owl", m);
         
         //Now, let's apply the same rule but tell the validator to fix the model...
@@ -646,8 +646,8 @@ public class Level3RulesUnitTest {
 		//whereas p2 and pr2 should stay untouched
         v = new Validation(new IdentifierImpl(),"", true, null, 0, null);
         rule.check(v, m);
-		assertEquals(1, v.countErrors(ef1.getRDFId(), null, "inverse.functional.violated", null, false, false));
-		assertEquals(0, v.countErrors(ef1.getRDFId(), null, "inverse.functional.violated", null, false, true));       
+		assertEquals(1, v.countErrors(ef1.getUri(), null, "inverse.functional.violated", null, false, false));
+		assertEquals(0, v.countErrors(ef1.getUri(), null, "inverse.functional.violated", null, false, true));
         writeExample("testEntityFeatureInverseFunctionalRuleFixed.owl", m);
     }
 }

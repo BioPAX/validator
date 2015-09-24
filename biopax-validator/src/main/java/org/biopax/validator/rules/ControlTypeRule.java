@@ -51,7 +51,7 @@ public class ControlTypeRule extends AbstractRule<Control> {
 			} else {
 				((TemplateReactionRegulation)t).setControlType(null);
 				if(logger.isInfoEnabled()) 
-					logger.info(t.getRDFId() + 
+					logger.info(t.getUri() +
 							" - invalid controlType value deleted");
 			}
 		} else {

@@ -213,7 +213,7 @@ public abstract class CvTermsRule<T extends Level3Element>
 								String id = term.getTermAccession();
 								// auto-create and add the xref to the cv;
 								// generate an URI in the same namespace
-								String uri = Normalizer.uri(cv.getRDFId()+"_", db, id, UnificationXref.class);
+								String uri = Normalizer.uri(cv.getUri()+"_", db, id, UnificationXref.class);
 								if(!added.contains(uri)) {
 									added.add(uri);
 									UnificationXref ux = BioPAXLevel.L3.getDefaultFactory()

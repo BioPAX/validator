@@ -64,7 +64,7 @@ public class SameLeftRightRule extends AbstractRule<Conversion>
             			EntityReference ler = ((SimplePhysicalEntity) lefty).getEntityReference();
             			EntityReference rer = ((SimplePhysicalEntity) righty).getEntityReference();
             			// put this: two PEs having ERs with different RDFID will be considered not equivalent
-            			if(ler != null && rer != null && !ler.getRDFId().equalsIgnoreCase(rer.getRDFId())) {
+            			if(ler != null && rer != null && !ler.getUri().equalsIgnoreCase(rer.getUri())) {
             				isSame = false;
             			}
             		}

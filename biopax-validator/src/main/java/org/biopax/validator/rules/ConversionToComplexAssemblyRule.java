@@ -86,7 +86,7 @@ public class ConversionToComplexAssemblyRule extends AbstractRule<Conversion> {
     		if(pe instanceof Complex)
     			fetcher.fetch(pe,m);
     		else 
-    			if(!m.containsID(pe.getRDFId())) 
+    			if(!m.containsID(pe.getUri()))
     				m.add(pe);
     	}   
 

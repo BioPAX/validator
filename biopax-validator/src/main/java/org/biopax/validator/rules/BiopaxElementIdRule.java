@@ -36,7 +36,7 @@ public class BiopaxElementIdRule extends AbstractRule<BioPAXElement> {
 	}
 
 	public void check(final Validation validation, BioPAXElement thing) {
-		String rdfid = thing.getRDFId();
+		String rdfid = thing.getUri();
 		if(rdfid != null) {
 			try {
 				URI.create(rdfid);

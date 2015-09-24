@@ -350,14 +350,14 @@ public class NormalizerTest {
 	
 	private void print(XReferrable xr, Model m) {
 		System.out.println("model=" + m.contains(xr) + ":\t" 
-			+ xr.getRDFId() + 
+			+ xr.getUri() +
 			" is " + xr.getModelInterface().getSimpleName()
 			+ " and has xrefs: ");
 		for(Xref x : xr.getXref()) {
 			System.out.println("model=" + m.contains(x) + ":\t" 
 				+"  " + x + " is " 
 				+ x.getModelInterface().getSimpleName() 
-				+ " - " + x.getRDFId() + ", db=" + x.getDb()
+				+ " - " + x.getUri() + ", db=" + x.getDb()
 				+ ", id=" + x.getId() + ", idVer=" + x.getIdVersion());
 			for(XReferrable rx : x.getXrefOf()) {
 				System.out.println("model=" + m.contains(rx) + ":\t" 
