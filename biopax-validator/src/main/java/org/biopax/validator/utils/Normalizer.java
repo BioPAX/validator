@@ -218,7 +218,7 @@ public final class Normalizer {
 	 * @param dbName a bio data collection name or synonym, case-insensitive
 	 * @param idPart optional (can be null), e.g., xref.id, case-sensitive
 	 * @param type BioPAX class
-	 * @return
+	 * @return URI
 	 * @throws IllegalArgumentException if either type is null or both 'dbName' and 'idPart' are all nulls.
 	 */
 	public static String uri(final String xmlBase, 
@@ -239,7 +239,7 @@ public final class Normalizer {
 				// a shortcut: a standard and resolvable URI exists for some BioPAX types
 				if ((type.equals(PublicationXref.class) && "pubmed".equalsIgnoreCase(dbName))
 					|| type.equals(RelationshipTypeVocabulary.class)
-					|| EntityReference.class.isAssignableFrom(type)) 
+					|| EntityReference.class.isAssignableFrom(type)) //TODO make it only for ProteinReference
 				{	//get the standard URI and quit (success), or fail and continue making a new URI below...
 					return MiriamLink.getIdentifiersOrgURI(dbName, idPart);
 				} 
