@@ -239,7 +239,8 @@ public final class Normalizer {
 				// a shortcut: a standard and resolvable URI exists for some BioPAX types
 				if ((type.equals(PublicationXref.class) && "pubmed".equalsIgnoreCase(dbName))
 					|| type.equals(RelationshipTypeVocabulary.class)
-					|| EntityReference.class.isAssignableFrom(type)) //TODO make it only for ProteinReference
+					|| ProteinReference.class.isAssignableFrom(type)
+					|| SmallMoleculeReference.class.isAssignableFrom(type))
 				{	//get the standard URI and quit (success), or fail and continue making a new URI below...
 					return MiriamLink.getIdentifiersOrgURI(dbName, idPart);
 				} 
