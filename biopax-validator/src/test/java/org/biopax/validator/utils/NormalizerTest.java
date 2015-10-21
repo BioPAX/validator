@@ -331,10 +331,11 @@ public class NormalizerTest {
 	@Test
 	public final void testNormalizeInoh() {
 		//there're two Protein objects that have entityReference 
-		//rdf:ID="IMR_0100366_G_alpha_s_Canonical" (ProteinReference); 
-		//and that PR has two UniProt UnificationXref, and the P63092 one
-		//should be used to generate a new Identifiers.org URI for the PR.
-		//There was a bug when replacing the PR's URI (warning: IllegalBioPAXArgumentException: Incompatible type!..)
+		//rdf:ID="IMR_0100366_G_alpha_s_Canonical" (in fact a generic ProteinReference inproperly defined);
+		//and that PR has two UniProt UnificationXref: P63092 (human), P63095 (rat).
+		//Identifiers.org URI for the PR should NOT be generated.
+		//
+		//Also, there was a bug when replacing the PR's URI (warning: IllegalBioPAXArgumentException: Incompatible type!..)
 		//The cause is that there was a (weird, invalid) PublicationXref having db:id as UniProt:P63092 that gets the same URI!
 		//To avoid such issues altogether (despite illegal pub. xrefs), the Normalizer won't use Identifiers.org for PublicationXrefs anymore.
 		
@@ -342,10 +343,14 @@ public class NormalizerTest {
 		Normalizer normalizer = new Normalizer();
 		normalizer.setXmlBase("");
 		normalizer.normalize(model);
-			
-		assertTrue(model.containsID("http://identifiers.org/uniprot/P63092"));
-		assertEquals("ProteinReference", model.getByID("http://identifiers.org/uniprot/P63092").getModelInterface().getSimpleName());	
-		assertFalse(model.containsID(model.getXmlBase() + "IMR_0100366_G_alpha_s_Canonical"));		
+
+		//A weird PublicationXref that uses a UniProt ID won't be normalized:
+		assertFalse(model.containsID("http://identifiers.org/uniprot/P63092"));
+
+		//A PR with two UniProt IDs/unif.xrefs - human, rat - won't be normalized!
+		assertTrue(model.containsID(model.getXmlBase() + "IMR_0100366_G_alpha_s_Canonical"));
+		assertEquals("ProteinReference", model.getByID(model.getXmlBase() + "IMR_0100366_G_alpha_s_Canonical")
+				.getModelInterface().getSimpleName());
 	}
 	
 	private void print(XReferrable xr, Model m) {

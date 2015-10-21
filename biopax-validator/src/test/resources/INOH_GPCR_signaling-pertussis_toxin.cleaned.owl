@@ -7342,8 +7342,8 @@
 </bp:RelationshipXref>
 
 <bp:ProteinReference rdf:ID="IMR_0100366_G_alpha_s_Canonical">
- <bp:xref rdf:resource="#UniProt_P63095" />
- <bp:xref rdf:resource="#UniProt_P63092" />
+ <bp:xref rdf:resource="#UniProt_P63095" /> <!-- GNAS2_RAT -->
+ <bp:xref rdf:resource="#UniProt_P63092" /> <!-- GNAS2_HUMAN -->
  <bp:displayName rdf:datatype = "http://www.w3.org/2001/XMLSchema#string">G-alpha-s</bp:displayName>
  <bp:organism rdf:resource="#Canonical" />
 </bp:ProteinReference>

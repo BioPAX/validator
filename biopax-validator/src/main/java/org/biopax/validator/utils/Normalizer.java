@@ -285,7 +285,7 @@ public final class Normalizer {
 	/**
 	 * Description of the model to normalize.
 	 * 
-	 * @return
+	 * @return info about the BioPAX model
 	 */
 	public String getDescription() {
 		return description;
@@ -341,85 +341,92 @@ public final class Normalizer {
 	}
 
 
-	private List<UnificationXref> getUnificationXrefsSorted(XReferrable referrable) {
-		List<UnificationXref> urefs = new ArrayList<UnificationXref>(
-			new ClassFilterSet<Xref,UnificationXref>(
-				referrable.getXref(), UnificationXref.class)
+	private Collection<UnificationXref> getUnificationXrefsSorted(XReferrable r) {
+
+		Collection<UnificationXref> urefs = new TreeSet<UnificationXref>(
+				new Comparator<UnificationXref>() {
+					public int compare(UnificationXref o1, UnificationXref o2) {
+						String s1 = o1.getDb() + o1.getId();
+						String s2 = o2.getDb() + o2.getId();
+						return s1.compareTo(s2);
+					}
+				}
 		);
-		
-		for(UnificationXref ux : new ArrayList<UnificationXref>(urefs)) {
-			if(ux.getDb() == null || ux.getId() == null) {
-				// report error, try next xref
-				log.warn("Won't consider the UnificationXref " +
-					"having NULL 'db' or 'id' property: " + 
-					ux + ", " + ux.getUri() + ". " + description);
-				urefs.remove(ux);
+
+		for(UnificationXref ux : new ClassFilterSet<Xref,UnificationXref>(r.getXref(), UnificationXref.class))
+		{
+			if(ux.getDb() != null && ux.getId() != null) {
+				urefs.add(ux);
 			} 
 		}
-		
-		Comparator<UnificationXref> comparator = new Comparator<UnificationXref>() {
-			public int compare(UnificationXref o1, UnificationXref o2) {
-				String s1 = o1.getDb() + o1.getId();
-				String s2 = o2.getDb() + o2.getId();
-				return s1.compareTo(s2);
-			}
-		};
-		
-		Collections.sort(urefs, comparator);
 		
 		return urefs;
 	}
 
 	
 	/**
-	 * Gets the first preferred xref, if exists.
-	 * Otherwise, - simply the first correct one.
+	 * Finds preferred unification xref, if possible.
 	 * Preferred db values are:
-	 * "entrez gene" - for NucleicAcidReference/NucleicAcidRegionReference;
+	 * "ncbi gene" - for NucleicAcidReference and the sub-classes;
 	 * "uniprot" or "refseq" for ProteinReference;
-	 * "chebi" - SMRs
+	 * "chebi" - for SmallMoleculeReference;
 	 * 
-	 * @param bpe
+	 * @param bpe BioPAX object that can have xrefs
 	 * @return the "best" first unification xref 
 	 */
-	private UnificationXref getFirstUnificationXref(XReferrable bpe) 
+	private UnificationXref findPreferredUnificationXref(XReferrable bpe)
 	{
 		UnificationXref toReturn = null;
-		
-		String preferredDb = null; 
-		//use preferred db prefix for different type of ER
-		if(bpe instanceof ProteinReference)
-			preferredDb = "uniprot";
-		else if(bpe instanceof SmallMoleculeReference)
-			preferredDb = "chebi";
-		else if(bpe instanceof NucleicAcidReference || bpe instanceof NucleicAcidRegionReference)
-			preferredDb = "entrez";
-		
+
 		Collection<UnificationXref> orderedUrefs = getUnificationXrefsSorted(bpe);
-		
-		if(preferredDb == null && !orderedUrefs.isEmpty()) {
-			toReturn = orderedUrefs.iterator().next(); 
-			return toReturn;
+
+		//use preferred db prefix for different type of ER
+		if(bpe instanceof ProteinReference) {
+			// prefer xref having db starts with "uniprot" (preferred) or "refseq";
+			toReturn = findSingleUnificationXref(orderedUrefs, "uniprot");
+			// if null, next try refseq.
+			if(toReturn==null)
+				toReturn = findSingleUnificationXref(orderedUrefs, "refseq");
+		} else if(bpe instanceof SmallMoleculeReference) {
+			// - "chebi", then  "pubchem";
+			toReturn = findSingleUnificationXref(orderedUrefs, "chebi");
+			if(toReturn==null)
+				toReturn = findSingleUnificationXref(orderedUrefs, "pubchem");
+		} else if(bpe instanceof NucleicAcidReference) {
+			//that includes NucleicAcidRegionReference, etc. sub-classes;
+			toReturn = findSingleUnificationXref(orderedUrefs, "ncbi gene");
+			if(toReturn==null)
+				toReturn = findSingleUnificationXref(orderedUrefs, "entrez");
 		} else {
-			for(UnificationXref uref : orderedUrefs) {
-				if(uref.getDb().toLowerCase().startsWith(preferredDb) 
-						&& uref.getId()!=null) {
-					toReturn = uref;
+			//for other XReferrable types (BioSource or ControlledVocabulary)
+			//use if there's only one xref (return null if many)
+			if(orderedUrefs.size()==1)
+				toReturn = orderedUrefs.iterator().next();
+		}
+		
+		return toReturn;
+	}
+
+	private UnificationXref findSingleUnificationXref(Collection<UnificationXref> uXrefs, String dbStartsWith) {
+		UnificationXref ret = null;
+
+		for(Xref x : uXrefs) {
+			if(x instanceof UnificationXref && x.getId() != null && x.getDb() != null
+					&& x.getDb().toLowerCase().startsWith(dbStartsWith))
+			{
+				if(ret == null) {
+					ret = (UnificationXref)x;
+				} else {
+					//another same kind xref is found;
+					//can't test here if several IDs map to the same thing;
+					//so, give up (for safety) - return null.
+					ret = null;
 					break;
 				}
 			}
 		}
-		
-		if(toReturn == null && bpe instanceof ProteinReference)
-			for(UnificationXref uref : orderedUrefs) {
-				if(uref.getDb().toLowerCase().startsWith("refseq") 
-						&& uref.getId()!=null) {
-					toReturn = uref;
-					break;
-				}
-			}
-		
-		return toReturn;
+
+		return ret;
 	}
 
 	
@@ -427,7 +434,7 @@ public final class Normalizer {
 	 * BioPAX normalization 
 	 * (modifies the original Model)
 	 * 
-	 * @param model
+	 * @param model BioPAX model to normalize
 	 * @throws NullPointerException if model is null
 	 * @throws IllegalArgumentException if model is not Level3 BioPAX
 	 */
@@ -476,7 +483,7 @@ public final class Normalizer {
 		for(ControlledVocabulary cv : model.getObjects(ControlledVocabulary.class)) 
 		{
 			//it does not check/fix the CV terms though (but a validation rule can do if run before the normalizer)...
-			UnificationXref uref = getFirstUnificationXref(cv); //usually, there's only one such xref
+			UnificationXref uref = findPreferredUnificationXref(cv); //usually, there's only one such xref
 			if (uref != null) {
 				// so let's generate a safe URI instead of standard identifiers.org
 				map.put(cv, uri(xmlBase, uref.getDb(), uref.getId(), cv.getModelInterface()));
@@ -498,7 +505,7 @@ public final class Normalizer {
 		
 		for(BioSource bs : model.getObjects(BioSource.class)) 
 		{
-			UnificationXref uref = getFirstUnificationXref(bs);
+			UnificationXref uref = findPreferredUnificationXref(bs);
 			//normally, the xref db is 'Taxonomy' (or a valid synonym)
 			if (uref != null
 					&& (uref.getDb().toLowerCase().contains("taxonomy") || uref.getDb().equalsIgnoreCase("newt"))) 
@@ -533,7 +540,7 @@ public final class Normalizer {
 				continue;
 			}			
 			
-			UnificationXref uref = getFirstUnificationXref(bpe);
+			UnificationXref uref = findPreferredUnificationXref(bpe);
 			if (uref != null) {
 				// Create (with a new URI made from a unif. xref) 
 				// and save the replacement object, if possible, 
