@@ -55,7 +55,12 @@
 			<artifactId>paxtools-trove</artifactId>
 			<version>${paxtools.version}</version>
 			<scope>runtime</scope>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>org.biopax.paxtools</groupId>
+			<artifactId>normalizer</artifactId>
+			<version>${paxtools.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.biopax.validator</groupId>
 			<artifactId>validator-core</artifactId>

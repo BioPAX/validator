@@ -5,9 +5,9 @@ import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.EntityFeature;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
+import org.biopax.paxtools.normalizer.Normalizer;
 import org.biopax.validator.api.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
-import org.biopax.validator.utils.Normalizer;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;

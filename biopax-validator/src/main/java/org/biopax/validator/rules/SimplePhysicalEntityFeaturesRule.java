@@ -26,9 +26,9 @@ import org.biopax.paxtools.controller.ShallowCopy;
 import org.biopax.paxtools.model.level3.EntityFeature;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
+import org.biopax.paxtools.normalizer.Normalizer;
 import org.biopax.validator.api.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
-import org.biopax.validator.utils.Normalizer;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -60,7 +60,7 @@ public class SimplePhysicalEntityFeaturesRule extends AbstractRule<SimplePhysica
         				if(ef.getEntityFeatureOf() != null) {//it belongs to the other ER
         					//trying to generate a new unique URI for the EF copy, for any ER,EF pair is unique 
         					//(considering one-to-many, inverse functional constraints of the entityFeature prop.):
-        					String uri = Normalizer.uri(er.getUri()+"_", null, ef.getUri(), ef.getModelInterface());
+        					String uri = Normalizer.uri(er.getUri() + "_", null, ef.getUri(), ef.getModelInterface());
         					EntityFeature newEf = null; //check if there is one with this URI already; use that one then
         					for(EntityFeature f : er.getEntityFeature()) {
         						if(uri.equals(f.getUri())) {
