@@ -4,7 +4,6 @@
 	<modules>
 		<module>validator-core</module>
 		<module>obo-fetcher</module>
-		<module>miriam-lib</module>
 		<module>biopax-validator</module>
 		<module>biopax-validator-web</module>
 		<module>biopax-validator-client</module>
