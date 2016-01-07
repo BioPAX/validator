@@ -39,6 +39,8 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 		</dependency>
+		<!-- unfortunately, obo artifacts use log4j directly;
+		if/when we swithch to slf4j logging, we'd need to add an adapter jar-->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -54,6 +56,10 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
+			<!--<releases>-->
+                <!--<enabled>true</enabled>-->
+				<!--<updatePolicy>never</updatePolicy>-->
+            <!--</releases>-->
 		</repository>
 	</repositories>
   

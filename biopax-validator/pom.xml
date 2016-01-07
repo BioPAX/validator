@@ -17,12 +17,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-<!-- <forkMode>once</forkMode> deprecated since the plugin v2.14-->
-					<reuseForks>false</reuseForks>
-        			<forkCount>1</forkCount>
 					<argLine>-ea -Xmx1g -javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</argLine>
-					<!-- try: -Dbiopax.normalizer.uri.strategy=simple when debugging ;) -->
-					<useSystemClassloader>true</useSystemClassloader>
+					<!--<useSystemClassloader>true</useSystemClassloader>-->
 				</configuration>
 			</plugin>
 		</plugins>

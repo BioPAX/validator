@@ -1,24 +1,3 @@
-/*
- * #%L
- * Ontologies Access
- * %%
- * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public 
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
- */
 import static org.junit.Assert.*;
 
 import org.biopax.psidev.ontology_manager.*;
@@ -33,11 +12,9 @@ public class LocalOntologyTest {
 	static OntologyManager manager;
 	static OntologyAccess mod;
 	static OntologyAccess mi;
-	static OntologyAccess so;
 
 	static {
 		final Properties cfg = new Properties();
-		cfg.put("SO", "classpath:so.obo");
 		cfg.put("MI", "classpath:mi.obo");
 		cfg.put("MOD", "classpath:mod.obo");
 		
@@ -45,7 +22,6 @@ public class LocalOntologyTest {
 			manager = new OntologyManagerImpl(cfg);
 			mod = manager.getOntology("MOD");
 			mi = manager.getOntology("MI");
-			so = manager.getOntology("SO");
 		} catch (OntologyLoaderException e) {
 			throw new RuntimeException(e);
 		}
@@ -66,7 +42,7 @@ public class LocalOntologyTest {
 		assertEquals(1, terms.size());
 		final OntologyTermI y2h = terms.iterator().next();
 
-		assertEquals(9, y2h.getNameSynonyms().size());
+		assertEquals(10, y2h.getNameSynonyms().size());
 		assertTrue(y2h.getNameSynonyms().contains("2h"));
 		assertTrue(y2h.getNameSynonyms()
 				.contains("classical two hybrid"));
@@ -174,7 +150,7 @@ public class LocalOntologyTest {
 
 		final Set<OntologyTermI> children = mi.getAllChildren(term);
 		assertNotNull(children);
-		assertEquals(children.toString(), 11, children.size());
+		assertEquals(children.toString(), 12, children.size());
 		assertTrue(children.contains(new OntologyTermImpl("MI",
 				"MI:0602", "chemical footprinting")));
 		assertTrue(children.contains(new OntologyTermImpl("MI",
@@ -259,27 +235,10 @@ public class LocalOntologyTest {
 	}
 
 	@Test
-	public void getValidTerms_so_small() throws OntologyLoaderException {
-		// GO:0055044 has 7 children (OLS 17 July 2008) = 7 valid terms
-		OntologyTermI parent = so.getTermForAccession("SO:0000805");
-		Set<OntologyTermI> terms = so.getAllChildren(parent);
-		assertEquals(4, terms.size());
-	}
-
-	@Test
-	public void getValidTerms_so_large() throws OntologyLoaderException {
-		OntologyTermI parent = so.getTermForAccession("SO:0000001");
-		Set<OntologyTermI> terms = so.getAllChildren(parent);
-		assertTrue(terms.size() > 10);
-	}
-	
-	
-	@Test
 	public final void testSearchTermByName() {
 		Set<OntologyTermI> term = manager.searchTermByName("O-phospho-L-serine");
 		assertFalse(term.isEmpty());
 	}
-
 
 	@Test
 	public final void testTermByAccession() {

@@ -47,7 +47,6 @@ import java.util.*;
  * format being used (GOFF or OBO).
  *
  * @author Richard Cote
- * @version $Id: AbstractLoader.java,v 1.40 2008/05/20 16:40:00 rglcote Exp $
  */
 public abstract class BaseOBO2AbstractLoader implements Loader {
 
@@ -74,7 +73,6 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
     protected final HashSet<String> IS_A_SET = new HashSet<String>();
     protected final HashSet<String> DEV_FROM_SET = new HashSet<String>();
     private HashMap<String, Term> unknown_relations = new HashMap<String, Term>();
-    //    private MultiMap<String, String> instances = new MultiHashMap<String, String>();
     private TreeSet<String> rootTerms = new TreeSet<String>();
     protected Parser parser;
 
@@ -192,7 +190,6 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
      * inetrnal helper method to initialize and reset shared objects
      */
     protected void initializeCommonObjects() {
-
         //no need to check if parser is not null because
         //of previous sanity check at the start of process()
 
@@ -298,7 +295,6 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
         MOD_STRING_ANNOTATIONS.add("Origin");
         MOD_STRING_ANNOTATIONS.add("TermSpec");
 
-
         //create relations
         IS_A = initializeTermBean(Constants.IS_A_RELATION_TYPE, Loader.RELATION_TYPE);
         ontologyTerms.put(IS_A.getIdentifier(), IS_A);
@@ -367,7 +363,6 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
             //must set PK here because OJB will now not set it automatically
             //PK will be term_ac+ont+fully_loaded_false
             bean.setTermPk(bean.getIdentifier() + SHORT_NAME + "0");
-
             return bean;
         } else {
             throw new IllegalArgumentException("Can't have a non-null term name!");
@@ -935,8 +930,9 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
     /**
      * Internal method that actually does all the precomputing of paths
      */
-    private Collection<TermPath> createTermPathBeans(HashMap<String, Integer> paths, int relationTypeId, TermBean relationBean, TermBean trm) {
-
+    private Collection<TermPath> createTermPathBeans(HashMap<String, Integer> paths, int relationTypeId,
+                                                     TermBean relationBean, TermBean trm)
+    {
         HashSet<TermPath> retval = new HashSet<TermPath>();
 
         //get the child term from the link
@@ -948,19 +944,14 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
               |_ child2        child2 IS_A term1
                                subject pred object
         */
-
         Term objTrm;
         for (String termId : paths.keySet()) {
             //key = termID, value = distance
             int distance = paths.get(termId);
-
             objTrm = ontologyTerms.get(termId);
-
             if (objTrm != null) {
-
                 //create bean
                 TermPathBean tpb = new TermPathBean();
-
                 //set distance
                 tpb.setDistance(distance);
                 //set subject term
@@ -975,13 +966,11 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
                 tpb.setParentOntology(ontBean);
                 //add to retval
                 retval.add(tpb);
-
             } else {
                 logger.debug("No object term found for term path: " + trm.getIdentifier() + "->" + termId);
             }
         }
         return retval;
-
     }
 
     private String getSynonymTypeDef(int scope) {

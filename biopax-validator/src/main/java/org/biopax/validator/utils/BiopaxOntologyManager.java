@@ -53,7 +53,7 @@ public class BiopaxOntologyManager extends OntologyManagerImpl implements CvVali
 	
 	/**
 	 * Constructor
-	 * @param ontologiesConfigXml
+	 * @param ontologiesConfig OBO ontologies configuration properties
 	 * 
 	 */
 	public BiopaxOntologyManager(Properties ontologiesConfig)
