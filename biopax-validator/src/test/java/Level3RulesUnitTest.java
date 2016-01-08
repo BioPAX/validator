@@ -24,8 +24,6 @@ import static org.junit.Assert.*;
 import java.io.*;
 import java.net.URI;
 
-import org.biopax.paxtools.controller.EditorMap;
-import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.io.*;
 import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
@@ -36,8 +34,6 @@ import org.biopax.validator.rules.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
-import org.biopax.paxtools.model.level3.Process;
 
 
 /**
@@ -51,9 +47,8 @@ import org.biopax.paxtools.model.level3.Process;
  */
 public class Level3RulesUnitTest {
 
-	static BioPAXFactory level3 =BioPAXLevel.L3.getDefaultFactory(); // to create BioPAX objects
-	static EditorMap editorMap = SimpleEditorMap.L3;
-	static BioPAXIOHandler exporter = new SimpleIOHandler(BioPAXLevel.L3);
+	static final BioPAXFactory level3 =BioPAXLevel.L3.getDefaultFactory();
+	static final BioPAXIOHandler exporter = new SimpleIOHandler(BioPAXLevel.L3);
 	
 	final static String TEST_DATA_DIR = Level3RulesUnitTest.class
 		.getResource("").getPath();

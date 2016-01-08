@@ -69,7 +69,7 @@ public class BiopaxValidatorUtilsTest {
 		String xml2 = writer.toString();
 		assertTrue(xml2.length()>0);
 		
-		System.out.println(xml+"\n\n\n"+xml2);
+//		System.out.println(xml+"\n\n\n"+xml2);
 		assertEquals(xml, xml2);
 		
 		// test pretty html output works (by XSLT)
