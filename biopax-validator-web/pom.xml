@@ -47,9 +47,12 @@
 						<phase>package</phase>
 						<configuration>
 							<path>/</path>
+							<enableNaming>false</enableNaming>
 							<attachArtifactClassifier>exec-war</attachArtifactClassifier>
 							<attachArtifactClassifierType>jar</attachArtifactClassifierType>
-							<charset>utf-8</charset>
+							<!-- An HTTP access log pattern ('combined', modified just to get actual client IP)
+                                 to match the Logstash 2.1x built-in %{COMBINEDAPACHELOG} Grok pattern -->
+							<accessLogValveFormat>%{X-Forwarded-For}i %l %u %t "%r" %s %b "%{Referrer}i" "%{User-Agent}i"</accessLogValveFormat>
 							<extraDependencies>
 								<dependency>
 									<groupId>org.springframework</groupId>
