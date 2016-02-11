@@ -6,18 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="BioPAX" />
 <meta name="description" content="BioPAX Validator" />
-<meta name="keywords" content="BioPAX, Validation, Validator, Rule, OWL, Exchange" />
-<link rel="shortcut icon" href="images/favicon.ico" />
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-<link rel="stylesheet" type="text/css" href="css/biopax.validator.css" />
+<meta name="keywords" content="BioPAX, Validation, Validator, Rule, OWL, RDF, Exchange" />
+<link rel="shortcut icon" href="resources/images/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="resources/css/biopax.validator.css" />
 <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
-<!--[if lt IE 9]><script src='<c:url value="scripts/html5shiv.js"/>'></script><![endif]-->
-<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> -->
-<script type="text/javascript" src="scripts/jquery.min.js"></script>
-<!-- <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script> -->
-<script type="text/javascript" src="scripts/bootstrap.min.js"></script>
-<script type="text/javascript" src="scripts/jquery.placeholder.js"></script>
-<script type="text/javascript" src="scripts/biopax.validator.js"></script>
+<!--[if lt IE 9]><script src="resources/scripts/html5shiv.js"></script><![endif]-->
+<script type="text/javascript" src="resources/scripts/jquery.min.js"></script>
+<script type="text/javascript" src="resources/scripts/bootstrap.min.js"></script>
+<script type="text/javascript" src="resources/scripts/jquery.placeholder.js"></script>
+<script type="text/javascript" src="resources/scripts/biopax.validator.js"></script>
 <script>
   <%-- get the server-side jvm property --%>
   var gaCode = "<%= System.getProperty("biopax.validator.ga.code") %>";
@@ -31,6 +29,6 @@
   }
 </script>
 <!--[if lt IE 8]>
-	<script src='<c:url value="js/icon-font-ie7.js"/>'></script>
-	<script src='<c:url value="js/icon-font-ie7-24.js"/>'></script>
+	<script src="resources/scripts/icon-font-ie7.js"></script>
+	<script src="resources/scripts/lte-ie7-24.js"></script>
 <![endif]-->

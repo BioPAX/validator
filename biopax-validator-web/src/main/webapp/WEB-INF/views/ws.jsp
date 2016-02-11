@@ -18,7 +18,7 @@
 <h3>Check</h3>
 To validate and, optionally, auto-fix and normalize local or remote BioPAX file(s), 
 submit a multipart/form-data HTTP POST request to 
-<a class="btn btn-success" href="<c:url value='check.html'/>">this URL</a>.
+<a class="btn btn-success" href="check.html">this URL</a>.
 </div>
 </div>
 
@@ -50,7 +50,7 @@ configuration)</li>
 <li>HTML - stand-alone HTML+JavaScript validation results page 
 to save locally and view off-line</li>
 <li>XML - results in the XML format defined by the 
-<a target="_blank" href="<c:url value='schema.html'/>">XML schema</a></li>
+<a target="_blank" href="schema.html">XML schema</a></li>
 <li>OWL - modified BioPAX L3 data (fixed and normalized)</li>
 </ul>
 </div>

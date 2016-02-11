@@ -16,16 +16,16 @@
 			  </div>              
               <div class="collapse navbar-collapse pull-right" id="top-navbar-collapse">
                   <ul class="nav navbar-nav">
-					<li><a href='<c:url value="home.html"/>'>Home</a></li>
-					<li><a href='<c:url value="check.html"/>'>Validate</a></li>
+					<li><a href="home.html">Home</a></li>
+					<li><a href="check.html">Validate</a></li>
 					<li class="dropdown">
                   		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Info<b class="caret"></b></a>
                   		<span class="dropdown-arrow"></span>
                   		<ul class="dropdown-menu">
-							<li><a href='<c:url value="ws.html" />'>Web Service</a></li>
-							<li><a href='<c:url value="rules.html"/>'>BioPAX Rules</a></li>
-							<li><a href='<c:url value="errorTypes.html"/>'>Errors</a></li>
-							<li><a href='<c:url value="extraCfg.html"/>'>Other</a></li>
+							<li><a href="ws.html">Web Service</a></li>
+							<li><a href="rules.html">BioPAX Rules</a></li>
+							<li><a href="errorTypes.html">Errors</a></li>
+							<li><a href="extraCfg.html">Other</a></li>
                     	</ul>
                 	</li>
 					<li class="dropdown">

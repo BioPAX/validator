@@ -53,21 +53,21 @@
 	</div>
 	<div class="form-group col-xs-4">
 		<label for="profile">Validation Profile:</label><br/>
-		<select name="profile">
+		<select name="profile" id="profile">
 			<option label="Default (Best Practice)" value="">Default (Best Practice)</option>
 			<option label="Alternative (Less Strict)" value="notstrict" selected="selected">Alternative (Less Strict)</option>
 		</select>
 	</div>
 	<div class="form-group col-xs-4">
 		<label for="filter">Error Case Filter (Level):</label><br/>
-		<select name="filter">
+		<select name="filter" id="filter">
 			<option label="Warnings and Errors (default)" value="WARNING" selected="selected">Warnings and Errors (default)</option>
 			<option label="Only Errors" value="ERROR">Only Errors</option>
 		</select>
 	</div>
 	<div class="form-group col-xs-4">
 		<label for="maxErrors">Stop after:</label><br/>
-		<select name="maxErrors">
+		<select name="maxErrors" id="maxErrors">
 			<option label="all errors/warnings collected (default)"  value="0" selected="selected">all errors/warnings collected (default)</option>
 			<option label="after one ERROR (fail fast)" value="1">after one ERROR (fail fast)</option>
 			<option label="after 10 ERRORs (not fixed)" value="10">10 ERROR cases (not fixed)</option>
@@ -79,7 +79,7 @@
 		<input id="retHtml" type="radio" name="retDesired" value="html" id="retHtml" checked="checked"/>
 		<label for="retHtml">HTML</label>
 		<input id="retXml" type="radio" name="retDesired" value="xml"/>
-		<label for="retXml">XML (<a href="<c:url value='ws.html'/>">unmarshalable</a>)</label>
+		<label for="retXml">XML (<a href="ws.html">unmarshalable</a>)</label>
 		<input id="retOwl" type="radio" name="retDesired" value="owl" id="retOwl" disabled="disabled"/>
 		<label for="retOwl">BioPAX (if modified)</label>
 	</div>
@@ -91,7 +91,7 @@
  
 <jsp:include page="footer.jsp"/>
 
-<script type="text/javascript" src="scripts/multifile_compressed.js"></script>
+<script type="text/javascript" src="resources/scripts/multifile_compressed.js"></script>
 <script type="text/javascript">
   var multi_selector = new MultiSelector( document.getElementById( 'files_list' ), 25);
   multi_selector.addElement( document.getElementById( 'file' ) );

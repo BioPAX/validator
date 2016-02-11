@@ -122,8 +122,8 @@ public class Main {
 
 		// this does 90% of the job ;)
 		ctx = new ClassPathXmlApplicationContext(
-			new String[] {"META-INF/spring/appContext-loadTimeWeaving.xml", 
-				"META-INF/spring/appContext-validator.xml"});
+			new String[] {"META-INF/spring/applicationContext-loadTimeWeaving.xml",
+					"META-INF/spring/applicationContext-validator.xml"});
 		// Rules are now loaded, and AOP is listening for BioPAX model method calls.
 		
         // get the beans to work with

@@ -33,7 +33,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.normalizer.Normalizer;
-import org.biopax.validator.api.ValidatorException;
 import org.biopax.validator.api.ValidatorUtils;
 import org.biopax.validator.api.Validator;
 import org.biopax.validator.api.beans.Behavior;
@@ -70,9 +69,21 @@ public class ValidatorController {
 
 	public ValidatorController(Validator validator) {
 		this.validator = validator;
-	}	
-      
-    @RequestMapping(value="/check", method=RequestMethod.GET)
+	}
+
+	@RequestMapping("/home")
+	public String home() {
+		return "home";
+	}
+
+
+	@RequestMapping("/ws")
+	public String ws() {
+		return "ws";
+	}
+
+
+	@RequestMapping(value="/check", method=RequestMethod.GET)
     public void check(Model model) {
     	Normalizer normalizer = new Normalizer();
     	model.addAttribute("normalizer", normalizer);
@@ -101,8 +112,7 @@ public class ValidatorController {
      * @throws IOException
      */
     @RequestMapping(value="/check", method=RequestMethod.POST)
-    public String check( 
-    		//use like @ModelAttribute("validation") Validation validation is inconvenient for multiple files...
+	public String check(
     		HttpServletRequest request, HttpServletResponse response, 
     		Model mvcModel, Writer writer,
     		@RequestParam(required=false) String url, 
@@ -113,8 +123,9 @@ public class ValidatorController {
     		@RequestParam(required=false) String profile, 
     		//normalizer!=null when called from the JSP; 
     		//but it's usually null when from the validator-client or a web script
-    		@ModelAttribute("normalizer") Normalizer normalizer) throws IOException  
-    {
+    		@ModelAttribute("normalizer") Normalizer normalizer
+	) throws IOException
+	{
     	Resource resource = null; // a resource to validate
     	
     	// create the response container
@@ -191,21 +202,7 @@ public class ValidatorController {
     	return null; // (Writer is used instead)
     }
 	
-    
-    
-    /**
-     * 
-     * @param biopaxResource
-     * @param resultName
-     * @param maxErrors
-     * @param autofix
-     * @param errorLevel
-     * @param profile name of a pre-defined validation profile (controls rules's behavior)
-     * @param normalizer
-     * @return
-     * @throws IOException when cannot get the input stream from the resource
-     * @throws ValidatorException when there was an exception in the validator/normalizer
-     */
+
 	private Validation execute(Resource biopaxResource, String resultName, Integer maxErrors,
 			Boolean autofix, Behavior errorLevel, String profile, Normalizer normalizer) 
 					throws IOException 

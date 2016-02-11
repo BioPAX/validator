@@ -24,8 +24,8 @@ id="BiopaxValidator3" version="2.5">
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-    		classpath:META-INF/spring/appContext-loadTimeWeaving.xml
-			classpath:META-INF/spring/appContext-validator.xml
+			classpath:META-INF/spring/applicationContext-loadTimeWeaving.xml
+			classpath:META-INF/spring/applicationContext-validator.xml
 		</param-value>
 	</context-param>
 
@@ -48,16 +48,24 @@ id="BiopaxValidator3" version="2.5">
 	</filter-mapping>
 
 	<servlet>
-		<servlet-name>validator3</servlet-name>
+		<servlet-name>validator</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>validator3</servlet-name>
-		<url-pattern>*.html</url-pattern>
-<!-- if using '/', then static links like href="css/my.css" won't work
-		unless the validator3-servlet.xml enables those by mvc:resources-->
+		<servlet-name>validator</servlet-name>
+		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-    
+
+	<mime-mapping>
+		<extension>js</extension>
+		<mime-type>application/javascript</mime-type>
+	</mime-mapping>
+
+	<mime-mapping>
+		<extension>css</extension>
+		<mime-type>text/css</mime-type>
+	</mime-mapping>
+
 </web-app>
