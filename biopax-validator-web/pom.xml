@@ -10,6 +10,7 @@
 	<packaging>war</packaging>
 	<name>BioPAX Validator Web</name>
 	<description>BioPAX Validator Web Application and Web Service</description>
+	<url>https://biopax.github.io/validator</url>
 
 	<build>
 		<finalName>biopax-validator</finalName>

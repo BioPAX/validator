@@ -8,8 +8,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>distr</artifactId>
 	<name>BioPAX Validator Assembly</name>
-
 	<description>BioPAX Validator Distribution</description>
+	<url>https://biopax.github.io/validator</url>
+
 	<build>
 		<plugins>
 			<plugin>

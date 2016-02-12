@@ -33,7 +33,8 @@ import org.biopax.validator.api.ValidatorException;
 import org.biopax.validator.api.beans.Validation;
 
 /**
- * 
+ * Base BioPAX Rule for checking cardinality and range restrictions.
+ *
  * @author rodche
  *
  * @param <E> extends BioPAXElement

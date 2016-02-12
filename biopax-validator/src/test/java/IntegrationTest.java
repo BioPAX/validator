@@ -1,24 +1,3 @@
-/*
- * #%L
- * BioPAX Validator Integration Tests
- * %%
- * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public 
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
- */
 import static org.junit.Assert.*;
 
 import java.util.*;
@@ -56,7 +35,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author rodche
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:META-INF/spring/applicationContext-validator.xml"}) // AspectJ LTW is disabled!
+@ContextConfiguration(locations = {"classpath:META-INF/spring/appContext-validator.xml"}) // AspectJ LTW is disabled!
 public class IntegrationTest {    
     @Autowired
     XrefHelper xrefHelper;

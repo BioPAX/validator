@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 
 
 /**
- * Usually complexes have more than 1 component, unless stoichiometry of >1 
+ * Usually complexes have more than 1 component, unless stoichiometry of &gt;1
  * has been set on the single component, as would be done for a homodimer.
  * 
  * @author rodch

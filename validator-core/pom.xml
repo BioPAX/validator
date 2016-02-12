@@ -10,6 +10,8 @@
 	<name>Object Model Validator Core</name>
 	<description>Flexible rule-based object validation and reporting core api and settings.</description>
 
+	<url>https://biopax.github.io/validator</url>
+
 	<build>
 		<plugins>
 			<plugin>

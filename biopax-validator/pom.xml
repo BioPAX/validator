@@ -8,8 +8,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>biopax-validator</artifactId>
 	<name>BioPAX Validator</name>
-
 	<description>BioPAX Semantic Rules and Best Practices validation</description>
+	<url>https://biopax.github.io/validator</url>
 
 	<build>
 		<plugins>

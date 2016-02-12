@@ -8,10 +8,10 @@
 	</parent>
 
     <artifactId>biopax-validator-client</artifactId>
-    
 	<packaging>jar</packaging>
 	<name>BioPAX Validator Client</name>
 	<description>An example client for the biopax-validator</description>
+	<url>https://biopax.github.io/validator</url>
 
 	<inceptionYear>2009</inceptionYear>
 

@@ -24,8 +24,8 @@ id="BiopaxValidator3" version="2.5">
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-			classpath:META-INF/spring/applicationContext-loadTimeWeaving.xml
-			classpath:META-INF/spring/applicationContext-validator.xml
+			classpath:META-INF/spring/appContext-loadTimeWeaving.xml
+			classpath:META-INF/spring/appContext-validator.xml
 		</param-value>
 	</context-param>
 
@@ -57,15 +57,5 @@ id="BiopaxValidator3" version="2.5">
 		<servlet-name>validator</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
-	<mime-mapping>
-		<extension>js</extension>
-		<mime-type>text/javascript</mime-type>
-	</mime-mapping>
-
-	<mime-mapping>
-		<extension>css</extension>
-		<mime-type>text/css</mime-type>
-	</mime-mapping>
 
 </web-app>
