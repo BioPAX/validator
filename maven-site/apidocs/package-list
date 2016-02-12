@@ -1,0 +1,11 @@
+org.biopax.ols
+org.biopax.ols.impl
+org.biopax.psidev.ontology_manager
+org.biopax.psidev.ontology_manager.impl
+org.biopax.validator
+org.biopax.validator.api
+org.biopax.validator.api.beans
+org.biopax.validator.impl
+org.biopax.validator.rules
+org.biopax.validator.utils
+org.biopax.validator.ws
