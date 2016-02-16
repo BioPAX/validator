@@ -120,7 +120,7 @@
 		<github.global.server>github</github.global.server>
 
 		<!-- dependencies versions -->
-		<spring.version>4.1.7.RELEASE</spring.version>
+		<spring.version>4.2.4.RELEASE</spring.version>
 		<paxtools.version>[5.0.0-SNAPSHOT,6)</paxtools.version>
 		<license.licenseName>lgpl_v3</license.licenseName>
 		<junit.version>4.11</junit.version>

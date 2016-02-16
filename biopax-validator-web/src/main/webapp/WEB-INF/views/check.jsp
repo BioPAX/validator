@@ -92,8 +92,7 @@
  
 <jsp:include page="footer.jsp"/>
 
-<spring:url value="/resources/scripts" var="scripts"/>
-<script type="text/javascript" src="${scripts}/multifile_compressed.js"></script>
+<script type="text/javascript" src="<spring:url value='/js/multifile_compressed.js'/>"></script>
 <script type="text/javascript">
   var multi_selector = new MultiSelector( document.getElementById( 'files_list' ), 25);
   multi_selector.addElement( document.getElementById( 'file' ) );

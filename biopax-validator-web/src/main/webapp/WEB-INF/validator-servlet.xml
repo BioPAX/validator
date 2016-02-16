@@ -15,7 +15,7 @@
 	<context:annotation-config/>
 
 	<!-- enable the default servlet for static resources (css, js, img...) -->
-	<mvc:default-servlet-handler/>
+	<!--<mvc:default-servlet-handler/>-->
 
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
@@ -55,7 +55,12 @@
 		 	<util:properties local-override="false" location="classpath:codes.properties"/>
 		</constructor-arg>
 		<constructor-arg ref="extraDbSynonyms"/>
-	</bean>   
+	</bean>
+
+	<mvc:resources mapping="/js/**" location="/js/"/>
+	<mvc:resources mapping="/css/**" location="/css/"/>
+	<mvc:resources mapping="/images/**" location="/images/"/>
+	<mvc:resources mapping="/fonts/**" location="/fonts/"/>
 
 	<mvc:annotation-driven/>
 </beans>
