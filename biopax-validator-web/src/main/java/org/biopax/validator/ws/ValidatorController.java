@@ -71,6 +71,12 @@ public class ValidatorController {
 		this.validator = validator;
 	}
 
+
+	@RequestMapping("/")
+	public String contextRoot() {
+		return "home";
+	}
+
 	@RequestMapping("/home")
 	public String home() {
 		return "home";
