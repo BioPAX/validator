@@ -43,8 +43,8 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -335,7 +335,6 @@ public class ValidatorUtils {
      * 
      * @param ruleName validation rule class name, e.g., org.biopax.validator.rules.MyRule
      * @param profile validation profile name or null (default profile)
-     * @param messageSource 
      * @return
      */
     public Behavior getRuleBehavior(String ruleName, String profile) { 
@@ -381,7 +380,7 @@ public class ValidatorUtils {
 		if (tip == null || "".equals(tip)) {
 			tip = "description is not found in the messages.properties file";
 		} else {
-			tip = StringEscapeUtils.escapeHtml(tip);
+			tip = StringEscapeUtils.escapeHtml4(tip);
 		}
 		
 		return tip;

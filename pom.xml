@@ -124,7 +124,7 @@
 		<paxtools.version>[5.0.0-SNAPSHOT,6)</paxtools.version>
 		<license.licenseName>lgpl_v3</license.licenseName>
 		<junit.version>4.11</junit.version>
-		<commons-lang.version>2.6</commons-lang.version>
+		<commons-lang.version>3.4</commons-lang.version>
 		<commons-logging.version>1.1.1</commons-logging.version>
 		<aspectj.version>1.8.6</aspectj.version>
 		<log4j.version>1.2.13</log4j.version>
@@ -359,8 +359,8 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>commons-lang</groupId>
-				<artifactId>commons-lang</artifactId>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
 				<version>${commons-lang.version}</version>
 			</dependency>
 			<!-- %TODO switch to SLF4J and Logback -->

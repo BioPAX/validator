@@ -2,7 +2,7 @@ package org.biopax.validator.utils;
 
 import java.util.*;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.psidev.ontology_manager.OntologyAccess;

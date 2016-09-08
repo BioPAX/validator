@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.bind.annotation.*;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.validator.api.Rule;
@@ -228,7 +228,7 @@ public class Validation implements Serializable {
 	@XmlTransient
 	public String getModelDataHtmlEscaped() {
 		return (modelData != null)
-				? StringEscapeUtils.escapeHtml(modelData)
+				? StringEscapeUtils.escapeHtml4(modelData)
 					.replaceAll(System.getProperty("line.separator"), 
 						System.getProperty("line.separator")+"<br/>")
 				: null;
