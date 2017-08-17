@@ -98,11 +98,11 @@ public class XrefRule extends AbstractRule<Xref>{
 						}
 							
 						// guess, the illegal id is like 'id_ver' and split then -
-						int i = id.lastIndexOf('-');
+						int i = id.lastIndexOf('.');
 						if(i<0) 
 							i = id.lastIndexOf('_');
 						if(i<0) 
-							i = id.lastIndexOf('.');
+							i = id.lastIndexOf('-');
 						if(i > 0 && i < id.length()) {
 							String newId = id.substring(0, i);
 							if (xrefHelper.checkIdFormat(preferedDbName, newId)) {
