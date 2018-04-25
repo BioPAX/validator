@@ -219,7 +219,7 @@ public class XrefHelper {
 		
 		for(Collection<String> group : groups.getCollections()) {
 			if (group.contains(dbName)) {
-				return (List<String>) group; //copy to protect
+				return (List<String>) group;
 			}
 		}
 		return Collections.emptyList();
@@ -234,15 +234,9 @@ public class XrefHelper {
      * @return
      */
     public String getPrimaryDbName(String name) {
-    	String dbName = dbName(name);
-		
-		for(Collection<String> group : allSynonyms.getCollections()) {
-			if (group.contains(dbName)) {
-				return group.iterator().next(); //get the first
-			}
-		}
-		
-		return null;
+		List<String> names = getSynonymsForDbName(name);
+		//get the first name
+		return (names.isEmpty()) ? null : names.iterator().next();
     }
     
     

@@ -6,7 +6,6 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,7 +55,7 @@ public class IntegrationTest {
 	   
 
     @Test
-    public void testBuildPaxtoolsL2ModelSimple() throws FileNotFoundException  {
+    public void testBuildPaxtoolsL2ModelSimple() {
         System.out.println("with Level2 data");
         InputStream is = getClass().getResourceAsStream("biopax_id_557861_mTor_signaling.owl");
         SimpleIOHandler io = new SimpleIOHandler();
@@ -68,7 +67,7 @@ public class IntegrationTest {
 
    
     @Test
-    public void testBuildPaxtoolsL3ModelSimple() throws FileNotFoundException {
+    public void testBuildPaxtoolsL3ModelSimple() {
         System.out.println("with Level3 data");
         InputStream is = getClass().getResourceAsStream("biopax3-short-metabolic-pathway.owl");
         SimpleIOHandler simpleReader = new SimpleIOHandler();
@@ -150,9 +149,13 @@ public class IntegrationTest {
     @Test
     public void testPrimarySynonym() {
     	//not in Miriam: PIR
-    	assertEquals("UNIPROT KNOWLEDGEBASE", xrefHelper.getSynonymsForDbName("pir").get(0));
+    	assertEquals("UNIPROT KNOWLEDGEBASE", xrefHelper.getPrimaryDbName("pir"));
     	//Miriam: Gene OntologyAccess
-    	assertEquals("GENE ONTOLOGY", xrefHelper.getSynonymsForDbName("go").get(0));
+    	assertEquals("GENE ONTOLOGY", xrefHelper.getPrimaryDbName("go"));
+        assertEquals("KEGG COMPOUND", xrefHelper.getSynonymsForDbName("kegg compound").get(0));
+        assertEquals("KEGG COMPOUND", xrefHelper.getPrimaryDbName("ligand"));
+        assertEquals("KEGG GENOME", xrefHelper.getPrimaryDbName("kegg organism"));
+        assertEquals("KYOTO ENCYCLOPEDIA OF GENES AND GENOMES", xrefHelper.getPrimaryDbName("KEGG"));
     }
     
     @Test

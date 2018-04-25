@@ -113,6 +113,8 @@
 			<value>REF_SEQ PROTEIN</value>
 		</list>
 		<list>
+			<value>HGNC SYMBOL</value>
+			<value>HGNC_SYMBOL</value>
 			<value>GENE SYMBOL</value>
 			<value>GENE_SYMBOL</value>
 		</list>
@@ -122,6 +124,10 @@
 			<value>NCBI_TAXONOMY</value>
 			<value>NCBI-TAXONOMY</value>
 			<value>TAXON</value>
+			<value>NCBITAXON</value>
+			<value>NCBI-TAXON</value>
+			<value>NCBI TAXON</value>
+			<value>NCBI_TAXON</value>
 		</list>
 		<list>
 			<value>NUCLEOTIDE SEQUENCE DATABASE</value>
@@ -136,17 +142,18 @@
 			<value>GENPEPT</value>
 		</list>
 		<list>
-			<value>KEGG</value>
-			<value>COMPOUND</value>
 			<value>KEGG COMPOUND</value>
+			<value>COMPOUND</value>
+			<value>KEGG LIGAND</value>
+			<value>LIGAND</value>
 		</list>
 		<list>
 			<value>KEGG GENOMES</value>
 			<value>KEGG GENOME</value>
 		</list>
 		<list>
-			<value>KEGG LIGAND</value>
-			<value>LIGAND</value>
+			<value>KEGG GENES</value>
+			<value>KEGG GENE</value>
 		</list>
 		<list>
 			<value>AFFYMETRIX</value>
