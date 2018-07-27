@@ -1,27 +1,5 @@
 package org.biopax.miriam;
 
-/*
- * #%L
- * Off-line MiriamLink
- * %%
- * Copyright (C) 2009 - 2013 University of Toronto (baderlab.org)
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public 
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
- */
-
 import static org.junit.Assert.*;
 
 import java.util.*;
@@ -29,24 +7,15 @@ import java.util.*;
 import net.biomodels.miriam.Resource;
 import net.biomodels.miriam.Miriam.Datatype;
 
-import org.biopax.miriam.MiriamLink;
-import org.junit.Before;
 import org.junit.Test;
 
 public class MiriamLinkTest {
 	
 	static final String MIURN = "urn:miriam:psimi";
-	static final String MIPAGE = "http://www.ebi.ac.uk/ontology-lookup/";
-	static final String MIETRY_PREFIX = "http://www.ebi.ac.uk/ontology-lookup/?termId=";
 	static final String MI = "Molecular Interactions Ontology";
 	static final String MISYN = "mi";
 	static final String MIRESID = "MIR:00100142";
 	static final String MIID = "MIR:00000109";
-	
-
-	@Before
-	public void setUp() throws Exception {
-	}
 
 	@Test
 	public final void testGetServicesVersion() {
@@ -76,7 +45,7 @@ public class MiriamLinkTest {
 
 	@Test
 	public final void testGetResourceInstitution() {
-		assertEquals("European Bioinformatics Institute", MiriamLink.getResourceInstitution(MIRESID));
+		assertEquals("European Bioinformatics Institute, Hinxton, Cambridge", MiriamLink.getResourceInstitution(MIRESID));
 	}
 
 	@Test
@@ -101,14 +70,14 @@ public class MiriamLinkTest {
 	public final void testGetLocations() {
 		String[] locs = MiriamLink.getLocations(MI, "MI:0000");
 		assertTrue(locs.length>0);
-		assertTrue(Arrays.asList(locs).contains("http://www.ebi.ac.uk/ontology-lookup/?termId=MI%3A0000"));
+		assertTrue(Arrays.asList(locs).contains("https://www.ebi.ac.uk/ols/ontologies/mi/terms?obo_id=MI%3A0000"));
 	}
 
 	@Test
 	public final void testGetDataResources() {
 		String[] drs = MiriamLink.getDataResources(MI);
 		assertEquals(2, drs.length);
-		assertTrue(Arrays.asList(drs).contains("http://www.ebi.ac.uk/ontology-lookup/"));
+		assertTrue(Arrays.asList(drs).contains("https://www.ebi.ac.uk/ols/ontologies/mi"));
 	}
 
 	@Test

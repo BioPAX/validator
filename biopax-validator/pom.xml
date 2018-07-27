@@ -2,13 +2,12 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>3.0.3</version>
+		<version>3.0.4-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>biopax-validator</artifactId>
 	<name>BioPAX Validator</name>
-
 	<description>BioPAX Semantic Rules and Best Practices validation</description>
 
 	<build>
@@ -17,9 +16,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<forkMode>once</forkMode>
-					<argLine>-Xmx1g -javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar 
-					-ea</argLine> <!-- try: -Dbiopax.normalizer.uri.strategy=simple when debugging ;) -->
+					<argLine>-ea -Xmx768m -javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</argLine>
+					<forkCount>1</forkCount>
+					<reuseForks>false</reuseForks>
 				</configuration>
 			</plugin>	
 		</plugins>

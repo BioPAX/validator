@@ -20,4 +20,16 @@
  <bp:id rdf:datatype = "xsd:string">10090</bp:id>
 </bp:UnificationXref>
 
+<!-- wrongly add the same entity feature to two different entity references -->
+<bp:ProteinReference rdf:ID="pr_1">
+	<bp:displayName rdf:datatype = "xsd:string">PR1</bp:displayName>
+	<bp:entityFeature rdf:resource="mf_1"/>
+</bp:ProteinReference>
+<bp:ProteinReference rdf:ID="pr_2">
+	<bp:displayName rdf:datatype = "xsd:string">PR2</bp:displayName>
+	<bp:entityFeature rdf:resource="mf_1"/>
+</bp:ProteinReference>
+<bp:ModificationFeature rdf:ID="mf_1">
+</bp:ModificationFeature>
+
 </rdf:RDF>

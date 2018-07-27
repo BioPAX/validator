@@ -64,10 +64,10 @@ public class NormalizerTest {
 		 
 		 assertEquals("http://identifiers.org/chebi/CHEBI:12345",Normalizer.uri("", "chebi", "CHEBI:12345", SmallMoleculeReference.class));
 		 assertEquals("http://identifiers.org/pubchem.substance/12345",Normalizer.uri("", "pubchem-substance", "12345", SmallMoleculeReference.class));
-		 assertEquals("http://identifiers.org/psimod/MOD:12345",Normalizer.uri("", "PSI-mod", "MOD:12345", SequenceModificationVocabulary.class));
-		 assertEquals("http://identifiers.org/psimod/MOD:12345",Normalizer.uri("", "MOD", "MOD:12345", ControlledVocabulary.class));
+		 assertEquals("http://identifiers.org/mod/MOD:12345",Normalizer.uri("", "PSI-mod", "MOD:12345", SequenceModificationVocabulary.class));
+		 assertEquals("http://identifiers.org/mod/MOD:12345",Normalizer.uri("", "MOD", "MOD:12345", ControlledVocabulary.class));
 		 //wrong (4-digit only) id -
-		 assertFalse("http://identifiers.org/psimod/MOD:12345".equals(Normalizer.uri("", "MOD", "MOD:1234", ControlledVocabulary.class)));
+		 assertFalse("http://identifiers.org/mod/MOD:12345".equals(Normalizer.uri("", "MOD", "MOD:1234", ControlledVocabulary.class)));
 		 
 		 //wrong id (case-sens.)
 		 assertFalse("http://identifiers.org/chebi/CHEBI:12345".equals(Normalizer.uri("", "chebi", "chebi:12345", SmallMoleculeReference.class)));

@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>3.0.3</version>
+		<version>3.0.4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>validator-core</artifactId>
@@ -26,7 +26,6 @@
 							<includes>
 								<include>org/biopax/validator/api/beans/*.java</include>
 							</includes>
-							<verbose>true</verbose>
 							<outputDirectory>${project.build.directory}/generated-resources/schemas</outputDirectory>
 						</configuration>
 					</execution>

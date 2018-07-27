@@ -13,7 +13,7 @@
 
 	<groupId>org.biopax.validator</groupId>
 	<artifactId>parent</artifactId>
-	<version>3.0.3</version>
+	<version>3.0.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Validator - Parent</name>
@@ -25,11 +25,11 @@
 	<inceptionYear>2008</inceptionYear>
 
 	<organization>
-		<name>University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)</name>
+		<name>BioPAX.org (and baderlab.org)</name>
 		<url>http://www.biopax.org</url>
 	</organization>
 
-	<url>${siteUrl}</url>
+	<url>https://github.com/BioPAX/Validator/</url>
 
 	<mailingLists>
 		<mailingList>
@@ -40,26 +40,10 @@
 
 	<licenses>
 		<license>
-			<name>lgpl_v3</name>
-			<url>http://www.gnu.org/licenses/lgpl-3.0.html</url>
+			<name>MIT</name>
+			<url>https://raw.githubusercontent.com/BioPAX/validator/master/LICENSE</url>
 		</license>
 	</licenses>
-
-	<issueManagement>
-		<system>Sourceforge.net Tracker</system>
-		<url>http://sourceforge.net/p/biopax/bugs/</url>
-	</issueManagement>
-
-	<ciManagement>
-		<system>jenkins</system>
-		<url>http://cbiojenkins.no-ip.org:8080/job/BioPAX_Validator</url>
-	</ciManagement>
-
-	<scm>
-		<connection>scm:hg:http://hg.code.sf.net/p/biopax/validator</connection>
-		<developerConnection>scm:hg:ssh://${scm.username}@hg.code.sf.net/p/biopax/validator</developerConnection>
-		<url>http://sourceforge.net/p/biopax/validator</url>
-	</scm>
 
 	<developers>
 		<developer>
@@ -78,34 +62,19 @@
 				<role>leader</role>
 			</roles>
 		</developer>
-		<developer>
-			<id>emekdemir</id>
-			<name>Emek Demir</name>
-			<organization>CBIO MSKCC</organization>
-			<roles>
-				<role>architect</role>
-			</roles>
-		</developer>
 	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<!-- with maven 3, unlike ${project.version}, the ${biopax.site.url} is 
-			somehow not resolved (from settings.xml) and thus 'modules' links suck; so 
-			- will use the firm URL prefix instead - ${biopax.site.url}/validator-${project.version} -->
-		<siteUrl>http://www.biopax.org/m2site/validator-${project.version}</siteUrl>
-		<siteDeployUrl>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2site/validator-${project.version}</siteDeployUrl>
-
 		<!-- dependencies versions -->
 		<spring.version>3.2.2.RELEASE</spring.version>
 		<paxtools.version>4.2.1</paxtools.version>
-		<license.licenseName>lgpl_v3</license.licenseName>
-		<junit.version>4.10</junit.version>
+		<junit.version>4.12</junit.version>
 		<commons-lang.version>2.4</commons-lang.version>
 		<commons-logging.version>1.1.1</commons-logging.version>
-		<aspectj.version>1.7.0</aspectj.version>
+		<aspectj.version>1.8.6</aspectj.version>
 		<log4j.version>1.2.13</log4j.version>
 		<commons-beanutils.version>1.8.1</commons-beanutils.version>
 		<commons-digester.version>2.0</commons-digester.version>
@@ -122,7 +91,7 @@
 		<maven-war-plugin.version>2.3</maven-war-plugin.version>
 		<maven-release-plugin.version>2.4.1</maven-release-plugin.version>
 		<wagon-ssh.version>2.5</wagon-ssh.version>
-		<maven-surefire-plugin.version>2.15</maven-surefire-plugin.version>
+		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 		<maven-source-plugin.version>2.2.1</maven-source-plugin.version>
 		<maven-site-plugin.version>3.3</maven-site-plugin.version>
@@ -130,7 +99,7 @@
 		<maven-jxr-plugin.version>2.3</maven-jxr-plugin.version>
 		<maven-project-info-reports-plugin.version>2.7</maven-project-info-reports-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
-		<jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
+		<jaxb2-maven-plugin.version>1.6</jaxb2-maven-plugin.version>
 		<maven-deploy-plugin.version>2.7</maven-deploy-plugin.version>
 	</properties>
 
@@ -151,7 +120,7 @@
 					<version>${maven-surefire-plugin.version}</version>
 					<configuration>
 						<testFailureIgnore>false</testFailureIgnore>
-						<argLine>-Dfile.encoding=UTF-8 -Xmx1g -Xms128M -ea</argLine>
+						<argLine>-Dfile.encoding=UTF-8 -Xmx1g -ea</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -239,49 +208,7 @@
 		</extensions>
 	</build>
 
-
-	<!-- How to deploy and site-deploy: 
-		1) for maven artifacts deployment (mvn 
-		deploy), e.g. by Jenkins, have biopax.snapshot.url and biopax.release.url 
-		set in your .m2/settings.xml and point to a local directory, which then can 
-		be synchronized (rsync) with the remote public biopax repositories as needed 
-		(recommended method, which is quick, does not require you start the remote 
-		shell service in advance, and also respects your intranet/firewall/security 
-		policies). So, do NOT: mvn deploy -Psourceforge, because it's slow, may violate 
-		network policy (brute force), etc. 
-		2) try: mvn clean site site:stage -DstagingDirectory=/some/local/path/paxtools-${version} 
-		(though some of resulting links won't be right), but not site-stage...; finally, 
-		once satisfied, start sf.net shell and do: mvn clean site-deploy -Psourceforge 
-		(this deploys directly to the public website, where all links should work) -->
-	<profiles>
-		<profile>
-			<id>sourceforge</id>
-			<distributionManagement>
-				<site>
-					<id>biopax.sf.net</id>
-					<name>BioPAX Sourceforge site</name>
-					<url>${siteDeployUrl}</url>
-				</site>
-				<snapshotRepository>
-					<id>biopax.snapshots</id>
-					<name>BioPAX Snapshots Repository</name>
-					<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/snapshots</url>
-				</snapshotRepository>
-				<repository>
-					<id>biopax.releases</id>
-					<name>BioPAX Releases Repository</name>
-					<url>scp://shell.sourceforge.net/home/project-web/biopax/htdocs/m2repo/releases</url>
-				</repository>
-			</distributionManagement>
-		</profile>
-	</profiles>
-
 	<distributionManagement>
-		<site>
-			<id>biopax.sf.net</id>
-			<name>BioPAX Sourceforge site</name>
-			<url>${siteDeployUrl}</url>
-		</site>
 		<snapshotRepository>
 			<id>biopax.snapshots</id>
 			<name>BioPAX Snapshots Repository</name>
@@ -296,19 +223,9 @@
 
 	<repositories>
 		<repository>
-			<id>biopax.snapshots</id>
-			<name>BioPAX Snapshots Repository at Sourceforge</name>
-			<url>http://biopax.sourceforge.net/m2repo/snapshots/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-			</snapshots>
-		</repository>
-		<repository>
 			<id>biopax.releases</id>
-			<name>BioPAX Repository at Sourceforge</name>
-			<url>http://biopax.sourceforge.net/m2repo/releases/</url>
+			<name>Old BioPAX Repository</name>
+			<url>http://www.biopax.org/m2repo/releases/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -408,11 +325,13 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-instrument</artifactId>
 				<version>${spring.version}</version>
+				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-instrument-tomcat</artifactId>
 				<version>${spring.version}</version>
+				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.aspectj</groupId>
@@ -471,7 +390,6 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- %TODO switch to SLF4J and Logback -->
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
@@ -483,24 +401,16 @@
 		</dependency>
 	</dependencies>
 
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin.version}</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jxr-plugin</artifactId>
-				<version>${maven-jxr-plugin.version}</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>${maven-project-info-reports-plugin.version}</version>
-			</plugin>
-		</plugins>
-	</reporting>
+	<profiles>
+		<profile>
+			<id>disable-java8-doclint</id>
+			<activation>
+				<jdk>[1.8,)</jdk>
+			</activation>
+			<properties>
+				<additionalparam>-Xdoclint:none</additionalparam>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>
