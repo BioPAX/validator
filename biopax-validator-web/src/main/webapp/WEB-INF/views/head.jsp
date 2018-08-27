@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,7 +18,6 @@
 <script type="text/javascript" src="<spring:url value='/js/jquery.min.js'/>"></script>
 <script type="text/javascript" src="<spring:url value='/js/bootstrap.min.js'/>"></script>
 <script type="text/javascript" src="<spring:url value='/js/jquery.placeholder.js'/>"></script>
-<script type="text/javascript" src="<spring:url value='/js/biopax.validator.js'/>"></script>
 <script>
   <%-- get the server-side jvm property --%>
   var gaCode = "<%= System.getProperty("biopax.validator.ga.code") %>";

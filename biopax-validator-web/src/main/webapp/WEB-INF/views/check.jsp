@@ -1,8 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 
 <!DOCTYPE html>
 <html>
@@ -20,25 +20,23 @@
 <form id="validate" method="post" enctype="multipart/form-data" onsubmit="return validate();">
     <div class="form-group">
     	<label>
-    		<input type="radio" id="optionFiles" name="switch" checked="checked" 
-    		onchange="switchInput();" value="fdfdfdf"/> BioPAX from Files (max. 25): 
-    	</label>	
-    	<div class="btn btn-default"> 	
+    		<input type="radio" name="switch" checked="checked" value="file"/> BioPAX from Files (max. 25):
+		</label>
+    	<div class="btn btn-default">
     		<div id="files_list" ></div>
 			<input id="file" type="file" />
 		</div>
-		
+
 		<label>
-			<input type="radio" id="optionUrl" name="switch" onchange="switchInput();"/>
-			BioPAX from URL: 
+			<input type="radio" name="switch" value="url"/>BioPAX from URL:
         	<input id="url" class="input" type="text" name="url" size="80%" disabled="disabled"/>
         	<span id="urlMsg" class="errorMsg">${error}</span>
         </label>
     </div>
 	<div class="form-group">	
-		<input type="checkbox" id="autofix" name="autofix" value="true" onchange="updateValidatorOptions();"/>
+		<input type="checkbox" id="autofix" name="autofix" value="true"/>
 		<label for="normalizerOptions">Fix and Normalize</label>
-		<ul id="normalizerOptions" title="Options">
+		<ul id="normalizerOptions" title="Options" hidden="hidden">
 			<li><form:checkbox path="normalizer.fixDisplayName"/>&nbsp;<label>fix property: <em>displayName</em> (from names)</label></li>
 			<li><em>xml:base</em> for generated URIs:<form:input path="normalizer.xmlBase"/><label>&nbsp;(leave empty to use a value from the BioPAX RDF/XML header)</label></li>
 		</ul>
@@ -97,6 +95,7 @@
   var multi_selector = new MultiSelector( document.getElementById( 'files_list' ), 25);
   multi_selector.addElement( document.getElementById( 'file' ) );
 </script>
+<script type="text/javascript" src="<spring:url value='/js/biopax.validator.js'/>"></script>
 
 </body>
 </html>
