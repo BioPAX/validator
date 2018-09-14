@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>4.0.0-SNAPSHOT</version>
+		<version>4.0.0</version>
 	</parent>
 
 	<artifactId>validator-core</artifactId>
@@ -25,11 +25,9 @@
 						<!-- do in or after the compile phase, as the beans refer other interfaces in the project, e.g., Rule  -->
 						<phase>compile</phase>
 						<configuration>
-							<includes>
-								<include>org/biopax/validator/api/beans/*.java</include>
-							</includes>
-							<verbose>true</verbose>
-							<outputDirectory>${project.build.directory}/generated-resources/schemas</outputDirectory>
+							<sources>
+								<source>src/main/java/org/biopax/validator/api/beans</source>
+							</sources>
 						</configuration>
 					</execution>
 				</executions>

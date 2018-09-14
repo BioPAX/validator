@@ -30,9 +30,9 @@ public abstract class CvTermsRule<T extends Level3Element>
      * 
      * TODO a feature: to allow using a properties path in the 'property' parameter, like "modificationFeature/modificationType"
      * 
-     * @param domain
-     * @param property
-     * @param restrictions
+     * @param domain biopax property domain (object)
+     * @param property biopax property name
+     * @param restrictions restrictions on the controlled vocabulary (ontology) terms, given biopax property context
      */
     public CvTermsRule(Class<T> domain, String property, CvRestriction... restrictions)
     {

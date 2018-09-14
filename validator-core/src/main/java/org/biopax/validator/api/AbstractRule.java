@@ -1,10 +1,5 @@
 package org.biopax.validator.api;
 
-/*
- *
- */
-
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.biopax.validator.api.beans.ErrorType;
@@ -23,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class AbstractRule<T> implements Rule<T> {
 
-    protected Log logger = LogFactory.getLog(AbstractRule.class);
+    protected Log logger;
 
     @Autowired
     protected ValidatorUtils utils;

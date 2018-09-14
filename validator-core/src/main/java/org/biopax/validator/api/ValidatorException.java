@@ -1,9 +1,5 @@
 package org.biopax.validator.api;
 
-/*
- *
- */
-
 /**
  * A validation runtime exception.
  *

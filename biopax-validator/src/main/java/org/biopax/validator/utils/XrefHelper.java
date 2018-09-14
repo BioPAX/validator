@@ -194,8 +194,8 @@ public class XrefHelper {
 	/**
 	 * Removes tail spaces and converts to upper case
 	 * 
-	 * @param name
-	 * @return
+	 * @param name original name
+	 * @return normalized name
 	 */
 	public String dbName(String name) {
 		return name.trim().toUpperCase();
@@ -230,8 +230,8 @@ public class XrefHelper {
      * Gets the primary name for the DB.
      * It returns NULL for "unknown" database name. 
      * 
-     * @param name case insensitive
-     * @return
+     * @param name case insensitive name (of a bio ID type/resource) name
+     * @return preferred name
      */
     public String getPrimaryDbName(String name) {
 		List<String> names = getSynonymsForDbName(name);
@@ -297,7 +297,7 @@ public class XrefHelper {
      * otherwise, using MI or Miriam, 
      * cannot be resolved.
      * 
-     * @return
+     * @return name variants
      */
     Set<String> getUnofficialDbNames() {
 		return unofficialDbNames;
@@ -311,7 +311,7 @@ public class XrefHelper {
      * otherwise, using MI or Miriam, cannot be resolved.
      * 
      * @param db case insensitive
-     * @return
+     * @return true or false
      */
 	public boolean isUnofficialOrMisspelledDbName(final String db) {
 		return getUnofficialDbNames().contains(dbName(db));

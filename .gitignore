@@ -8,3 +8,5 @@ target
 .springBeans
 geo_data
 .extract
+*.versionsBackup
+

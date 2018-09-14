@@ -1,8 +1,5 @@
 package org.biopax.validator.api.beans;
 
-/*
- *
- */
 
 import java.io.Serializable;
 import java.util.*;
@@ -58,7 +55,7 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	/**
 	 * Unmodifiable set of validation current error cases.
 	 * 
-	 * @return
+	 * @return error cases
 	 */
 	public synchronized Collection<ErrorCaseType> getErrorCase() {
 		return Collections.unmodifiableSet(errorCase);
@@ -86,7 +83,7 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	}
 	
 	/**
-	 * Adds (may be updates...) a error case;
+	 * Adds (or updates) an error case;
 	 * only the error message that happened last 
 	 * (for the same object and rule) is kept
 	 * (e.g., in a series of unsuccessful attempts 
@@ -96,7 +93,7 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	 * @see ErrorCaseType#equals(Object)
 	 * @see ErrorCaseType#hashCode()
 	 * 
-	 * @param newCase
+	 * @param newCase case
 	 */
 	public synchronized void addErrorCase(ErrorCaseType newCase) {
 		ErrorCaseType ect = findErrorCase(newCase);
@@ -111,11 +108,7 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 		}
 	}
 	
-	/**
-	 * Adds error cases
-	 * 
-	 * @param cases
-	 */
+
 	public void addCases(Collection<ErrorCaseType> cases) {
 		for (ErrorCaseType errorCase : cases) {
 			addErrorCase(errorCase);
@@ -162,9 +155,9 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	}
 	
 	/**
-	 * Total number of cases registered, including fixed.
+	 * Total number of error cases registered, including those auto-fixed.
 	 * 
-	 * @return
+	 * @return number
 	 */
 	public int getTotalCases() {
 		return totalCases;
@@ -174,9 +167,9 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	}
 	
 	/**
-	 * Total number of cases not fixed yet.
+	 * Total number of error cases not fixed yet.
 	 * 
-	 * @return
+	 * @return number
 	 */
 	public int getNotFixedCases() {
 		return notFixedCases;
@@ -191,7 +184,7 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	 * @param forObject if 'null', count everything
 	 * @param reportedBy if 'null', everything's counted
 	 * @param ignoreFixed skip fixed if true
-	 * @return
+	 * @return number
 	 */
 	public int countErrors(String forObject, String reportedBy, boolean ignoreFixed) {
 		int count = 0;
@@ -222,8 +215,8 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	 * 
 	 * @see ErrorCaseType#equals(Object) 
 	 * 
-	 * @param searchBy
-	 * @return
+	 * @param searchBy case type (as pattern) to match
+	 * @return actual error case
 	 */
 	public synchronized ErrorCaseType findErrorCase(final ErrorCaseType searchBy) {
 		if(errorCase.contains(searchBy)) {

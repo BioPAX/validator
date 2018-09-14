@@ -1,8 +1,5 @@
 package org.biopax.validator.api;
 
-/*
- *
- */
 
 import java.io.InputStream;
 import java.util.Collection;
@@ -13,16 +10,14 @@ import org.biopax.validator.api.beans.Validation;
 /**
  * BioPAX Validator interface
  * 
- * 
  * @author rodch
- *
  */
 public interface Validator {
 	
 	/**
 	 * Get all the currently loaded BioPAX rules (beans).
 	 * 
-	 * @return
+	 * @return available (loaded) validation rules
 	 */
 	Set<Rule<?>> getRules();
 	
@@ -30,7 +25,7 @@ public interface Validator {
 	/**
 	 * Gets all the currently registered validation results.
 	 * 
-	 * @return
+	 * @return results
 	 */
 	Collection<Validation> getResults();
 	
@@ -42,8 +37,8 @@ public interface Validator {
 	 * The validation result is object where all the problems 
 	 * related to this data instance are collected.
 	 * 
-	 * @param validation
-	 * @param inputStream
+	 * @param validation validation result object
+	 * @param inputStream data input stream
 	 */
 	void importModel(Validation validation, InputStream inputStream);
 
@@ -57,7 +52,7 @@ public interface Validator {
 	 * And we want to report these problems as well.
 	 * 
 	 * @param element object (e.g., existing Model)
-	 * @param validation 
+	 * @param validation results object
 	 */
 	void associate(Object element, Validation validation);
 	
@@ -80,7 +75,7 @@ public interface Validator {
 	 * (that it's been associated with).
 	 * 
 	 * @param obj a BioPAX element, Model, or even SimpleIOHandler
-	 * @return
+	 * @return validation results
 	 */
 	Collection<Validation> findValidation(Object obj);
 	
@@ -91,7 +86,7 @@ public interface Validator {
 	 * problems that might occur during 
 	 * the model initialization and creation.
 	 * 
-	 * @param validation
+	 * @param validation results object
 	 */
 	void validate(Validation validation);
 	
@@ -103,7 +98,7 @@ public interface Validator {
 	 * @param errorCode error code
 	 * @param reportedBy class name of a validation rule or a name of another BioPAX validating class, method (e.g., AOP aspect's method/joinpoint name).
 	 * @param isFixed if true, - find and set the attribute
-	 * @param args
+	 * @param args additional message parameters (details)
 	 */
 	void report(Object obj, String errorCode, String reportedBy, boolean isFixed, Object... args);
 	

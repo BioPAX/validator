@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.biopax.validator</groupId>
 		<artifactId>parent</artifactId>
-		<version>4.0.0-SNAPSHOT</version>
+		<version>4.0.0</version>
 	</parent>
 
     <artifactId>biopax-validator-client</artifactId>
@@ -45,8 +45,9 @@
 					<clearOutputDir>false</clearOutputDir>
 					<packageName>org.biopax.validator.jaxb</packageName>
 					<failOnNoSchemas>true</failOnNoSchemas>
-					<schemaDirectory>${basedir}/src/main/resources</schemaDirectory>
-<!-- 					<arguments>-enableIntrospection</arguments> -->
+					<sources>
+						<source>src/main/resources/validator-response-2.0.xsd</source>
+					</sources>
 				</configuration>
 			</plugin>
 			<plugin>

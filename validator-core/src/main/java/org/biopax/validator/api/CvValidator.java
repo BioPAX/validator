@@ -16,8 +16,8 @@ public interface CvValidator {
 	 * Gets valid ontology term names
 	 * using the constraints from the rule bean.
 	 * 
-	 * @param cvRule
-	 * @return
+	 * @param cvRule controlled vocabulary validation rule
+	 * @return recommended terms
 	 */
 	Set<String> getValidTermNames(CvRule<?> cvRule);
 
@@ -25,7 +25,7 @@ public interface CvValidator {
 	 * Gets valid ontology terms
 	 * using the constraints from the rule bean.
 	 * 
-	 * @param cvRule
+	 * @param cvRule controlled vocabulary validation rule
 	 * @return a set of ontology terms (beans)
 	 */
 	Set<OntologyTermI> getValidTerms(CvRule<?> cvRule);
@@ -45,8 +45,8 @@ public interface CvValidator {
 	 * 
 	 * @see #getValidTermNames(Collection)
 	 * 
-	 * @param restrictions
-	 * @return
+	 * @param restrictions controlled vocabulary restrictions (on type, context, ontology terms)
+	 * @return set of valid ontology terms (turned into lower case)
 	 */
 	Set<String> getValidTermNamesLowerCase(
 			Collection<CvRestriction> restrictions);
@@ -56,8 +56,8 @@ public interface CvValidator {
 	 * restriction bean to filter the data.
 	 * (restriction's 'NOT' property is ignored here)
 	 * 
-	 * @param restriction
-	 * @return
+	 * @param restriction a restriction (on type, context, ontology terms)
+	 * @return recommended ontology terms (names)
 	 */
 	Set<String> getTermNames(CvRestriction restriction);
 
@@ -76,8 +76,8 @@ public interface CvValidator {
 	 * criteria defined by the bean
 	 * ('NOT' property, if set 'true', is ignored)
 	 * 
-	 * @param restriction
-	 * @return
+	 * @param restriction restriction (on type, context, ontology terms)
+	 * @return ontology terms (objects)
 	 */
 	Set<OntologyTermI> getTerms(CvRestriction restriction);
 

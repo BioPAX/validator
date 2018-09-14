@@ -1,8 +1,5 @@
 package org.biopax.validator.api.beans;
 
-/*
- *
- */
 
 import java.io.Serializable;
 import java.util.*;
@@ -100,12 +97,13 @@ public class Validation implements Serializable {
 	 * @param description default is "unknown"
 	 * @param autoFix default is false
 	 * @param errorLevel default is WARNING
-	 * @param maxErrors default is 0 (means unlimited, actually it's {@link Integer#MAX_VALUE, but the effect is same})
+	 * @param maxErrors default is 0 (unlimited, actually it's {@link Integer#MAX_VALUE}, but the effect is same)
 	 * @param profile validation profile name (if null, the default is used)
 	 * 
-	 * @throws IllegalArgumentException when maxErrors < 0
+	 * @throws IllegalArgumentException when maxErrors value is negative
 	 */
-	public Validation(Identifier idCalculator, String description, boolean autoFix, Behavior errorLevel, int maxErrors, String profile) {
+	public Validation(Identifier idCalculator, String description, boolean autoFix,
+										Behavior errorLevel, int maxErrors, String profile) {
 		this(idCalculator);
 		
 		setDescription(description);
@@ -127,7 +125,7 @@ public class Validation implements Serializable {
 	/**
 	 * Gets the current Model.
 	 * 
-	 * @return
+	 * @return model
 	 */
 	@XmlTransient
 	public Object getModel() {
@@ -144,7 +142,7 @@ public class Validation implements Serializable {
 	 * or continue working with; different models can share the same 
 	 * objects, etc.
 	 * 
-	 * @param model
+	 * @param model model
 	 */
 	public void setModel(Object model) {
 		this.model = model;
@@ -157,7 +155,7 @@ public class Validation implements Serializable {
 	 * (Note: the property name is 'Error', and not 'Errors',
 	 * simply for the simpler object-XML binding.)
 	 * 
-	 * @return
+	 * @return errors (each has unique error code, e.g., syntax.error)
 	 */
 	public Collection<ErrorType> getError() {
 		return error;
@@ -165,10 +163,9 @@ public class Validation implements Serializable {
 
 
 	/**
-	 * This method should never be used
-	 * (this is for OXM frameworks only)!
+	 * This method should never be used (it's only used by the Spring OXM framework)
 	 * 
-	 * @param errors
+	 * @param errors collected errors
 	 */
 	public synchronized void setError(Collection<ErrorType> errors) {
 		error.clear();
@@ -195,7 +192,7 @@ public class Validation implements Serializable {
 	 * this is for the biopax-validator Web 
 	 * server and client applications only.
 	 *
-	 * @param modelData
+	 * @param modelData serialized model/data
 	 */
 	public void setModelData(String modelData) {
 		this.modelData = modelData;
@@ -205,7 +202,7 @@ public class Validation implements Serializable {
 	 * Returns the data as HTML-escaped string 
 	 * (to show on a web page).
 	 * 
-	 * @return
+	 * @return serialized/encoded object model ok to embed into an html code
 	 */
 	@XmlTransient
 	public String getModelDataHtmlEscaped() {
@@ -227,7 +224,7 @@ public class Validation implements Serializable {
 	 * the new error cases will be copied to it;
 	 * otherwise, the new one is simply added to the set.
 	 * 
-	 * It also updates the notfixed errors counter, 
+	 * It also updates the not-fixed errors counter,
 	 * taking into account current validation threshold (level)
 	 * and error's own type {@link Behavior} set by a validation rule
 	 * that created it!
@@ -276,7 +273,7 @@ public class Validation implements Serializable {
 
 	/**
 	 * Removes the error type and all cases.
-	 * @param e
+	 * @param e error
 	 */
 	public synchronized void removeError(ErrorType e) {
 		error.remove(e);
@@ -286,7 +283,7 @@ public class Validation implements Serializable {
 	/**
 	 * Sets the information about this validation task. 
 	 * 
-	 * @param description
+	 * @param description of the object model (to be validated)
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -296,7 +293,7 @@ public class Validation implements Serializable {
 	/**
 	 * Information about this validation task. 
 	 * 
-	 * @return
+	 * @return description of the object model (to be validated)
 	 */
 	public String getDescription() {
 		return description;
@@ -307,7 +304,7 @@ public class Validation implements Serializable {
 	 * This method should never be used
 	 * (this is for OXM frameworks only)
 	 *
-	 * @param comments
+	 * @param comments some info
 	 */
 	public void setComment(Collection<String> comments) {
 		this.comment.clear();
@@ -316,8 +313,8 @@ public class Validation implements Serializable {
 	
 
 	/**
-	 * Adds a comment, e.g., counts, regarding this validation task.
-	 * @param comment
+	 * Add some details, stats regarding the validation task.
+	 * @param comment some info
 	 */
 	public void addComment(String comment) {
 		this.comment.add(comment);
@@ -326,7 +323,7 @@ public class Validation implements Serializable {
 
 	/**
 	 * Comments (e.g., counts) about this validation task.
-	 * @return
+	 * @return strings
 	 */
 	public Collection<String> getComment() {
 		return comment;
@@ -335,8 +332,7 @@ public class Validation implements Serializable {
 	
 	/**
 	 * Validation results summary.
-	 * 
-	 * @return
+	 * @return summary
 	 */
 	public synchronized String getSummary() {
 		return summary;
@@ -349,7 +345,7 @@ public class Validation implements Serializable {
 	/**
 	 * String representation of this validation settings and results:
 	 * {@link #getDescription()} plus {@link #getSummary()}
-	 * 
+	 * @return some info, such as description and summary
 	 */
 	@Override
 	public String toString() {
@@ -363,23 +359,21 @@ public class Validation implements Serializable {
 	 * Searches for existing (registered) error type.
 	 * This is mostly for testing.
 	 * 
-	 * @param code
-	 * @param type
-	 * @return
+	 * @param code error code
+	 * @param type level
+	 * @return matching error class
 	 */
 	public ErrorType findErrorType(String code, Behavior type) {
 		return findErrorType(new ErrorType(code, type));
 	}
 	
-	/**
+	/*
 	 * Finds the same error type among
 	 * existing (already happened to have error cases)
 	 * 
 	 * @see ErrorType#equals(Object)
 	 * @see ErrorType#hashCode()
-	 * 
-	 * @param errorType
-	 * @return
+	 *
 	 */
 	private ErrorType findErrorType(ErrorType errorType) {
 		if(getError().contains(errorType)) {
@@ -393,16 +387,14 @@ public class Validation implements Serializable {
 	}
 	
 	
-	/**
+	/*
 	 * Finds the same error case in the registry.
 	 * 
 	 * @see ErrorType#equals(Object)
 	 * @see ErrorType#hashCode()
 	 * @see ErrorCaseType#equals(Object)
 	 * @see ErrorCaseType#hashCode()
-	 *  
-	 * @param errorType
-	 * @return
+	 *
 	 */
 	private ErrorCaseType findErrorCase(ErrorType errorType, ErrorCaseType errCase) {
 		ErrorType etype = findErrorType(errorType);
@@ -425,7 +417,7 @@ public class Validation implements Serializable {
 	 * @param category when 'null', counts all
 	 * @param ignoreWarnings do not count WARNINGs
 	 * @param ignoreFixed do not count fixed
-	 * @return
+	 * @return number of error cases
 	 */
 	public int countErrors(String forObject, String reportedBy, 
 			String code, Category category, boolean ignoreWarnings, boolean ignoreFixed) {
@@ -461,7 +453,7 @@ public class Validation implements Serializable {
 	 * if it makes sense, and if there is a {@link Rule} or some method
 	 * (such as in AOP Aspects) which is about to register errors about O.
 	 * 
-	 * @return
+	 * @return objects
 	 */
 	@XmlTransient
 	public Set<Object> getObjects() {
@@ -488,20 +480,20 @@ public class Validation implements Serializable {
 	/**
 	 * Gets the error reporting level/threshold, i.e., 
 	 * this is to ignore issues reported with a level
-	 * less than desired; e.g., to hide warnings (similar to logging).
+	 * less than desired; e.g., if 'ERROR' then hide all warnings (similar to logging).
 	 * 
-	 * @return
+	 * @return min. error level
 	 */
 	public Behavior getThreshold() {
 		return threshold;
 	}
 
 	/**
-	 * Sets the errors reporting level.
+	 * Sets the min. error reporting level.
 	 * 
 	 * @see #getThreshold()
 	 * 
-	 * @param threshold
+	 * @param threshold minimal level (of ignore, warning, error)
 	 */
 	protected void setThreshold(Behavior threshold) {
 		this.threshold = threshold;
@@ -511,7 +503,7 @@ public class Validation implements Serializable {
 	 * Total number of {@link Behavior#ERROR} and 
 	 * {@link Behavior#WARNING} cases (either fixed or not).
 	 * 
-	 * @return
+	 * @return number of different type of error/warning
 	 */
 	public int getTotalProblemsFound() {
 		return totalProblemsFound;
@@ -524,8 +516,7 @@ public class Validation implements Serializable {
 	/**
 	 * Total number of {@link Behavior#ERROR} and 
 	 * {@link Behavior#WARNING} cases, NOT fixed.
-	 * 
-	 * @return
+	 * @return the no. not fixed warning or error cases
 	 */
 	public synchronized int getNotFixedProblems() {
 		return notFixedProblems;
@@ -536,8 +527,7 @@ public class Validation implements Serializable {
 
 	/** 
 	 * Total number of NOT fixed {@link Behavior#ERROR} cases.
-	 * 
-	 * @return
+	 * @return the no. not fixed error cases
 	 */
 	public synchronized int getNotFixedErrors() {
 		return notFixedErrors;
@@ -595,7 +585,7 @@ public class Validation implements Serializable {
 	 * an integer value between 0 and {@link Integer#MAX_VALUE}, otherwise
 	 * it has no effect ({@link #isMaxErrorsSet()} will return 'false').
 	 * 
-	 * @param maxErrors
+	 * @param maxErrors max no. errors to collect
 	 */
 	protected void setMaxErrors(int maxErrors) {
 		this.maxErrors = maxErrors;
@@ -614,7 +604,7 @@ public class Validation implements Serializable {
 	
 	/**
 	 * Gets normalizer settings.
-	 * @return
+	 * @return settings
 	 */
 	@XmlTransient
 	public Properties getProperties() {
@@ -623,9 +613,10 @@ public class Validation implements Serializable {
 
 
 	/**
-	 * Validation profile to used when checking/reporting issues.
+	 * Validation profile (a set of active rules and levels)
+	 * to apply when checking/reporting issues.
 	 * 
-	 * @return the profile
+	 * @return the validation profile
 	 */
 	public String getProfile() {
 		return profile;
@@ -635,7 +626,7 @@ public class Validation implements Serializable {
 	/**
 	 * Sets the validation profile to use when checking/reporting issues.
 	 * 
-	 * @param profile the profile name
+	 * @param profile the validation profile name
 	 */
 	protected void setProfile(String profile) {
 		this.profile = profile;
@@ -648,8 +639,8 @@ public class Validation implements Serializable {
 	 * objects related to this validation.
 	 * (for error reporting)
 	 * 
-	 * @param obj
-	 * @return
+	 * @param obj model object
+	 * @return id
 	 */
 	public String identify(Object obj) {
 		return idCalc.identify(obj);
@@ -683,8 +674,8 @@ public class Validation implements Serializable {
 		 * method, if any, is not known to the core validation framework
 		 * in advance, and toString method may not be satisfactory.
 		 * 
-		 * @param obj
-		 * @return
+		 * @param obj a model element or, e.g., stream
+		 * @return id
 		 */
 		String identify(Object obj);
 

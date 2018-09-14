@@ -37,7 +37,8 @@ public class ExceptionsAspect extends AbstractAspect {
      * with the corresponding validation result
      * (this is the earliest possibility to do so)!
      * 
-     * @param jp
+     * @param jp (AspectJ) joint point
+		 * @param model biopax model
      */
     @Around("execution(void org.biopax.paxtools.io.SimpleIOHandler.createAndBind(*)) " +
     		"&& args(model)")

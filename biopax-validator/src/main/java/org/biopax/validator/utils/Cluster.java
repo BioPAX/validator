@@ -8,14 +8,13 @@ public abstract class Cluster<T> {
 	 * Implemented in concrete subclasses.
 	 * Must be "symmetric"; may be "transitive" or not (you decide) -
 	 * 
-	 * @param a
-	 * @param b
+	 * @param a an object
+	 * @param b another object of the same type
 	 * @return true/false
 	 */
 	public abstract boolean match(T a, T b);
 	
-	
-	
+
 	/**
 	 * Puts elements into sets of "similar" ones. 
 	 * Every object belongs to exactly one cluster.
@@ -29,9 +28,9 @@ public abstract class Cluster<T> {
 	 * 
 	 * @see #match(Object, Object)
 	 * 
-	 * @param elements
-	 * @param clusterMaxSize
-	 * @return
+	 * @param elements objects
+	 * @param clusterMaxSize max. size of a cluster
+	 * @return groups of objects
 	 */
 	public final Set<Set<T>> cluster(Collection<T> elements, int clusterMaxSize) {
 		Set<Set<T>> clusters = new HashSet<Set<T>>();

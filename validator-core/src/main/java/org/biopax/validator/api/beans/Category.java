@@ -1,16 +1,10 @@
 package org.biopax.validator.api.beans;
 
-/*
- *
- */
-
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Categories of error
- * 
- * @author rodche
+ * Validation error category.
  */
 @XmlType(name="Category")
 @XmlEnum

@@ -1,8 +1,5 @@
 package org.biopax.validator.api.beans;
 
-/*
- *
- */
 
 import java.io.Serializable;
 import javax.xml.bind.annotation.*;

@@ -1,8 +1,5 @@
 package org.biopax.validator.api.beans;
 
-/*
- *
- */
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
@@ -13,8 +10,6 @@ import javax.xml.bind.annotation.XmlType;
  *       IGNORE -- skip: do not validate, nor report any messages;
  *       ERROR -- report as error, fail if error limit is exceeded;
  *       WARNING -- report as warning.
- *
- * @author rodche
  */
 @XmlType(name="Behavior")
 @XmlEnum
