@@ -202,8 +202,8 @@
 <span class="sourceLineNo">194</span>        /**<a name="line.194"></a>
 <span class="sourceLineNo">195</span>         * Removes tail spaces and converts to upper case<a name="line.195"></a>
 <span class="sourceLineNo">196</span>         * <a name="line.196"></a>
-<span class="sourceLineNo">197</span>         * @param name<a name="line.197"></a>
-<span class="sourceLineNo">198</span>         * @return<a name="line.198"></a>
+<span class="sourceLineNo">197</span>         * @param name original name<a name="line.197"></a>
+<span class="sourceLineNo">198</span>         * @return normalized name<a name="line.198"></a>
 <span class="sourceLineNo">199</span>         */<a name="line.199"></a>
 <span class="sourceLineNo">200</span>        public String dbName(String name) {<a name="line.200"></a>
 <span class="sourceLineNo">201</span>                return name.trim().toUpperCase();<a name="line.201"></a>
@@ -227,7 +227,7 @@
 <span class="sourceLineNo">219</span>                <a name="line.219"></a>
 <span class="sourceLineNo">220</span>                for(Collection&lt;String&gt; group : groups.getCollections()) {<a name="line.220"></a>
 <span class="sourceLineNo">221</span>                        if (group.contains(dbName)) {<a name="line.221"></a>
-<span class="sourceLineNo">222</span>                                return (List&lt;String&gt;) group; //copy to protect<a name="line.222"></a>
+<span class="sourceLineNo">222</span>                                return (List&lt;String&gt;) group;<a name="line.222"></a>
 <span class="sourceLineNo">223</span>                        }<a name="line.223"></a>
 <span class="sourceLineNo">224</span>                }<a name="line.224"></a>
 <span class="sourceLineNo">225</span>                return Collections.emptyList();<a name="line.225"></a>
@@ -238,102 +238,96 @@
 <span class="sourceLineNo">230</span>     * Gets the primary name for the DB.<a name="line.230"></a>
 <span class="sourceLineNo">231</span>     * It returns NULL for "unknown" database name. <a name="line.231"></a>
 <span class="sourceLineNo">232</span>     * <a name="line.232"></a>
-<span class="sourceLineNo">233</span>     * @param name case insensitive<a name="line.233"></a>
-<span class="sourceLineNo">234</span>     * @return<a name="line.234"></a>
+<span class="sourceLineNo">233</span>     * @param name case insensitive name (of a bio ID type/resource) name<a name="line.233"></a>
+<span class="sourceLineNo">234</span>     * @return preferred name<a name="line.234"></a>
 <span class="sourceLineNo">235</span>     */<a name="line.235"></a>
 <span class="sourceLineNo">236</span>    public String getPrimaryDbName(String name) {<a name="line.236"></a>
-<span class="sourceLineNo">237</span>        String dbName = dbName(name);<a name="line.237"></a>
-<span class="sourceLineNo">238</span>                <a name="line.238"></a>
-<span class="sourceLineNo">239</span>                for(Collection&lt;String&gt; group : allSynonyms.getCollections()) {<a name="line.239"></a>
-<span class="sourceLineNo">240</span>                        if (group.contains(dbName)) {<a name="line.240"></a>
-<span class="sourceLineNo">241</span>                                return group.iterator().next(); //get the first<a name="line.241"></a>
-<span class="sourceLineNo">242</span>                        }<a name="line.242"></a>
-<span class="sourceLineNo">243</span>                }<a name="line.243"></a>
-<span class="sourceLineNo">244</span>                <a name="line.244"></a>
-<span class="sourceLineNo">245</span>                return null;<a name="line.245"></a>
-<span class="sourceLineNo">246</span>    }<a name="line.246"></a>
-<span class="sourceLineNo">247</span>    <a name="line.247"></a>
-<span class="sourceLineNo">248</span>    <a name="line.248"></a>
-<span class="sourceLineNo">249</span>    /**<a name="line.249"></a>
-<span class="sourceLineNo">250</span>     * Checks whether the ID format is valid for the database.<a name="line.250"></a>
-<span class="sourceLineNo">251</span>     * Always use {@link #canCheckIdFormatIn(String)} before this method,<a name="line.251"></a>
-<span class="sourceLineNo">252</span>     * because it may throw an exception if you do not.<a name="line.252"></a>
-<span class="sourceLineNo">253</span>     * <a name="line.253"></a>
-<span class="sourceLineNo">254</span>     * @param db case insensitive<a name="line.254"></a>
-<span class="sourceLineNo">255</span>     * @param id<a name="line.255"></a>
-<span class="sourceLineNo">256</span>     * @return 'false' if matcher fails, 'true' otherwise<a name="line.256"></a>
-<span class="sourceLineNo">257</span>     * @throws NullPointerException when no pattern available<a name="line.257"></a>
-<span class="sourceLineNo">258</span>     */<a name="line.258"></a>
-<span class="sourceLineNo">259</span>    public boolean checkIdFormat(String db, String id) {<a name="line.259"></a>
-<span class="sourceLineNo">260</span>        String name = getPrimaryDbName(db);<a name="line.260"></a>
-<span class="sourceLineNo">261</span>        Pattern p = dataPatterns.get(name);<a name="line.261"></a>
-<span class="sourceLineNo">262</span>        return p.matcher(id).find();<a name="line.262"></a>
-<span class="sourceLineNo">263</span>    }<a name="line.263"></a>
-<span class="sourceLineNo">264</span><a name="line.264"></a>
-<span class="sourceLineNo">265</span>    /**<a name="line.265"></a>
-<span class="sourceLineNo">266</span>     * @param name a database name (used in xrefs), case insensitive<a name="line.266"></a>
-<span class="sourceLineNo">267</span>     * @return true if it's possible to check the format.<a name="line.267"></a>
-<span class="sourceLineNo">268</span>     */<a name="line.268"></a>
-<span class="sourceLineNo">269</span>    public boolean canCheckIdFormatIn(String name) {<a name="line.269"></a>
-<span class="sourceLineNo">270</span>        String db = getPrimaryDbName(name);<a name="line.270"></a>
-<span class="sourceLineNo">271</span>        return (db == null) ? false : dataPatterns.get(db) != null;<a name="line.271"></a>
-<span class="sourceLineNo">272</span>    }<a name="line.272"></a>
-<span class="sourceLineNo">273</span><a name="line.273"></a>
-<span class="sourceLineNo">274</span><a name="line.274"></a>
-<span class="sourceLineNo">275</span>    /**<a name="line.275"></a>
-<span class="sourceLineNo">276</span>     * Gets the regular expression corresponding <a name="line.276"></a>
-<span class="sourceLineNo">277</span>     * to the database.<a name="line.277"></a>
-<span class="sourceLineNo">278</span>     * <a name="line.278"></a>
-<span class="sourceLineNo">279</span>     * @param db a database name, case insensitive<a name="line.279"></a>
-<span class="sourceLineNo">280</span>     * @return regular expression to check its ID<a name="line.280"></a>
-<span class="sourceLineNo">281</span>     */<a name="line.281"></a>
-<span class="sourceLineNo">282</span>    public String getRegexpString(String db) {<a name="line.282"></a>
-<span class="sourceLineNo">283</span>        String name = getPrimaryDbName(db);<a name="line.283"></a>
-<span class="sourceLineNo">284</span>        Pattern p = dataPatterns.get(name);<a name="line.284"></a>
-<span class="sourceLineNo">285</span>        return (p != null) ? p.pattern() : null;<a name="line.285"></a>
-<span class="sourceLineNo">286</span>    }<a name="line.286"></a>
-<span class="sourceLineNo">287</span><a name="line.287"></a>
-<span class="sourceLineNo">288</span>    <a name="line.288"></a>
-<span class="sourceLineNo">289</span>    //case insensitive<a name="line.289"></a>
-<span class="sourceLineNo">290</span>    public boolean isSynonyms(String db1, String db2) {<a name="line.290"></a>
-<span class="sourceLineNo">291</span>        // dbName function is used here also to get right <a name="line.291"></a>
-<span class="sourceLineNo">292</span>        // name capitalization<a name="line.292"></a>
-<span class="sourceLineNo">293</span>        return getSynonymsForDbName(db1).contains(dbName(db2));<a name="line.293"></a>
-<span class="sourceLineNo">294</span>    }<a name="line.294"></a>
-<span class="sourceLineNo">295</span>    <a name="line.295"></a>
-<span class="sourceLineNo">296</span>    <a name="line.296"></a>
-<span class="sourceLineNo">297</span>    /**<a name="line.297"></a>
-<span class="sourceLineNo">298</span>     * Get the immutable list of <a name="line.298"></a>
-<span class="sourceLineNo">299</span>     * DB misspellings and unofficial names,<a name="line.299"></a>
-<span class="sourceLineNo">300</span>     * which the Validator recognizes, reports <a name="line.300"></a>
-<span class="sourceLineNo">301</span>     * warnings, and is able to replace with<a name="line.301"></a>
-<span class="sourceLineNo">302</span>     * corresponding official names; and which<a name="line.302"></a>
-<span class="sourceLineNo">303</span>     * otherwise, using MI or Miriam, <a name="line.303"></a>
-<span class="sourceLineNo">304</span>     * cannot be resolved.<a name="line.304"></a>
-<span class="sourceLineNo">305</span>     * <a name="line.305"></a>
-<span class="sourceLineNo">306</span>     * @return<a name="line.306"></a>
-<span class="sourceLineNo">307</span>     */<a name="line.307"></a>
-<span class="sourceLineNo">308</span>    Set&lt;String&gt; getUnofficialDbNames() {<a name="line.308"></a>
-<span class="sourceLineNo">309</span>                return unofficialDbNames;<a name="line.309"></a>
-<span class="sourceLineNo">310</span>        }<a name="line.310"></a>
-<span class="sourceLineNo">311</span>    <a name="line.311"></a>
-<span class="sourceLineNo">312</span>    /**<a name="line.312"></a>
-<span class="sourceLineNo">313</span>     * Checks whether the db name is known (configured) <a name="line.313"></a>
-<span class="sourceLineNo">314</span>     * misspellings or unofficial name,<a name="line.314"></a>
-<span class="sourceLineNo">315</span>     * which the Validator can recognize, report <a name="line.315"></a>
-<span class="sourceLineNo">316</span>     * warning, and replace with official names; and which<a name="line.316"></a>
-<span class="sourceLineNo">317</span>     * otherwise, using MI or Miriam, cannot be resolved.<a name="line.317"></a>
-<span class="sourceLineNo">318</span>     * <a name="line.318"></a>
-<span class="sourceLineNo">319</span>     * @param db case insensitive<a name="line.319"></a>
-<span class="sourceLineNo">320</span>     * @return<a name="line.320"></a>
-<span class="sourceLineNo">321</span>     */<a name="line.321"></a>
-<span class="sourceLineNo">322</span>        public boolean isUnofficialOrMisspelledDbName(final String db) {<a name="line.322"></a>
-<span class="sourceLineNo">323</span>                return getUnofficialDbNames().contains(dbName(db));<a name="line.323"></a>
-<span class="sourceLineNo">324</span>        }<a name="line.324"></a>
-<span class="sourceLineNo">325</span><a name="line.325"></a>
-<span class="sourceLineNo">326</span>}<a name="line.326"></a>
-<span class="sourceLineNo">327</span><a name="line.327"></a>
-<span class="sourceLineNo">328</span><a name="line.328"></a>
+<span class="sourceLineNo">237</span>                List&lt;String&gt; names = getSynonymsForDbName(name);<a name="line.237"></a>
+<span class="sourceLineNo">238</span>                //get the first name<a name="line.238"></a>
+<span class="sourceLineNo">239</span>                return (names.isEmpty()) ? null : names.iterator().next();<a name="line.239"></a>
+<span class="sourceLineNo">240</span>    }<a name="line.240"></a>
+<span class="sourceLineNo">241</span>    <a name="line.241"></a>
+<span class="sourceLineNo">242</span>    <a name="line.242"></a>
+<span class="sourceLineNo">243</span>    /**<a name="line.243"></a>
+<span class="sourceLineNo">244</span>     * Checks whether the ID format is valid for the database.<a name="line.244"></a>
+<span class="sourceLineNo">245</span>     * Always use {@link #canCheckIdFormatIn(String)} before this method,<a name="line.245"></a>
+<span class="sourceLineNo">246</span>     * because it may throw an exception if you do not.<a name="line.246"></a>
+<span class="sourceLineNo">247</span>     * <a name="line.247"></a>
+<span class="sourceLineNo">248</span>     * @param db case insensitive<a name="line.248"></a>
+<span class="sourceLineNo">249</span>     * @param id<a name="line.249"></a>
+<span class="sourceLineNo">250</span>     * @return 'false' if matcher fails, 'true' otherwise<a name="line.250"></a>
+<span class="sourceLineNo">251</span>     * @throws NullPointerException when no pattern available<a name="line.251"></a>
+<span class="sourceLineNo">252</span>     */<a name="line.252"></a>
+<span class="sourceLineNo">253</span>    public boolean checkIdFormat(String db, String id) {<a name="line.253"></a>
+<span class="sourceLineNo">254</span>        String name = getPrimaryDbName(db);<a name="line.254"></a>
+<span class="sourceLineNo">255</span>        Pattern p = dataPatterns.get(name);<a name="line.255"></a>
+<span class="sourceLineNo">256</span>        return p.matcher(id).find();<a name="line.256"></a>
+<span class="sourceLineNo">257</span>    }<a name="line.257"></a>
+<span class="sourceLineNo">258</span><a name="line.258"></a>
+<span class="sourceLineNo">259</span>    /**<a name="line.259"></a>
+<span class="sourceLineNo">260</span>     * @param name a database name (used in xrefs), case insensitive<a name="line.260"></a>
+<span class="sourceLineNo">261</span>     * @return true if it's possible to check the format.<a name="line.261"></a>
+<span class="sourceLineNo">262</span>     */<a name="line.262"></a>
+<span class="sourceLineNo">263</span>    public boolean canCheckIdFormatIn(String name) {<a name="line.263"></a>
+<span class="sourceLineNo">264</span>        String db = getPrimaryDbName(name);<a name="line.264"></a>
+<span class="sourceLineNo">265</span>        return (db == null) ? false : dataPatterns.get(db) != null;<a name="line.265"></a>
+<span class="sourceLineNo">266</span>    }<a name="line.266"></a>
+<span class="sourceLineNo">267</span><a name="line.267"></a>
+<span class="sourceLineNo">268</span><a name="line.268"></a>
+<span class="sourceLineNo">269</span>    /**<a name="line.269"></a>
+<span class="sourceLineNo">270</span>     * Gets the regular expression corresponding <a name="line.270"></a>
+<span class="sourceLineNo">271</span>     * to the database.<a name="line.271"></a>
+<span class="sourceLineNo">272</span>     * <a name="line.272"></a>
+<span class="sourceLineNo">273</span>     * @param db a database name, case insensitive<a name="line.273"></a>
+<span class="sourceLineNo">274</span>     * @return regular expression to check its ID<a name="line.274"></a>
+<span class="sourceLineNo">275</span>     */<a name="line.275"></a>
+<span class="sourceLineNo">276</span>    public String getRegexpString(String db) {<a name="line.276"></a>
+<span class="sourceLineNo">277</span>        String name = getPrimaryDbName(db);<a name="line.277"></a>
+<span class="sourceLineNo">278</span>        Pattern p = dataPatterns.get(name);<a name="line.278"></a>
+<span class="sourceLineNo">279</span>        return (p != null) ? p.pattern() : null;<a name="line.279"></a>
+<span class="sourceLineNo">280</span>    }<a name="line.280"></a>
+<span class="sourceLineNo">281</span><a name="line.281"></a>
+<span class="sourceLineNo">282</span>    <a name="line.282"></a>
+<span class="sourceLineNo">283</span>    //case insensitive<a name="line.283"></a>
+<span class="sourceLineNo">284</span>    public boolean isSynonyms(String db1, String db2) {<a name="line.284"></a>
+<span class="sourceLineNo">285</span>        // dbName function is used here also to get right <a name="line.285"></a>
+<span class="sourceLineNo">286</span>        // name capitalization<a name="line.286"></a>
+<span class="sourceLineNo">287</span>        return getSynonymsForDbName(db1).contains(dbName(db2));<a name="line.287"></a>
+<span class="sourceLineNo">288</span>    }<a name="line.288"></a>
+<span class="sourceLineNo">289</span>    <a name="line.289"></a>
+<span class="sourceLineNo">290</span>    <a name="line.290"></a>
+<span class="sourceLineNo">291</span>    /**<a name="line.291"></a>
+<span class="sourceLineNo">292</span>     * Get the immutable list of <a name="line.292"></a>
+<span class="sourceLineNo">293</span>     * DB misspellings and unofficial names,<a name="line.293"></a>
+<span class="sourceLineNo">294</span>     * which the Validator recognizes, reports <a name="line.294"></a>
+<span class="sourceLineNo">295</span>     * warnings, and is able to replace with<a name="line.295"></a>
+<span class="sourceLineNo">296</span>     * corresponding official names; and which<a name="line.296"></a>
+<span class="sourceLineNo">297</span>     * otherwise, using MI or Miriam, <a name="line.297"></a>
+<span class="sourceLineNo">298</span>     * cannot be resolved.<a name="line.298"></a>
+<span class="sourceLineNo">299</span>     * <a name="line.299"></a>
+<span class="sourceLineNo">300</span>     * @return name variants<a name="line.300"></a>
+<span class="sourceLineNo">301</span>     */<a name="line.301"></a>
+<span class="sourceLineNo">302</span>    Set&lt;String&gt; getUnofficialDbNames() {<a name="line.302"></a>
+<span class="sourceLineNo">303</span>                return unofficialDbNames;<a name="line.303"></a>
+<span class="sourceLineNo">304</span>        }<a name="line.304"></a>
+<span class="sourceLineNo">305</span>    <a name="line.305"></a>
+<span class="sourceLineNo">306</span>    /**<a name="line.306"></a>
+<span class="sourceLineNo">307</span>     * Checks whether the db name is known (configured) <a name="line.307"></a>
+<span class="sourceLineNo">308</span>     * misspellings or unofficial name,<a name="line.308"></a>
+<span class="sourceLineNo">309</span>     * which the Validator can recognize, report <a name="line.309"></a>
+<span class="sourceLineNo">310</span>     * warning, and replace with official names; and which<a name="line.310"></a>
+<span class="sourceLineNo">311</span>     * otherwise, using MI or Miriam, cannot be resolved.<a name="line.311"></a>
+<span class="sourceLineNo">312</span>     * <a name="line.312"></a>
+<span class="sourceLineNo">313</span>     * @param db case insensitive<a name="line.313"></a>
+<span class="sourceLineNo">314</span>     * @return true or false<a name="line.314"></a>
+<span class="sourceLineNo">315</span>     */<a name="line.315"></a>
+<span class="sourceLineNo">316</span>        public boolean isUnofficialOrMisspelledDbName(final String db) {<a name="line.316"></a>
+<span class="sourceLineNo">317</span>                return getUnofficialDbNames().contains(dbName(db));<a name="line.317"></a>
+<span class="sourceLineNo">318</span>        }<a name="line.318"></a>
+<span class="sourceLineNo">319</span><a name="line.319"></a>
+<span class="sourceLineNo">320</span>}<a name="line.320"></a>
+<span class="sourceLineNo">321</span><a name="line.321"></a>
+<span class="sourceLineNo">322</span><a name="line.322"></a>
 
 
 

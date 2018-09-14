@@ -9,294 +9,276 @@
 <pre><span class="sourceLineNo">001</span>package org.biopax.validator;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
 <span class="sourceLineNo">003</span>/*<a name="line.3"></a>
-<span class="sourceLineNo">004</span> * #%L<a name="line.4"></a>
-<span class="sourceLineNo">005</span> * BioPAX Validator Assembly<a name="line.5"></a>
-<span class="sourceLineNo">006</span> * %%<a name="line.6"></a>
-<span class="sourceLineNo">007</span> * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)<a name="line.7"></a>
-<span class="sourceLineNo">008</span> * %%<a name="line.8"></a>
-<span class="sourceLineNo">009</span> * This program is free software: you can redistribute it and/or modify<a name="line.9"></a>
-<span class="sourceLineNo">010</span> * it under the terms of the GNU Lesser General Public License as <a name="line.10"></a>
-<span class="sourceLineNo">011</span> * published by the Free Software Foundation, either version 3 of the <a name="line.11"></a>
-<span class="sourceLineNo">012</span> * License, or (at your option) any later version.<a name="line.12"></a>
-<span class="sourceLineNo">013</span> * <a name="line.13"></a>
-<span class="sourceLineNo">014</span> * This program is distributed in the hope that it will be useful,<a name="line.14"></a>
-<span class="sourceLineNo">015</span> * but WITHOUT ANY WARRANTY; without even the implied warranty of<a name="line.15"></a>
-<span class="sourceLineNo">016</span> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<a name="line.16"></a>
-<span class="sourceLineNo">017</span> * GNU General Lesser Public License for more details.<a name="line.17"></a>
-<span class="sourceLineNo">018</span> * <a name="line.18"></a>
-<span class="sourceLineNo">019</span> * You should have received a copy of the GNU General Lesser Public <a name="line.19"></a>
-<span class="sourceLineNo">020</span> * License along with this program.  If not, see<a name="line.20"></a>
-<span class="sourceLineNo">021</span> * &lt;http://www.gnu.org/licenses/lgpl-3.0.html&gt;.<a name="line.21"></a>
-<span class="sourceLineNo">022</span> * #L%<a name="line.22"></a>
-<span class="sourceLineNo">023</span> */<a name="line.23"></a>
-<span class="sourceLineNo">024</span><a name="line.24"></a>
-<span class="sourceLineNo">025</span>import java.io.*;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import java.util.*;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import javax.xml.transform.Source;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>import javax.xml.transform.stream.StreamSource;<a name="line.28"></a>
-<span class="sourceLineNo">029</span><a name="line.29"></a>
-<span class="sourceLineNo">030</span>import org.apache.commons.logging.Log;<a name="line.30"></a>
-<span class="sourceLineNo">031</span>import org.apache.commons.logging.LogFactory;<a name="line.31"></a>
-<span class="sourceLineNo">032</span>import org.apache.log4j.PropertyConfigurator;<a name="line.32"></a>
-<span class="sourceLineNo">033</span>import org.biopax.paxtools.io.SimpleIOHandler;<a name="line.33"></a>
-<span class="sourceLineNo">034</span>import org.biopax.paxtools.model.Model;<a name="line.34"></a>
-<span class="sourceLineNo">035</span>import org.biopax.paxtools.normalizer.Normalizer;<a name="line.35"></a>
-<span class="sourceLineNo">036</span>import org.biopax.validator.api.ValidatorUtils;<a name="line.36"></a>
-<span class="sourceLineNo">037</span>import org.biopax.validator.api.Validator;<a name="line.37"></a>
-<span class="sourceLineNo">038</span>import org.biopax.validator.api.beans.Validation;<a name="line.38"></a>
-<span class="sourceLineNo">039</span>import org.biopax.validator.api.beans.ValidatorResponse;<a name="line.39"></a>
-<span class="sourceLineNo">040</span>import org.biopax.validator.impl.IdentifierImpl;<a name="line.40"></a>
-<span class="sourceLineNo">041</span>import org.springframework.context.ApplicationContext;<a name="line.41"></a>
-<span class="sourceLineNo">042</span>import org.springframework.context.support.ClassPathXmlApplicationContext;<a name="line.42"></a>
-<span class="sourceLineNo">043</span>import org.springframework.core.io.Resource;<a name="line.43"></a>
-<span class="sourceLineNo">044</span>import org.springframework.util.ResourceUtils;<a name="line.44"></a>
-<span class="sourceLineNo">045</span><a name="line.45"></a>
-<span class="sourceLineNo">046</span>/**<a name="line.46"></a>
-<span class="sourceLineNo">047</span> * PC BioPAX Validator (console), which<a name="line.47"></a>
-<span class="sourceLineNo">048</span> * checks from the user input or a "batch" file.<a name="line.48"></a>
-<span class="sourceLineNo">049</span> *<a name="line.49"></a>
-<span class="sourceLineNo">050</span> * See: README.txt, context.xml, messages.properties<a name="line.50"></a>
-<span class="sourceLineNo">051</span> *<a name="line.51"></a>
-<span class="sourceLineNo">052</span> * @author rodche<a name="line.52"></a>
-<span class="sourceLineNo">053</span> */<a name="line.53"></a>
-<span class="sourceLineNo">054</span>public class Main {<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        static final Log log = LogFactory.getLog(Main.class);<a name="line.55"></a>
-<span class="sourceLineNo">056</span>        static ApplicationContext ctx;<a name="line.56"></a>
-<span class="sourceLineNo">057</span>        static boolean autofix = false;<a name="line.57"></a>
-<span class="sourceLineNo">058</span>        static int maxErrors = 0;<a name="line.58"></a>
-<span class="sourceLineNo">059</span>        static final String EXT = ".modified.owl";<a name="line.59"></a>
-<span class="sourceLineNo">060</span>        static String profile = null;<a name="line.60"></a>
-<span class="sourceLineNo">061</span>        static String xmlBase = null;<a name="line.61"></a>
-<span class="sourceLineNo">062</span>        static String outFormat = "html";<a name="line.62"></a>
-<span class="sourceLineNo">063</span>        static String output = null;<a name="line.63"></a>
-<span class="sourceLineNo">064</span><a name="line.64"></a>
-<span class="sourceLineNo">065</span>        <a name="line.65"></a>
-<span class="sourceLineNo">066</span>        private static void setUpLogger() {<a name="line.66"></a>
-<span class="sourceLineNo">067</span>                //set defaults<a name="line.67"></a>
-<span class="sourceLineNo">068</span>                Properties properties = new Properties();<a name="line.68"></a>
-<span class="sourceLineNo">069</span>                properties.put("log4j.rootLogger", "ERROR, Console");<a name="line.69"></a>
-<span class="sourceLineNo">070</span>                properties.put("log4j.appender.Console", "org.apache.log4j.ConsoleAppender");<a name="line.70"></a>
-<span class="sourceLineNo">071</span>                properties.put("log4j.appender.Console.layout", "org.apache.log4j.PatternLayout");<a name="line.71"></a>
-<span class="sourceLineNo">072</span>                properties.put("log4j.appender.Console.layout.ConversionPattern", "%-4r [%t] %-5p %c %x - %m%n");<a name="line.72"></a>
-<span class="sourceLineNo">073</span>                PropertyConfigurator.configure(properties);<a name="line.73"></a>
-<span class="sourceLineNo">074</span>                <a name="line.74"></a>
-<span class="sourceLineNo">075</span>                properties = new Properties(properties);<a name="line.75"></a>
-<span class="sourceLineNo">076</span>                <a name="line.76"></a>
-<span class="sourceLineNo">077</span>                try {<a name="line.77"></a>
-<span class="sourceLineNo">078</span>                        properties.load(new FileReader("log4j.properties"));<a name="line.78"></a>
-<span class="sourceLineNo">079</span>                } catch (IOException e) {<a name="line.79"></a>
-<span class="sourceLineNo">080</span>                        throw new RuntimeException("Failed to load cPath2 properties " +<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                                        "from log4j.properties", e);<a name="line.81"></a>
-<span class="sourceLineNo">082</span>                }<a name="line.82"></a>
-<span class="sourceLineNo">083</span>                <a name="line.83"></a>
-<span class="sourceLineNo">084</span>                PropertyConfigurator.configure(properties);<a name="line.84"></a>
-<span class="sourceLineNo">085</span>        }<a name="line.85"></a>
-<span class="sourceLineNo">086</span>        <a name="line.86"></a>
-<span class="sourceLineNo">087</span>        public static void main(String[] args) throws Exception {<a name="line.87"></a>
-<span class="sourceLineNo">088</span>                <a name="line.88"></a>
-<span class="sourceLineNo">089</span>                setUpLogger();<a name="line.89"></a>
-<span class="sourceLineNo">090</span>                <a name="line.90"></a>
-<span class="sourceLineNo">091</span>        if(args == null || args.length == 0) {<a name="line.91"></a>
-<span class="sourceLineNo">092</span>                log.warn("At least input file/dir must be specified.");<a name="line.92"></a>
-<span class="sourceLineNo">093</span>                printHelpAndQuit();<a name="line.93"></a>
-<span class="sourceLineNo">094</span>        }<a name="line.94"></a>
-<span class="sourceLineNo">095</span><a name="line.95"></a>
-<span class="sourceLineNo">096</span>                String input = args[0];<a name="line.96"></a>
-<span class="sourceLineNo">097</span>                <a name="line.97"></a>
-<span class="sourceLineNo">098</span>                if(input == null || input.isEmpty() || input.startsWith("--")) {<a name="line.98"></a>
-<span class="sourceLineNo">099</span>                        log.warn("Input (file, url, or directory) is probably missing");<a name="line.99"></a>
-<span class="sourceLineNo">100</span>                        printHelpAndQuit();<a name="line.100"></a>
-<span class="sourceLineNo">101</span>                }<a name="line.101"></a>
-<span class="sourceLineNo">102</span>        <a name="line.102"></a>
-<span class="sourceLineNo">103</span>                // match optional parameters<a name="line.103"></a>
-<span class="sourceLineNo">104</span>                for (int i = 1; i &lt; args.length; i++) {<a name="line.104"></a>
-<span class="sourceLineNo">105</span>                        if("--auto-fix".equalsIgnoreCase(args[i])) {<a name="line.105"></a>
-<span class="sourceLineNo">106</span>                                autofix = true;<a name="line.106"></a>
-<span class="sourceLineNo">107</span>                        } else if(args[i].startsWith("--max-errors=")) {<a name="line.107"></a>
-<span class="sourceLineNo">108</span>                                String n = args[i].substring(13);<a name="line.108"></a>
-<span class="sourceLineNo">109</span>                                maxErrors = Integer.parseInt(n);<a name="line.109"></a>
-<span class="sourceLineNo">110</span>                        } else if(args[i].startsWith("--profile=")) {<a name="line.110"></a>
-<span class="sourceLineNo">111</span>                                profile = args[i].substring(10);<a name="line.111"></a>
-<span class="sourceLineNo">112</span>                        } else if(args[i].startsWith("--xmlBase=")) {<a name="line.112"></a>
-<span class="sourceLineNo">113</span>                                xmlBase = args[i].substring(10);<a name="line.113"></a>
-<span class="sourceLineNo">114</span>                        } else if(args[i].startsWith("--output=")) {<a name="line.114"></a>
-<span class="sourceLineNo">115</span>                                output = args[i].substring(9);  <a name="line.115"></a>
-<span class="sourceLineNo">116</span>                        } else if(args[i].startsWith("--out-format=")) {<a name="line.116"></a>
-<span class="sourceLineNo">117</span>                                outFormat = args[i].substring(13);<a name="line.117"></a>
-<span class="sourceLineNo">118</span>                                if(outFormat.isEmpty())<a name="line.118"></a>
-<span class="sourceLineNo">119</span>                                        outFormat = "html";<a name="line.119"></a>
-<span class="sourceLineNo">120</span>                        }<a name="line.120"></a>
-<span class="sourceLineNo">121</span>                }<a name="line.121"></a>
-<span class="sourceLineNo">122</span><a name="line.122"></a>
-<span class="sourceLineNo">123</span>                // this does 90% of the job ;)<a name="line.123"></a>
-<span class="sourceLineNo">124</span>                ctx = new ClassPathXmlApplicationContext(<a name="line.124"></a>
-<span class="sourceLineNo">125</span>                        new String[] {"META-INF/spring/appContext-loadTimeWeaving.xml",<a name="line.125"></a>
-<span class="sourceLineNo">126</span>                                        "META-INF/spring/appContext-validator.xml"});<a name="line.126"></a>
-<span class="sourceLineNo">127</span>                // Rules are now loaded, and AOP is listening for BioPAX model method calls.<a name="line.127"></a>
-<span class="sourceLineNo">128</span>                <a name="line.128"></a>
-<span class="sourceLineNo">129</span>        // get the beans to work with<a name="line.129"></a>
-<span class="sourceLineNo">130</span>        Validator validator = (Validator) ctx.getBean("validator");<a name="line.130"></a>
-<span class="sourceLineNo">131</span>                <a name="line.131"></a>
-<span class="sourceLineNo">132</span>                // go validate all<a name="line.132"></a>
-<span class="sourceLineNo">133</span>                runBatch(validator, getResourcesToValidate(input));<a name="line.133"></a>
-<span class="sourceLineNo">134</span>        }<a name="line.134"></a>
-<span class="sourceLineNo">135</span>        <a name="line.135"></a>
-<span class="sourceLineNo">136</span>        <a name="line.136"></a>
-<span class="sourceLineNo">137</span>        private static void printHelpAndQuit() {<a name="line.137"></a>
-<span class="sourceLineNo">138</span>        final String usage = <a name="line.138"></a>
-<span class="sourceLineNo">139</span>                        "\nThe BioPAX Validator v3\n\n" +<a name="line.139"></a>
-<span class="sourceLineNo">140</span>                    "Usage (arguments):\n &lt;input&gt; [--output=&lt;filename&gt;] [--out-format=xml|html] [--auto-fix] " +<a name="line.140"></a>
-<span class="sourceLineNo">141</span>                    "[--xmlBase=&lt;base&gt;] [--max-errors=&lt;n&gt;] [--profile=notstrict]\n\n" + <a name="line.141"></a>
-<span class="sourceLineNo">142</span>                    "Given --output=&lt;filename&gt;, a one-file validation report will be \n" +<a name="line.142"></a>
-<span class="sourceLineNo">143</span>                    "generated (HTML or XML) instead of default report file(s) in the \n" +<a name="line.143"></a>
-<span class="sourceLineNo">144</span>                    "current directory. Optional arguments can go in any order.\n" +<a name="line.144"></a>
-<span class="sourceLineNo">145</span>                    "For example:\n" +<a name="line.145"></a>
-<span class="sourceLineNo">146</span>                    "  path/dir --out-format=xml\n" +<a name="line.146"></a>
-<span class="sourceLineNo">147</span>                    "  list:batch_file.txt --output=reports.html\n" +<a name="line.147"></a>
-<span class="sourceLineNo">148</span>                    "  file:biopax.owl --out-format=xml --auto-fix\n" +<a name="line.148"></a>
-<span class="sourceLineNo">149</span>                    "  http://www.some.net/data.owl\n\n" +<a name="line.149"></a>
-<span class="sourceLineNo">150</span>                    "A batch file should list one task (resource) per line, i.e.,\n" +<a name="line.150"></a>
-<span class="sourceLineNo">151</span>                    "file:path/file or URL (to BioPAX data)\n" +<a name="line.151"></a>
-<span class="sourceLineNo">152</span>                    "If '--auto-fix' option was used, it also creates a new BioPAX file \n" +<a name="line.152"></a>
-<span class="sourceLineNo">153</span>                    "for each input file in the current working directory \n" +<a name="line.153"></a>
-<span class="sourceLineNo">154</span>                    "(adding '.modified.owl' exention). If the outFormat file extension \n" +<a name="line.154"></a>
-<span class="sourceLineNo">155</span>                    "is '.html', the XML result will be auto-transformed to a stand-alone \n" +<a name="line.155"></a>
-<span class="sourceLineNo">156</span>                    "HTML/javascript page, which is very similar to what the online version returns.";<a name="line.156"></a>
-<span class="sourceLineNo">157</span>        System.out.println(usage);<a name="line.157"></a>
-<span class="sourceLineNo">158</span>        System.exit(-1);<a name="line.158"></a>
-<span class="sourceLineNo">159</span>        }<a name="line.159"></a>
-<span class="sourceLineNo">160</span><a name="line.160"></a>
-<span class="sourceLineNo">161</span><a name="line.161"></a>
-<span class="sourceLineNo">162</span>        protected static void runBatch(Validator validator, <a name="line.162"></a>
-<span class="sourceLineNo">163</span>                        Collection&lt;Resource&gt; resources) throws IOException {                                          <a name="line.163"></a>
-<span class="sourceLineNo">164</span><a name="line.164"></a>
-<span class="sourceLineNo">165</span>                //collect all reports in this object (only if --output option was used)<a name="line.165"></a>
-<span class="sourceLineNo">166</span>                final ValidatorResponse consolidatedReport = new ValidatorResponse();  <a name="line.166"></a>
-<span class="sourceLineNo">167</span>                <a name="line.167"></a>
-<span class="sourceLineNo">168</span>                // Read from the batch and validate from file, id or url, line-by-line (stops on first empty line)<a name="line.168"></a>
-<span class="sourceLineNo">169</span>        for (Resource resource: resources) {<a name="line.169"></a>
-<span class="sourceLineNo">170</span>                Validation result = new Validation(new IdentifierImpl(), resource.getDescription(), <a name="line.170"></a>
-<span class="sourceLineNo">171</span>                                autofix, null, maxErrors, profile);<a name="line.171"></a>
-<span class="sourceLineNo">172</span>                result.setDescription(resource.getDescription()); <a name="line.172"></a>
-<span class="sourceLineNo">173</span>                log.info("BioPAX DATA IMPORT FROM: " + result.getDescription());<a name="line.173"></a>
-<span class="sourceLineNo">174</span>                        try{                            <a name="line.174"></a>
-<span class="sourceLineNo">175</span>                                validator.importModel(result, resource.getInputStream());<a name="line.175"></a>
-<span class="sourceLineNo">176</span>                                validator.validate(result);<a name="line.176"></a>
-<span class="sourceLineNo">177</span>                                <a name="line.177"></a>
-<span class="sourceLineNo">178</span>                                //if autofix is enabled, then do normalize too<a name="line.178"></a>
-<span class="sourceLineNo">179</span>                                if(autofix) {<a name="line.179"></a>
-<span class="sourceLineNo">180</span>                                        Model model = (Model) result.getModel();<a name="line.180"></a>
-<span class="sourceLineNo">181</span>                                        Normalizer normalizer = new Normalizer();<a name="line.181"></a>
-<span class="sourceLineNo">182</span>                                        normalizer.setXmlBase(xmlBase); //if xmlBase is null, the model's one is used<a name="line.182"></a>
-<span class="sourceLineNo">183</span>                                        normalizer.normalize(model);<a name="line.183"></a>
-<span class="sourceLineNo">184</span>                                }<a name="line.184"></a>
-<span class="sourceLineNo">185</span>                                <a name="line.185"></a>
-<span class="sourceLineNo">186</span>                                if(output != null)<a name="line.186"></a>
-<span class="sourceLineNo">187</span>                                        consolidatedReport.addValidationResult(result);<a name="line.187"></a>
-<span class="sourceLineNo">188</span>                                <a name="line.188"></a>
-<span class="sourceLineNo">189</span>                        } catch (Exception e) {<a name="line.189"></a>
-<span class="sourceLineNo">190</span>                                log.error("failed", e);<a name="line.190"></a>
-<span class="sourceLineNo">191</span>                        }<a name="line.191"></a>
-<span class="sourceLineNo">192</span>                        <a name="line.192"></a>
-<span class="sourceLineNo">193</span>                        final String filename = outFileName(result);<a name="line.193"></a>
-<span class="sourceLineNo">194</span>                        PrintWriter writer;<a name="line.194"></a>
-<span class="sourceLineNo">195</span>                        <a name="line.195"></a>
-<span class="sourceLineNo">196</span>                        // save modified (normalized) biopax if the option was used<a name="line.196"></a>
-<span class="sourceLineNo">197</span>                        if (autofix) {<a name="line.197"></a>
-<span class="sourceLineNo">198</span>                                Model model = (Model) result.getModel();<a name="line.198"></a>
-<span class="sourceLineNo">199</span>                                (new SimpleIOHandler()).convertToOWL(model, new FileOutputStream(filename + EXT));<a name="line.199"></a>
-<span class="sourceLineNo">200</span>                        }<a name="line.200"></a>
-<span class="sourceLineNo">201</span>                        <a name="line.201"></a>
-<span class="sourceLineNo">202</span>                        // remove the BioPAX data before writing report<a name="line.202"></a>
-<span class="sourceLineNo">203</span>                        result.setModel(null);<a name="line.203"></a>
-<span class="sourceLineNo">204</span>                        result.setModelData(null);<a name="line.204"></a>
-<span class="sourceLineNo">205</span>                        <a name="line.205"></a>
-<span class="sourceLineNo">206</span>                        // save the individual validation results<a name="line.206"></a>
-<span class="sourceLineNo">207</span>                        //unless the user specified the output file explicitly<a name="line.207"></a>
-<span class="sourceLineNo">208</span>                        if(output == null || output.isEmpty()) { <a name="line.208"></a>
-<span class="sourceLineNo">209</span>                                writer = new PrintWriter(filename + ".validation." + outFormat);<a name="line.209"></a>
-<span class="sourceLineNo">210</span>                                Source xsltSrc = (outFormat.equalsIgnoreCase("html"))<a name="line.210"></a>
-<span class="sourceLineNo">211</span>                                                ? new StreamSource(ctx.getResource("classpath:html-result.xsl").getInputStream())<a name="line.211"></a>
-<span class="sourceLineNo">212</span>                                                : null;<a name="line.212"></a>
-<span class="sourceLineNo">213</span>                                ValidatorUtils.write(result, writer, xsltSrc);                  <a name="line.213"></a>
-<span class="sourceLineNo">214</span>                                writer.close();<a name="line.214"></a>
-<span class="sourceLineNo">215</span>                        }<a name="line.215"></a>
-<span class="sourceLineNo">216</span>                        <a name="line.216"></a>
-<span class="sourceLineNo">217</span>                        validator.getResults().remove(result);<a name="line.217"></a>
-<span class="sourceLineNo">218</span>                        log.info("Done with " + filename);<a name="line.218"></a>
-<span class="sourceLineNo">219</span>                }<a name="line.219"></a>
-<span class="sourceLineNo">220</span>        <a name="line.220"></a>
-<span class="sourceLineNo">221</span>                // save if the user specified the output file explicitly<a name="line.221"></a>
-<span class="sourceLineNo">222</span>                if(output != null) { <a name="line.222"></a>
-<span class="sourceLineNo">223</span>                        Writer writer = new PrintWriter(output);<a name="line.223"></a>
-<span class="sourceLineNo">224</span>                        Source xsltSrc = (outFormat.equalsIgnoreCase("html"))<a name="line.224"></a>
-<span class="sourceLineNo">225</span>                                ? new StreamSource(ctx.getResource("classpath:html-result.xsl").getInputStream())<a name="line.225"></a>
-<span class="sourceLineNo">226</span>                                        : null;<a name="line.226"></a>
-<span class="sourceLineNo">227</span>                        ValidatorUtils.write(consolidatedReport, writer, xsltSrc);                      <a name="line.227"></a>
-<span class="sourceLineNo">228</span>                        writer.close();<a name="line.228"></a>
-<span class="sourceLineNo">229</span>                }        <a name="line.229"></a>
-<span class="sourceLineNo">230</span>    }<a name="line.230"></a>
-<span class="sourceLineNo">231</span>        <a name="line.231"></a>
-<span class="sourceLineNo">232</span>        <a name="line.232"></a>
-<span class="sourceLineNo">233</span>        private static String outFileName(Validation result) {<a name="line.233"></a>
-<span class="sourceLineNo">234</span>                String filename = result.getDescription();<a name="line.234"></a>
-<span class="sourceLineNo">235</span>                // if was URL, create a shorter name;<a name="line.235"></a>
-<span class="sourceLineNo">236</span>                // remove ']', '[', and ending '/', if any<a name="line.236"></a>
-<span class="sourceLineNo">237</span>                filename = filename.replaceAll("\\[|\\]","").replaceFirst("/&amp;", ""); <a name="line.237"></a>
-<span class="sourceLineNo">238</span>                int idx = filename.lastIndexOf('/');<a name="line.238"></a>
-<span class="sourceLineNo">239</span>                if(idx &gt;= 0) {<a name="line.239"></a>
-<span class="sourceLineNo">240</span>                        if(idx &lt; filename.length() - 1)<a name="line.240"></a>
-<span class="sourceLineNo">241</span>                                filename = filename.substring(idx+1);<a name="line.241"></a>
-<span class="sourceLineNo">242</span>                }<a name="line.242"></a>
-<span class="sourceLineNo">243</span>                <a name="line.243"></a>
-<span class="sourceLineNo">244</span>                return filename;<a name="line.244"></a>
-<span class="sourceLineNo">245</span>        }<a name="line.245"></a>
-<span class="sourceLineNo">246</span><a name="line.246"></a>
-<span class="sourceLineNo">247</span><a name="line.247"></a>
-<span class="sourceLineNo">248</span>        public static Collection&lt;Resource&gt; getResourcesToValidate(String input) throws IOException {<a name="line.248"></a>
-<span class="sourceLineNo">249</span>                        Set&lt;Resource&gt; setRes = new HashSet&lt;Resource&gt;();<a name="line.249"></a>
-<span class="sourceLineNo">250</span>                        <a name="line.250"></a>
-<span class="sourceLineNo">251</span>                File fileOrDir = new File(input);<a name="line.251"></a>
-<span class="sourceLineNo">252</span>                if(fileOrDir.isDirectory()) {<a name="line.252"></a>
-<span class="sourceLineNo">253</span>                        // validate all the OWL files in the folder<a name="line.253"></a>
-<span class="sourceLineNo">254</span>                        FilenameFilter filter = new FilenameFilter() {<a name="line.254"></a>
-<span class="sourceLineNo">255</span>                            public boolean accept(File dir, String name) {<a name="line.255"></a>
-<span class="sourceLineNo">256</span>                                return (name.endsWith(".owl"));<a name="line.256"></a>
-<span class="sourceLineNo">257</span>                            }<a name="line.257"></a>
-<span class="sourceLineNo">258</span>                        };<a name="line.258"></a>
-<span class="sourceLineNo">259</span>                        for (String s : fileOrDir.list(filter)) {<a name="line.259"></a>
-<span class="sourceLineNo">260</span>                                String uri = "file:" + fileOrDir.getCanonicalPath() + File.separator + s;<a name="line.260"></a>
-<span class="sourceLineNo">261</span>                                setRes.add(ctx.getResource(uri));<a name="line.261"></a>
-<span class="sourceLineNo">262</span>                        }<a name="line.262"></a>
-<span class="sourceLineNo">263</span>                } else if (input.startsWith("list:")) {<a name="line.263"></a>
-<span class="sourceLineNo">264</span>                        // consider it's a file that contains a list of (pseudo-)URLs<a name="line.264"></a>
-<span class="sourceLineNo">265</span>                        String batchFile = input.replaceFirst("list:", "file:");<a name="line.265"></a>
-<span class="sourceLineNo">266</span>                    Reader isr = new InputStreamReader(ctx.getResource(batchFile).getInputStream());<a name="line.266"></a>
-<span class="sourceLineNo">267</span>                    BufferedReader reader = new BufferedReader(isr);<a name="line.267"></a>
-<span class="sourceLineNo">268</span>                        String line;<a name="line.268"></a>
-<span class="sourceLineNo">269</span>                    while ((line = reader.readLine()) != null &amp;&amp; !"".equals(line.trim())) {<a name="line.269"></a>
-<span class="sourceLineNo">270</span>                        // check the source URL<a name="line.270"></a>
-<span class="sourceLineNo">271</span>                        if( !ResourceUtils.isUrl(line)) {<a name="line.271"></a>
-<span class="sourceLineNo">272</span>                                log.error("Invalid URL: " + line + <a name="line.272"></a>
-<span class="sourceLineNo">273</span>                                                ". A resource must be either a " +<a name="line.273"></a>
-<span class="sourceLineNo">274</span>                                                "pseudo URL (classpath: or file:) or standard URL!");<a name="line.274"></a>
-<span class="sourceLineNo">275</span>                                continue;<a name="line.275"></a>
-<span class="sourceLineNo">276</span>                        }<a name="line.276"></a>
-<span class="sourceLineNo">277</span>                                setRes.add(ctx.getResource(line));<a name="line.277"></a>
-<span class="sourceLineNo">278</span>                        }<a name="line.278"></a>
-<span class="sourceLineNo">279</span>                    reader.close();<a name="line.279"></a>
-<span class="sourceLineNo">280</span>                } else {<a name="line.280"></a>
-<span class="sourceLineNo">281</span>                        // a single local OWL file or remote data<a name="line.281"></a>
-<span class="sourceLineNo">282</span>                        Resource resource = null;<a name="line.282"></a>
-<span class="sourceLineNo">283</span>                                if (!ResourceUtils.isUrl(input)) <a name="line.283"></a>
-<span class="sourceLineNo">284</span>                                        input = "file:" + input;<a name="line.284"></a>
-<span class="sourceLineNo">285</span>                                resource = ctx.getResource(input);<a name="line.285"></a>
-<span class="sourceLineNo">286</span>                        setRes.add(resource);<a name="line.286"></a>
-<span class="sourceLineNo">287</span>                }<a name="line.287"></a>
-<span class="sourceLineNo">288</span>                      <a name="line.288"></a>
-<span class="sourceLineNo">289</span>                return setRes;<a name="line.289"></a>
-<span class="sourceLineNo">290</span>        }<a name="line.290"></a>
-<span class="sourceLineNo">291</span>}<a name="line.291"></a>
+<span class="sourceLineNo">004</span> *<a name="line.4"></a>
+<span class="sourceLineNo">005</span> */<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.io.*;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import java.util.*;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import javax.xml.transform.Source;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import javax.xml.transform.stream.StreamSource;<a name="line.10"></a>
+<span class="sourceLineNo">011</span><a name="line.11"></a>
+<span class="sourceLineNo">012</span>import org.apache.commons.logging.Log;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import org.apache.commons.logging.LogFactory;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import org.apache.log4j.PropertyConfigurator;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>import org.biopax.paxtools.io.SimpleIOHandler;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>import org.biopax.paxtools.model.Model;<a name="line.16"></a>
+<span class="sourceLineNo">017</span>import org.biopax.paxtools.normalizer.Normalizer;<a name="line.17"></a>
+<span class="sourceLineNo">018</span>import org.biopax.validator.api.ValidatorUtils;<a name="line.18"></a>
+<span class="sourceLineNo">019</span>import org.biopax.validator.api.Validator;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import org.biopax.validator.api.beans.Validation;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import org.biopax.validator.api.beans.ValidatorResponse;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import org.biopax.validator.impl.IdentifierImpl;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import org.springframework.context.ApplicationContext;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import org.springframework.context.support.ClassPathXmlApplicationContext;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import org.springframework.core.io.Resource;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import org.springframework.util.ResourceUtils;<a name="line.26"></a>
+<span class="sourceLineNo">027</span><a name="line.27"></a>
+<span class="sourceLineNo">028</span>/**<a name="line.28"></a>
+<span class="sourceLineNo">029</span> * PC BioPAX Validator (console), which<a name="line.29"></a>
+<span class="sourceLineNo">030</span> * checks from the user input or a "batch" file.<a name="line.30"></a>
+<span class="sourceLineNo">031</span> *<a name="line.31"></a>
+<span class="sourceLineNo">032</span> * See: README.txt, context.xml, messages.properties<a name="line.32"></a>
+<span class="sourceLineNo">033</span> *<a name="line.33"></a>
+<span class="sourceLineNo">034</span> * @author rodche<a name="line.34"></a>
+<span class="sourceLineNo">035</span> */<a name="line.35"></a>
+<span class="sourceLineNo">036</span>public class Main {<a name="line.36"></a>
+<span class="sourceLineNo">037</span>        static final Log log = LogFactory.getLog(Main.class);<a name="line.37"></a>
+<span class="sourceLineNo">038</span>        static ApplicationContext ctx;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>        static boolean autofix = false;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>        static int maxErrors = 0;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>        static final String EXT = ".modified.owl";<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        static String profile = null;<a name="line.42"></a>
+<span class="sourceLineNo">043</span>        static String xmlBase = null;<a name="line.43"></a>
+<span class="sourceLineNo">044</span>        static String outFormat = "html";<a name="line.44"></a>
+<span class="sourceLineNo">045</span>        static String output = null;<a name="line.45"></a>
+<span class="sourceLineNo">046</span><a name="line.46"></a>
+<span class="sourceLineNo">047</span>        <a name="line.47"></a>
+<span class="sourceLineNo">048</span>        private static void setUpLogger() {<a name="line.48"></a>
+<span class="sourceLineNo">049</span>                //set defaults<a name="line.49"></a>
+<span class="sourceLineNo">050</span>                Properties properties = new Properties();<a name="line.50"></a>
+<span class="sourceLineNo">051</span>                properties.put("log4j.rootLogger", "ERROR, Console");<a name="line.51"></a>
+<span class="sourceLineNo">052</span>                properties.put("log4j.appender.Console", "org.apache.log4j.ConsoleAppender");<a name="line.52"></a>
+<span class="sourceLineNo">053</span>                properties.put("log4j.appender.Console.layout", "org.apache.log4j.PatternLayout");<a name="line.53"></a>
+<span class="sourceLineNo">054</span>                properties.put("log4j.appender.Console.layout.ConversionPattern", "%-4r [%t] %-5p %c %x - %m%n");<a name="line.54"></a>
+<span class="sourceLineNo">055</span>                PropertyConfigurator.configure(properties);<a name="line.55"></a>
+<span class="sourceLineNo">056</span>                <a name="line.56"></a>
+<span class="sourceLineNo">057</span>                properties = new Properties(properties);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>                <a name="line.58"></a>
+<span class="sourceLineNo">059</span>                try {<a name="line.59"></a>
+<span class="sourceLineNo">060</span>                        properties.load(new FileReader("log4j.properties"));<a name="line.60"></a>
+<span class="sourceLineNo">061</span>                } catch (IOException e) {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>                        throw new RuntimeException("Failed to load cPath2 properties " +<a name="line.62"></a>
+<span class="sourceLineNo">063</span>                                        "from log4j.properties", e);<a name="line.63"></a>
+<span class="sourceLineNo">064</span>                }<a name="line.64"></a>
+<span class="sourceLineNo">065</span>                <a name="line.65"></a>
+<span class="sourceLineNo">066</span>                PropertyConfigurator.configure(properties);<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        }<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        <a name="line.68"></a>
+<span class="sourceLineNo">069</span>        public static void main(String[] args) throws Exception {<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                <a name="line.70"></a>
+<span class="sourceLineNo">071</span>                setUpLogger();<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                <a name="line.72"></a>
+<span class="sourceLineNo">073</span>        if(args == null || args.length == 0) {<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                log.warn("At least input file/dir must be specified.");<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                printHelpAndQuit();<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        }<a name="line.76"></a>
+<span class="sourceLineNo">077</span><a name="line.77"></a>
+<span class="sourceLineNo">078</span>                String input = args[0];<a name="line.78"></a>
+<span class="sourceLineNo">079</span>                <a name="line.79"></a>
+<span class="sourceLineNo">080</span>                if(input == null || input.isEmpty() || input.startsWith("--")) {<a name="line.80"></a>
+<span class="sourceLineNo">081</span>                        log.warn("Input (file, url, or directory) is probably missing");<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                        printHelpAndQuit();<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                }<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        <a name="line.84"></a>
+<span class="sourceLineNo">085</span>                // match optional parameters<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                for (int i = 1; i &lt; args.length; i++) {<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                        if("--auto-fix".equalsIgnoreCase(args[i])) {<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                                autofix = true;<a name="line.88"></a>
+<span class="sourceLineNo">089</span>                        } else if(args[i].startsWith("--max-errors=")) {<a name="line.89"></a>
+<span class="sourceLineNo">090</span>                                String n = args[i].substring(13);<a name="line.90"></a>
+<span class="sourceLineNo">091</span>                                maxErrors = Integer.parseInt(n);<a name="line.91"></a>
+<span class="sourceLineNo">092</span>                        } else if(args[i].startsWith("--profile=")) {<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                                profile = args[i].substring(10);<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                        } else if(args[i].startsWith("--xmlBase=")) {<a name="line.94"></a>
+<span class="sourceLineNo">095</span>                                xmlBase = args[i].substring(10);<a name="line.95"></a>
+<span class="sourceLineNo">096</span>                        } else if(args[i].startsWith("--output=")) {<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                                output = args[i].substring(9);  <a name="line.97"></a>
+<span class="sourceLineNo">098</span>                        } else if(args[i].startsWith("--out-format=")) {<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                                outFormat = args[i].substring(13);<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                                if(outFormat.isEmpty())<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                                        outFormat = "html";<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                        }<a name="line.102"></a>
+<span class="sourceLineNo">103</span>                }<a name="line.103"></a>
+<span class="sourceLineNo">104</span><a name="line.104"></a>
+<span class="sourceLineNo">105</span>                // this does 90% of the job ;)<a name="line.105"></a>
+<span class="sourceLineNo">106</span>                ctx = new ClassPathXmlApplicationContext(<a name="line.106"></a>
+<span class="sourceLineNo">107</span>                        new String[] {"META-INF/spring/appContext-loadTimeWeaving.xml",<a name="line.107"></a>
+<span class="sourceLineNo">108</span>                                        "META-INF/spring/appContext-validator.xml"});<a name="line.108"></a>
+<span class="sourceLineNo">109</span>                // Rules are now loaded, and AOP is listening for BioPAX model method calls.<a name="line.109"></a>
+<span class="sourceLineNo">110</span>                <a name="line.110"></a>
+<span class="sourceLineNo">111</span>        // get the beans to work with<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        Validator validator = (Validator) ctx.getBean("validator");<a name="line.112"></a>
+<span class="sourceLineNo">113</span>                <a name="line.113"></a>
+<span class="sourceLineNo">114</span>                // go validate all<a name="line.114"></a>
+<span class="sourceLineNo">115</span>                runBatch(validator, getResourcesToValidate(input));<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        }<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        <a name="line.117"></a>
+<span class="sourceLineNo">118</span>        <a name="line.118"></a>
+<span class="sourceLineNo">119</span>        private static void printHelpAndQuit() {<a name="line.119"></a>
+<span class="sourceLineNo">120</span>        final String usage = <a name="line.120"></a>
+<span class="sourceLineNo">121</span>                        "\nThe BioPAX Validator v3\n\n" +<a name="line.121"></a>
+<span class="sourceLineNo">122</span>                    "Usage (arguments):\n &lt;input&gt; [--output=&lt;filename&gt;] [--out-format=xml|html] [--auto-fix] " +<a name="line.122"></a>
+<span class="sourceLineNo">123</span>                    "[--xmlBase=&lt;base&gt;] [--max-errors=&lt;n&gt;] [--profile=notstrict]\n\n" + <a name="line.123"></a>
+<span class="sourceLineNo">124</span>                    "Given --output=&lt;filename&gt;, a one-file validation report will be \n" +<a name="line.124"></a>
+<span class="sourceLineNo">125</span>                    "generated (HTML or XML) instead of default report file(s) in the \n" +<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                    "current directory. Optional arguments can go in any order.\n" +<a name="line.126"></a>
+<span class="sourceLineNo">127</span>                    "For example:\n" +<a name="line.127"></a>
+<span class="sourceLineNo">128</span>                    "  path/dir --out-format=xml\n" +<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                    "  list:batch_file.txt --output=reports.html\n" +<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                    "  file:biopax.owl --out-format=xml --auto-fix\n" +<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                    "  http://www.some.net/data.owl\n\n" +<a name="line.131"></a>
+<span class="sourceLineNo">132</span>                    "A batch file should list one task (resource) per line, i.e.,\n" +<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                    "file:path/file or URL (to BioPAX data)\n" +<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                    "If '--auto-fix' option was used, it also creates a new BioPAX file \n" +<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                    "for each input file in the current working directory \n" +<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                    "(adding '.modified.owl' exention). If the outFormat file extension \n" +<a name="line.136"></a>
+<span class="sourceLineNo">137</span>                    "is '.html', the XML result will be auto-transformed to a stand-alone \n" +<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                    "HTML/javascript page, which is very similar to what the online version returns.";<a name="line.138"></a>
+<span class="sourceLineNo">139</span>        System.out.println(usage);<a name="line.139"></a>
+<span class="sourceLineNo">140</span>        System.exit(-1);<a name="line.140"></a>
+<span class="sourceLineNo">141</span>        }<a name="line.141"></a>
+<span class="sourceLineNo">142</span><a name="line.142"></a>
+<span class="sourceLineNo">143</span><a name="line.143"></a>
+<span class="sourceLineNo">144</span>        protected static void runBatch(Validator validator, <a name="line.144"></a>
+<span class="sourceLineNo">145</span>                        Collection&lt;Resource&gt; resources) throws IOException {                                          <a name="line.145"></a>
+<span class="sourceLineNo">146</span><a name="line.146"></a>
+<span class="sourceLineNo">147</span>                //collect all reports in this object (only if --output option was used)<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                final ValidatorResponse consolidatedReport = new ValidatorResponse();  <a name="line.148"></a>
+<span class="sourceLineNo">149</span>                <a name="line.149"></a>
+<span class="sourceLineNo">150</span>                // Read from the batch and validate from file, id or url, line-by-line (stops on first empty line)<a name="line.150"></a>
+<span class="sourceLineNo">151</span>        for (Resource resource: resources) {<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                Validation result = new Validation(new IdentifierImpl(), resource.getDescription(), <a name="line.152"></a>
+<span class="sourceLineNo">153</span>                                autofix, null, maxErrors, profile);<a name="line.153"></a>
+<span class="sourceLineNo">154</span>                result.setDescription(resource.getDescription()); <a name="line.154"></a>
+<span class="sourceLineNo">155</span>                log.info("BioPAX DATA IMPORT FROM: " + result.getDescription());<a name="line.155"></a>
+<span class="sourceLineNo">156</span>                        try{                            <a name="line.156"></a>
+<span class="sourceLineNo">157</span>                                validator.importModel(result, resource.getInputStream());<a name="line.157"></a>
+<span class="sourceLineNo">158</span>                                validator.validate(result);<a name="line.158"></a>
+<span class="sourceLineNo">159</span>                                <a name="line.159"></a>
+<span class="sourceLineNo">160</span>                                //if autofix is enabled, then do normalize too<a name="line.160"></a>
+<span class="sourceLineNo">161</span>                                if(autofix) {<a name="line.161"></a>
+<span class="sourceLineNo">162</span>                                        Model model = (Model) result.getModel();<a name="line.162"></a>
+<span class="sourceLineNo">163</span>                                        Normalizer normalizer = new Normalizer();<a name="line.163"></a>
+<span class="sourceLineNo">164</span>                                        normalizer.setXmlBase(xmlBase); //if xmlBase is null, the model's one is used<a name="line.164"></a>
+<span class="sourceLineNo">165</span>                                        normalizer.normalize(model);<a name="line.165"></a>
+<span class="sourceLineNo">166</span>                                }<a name="line.166"></a>
+<span class="sourceLineNo">167</span>                                <a name="line.167"></a>
+<span class="sourceLineNo">168</span>                                if(output != null)<a name="line.168"></a>
+<span class="sourceLineNo">169</span>                                        consolidatedReport.addValidationResult(result);<a name="line.169"></a>
+<span class="sourceLineNo">170</span>                                <a name="line.170"></a>
+<span class="sourceLineNo">171</span>                        } catch (Exception e) {<a name="line.171"></a>
+<span class="sourceLineNo">172</span>                                log.error("failed", e);<a name="line.172"></a>
+<span class="sourceLineNo">173</span>                        }<a name="line.173"></a>
+<span class="sourceLineNo">174</span>                        <a name="line.174"></a>
+<span class="sourceLineNo">175</span>                        final String filename = outFileName(result);<a name="line.175"></a>
+<span class="sourceLineNo">176</span>                        PrintWriter writer;<a name="line.176"></a>
+<span class="sourceLineNo">177</span>                        <a name="line.177"></a>
+<span class="sourceLineNo">178</span>                        // save modified (normalized) biopax if the option was used<a name="line.178"></a>
+<span class="sourceLineNo">179</span>                        if (autofix) {<a name="line.179"></a>
+<span class="sourceLineNo">180</span>                                Model model = (Model) result.getModel();<a name="line.180"></a>
+<span class="sourceLineNo">181</span>                                (new SimpleIOHandler()).convertToOWL(model, new FileOutputStream(filename + EXT));<a name="line.181"></a>
+<span class="sourceLineNo">182</span>                        }<a name="line.182"></a>
+<span class="sourceLineNo">183</span>                        <a name="line.183"></a>
+<span class="sourceLineNo">184</span>                        // remove the BioPAX data before writing report<a name="line.184"></a>
+<span class="sourceLineNo">185</span>                        result.setModel(null);<a name="line.185"></a>
+<span class="sourceLineNo">186</span>                        result.setModelData(null);<a name="line.186"></a>
+<span class="sourceLineNo">187</span>                        <a name="line.187"></a>
+<span class="sourceLineNo">188</span>                        // save the individual validation results<a name="line.188"></a>
+<span class="sourceLineNo">189</span>                        //unless the user specified the output file explicitly<a name="line.189"></a>
+<span class="sourceLineNo">190</span>                        if(output == null || output.isEmpty()) { <a name="line.190"></a>
+<span class="sourceLineNo">191</span>                                writer = new PrintWriter(filename + ".validation." + outFormat);<a name="line.191"></a>
+<span class="sourceLineNo">192</span>                                Source xsltSrc = (outFormat.equalsIgnoreCase("html"))<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                                                ? new StreamSource(ctx.getResource("classpath:html-result.xsl").getInputStream())<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                                                : null;<a name="line.194"></a>
+<span class="sourceLineNo">195</span>                                ValidatorUtils.write(result, writer, xsltSrc);                  <a name="line.195"></a>
+<span class="sourceLineNo">196</span>                                writer.close();<a name="line.196"></a>
+<span class="sourceLineNo">197</span>                        }<a name="line.197"></a>
+<span class="sourceLineNo">198</span>                        <a name="line.198"></a>
+<span class="sourceLineNo">199</span>                        validator.getResults().remove(result);<a name="line.199"></a>
+<span class="sourceLineNo">200</span>                        log.info("Done with " + filename);<a name="line.200"></a>
+<span class="sourceLineNo">201</span>                }<a name="line.201"></a>
+<span class="sourceLineNo">202</span>        <a name="line.202"></a>
+<span class="sourceLineNo">203</span>                // save if the user specified the output file explicitly<a name="line.203"></a>
+<span class="sourceLineNo">204</span>                if(output != null) { <a name="line.204"></a>
+<span class="sourceLineNo">205</span>                        Writer writer = new PrintWriter(output);<a name="line.205"></a>
+<span class="sourceLineNo">206</span>                        Source xsltSrc = (outFormat.equalsIgnoreCase("html"))<a name="line.206"></a>
+<span class="sourceLineNo">207</span>                                ? new StreamSource(ctx.getResource("classpath:html-result.xsl").getInputStream())<a name="line.207"></a>
+<span class="sourceLineNo">208</span>                                        : null;<a name="line.208"></a>
+<span class="sourceLineNo">209</span>                        ValidatorUtils.write(consolidatedReport, writer, xsltSrc);                      <a name="line.209"></a>
+<span class="sourceLineNo">210</span>                        writer.close();<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                }        <a name="line.211"></a>
+<span class="sourceLineNo">212</span>    }<a name="line.212"></a>
+<span class="sourceLineNo">213</span>        <a name="line.213"></a>
+<span class="sourceLineNo">214</span>        <a name="line.214"></a>
+<span class="sourceLineNo">215</span>        private static String outFileName(Validation result) {<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                String filename = result.getDescription();<a name="line.216"></a>
+<span class="sourceLineNo">217</span>                // if was URL, create a shorter name;<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                // remove ']', '[', and ending '/', if any<a name="line.218"></a>
+<span class="sourceLineNo">219</span>                filename = filename.replaceAll("\\[|\\]","").replaceFirst("/&amp;", ""); <a name="line.219"></a>
+<span class="sourceLineNo">220</span>                int idx = filename.lastIndexOf('/');<a name="line.220"></a>
+<span class="sourceLineNo">221</span>                if(idx &gt;= 0) {<a name="line.221"></a>
+<span class="sourceLineNo">222</span>                        if(idx &lt; filename.length() - 1)<a name="line.222"></a>
+<span class="sourceLineNo">223</span>                                filename = filename.substring(idx+1);<a name="line.223"></a>
+<span class="sourceLineNo">224</span>                }<a name="line.224"></a>
+<span class="sourceLineNo">225</span>                <a name="line.225"></a>
+<span class="sourceLineNo">226</span>                return filename;<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        }<a name="line.227"></a>
+<span class="sourceLineNo">228</span><a name="line.228"></a>
+<span class="sourceLineNo">229</span><a name="line.229"></a>
+<span class="sourceLineNo">230</span>        public static Collection&lt;Resource&gt; getResourcesToValidate(String input) throws IOException {<a name="line.230"></a>
+<span class="sourceLineNo">231</span>                        Set&lt;Resource&gt; setRes = new HashSet&lt;Resource&gt;();<a name="line.231"></a>
+<span class="sourceLineNo">232</span>                        <a name="line.232"></a>
+<span class="sourceLineNo">233</span>                File fileOrDir = new File(input);<a name="line.233"></a>
+<span class="sourceLineNo">234</span>                if(fileOrDir.isDirectory()) {<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                        // validate all the OWL files in the folder<a name="line.235"></a>
+<span class="sourceLineNo">236</span>                        FilenameFilter filter = new FilenameFilter() {<a name="line.236"></a>
+<span class="sourceLineNo">237</span>                            public boolean accept(File dir, String name) {<a name="line.237"></a>
+<span class="sourceLineNo">238</span>                                return (name.endsWith(".owl"));<a name="line.238"></a>
+<span class="sourceLineNo">239</span>                            }<a name="line.239"></a>
+<span class="sourceLineNo">240</span>                        };<a name="line.240"></a>
+<span class="sourceLineNo">241</span>                        for (String s : fileOrDir.list(filter)) {<a name="line.241"></a>
+<span class="sourceLineNo">242</span>                                String uri = "file:" + fileOrDir.getCanonicalPath() + File.separator + s;<a name="line.242"></a>
+<span class="sourceLineNo">243</span>                                setRes.add(ctx.getResource(uri));<a name="line.243"></a>
+<span class="sourceLineNo">244</span>                        }<a name="line.244"></a>
+<span class="sourceLineNo">245</span>                } else if (input.startsWith("list:")) {<a name="line.245"></a>
+<span class="sourceLineNo">246</span>                        // consider it's a file that contains a list of (pseudo-)URLs<a name="line.246"></a>
+<span class="sourceLineNo">247</span>                        String batchFile = input.replaceFirst("list:", "file:");<a name="line.247"></a>
+<span class="sourceLineNo">248</span>                    Reader isr = new InputStreamReader(ctx.getResource(batchFile).getInputStream());<a name="line.248"></a>
+<span class="sourceLineNo">249</span>                    BufferedReader reader = new BufferedReader(isr);<a name="line.249"></a>
+<span class="sourceLineNo">250</span>                        String line;<a name="line.250"></a>
+<span class="sourceLineNo">251</span>                    while ((line = reader.readLine()) != null &amp;&amp; !"".equals(line.trim())) {<a name="line.251"></a>
+<span class="sourceLineNo">252</span>                        // check the source URL<a name="line.252"></a>
+<span class="sourceLineNo">253</span>                        if( !ResourceUtils.isUrl(line)) {<a name="line.253"></a>
+<span class="sourceLineNo">254</span>                                log.error("Invalid URL: " + line + <a name="line.254"></a>
+<span class="sourceLineNo">255</span>                                                ". A resource must be either a " +<a name="line.255"></a>
+<span class="sourceLineNo">256</span>                                                "pseudo URL (classpath: or file:) or standard URL!");<a name="line.256"></a>
+<span class="sourceLineNo">257</span>                                continue;<a name="line.257"></a>
+<span class="sourceLineNo">258</span>                        }<a name="line.258"></a>
+<span class="sourceLineNo">259</span>                                setRes.add(ctx.getResource(line));<a name="line.259"></a>
+<span class="sourceLineNo">260</span>                        }<a name="line.260"></a>
+<span class="sourceLineNo">261</span>                    reader.close();<a name="line.261"></a>
+<span class="sourceLineNo">262</span>                } else {<a name="line.262"></a>
+<span class="sourceLineNo">263</span>                        // a single local OWL file or remote data<a name="line.263"></a>
+<span class="sourceLineNo">264</span>                        Resource resource = null;<a name="line.264"></a>
+<span class="sourceLineNo">265</span>                                if (!ResourceUtils.isUrl(input)) <a name="line.265"></a>
+<span class="sourceLineNo">266</span>                                        input = "file:" + input;<a name="line.266"></a>
+<span class="sourceLineNo">267</span>                                resource = ctx.getResource(input);<a name="line.267"></a>
+<span class="sourceLineNo">268</span>                        setRes.add(resource);<a name="line.268"></a>
+<span class="sourceLineNo">269</span>                }<a name="line.269"></a>
+<span class="sourceLineNo">270</span>                      <a name="line.270"></a>
+<span class="sourceLineNo">271</span>                return setRes;<a name="line.271"></a>
+<span class="sourceLineNo">272</span>        }<a name="line.272"></a>
+<span class="sourceLineNo">273</span>}<a name="line.273"></a>
 
 
 

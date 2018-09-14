@@ -9,80 +9,62 @@
 <pre><span class="sourceLineNo">001</span>package org.biopax.ols;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
 <span class="sourceLineNo">003</span>/*<a name="line.3"></a>
-<span class="sourceLineNo">004</span> * #%L<a name="line.4"></a>
-<span class="sourceLineNo">005</span> * Ontologies Access<a name="line.5"></a>
-<span class="sourceLineNo">006</span> * %%<a name="line.6"></a>
-<span class="sourceLineNo">007</span> * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)<a name="line.7"></a>
-<span class="sourceLineNo">008</span> * %%<a name="line.8"></a>
-<span class="sourceLineNo">009</span> * This program is free software: you can redistribute it and/or modify<a name="line.9"></a>
-<span class="sourceLineNo">010</span> * it under the terms of the GNU Lesser General Public License as <a name="line.10"></a>
-<span class="sourceLineNo">011</span> * published by the Free Software Foundation, either version 3 of the <a name="line.11"></a>
-<span class="sourceLineNo">012</span> * License, or (at your option) any later version.<a name="line.12"></a>
-<span class="sourceLineNo">013</span> * <a name="line.13"></a>
-<span class="sourceLineNo">014</span> * This program is distributed in the hope that it will be useful,<a name="line.14"></a>
-<span class="sourceLineNo">015</span> * but WITHOUT ANY WARRANTY; without even the implied warranty of<a name="line.15"></a>
-<span class="sourceLineNo">016</span> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<a name="line.16"></a>
-<span class="sourceLineNo">017</span> * GNU General Lesser Public License for more details.<a name="line.17"></a>
-<span class="sourceLineNo">018</span> * <a name="line.18"></a>
-<span class="sourceLineNo">019</span> * You should have received a copy of the GNU General Lesser Public <a name="line.19"></a>
-<span class="sourceLineNo">020</span> * License along with this program.  If not, see<a name="line.20"></a>
-<span class="sourceLineNo">021</span> * &lt;http://www.gnu.org/licenses/lgpl-3.0.html&gt;.<a name="line.21"></a>
-<span class="sourceLineNo">022</span> * #L%<a name="line.22"></a>
-<span class="sourceLineNo">023</span> */<a name="line.23"></a>
+<span class="sourceLineNo">004</span> *<a name="line.4"></a>
+<span class="sourceLineNo">005</span> */<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span><a name="line.7"></a>
+<span class="sourceLineNo">008</span>import java.util.Collection;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import java.util.HashSet;<a name="line.9"></a>
+<span class="sourceLineNo">010</span><a name="line.10"></a>
+<span class="sourceLineNo">011</span>/**<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * User: Richard Cote<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * Date: 21-Jul-2005<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * Time: 14:38:16<a name="line.14"></a>
+<span class="sourceLineNo">015</span> *<a name="line.15"></a>
+<span class="sourceLineNo">016</span> * @author Richard Cote<a name="line.16"></a>
+<span class="sourceLineNo">017</span> * @version $Id: Constants.java,v 1.15 2008/02/12 16:47:13 rglcote Exp $<a name="line.17"></a>
+<span class="sourceLineNo">018</span> */<a name="line.18"></a>
+<span class="sourceLineNo">019</span>public class Constants {<a name="line.19"></a>
+<span class="sourceLineNo">020</span><a name="line.20"></a>
+<span class="sourceLineNo">021</span>    public static final String OLS_CONFIG_FILE = "ols-config.properties";<a name="line.21"></a>
+<span class="sourceLineNo">022</span>    public static final String OLS_DBALIAS = "OLS_MAIN";<a name="line.22"></a>
+<span class="sourceLineNo">023</span>    public static final String OLS_FAILOVER_DBALIAS = "OLS_FAILOVER";<a name="line.23"></a>
 <span class="sourceLineNo">024</span><a name="line.24"></a>
 <span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>import java.util.Collection;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import java.util.HashSet;<a name="line.27"></a>
-<span class="sourceLineNo">028</span><a name="line.28"></a>
-<span class="sourceLineNo">029</span>/**<a name="line.29"></a>
-<span class="sourceLineNo">030</span> * User: Richard Cote<a name="line.30"></a>
-<span class="sourceLineNo">031</span> * Date: 21-Jul-2005<a name="line.31"></a>
-<span class="sourceLineNo">032</span> * Time: 14:38:16<a name="line.32"></a>
-<span class="sourceLineNo">033</span> *<a name="line.33"></a>
-<span class="sourceLineNo">034</span> * @author Richard Cote<a name="line.34"></a>
-<span class="sourceLineNo">035</span> * @version $Id: Constants.java,v 1.15 2008/02/12 16:47:13 rglcote Exp $<a name="line.35"></a>
-<span class="sourceLineNo">036</span> */<a name="line.36"></a>
-<span class="sourceLineNo">037</span>public class Constants {<a name="line.37"></a>
-<span class="sourceLineNo">038</span><a name="line.38"></a>
-<span class="sourceLineNo">039</span>    public static final String OLS_CONFIG_FILE = "ols-config.properties";<a name="line.39"></a>
-<span class="sourceLineNo">040</span>    public static final String OLS_DBALIAS = "OLS_MAIN";<a name="line.40"></a>
-<span class="sourceLineNo">041</span>    public static final String OLS_FAILOVER_DBALIAS = "OLS_FAILOVER";<a name="line.41"></a>
-<span class="sourceLineNo">042</span><a name="line.42"></a>
-<span class="sourceLineNo">043</span><a name="line.43"></a>
-<span class="sourceLineNo">044</span>    public static final int IS_A_RELATION_TYPE_ID = 1;<a name="line.44"></a>
-<span class="sourceLineNo">045</span>    public static final int PART_OF_RELATION_TYPE_ID = 2;<a name="line.45"></a>
-<span class="sourceLineNo">046</span>    public static final int DEVELOPS_FROM_RELATION_TYPE_ID = 3;<a name="line.46"></a>
-<span class="sourceLineNo">047</span>    public static final int OTHER_RELATION_TYPE_ID = 4;<a name="line.47"></a>
-<span class="sourceLineNo">048</span>    public static final int NO_DISTANCE_CONSTRAINT = -1;<a name="line.48"></a>
-<span class="sourceLineNo">049</span>    public static final String DEFINITION = "definition";<a name="line.49"></a>
-<span class="sourceLineNo">050</span><a name="line.50"></a>
-<span class="sourceLineNo">051</span>    public static final String IS_A_RELATION_TYPE = "is_a";<a name="line.51"></a>
-<span class="sourceLineNo">052</span>    public static final String PART_OF_RELATION_TYPE = "part_of";<a name="line.52"></a>
-<span class="sourceLineNo">053</span>    public static final String DEVELOPS_FROM_RELATION_TYPE = "develops_from";<a name="line.53"></a>
-<span class="sourceLineNo">054</span>    public static final String ALT_ID_SYNONYM_TYPE = "alt_id";<a name="line.54"></a>
-<span class="sourceLineNo">055</span>    public static final String EXACT_SYNONYM_TYPE = "exact";<a name="line.55"></a>
-<span class="sourceLineNo">056</span>    public static final String NARROW_SYNONYM_TYPE = "narrow";<a name="line.56"></a>
-<span class="sourceLineNo">057</span>    public static final String BROAD_SYNONYM_TYPE = "broad";<a name="line.57"></a>
-<span class="sourceLineNo">058</span>    public static final String RELATED_SYNONYM_TYPE = "related";<a name="line.58"></a>
-<span class="sourceLineNo">059</span>    public static final String DEFAULT_SYNONYM_TYPE = "synonym";<a name="line.59"></a>
-<span class="sourceLineNo">060</span>    public static final String ONTOLOGY_NAME_ATTRIBUTE = "loaded_ontology";<a name="line.60"></a>
-<span class="sourceLineNo">061</span>    public static final String PREFERRED_NAME = "preferred name";<a name="line.61"></a>
-<span class="sourceLineNo">062</span><a name="line.62"></a>
-<span class="sourceLineNo">063</span>    public static final int RETURN_VALUE_OK = 0;<a name="line.63"></a>
-<span class="sourceLineNo">064</span>    public static final int RETURN_VALUE_OK_NO_ONTOLOGIES_LOADED = 1;<a name="line.64"></a>
-<span class="sourceLineNo">065</span>    public static final int RETURN_VALUE_ERROR = 2;<a name="line.65"></a>
-<span class="sourceLineNo">066</span>    public static final int RETURN_VALUE_CVS_ERROR = 3;<a name="line.66"></a>
-<span class="sourceLineNo">067</span><a name="line.67"></a>
-<span class="sourceLineNo">068</span>    /*<a name="line.68"></a>
-<span class="sourceLineNo">069</span>        These are relationship types that need to be ignored because they<a name="line.69"></a>
-<span class="sourceLineNo">070</span>        will break the ontology browser and the dot executable<a name="line.70"></a>
-<span class="sourceLineNo">071</span>     */<a name="line.71"></a>
-<span class="sourceLineNo">072</span>    public static final Collection RELATIONSHIPS_TO_IGNORE = new HashSet();<a name="line.72"></a>
-<span class="sourceLineNo">073</span>    static {<a name="line.73"></a>
-<span class="sourceLineNo">074</span>        RELATIONSHIPS_TO_IGNORE.add("participates_in");<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        RELATIONSHIPS_TO_IGNORE.add("disjoint_from");<a name="line.75"></a>
-<span class="sourceLineNo">076</span>    }<a name="line.76"></a>
-<span class="sourceLineNo">077</span>}<a name="line.77"></a>
+<span class="sourceLineNo">026</span>    public static final int IS_A_RELATION_TYPE_ID = 1;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>    public static final int PART_OF_RELATION_TYPE_ID = 2;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>    public static final int DEVELOPS_FROM_RELATION_TYPE_ID = 3;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>    public static final int OTHER_RELATION_TYPE_ID = 4;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>    public static final int NO_DISTANCE_CONSTRAINT = -1;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>    public static final String DEFINITION = "definition";<a name="line.31"></a>
+<span class="sourceLineNo">032</span><a name="line.32"></a>
+<span class="sourceLineNo">033</span>    public static final String IS_A_RELATION_TYPE = "is_a";<a name="line.33"></a>
+<span class="sourceLineNo">034</span>    public static final String PART_OF_RELATION_TYPE = "part_of";<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    public static final String DEVELOPS_FROM_RELATION_TYPE = "develops_from";<a name="line.35"></a>
+<span class="sourceLineNo">036</span>    public static final String ALT_ID_SYNONYM_TYPE = "alt_id";<a name="line.36"></a>
+<span class="sourceLineNo">037</span>    public static final String EXACT_SYNONYM_TYPE = "exact";<a name="line.37"></a>
+<span class="sourceLineNo">038</span>    public static final String NARROW_SYNONYM_TYPE = "narrow";<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    public static final String BROAD_SYNONYM_TYPE = "broad";<a name="line.39"></a>
+<span class="sourceLineNo">040</span>    public static final String RELATED_SYNONYM_TYPE = "related";<a name="line.40"></a>
+<span class="sourceLineNo">041</span>    public static final String DEFAULT_SYNONYM_TYPE = "synonym";<a name="line.41"></a>
+<span class="sourceLineNo">042</span>    public static final String ONTOLOGY_NAME_ATTRIBUTE = "loaded_ontology";<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    public static final String PREFERRED_NAME = "preferred name";<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>    public static final int RETURN_VALUE_OK = 0;<a name="line.45"></a>
+<span class="sourceLineNo">046</span>    public static final int RETURN_VALUE_OK_NO_ONTOLOGIES_LOADED = 1;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    public static final int RETURN_VALUE_ERROR = 2;<a name="line.47"></a>
+<span class="sourceLineNo">048</span>    public static final int RETURN_VALUE_CVS_ERROR = 3;<a name="line.48"></a>
+<span class="sourceLineNo">049</span><a name="line.49"></a>
+<span class="sourceLineNo">050</span>    /*<a name="line.50"></a>
+<span class="sourceLineNo">051</span>        These are relationship types that need to be ignored because they<a name="line.51"></a>
+<span class="sourceLineNo">052</span>        will break the ontology browser and the dot executable<a name="line.52"></a>
+<span class="sourceLineNo">053</span>     */<a name="line.53"></a>
+<span class="sourceLineNo">054</span>    public static final Collection RELATIONSHIPS_TO_IGNORE = new HashSet();<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    static {<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        RELATIONSHIPS_TO_IGNORE.add("participates_in");<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        RELATIONSHIPS_TO_IGNORE.add("disjoint_from");<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    }<a name="line.58"></a>
+<span class="sourceLineNo">059</span>}<a name="line.59"></a>
 
 
 

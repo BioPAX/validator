@@ -9,198 +9,180 @@
 <pre><span class="sourceLineNo">001</span>package org.biopax.ols.impl;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
 <span class="sourceLineNo">003</span>/*<a name="line.3"></a>
-<span class="sourceLineNo">004</span> * #%L<a name="line.4"></a>
-<span class="sourceLineNo">005</span> * Ontologies Access<a name="line.5"></a>
-<span class="sourceLineNo">006</span> * %%<a name="line.6"></a>
-<span class="sourceLineNo">007</span> * Copyright (C) 2008 - 2013 University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org)<a name="line.7"></a>
-<span class="sourceLineNo">008</span> * %%<a name="line.8"></a>
-<span class="sourceLineNo">009</span> * This program is free software: you can redistribute it and/or modify<a name="line.9"></a>
-<span class="sourceLineNo">010</span> * it under the terms of the GNU Lesser General Public License as <a name="line.10"></a>
-<span class="sourceLineNo">011</span> * published by the Free Software Foundation, either version 3 of the <a name="line.11"></a>
-<span class="sourceLineNo">012</span> * License, or (at your option) any later version.<a name="line.12"></a>
-<span class="sourceLineNo">013</span> * <a name="line.13"></a>
-<span class="sourceLineNo">014</span> * This program is distributed in the hope that it will be useful,<a name="line.14"></a>
-<span class="sourceLineNo">015</span> * but WITHOUT ANY WARRANTY; without even the implied warranty of<a name="line.15"></a>
-<span class="sourceLineNo">016</span> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<a name="line.16"></a>
-<span class="sourceLineNo">017</span> * GNU General Lesser Public License for more details.<a name="line.17"></a>
-<span class="sourceLineNo">018</span> * <a name="line.18"></a>
-<span class="sourceLineNo">019</span> * You should have received a copy of the GNU General Lesser Public <a name="line.19"></a>
-<span class="sourceLineNo">020</span> * License along with this program.  If not, see<a name="line.20"></a>
-<span class="sourceLineNo">021</span> * &lt;http://www.gnu.org/licenses/lgpl-3.0.html&gt;.<a name="line.21"></a>
-<span class="sourceLineNo">022</span> * #L%<a name="line.22"></a>
-<span class="sourceLineNo">023</span> */<a name="line.23"></a>
-<span class="sourceLineNo">024</span><a name="line.24"></a>
-<span class="sourceLineNo">025</span>import org.apache.commons.logging.Log;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import org.apache.commons.logging.LogFactory;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import org.bbop.dataadapter.DataAdapterException;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>import org.biopax.ols.Parser;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>import org.obo.dataadapter.OBOAdapter;<a name="line.29"></a>
-<span class="sourceLineNo">030</span>import org.obo.dataadapter.OBOFileAdapter;<a name="line.30"></a>
-<span class="sourceLineNo">031</span>import org.obo.datamodel.*;<a name="line.31"></a>
-<span class="sourceLineNo">032</span>import org.obo.util.TermUtil;<a name="line.32"></a>
+<span class="sourceLineNo">004</span> *<a name="line.4"></a>
+<span class="sourceLineNo">005</span> */<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>import org.apache.commons.logging.Log;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import org.apache.commons.logging.LogFactory;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import org.bbop.dataadapter.DataAdapterException;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import org.biopax.ols.Parser;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import org.obo.dataadapter.OBOAdapter;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import org.obo.dataadapter.OBOFileAdapter;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import org.obo.datamodel.*;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import org.obo.util.TermUtil;<a name="line.14"></a>
+<span class="sourceLineNo">015</span><a name="line.15"></a>
+<span class="sourceLineNo">016</span><a name="line.16"></a>
+<span class="sourceLineNo">017</span><a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.util.Collection;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import java.util.HashMap;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import java.util.HashSet;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import java.util.Set;<a name="line.22"></a>
+<span class="sourceLineNo">023</span><a name="line.23"></a>
+<span class="sourceLineNo">024</span>/**<a name="line.24"></a>
+<span class="sourceLineNo">025</span> * Abstract base class to interact with OBOEdit codebase and parse OBO files<a name="line.25"></a>
+<span class="sourceLineNo">026</span> *<a name="line.26"></a>
+<span class="sourceLineNo">027</span> * @author Richard Cote<a name="line.27"></a>
+<span class="sourceLineNo">028</span> * @version $Id: AbstractParser.java,v 1.9 2008/04/16 13:49:44 rglcote Exp $<a name="line.28"></a>
+<span class="sourceLineNo">029</span> */<a name="line.29"></a>
+<span class="sourceLineNo">030</span>public class OBO2FormatParser implements Parser {<a name="line.30"></a>
+<span class="sourceLineNo">031</span><a name="line.31"></a>
+<span class="sourceLineNo">032</span>    private static Log logger = LogFactory.getLog(OBO2FormatParser.class);<a name="line.32"></a>
 <span class="sourceLineNo">033</span><a name="line.33"></a>
-<span class="sourceLineNo">034</span><a name="line.34"></a>
+<span class="sourceLineNo">034</span>    private OBOSession session = null;<a name="line.34"></a>
 <span class="sourceLineNo">035</span><a name="line.35"></a>
-<span class="sourceLineNo">036</span><a name="line.36"></a>
-<span class="sourceLineNo">037</span>import java.util.Collection;<a name="line.37"></a>
-<span class="sourceLineNo">038</span>import java.util.HashMap;<a name="line.38"></a>
-<span class="sourceLineNo">039</span>import java.util.HashSet;<a name="line.39"></a>
-<span class="sourceLineNo">040</span>import java.util.Set;<a name="line.40"></a>
-<span class="sourceLineNo">041</span><a name="line.41"></a>
-<span class="sourceLineNo">042</span>/**<a name="line.42"></a>
-<span class="sourceLineNo">043</span> * Abstract base class to interact with OBOEdit codebase and parse OBO files<a name="line.43"></a>
-<span class="sourceLineNo">044</span> *<a name="line.44"></a>
-<span class="sourceLineNo">045</span> * @author Richard Cote<a name="line.45"></a>
-<span class="sourceLineNo">046</span> * @version $Id: AbstractParser.java,v 1.9 2008/04/16 13:49:44 rglcote Exp $<a name="line.46"></a>
-<span class="sourceLineNo">047</span> */<a name="line.47"></a>
-<span class="sourceLineNo">048</span>public class OBO2FormatParser implements Parser {<a name="line.48"></a>
+<span class="sourceLineNo">036</span>    public OBO2FormatParser(String filePath) throws DataAdapterException {<a name="line.36"></a>
+<span class="sourceLineNo">037</span>        OBOFileAdapter adapter = new OBOFileAdapter();<a name="line.37"></a>
+<span class="sourceLineNo">038</span>        OBOFileAdapter.OBOAdapterConfiguration config = new OBOFileAdapter.OBOAdapterConfiguration();<a name="line.38"></a>
+<span class="sourceLineNo">039</span>        config.getReadPaths().add(filePath);<a name="line.39"></a>
+<span class="sourceLineNo">040</span>        session = adapter.doOperation(OBOAdapter.READ_ONTOLOGY, config, null);<a name="line.40"></a>
+<span class="sourceLineNo">041</span>    }<a name="line.41"></a>
+<span class="sourceLineNo">042</span><a name="line.42"></a>
+<span class="sourceLineNo">043</span>    public OBO2FormatParser(Collection&lt;String&gt; filePaths) throws DataAdapterException {<a name="line.43"></a>
+<span class="sourceLineNo">044</span>        OBOFileAdapter adapter = new OBOFileAdapter();<a name="line.44"></a>
+<span class="sourceLineNo">045</span>        OBOFileAdapter.OBOAdapterConfiguration config = new OBOFileAdapter.OBOAdapterConfiguration();<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        config.getReadPaths().addAll(filePaths);<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        session = adapter.doOperation(OBOAdapter.READ_ONTOLOGY, config, null);<a name="line.47"></a>
+<span class="sourceLineNo">048</span>    }<a name="line.48"></a>
 <span class="sourceLineNo">049</span><a name="line.49"></a>
-<span class="sourceLineNo">050</span>    private static Log logger = LogFactory.getLog(OBO2FormatParser.class);<a name="line.50"></a>
-<span class="sourceLineNo">051</span><a name="line.51"></a>
-<span class="sourceLineNo">052</span>    private OBOSession session = null;<a name="line.52"></a>
-<span class="sourceLineNo">053</span><a name="line.53"></a>
-<span class="sourceLineNo">054</span>    public OBO2FormatParser(String filePath) throws DataAdapterException {<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        OBOFileAdapter adapter = new OBOFileAdapter();<a name="line.55"></a>
-<span class="sourceLineNo">056</span>        OBOFileAdapter.OBOAdapterConfiguration config = new OBOFileAdapter.OBOAdapterConfiguration();<a name="line.56"></a>
-<span class="sourceLineNo">057</span>        config.getReadPaths().add(filePath);<a name="line.57"></a>
-<span class="sourceLineNo">058</span>        session = adapter.doOperation(OBOAdapter.READ_ONTOLOGY, config, null);<a name="line.58"></a>
-<span class="sourceLineNo">059</span>    }<a name="line.59"></a>
-<span class="sourceLineNo">060</span><a name="line.60"></a>
-<span class="sourceLineNo">061</span>    public OBO2FormatParser(Collection&lt;String&gt; filePaths) throws DataAdapterException {<a name="line.61"></a>
-<span class="sourceLineNo">062</span>        OBOFileAdapter adapter = new OBOFileAdapter();<a name="line.62"></a>
-<span class="sourceLineNo">063</span>        OBOFileAdapter.OBOAdapterConfiguration config = new OBOFileAdapter.OBOAdapterConfiguration();<a name="line.63"></a>
-<span class="sourceLineNo">064</span>        config.getReadPaths().addAll(filePaths);<a name="line.64"></a>
-<span class="sourceLineNo">065</span>        session = adapter.doOperation(OBOAdapter.READ_ONTOLOGY, config, null);<a name="line.65"></a>
-<span class="sourceLineNo">066</span>    }<a name="line.66"></a>
+<span class="sourceLineNo">050</span>    /**<a name="line.50"></a>
+<span class="sourceLineNo">051</span>     * returns all the terms parsed from an ontology<a name="line.51"></a>
+<span class="sourceLineNo">052</span>     *<a name="line.52"></a>
+<span class="sourceLineNo">053</span>     * @return a set of OBOClass/Instance objects, or null if session is not initialized<a name="line.53"></a>
+<span class="sourceLineNo">054</span>     */<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    public Set&lt;OBOObject&gt; getTerms() {<a name="line.55"></a>
+<span class="sourceLineNo">056</span><a name="line.56"></a>
+<span class="sourceLineNo">057</span>        LinkDatabase lnkDb = session.getLinkDatabase();<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        HashSet&lt;OBOObject&gt; terms = new HashSet&lt;OBOObject&gt;();<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        for (IdentifiedObject io : lnkDb.getObjects()) {<a name="line.59"></a>
+<span class="sourceLineNo">060</span>            //do not return built-in obo: constructs<a name="line.60"></a>
+<span class="sourceLineNo">061</span>            if ((io instanceof OBOClass || io instanceof Instance) <a name="line.61"></a>
+<span class="sourceLineNo">062</span>                        &amp;&amp; !io.getID().toLowerCase().startsWith("obo:")) {<a name="line.62"></a>
+<span class="sourceLineNo">063</span>                terms.add((OBOObject) io);<a name="line.63"></a>
+<span class="sourceLineNo">064</span>            }<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        }<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        return terms;<a name="line.66"></a>
 <span class="sourceLineNo">067</span><a name="line.67"></a>
-<span class="sourceLineNo">068</span>    /**<a name="line.68"></a>
-<span class="sourceLineNo">069</span>     * returns all the terms parsed from an ontology<a name="line.69"></a>
-<span class="sourceLineNo">070</span>     *<a name="line.70"></a>
-<span class="sourceLineNo">071</span>     * @return a set of OBOClass/Instance objects, or null if session is not initialized<a name="line.71"></a>
-<span class="sourceLineNo">072</span>     */<a name="line.72"></a>
-<span class="sourceLineNo">073</span>    public Set&lt;OBOObject&gt; getTerms() {<a name="line.73"></a>
-<span class="sourceLineNo">074</span><a name="line.74"></a>
-<span class="sourceLineNo">075</span>        LinkDatabase lnkDb = session.getLinkDatabase();<a name="line.75"></a>
-<span class="sourceLineNo">076</span>        HashSet&lt;OBOObject&gt; terms = new HashSet&lt;OBOObject&gt;();<a name="line.76"></a>
-<span class="sourceLineNo">077</span>        for (IdentifiedObject io : lnkDb.getObjects()) {<a name="line.77"></a>
-<span class="sourceLineNo">078</span>            //do not return built-in obo: constructs<a name="line.78"></a>
-<span class="sourceLineNo">079</span>            if ((io instanceof OBOClass || io instanceof Instance) <a name="line.79"></a>
-<span class="sourceLineNo">080</span>                        &amp;&amp; !io.getID().toLowerCase().startsWith("obo:")) {<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                terms.add((OBOObject) io);<a name="line.81"></a>
-<span class="sourceLineNo">082</span>            }<a name="line.82"></a>
-<span class="sourceLineNo">083</span>        }<a name="line.83"></a>
-<span class="sourceLineNo">084</span>        return terms;<a name="line.84"></a>
-<span class="sourceLineNo">085</span><a name="line.85"></a>
-<span class="sourceLineNo">086</span>    }<a name="line.86"></a>
-<span class="sourceLineNo">087</span><a name="line.87"></a>
-<span class="sourceLineNo">088</span>    /**<a name="line.88"></a>
-<span class="sourceLineNo">089</span>     * returns the OBOSession of the underlying parser<a name="line.89"></a>
-<span class="sourceLineNo">090</span>     *<a name="line.90"></a>
-<span class="sourceLineNo">091</span>     * @return the OBOSession object<a name="line.91"></a>
-<span class="sourceLineNo">092</span>     */<a name="line.92"></a>
-<span class="sourceLineNo">093</span>    public OBOSession getSession() {<a name="line.93"></a>
-<span class="sourceLineNo">094</span>        return session;<a name="line.94"></a>
-<span class="sourceLineNo">095</span>    }<a name="line.95"></a>
-<span class="sourceLineNo">096</span><a name="line.96"></a>
-<span class="sourceLineNo">097</span>    /**<a name="line.97"></a>
-<span class="sourceLineNo">098</span>     * returns the root terms of an ontology<a name="line.98"></a>
-<span class="sourceLineNo">099</span>     *<a name="line.99"></a>
-<span class="sourceLineNo">100</span>     * @return a collection of OBOClass terms<a name="line.100"></a>
-<span class="sourceLineNo">101</span>     * @throws IllegalStateException if the session is not initialized<a name="line.101"></a>
-<span class="sourceLineNo">102</span>     */<a name="line.102"></a>
-<span class="sourceLineNo">103</span>    public Set&lt;OBOObject&gt; getRootTerms(boolean useGreedy) {<a name="line.103"></a>
+<span class="sourceLineNo">068</span>    }<a name="line.68"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
+<span class="sourceLineNo">070</span>    /**<a name="line.70"></a>
+<span class="sourceLineNo">071</span>     * returns the OBOSession of the underlying parser<a name="line.71"></a>
+<span class="sourceLineNo">072</span>     *<a name="line.72"></a>
+<span class="sourceLineNo">073</span>     * @return the OBOSession object<a name="line.73"></a>
+<span class="sourceLineNo">074</span>     */<a name="line.74"></a>
+<span class="sourceLineNo">075</span>    public OBOSession getSession() {<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        return session;<a name="line.76"></a>
+<span class="sourceLineNo">077</span>    }<a name="line.77"></a>
+<span class="sourceLineNo">078</span><a name="line.78"></a>
+<span class="sourceLineNo">079</span>    /**<a name="line.79"></a>
+<span class="sourceLineNo">080</span>     * returns the root terms of an ontology<a name="line.80"></a>
+<span class="sourceLineNo">081</span>     *<a name="line.81"></a>
+<span class="sourceLineNo">082</span>     * @return a collection of OBOClass terms<a name="line.82"></a>
+<span class="sourceLineNo">083</span>     * @throws IllegalStateException if the session is not initialized<a name="line.83"></a>
+<span class="sourceLineNo">084</span>     */<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    public Set&lt;OBOObject&gt; getRootTerms(boolean useGreedy) {<a name="line.85"></a>
+<span class="sourceLineNo">086</span><a name="line.86"></a>
+<span class="sourceLineNo">087</span>        HashSet&lt;OBOObject&gt; roots = new HashSet&lt;OBOObject&gt;();<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        /*<a name="line.88"></a>
+<span class="sourceLineNo">089</span>             * {@link RootAlgorithm#GREEDY GREEDY} root algorithm.<a name="line.89"></a>
+<span class="sourceLineNo">090</span>         *<a name="line.90"></a>
+<span class="sourceLineNo">091</span>         * @param linkDatabase<a name="line.91"></a>
+<span class="sourceLineNo">092</span>         *            the linkDatabase to check<a name="line.92"></a>
+<span class="sourceLineNo">093</span>         * @param includeTerms<a name="line.93"></a>
+<span class="sourceLineNo">094</span>         *            whether to include root terms<a name="line.94"></a>
+<span class="sourceLineNo">095</span>         * @param includeProperties<a name="line.95"></a>
+<span class="sourceLineNo">096</span>         *            whether to include root properties<a name="line.96"></a>
+<span class="sourceLineNo">097</span>         * @param includeObsoletes<a name="line.97"></a>
+<span class="sourceLineNo">098</span>         *            whether to include obsolete terms &amp; properties<a name="line.98"></a>
+<span class="sourceLineNo">099</span>         * @param includeInstances<a name="line.99"></a>
+<span class="sourceLineNo">100</span>         *            whether to include instances<a name="line.100"></a>
+<span class="sourceLineNo">101</span>         */<a name="line.101"></a>
+<span class="sourceLineNo">102</span><a name="line.102"></a>
+<span class="sourceLineNo">103</span>        if (useGreedy) {<a name="line.103"></a>
 <span class="sourceLineNo">104</span><a name="line.104"></a>
-<span class="sourceLineNo">105</span>        HashSet&lt;OBOObject&gt; roots = new HashSet&lt;OBOObject&gt;();<a name="line.105"></a>
-<span class="sourceLineNo">106</span>        /*<a name="line.106"></a>
-<span class="sourceLineNo">107</span>             * {@link RootAlgorithm#GREEDY GREEDY} root algorithm.<a name="line.107"></a>
-<span class="sourceLineNo">108</span>         *<a name="line.108"></a>
-<span class="sourceLineNo">109</span>         * @param linkDatabase<a name="line.109"></a>
-<span class="sourceLineNo">110</span>         *            the linkDatabase to check<a name="line.110"></a>
-<span class="sourceLineNo">111</span>         * @param includeTerms<a name="line.111"></a>
-<span class="sourceLineNo">112</span>         *            whether to include root terms<a name="line.112"></a>
-<span class="sourceLineNo">113</span>         * @param includeProperties<a name="line.113"></a>
-<span class="sourceLineNo">114</span>         *            whether to include root properties<a name="line.114"></a>
-<span class="sourceLineNo">115</span>         * @param includeObsoletes<a name="line.115"></a>
-<span class="sourceLineNo">116</span>         *            whether to include obsolete terms &amp; properties<a name="line.116"></a>
-<span class="sourceLineNo">117</span>         * @param includeInstances<a name="line.117"></a>
-<span class="sourceLineNo">118</span>         *            whether to include instances<a name="line.118"></a>
-<span class="sourceLineNo">119</span>         */<a name="line.119"></a>
-<span class="sourceLineNo">120</span><a name="line.120"></a>
-<span class="sourceLineNo">121</span>        if (useGreedy) {<a name="line.121"></a>
+<span class="sourceLineNo">105</span>            //use greedy root detection<a name="line.105"></a>
+<span class="sourceLineNo">106</span>            /**<a name="line.106"></a>
+<span class="sourceLineNo">107</span>             * Returns all non-obsolete root terms in a given {@link LinkDatabase}.<a name="line.107"></a>
+<span class="sourceLineNo">108</span>             * Equivalent to {@link #getRoots(session.getLinkDatabase(), true, false, false, false)}.<a name="line.108"></a>
+<span class="sourceLineNo">109</span>             */<a name="line.109"></a>
+<span class="sourceLineNo">110</span>            Collection&lt;OBOClass&gt; tmpRoots = TermUtil.getRoots(session);<a name="line.110"></a>
+<span class="sourceLineNo">111</span>            roots.addAll(tmpRoots);<a name="line.111"></a>
+<span class="sourceLineNo">112</span><a name="line.112"></a>
+<span class="sourceLineNo">113</span>        } else {<a name="line.113"></a>
+<span class="sourceLineNo">114</span><a name="line.114"></a>
+<span class="sourceLineNo">115</span>            //use strict root detection<a name="line.115"></a>
+<span class="sourceLineNo">116</span>            Collection&lt;LinkedObject&gt; tmpRoots = TermUtil.getRoots(RootAlgorithm.STRICT, session.getLinkDatabase());<a name="line.116"></a>
+<span class="sourceLineNo">117</span>            for (LinkedObject lnk : tmpRoots) {<a name="line.117"></a>
+<span class="sourceLineNo">118</span>                if (lnk instanceof OBOClass) {<a name="line.118"></a>
+<span class="sourceLineNo">119</span>                    roots.add((OBOClass) lnk);<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                }<a name="line.120"></a>
+<span class="sourceLineNo">121</span>            }<a name="line.121"></a>
 <span class="sourceLineNo">122</span><a name="line.122"></a>
-<span class="sourceLineNo">123</span>            //use greedy root detection<a name="line.123"></a>
-<span class="sourceLineNo">124</span>            /**<a name="line.124"></a>
-<span class="sourceLineNo">125</span>             * Returns all non-obsolete root terms in a given {@link LinkDatabase}.<a name="line.125"></a>
-<span class="sourceLineNo">126</span>             * Equivalent to {@link #getRoots(session.getLinkDatabase(), true, false, false, false)}.<a name="line.126"></a>
-<span class="sourceLineNo">127</span>             */<a name="line.127"></a>
-<span class="sourceLineNo">128</span>            Collection&lt;OBOClass&gt; tmpRoots = TermUtil.getRoots(session);<a name="line.128"></a>
-<span class="sourceLineNo">129</span>            roots.addAll(tmpRoots);<a name="line.129"></a>
-<span class="sourceLineNo">130</span><a name="line.130"></a>
-<span class="sourceLineNo">131</span>        } else {<a name="line.131"></a>
-<span class="sourceLineNo">132</span><a name="line.132"></a>
-<span class="sourceLineNo">133</span>            //use strict root detection<a name="line.133"></a>
-<span class="sourceLineNo">134</span>            Collection&lt;LinkedObject&gt; tmpRoots = TermUtil.getRoots(RootAlgorithm.STRICT, session.getLinkDatabase());<a name="line.134"></a>
-<span class="sourceLineNo">135</span>            for (LinkedObject lnk : tmpRoots) {<a name="line.135"></a>
-<span class="sourceLineNo">136</span>                if (lnk instanceof OBOClass) {<a name="line.136"></a>
-<span class="sourceLineNo">137</span>                    roots.add((OBOClass) lnk);<a name="line.137"></a>
-<span class="sourceLineNo">138</span>                }<a name="line.138"></a>
-<span class="sourceLineNo">139</span>            }<a name="line.139"></a>
-<span class="sourceLineNo">140</span><a name="line.140"></a>
-<span class="sourceLineNo">141</span>        }<a name="line.141"></a>
+<span class="sourceLineNo">123</span>        }<a name="line.123"></a>
+<span class="sourceLineNo">124</span><a name="line.124"></a>
+<span class="sourceLineNo">125</span>        return roots;<a name="line.125"></a>
+<span class="sourceLineNo">126</span><a name="line.126"></a>
+<span class="sourceLineNo">127</span>    }<a name="line.127"></a>
+<span class="sourceLineNo">128</span><a name="line.128"></a>
+<span class="sourceLineNo">129</span><a name="line.129"></a>
+<span class="sourceLineNo">130</span>    /**<a name="line.130"></a>
+<span class="sourceLineNo">131</span>     * Will compute all the term paths from a given term to all its children, irrespective of distance<a name="line.131"></a>
+<span class="sourceLineNo">132</span>     *<a name="line.132"></a>
+<span class="sourceLineNo">133</span>     * @param distance         Distance in arcs between nodes. Set to 1 to begin, will be incremented in recursive method calls<a name="line.133"></a>
+<span class="sourceLineNo">134</span>     * @param term             The term to scan for a given distance<a name="line.134"></a>
+<span class="sourceLineNo">135</span>     * @param relationshipType - a set of possible synonyms for the type of relationship to link the terms (is_a, part_of, develops_from)<a name="line.135"></a>
+<span class="sourceLineNo">136</span>     * @return A hashmap where the key is a term ID and the value is an Integet repersenting the distance<a name="line.136"></a>
+<span class="sourceLineNo">137</span>     */<a name="line.137"></a>
+<span class="sourceLineNo">138</span>    private HashMap&lt;String, Integer&gt; computeChildPaths(int distance, Set relationshipType, LinkedObject term, HashMap&lt;String, Integer&gt; paths) {<a name="line.138"></a>
+<span class="sourceLineNo">139</span><a name="line.139"></a>
+<span class="sourceLineNo">140</span>        //get all children<a name="line.140"></a>
+<span class="sourceLineNo">141</span>        Collection&lt;Link&gt; children = term.getChildren();<a name="line.141"></a>
 <span class="sourceLineNo">142</span><a name="line.142"></a>
-<span class="sourceLineNo">143</span>        return roots;<a name="line.143"></a>
-<span class="sourceLineNo">144</span><a name="line.144"></a>
-<span class="sourceLineNo">145</span>    }<a name="line.145"></a>
-<span class="sourceLineNo">146</span><a name="line.146"></a>
-<span class="sourceLineNo">147</span><a name="line.147"></a>
-<span class="sourceLineNo">148</span>    /**<a name="line.148"></a>
-<span class="sourceLineNo">149</span>     * Will compute all the term paths from a given term to all its children, irrespective of distance<a name="line.149"></a>
-<span class="sourceLineNo">150</span>     *<a name="line.150"></a>
-<span class="sourceLineNo">151</span>     * @param distance         Distance in arcs between nodes. Set to 1 to begin, will be incremented in recursive method calls<a name="line.151"></a>
-<span class="sourceLineNo">152</span>     * @param term             The term to scan for a given distance<a name="line.152"></a>
-<span class="sourceLineNo">153</span>     * @param relationshipType - a set of possible synonyms for the type of relationship to link the terms (is_a, part_of, develops_from)<a name="line.153"></a>
-<span class="sourceLineNo">154</span>     * @return A hashmap where the key is a term ID and the value is an Integet repersenting the distance<a name="line.154"></a>
-<span class="sourceLineNo">155</span>     */<a name="line.155"></a>
-<span class="sourceLineNo">156</span>    private HashMap&lt;String, Integer&gt; computeChildPaths(int distance, Set relationshipType, LinkedObject term, HashMap&lt;String, Integer&gt; paths) {<a name="line.156"></a>
-<span class="sourceLineNo">157</span><a name="line.157"></a>
-<span class="sourceLineNo">158</span>        //get all children<a name="line.158"></a>
-<span class="sourceLineNo">159</span>        Collection&lt;Link&gt; children = term.getChildren();<a name="line.159"></a>
+<span class="sourceLineNo">143</span>        //iterate over children<a name="line.143"></a>
+<span class="sourceLineNo">144</span>        for (Link trm : children) {<a name="line.144"></a>
+<span class="sourceLineNo">145</span>            //add relationship<a name="line.145"></a>
+<span class="sourceLineNo">146</span>            if (relationshipType.contains(trm.getType().getID())) {<a name="line.146"></a>
+<span class="sourceLineNo">147</span>                paths.put(trm.getChild().getID(), distance);<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                //we're building up the map here, so we don't care about the return<a name="line.148"></a>
+<span class="sourceLineNo">149</span>                try {<a name="line.149"></a>
+<span class="sourceLineNo">150</span>                    computeChildPaths(distance + 1, relationshipType, trm.getChild(), paths);<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                } catch (StackOverflowError e) {<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                    logger.error("Stack overflow when computing child paths for: " + term.getID() + " for relationships: " + relationshipType);<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                    throw new IllegalStateException(e);<a name="line.153"></a>
+<span class="sourceLineNo">154</span>                }<a name="line.154"></a>
+<span class="sourceLineNo">155</span>//            } else {<a name="line.155"></a>
+<span class="sourceLineNo">156</span>//                logger.debug("reltype is:" + trm.getType().getID() + " but expected :" + relationshipType);<a name="line.156"></a>
+<span class="sourceLineNo">157</span>//                }<a name="line.157"></a>
+<span class="sourceLineNo">158</span>            }<a name="line.158"></a>
+<span class="sourceLineNo">159</span>        }<a name="line.159"></a>
 <span class="sourceLineNo">160</span><a name="line.160"></a>
-<span class="sourceLineNo">161</span>        //iterate over children<a name="line.161"></a>
-<span class="sourceLineNo">162</span>        for (Link trm : children) {<a name="line.162"></a>
-<span class="sourceLineNo">163</span>            //add relationship<a name="line.163"></a>
-<span class="sourceLineNo">164</span>            if (relationshipType.contains(trm.getType().getID())) {<a name="line.164"></a>
-<span class="sourceLineNo">165</span>                paths.put(trm.getChild().getID(), distance);<a name="line.165"></a>
-<span class="sourceLineNo">166</span>                //we're building up the map here, so we don't care about the return<a name="line.166"></a>
-<span class="sourceLineNo">167</span>                try {<a name="line.167"></a>
-<span class="sourceLineNo">168</span>                    computeChildPaths(distance + 1, relationshipType, trm.getChild(), paths);<a name="line.168"></a>
-<span class="sourceLineNo">169</span>                } catch (StackOverflowError e) {<a name="line.169"></a>
-<span class="sourceLineNo">170</span>                    logger.error("Stack overflow when computing child paths for: " + term.getID() + " for relationships: " + relationshipType);<a name="line.170"></a>
-<span class="sourceLineNo">171</span>                    throw new IllegalStateException(e);<a name="line.171"></a>
-<span class="sourceLineNo">172</span>                }<a name="line.172"></a>
-<span class="sourceLineNo">173</span>//            } else {<a name="line.173"></a>
-<span class="sourceLineNo">174</span>//                logger.debug("reltype is:" + trm.getType().getID() + " but expected :" + relationshipType);<a name="line.174"></a>
-<span class="sourceLineNo">175</span>//                }<a name="line.175"></a>
-<span class="sourceLineNo">176</span>            }<a name="line.176"></a>
-<span class="sourceLineNo">177</span>        }<a name="line.177"></a>
-<span class="sourceLineNo">178</span><a name="line.178"></a>
-<span class="sourceLineNo">179</span>        return paths;<a name="line.179"></a>
-<span class="sourceLineNo">180</span>    }<a name="line.180"></a>
-<span class="sourceLineNo">181</span><a name="line.181"></a>
-<span class="sourceLineNo">182</span>    /**<a name="line.182"></a>
-<span class="sourceLineNo">183</span>     * Will compute all the term paths from a given term to all its children, irrespective of distance<a name="line.183"></a>
-<span class="sourceLineNo">184</span>     *<a name="line.184"></a>
-<span class="sourceLineNo">185</span>     * @param distance         Distance in arcs between nodes. Set to 1 to begin, will be incremented in recursive method calls<a name="line.185"></a>
-<span class="sourceLineNo">186</span>     * @param relationshipType - a set of possible synonyms for the type of relationship to link the terms (is_a, part_of, develops_from)<a name="line.186"></a>
-<span class="sourceLineNo">187</span>     * @param term             The term to scan for a given distance<a name="line.187"></a>
-<span class="sourceLineNo">188</span>     * @return A hashmap where the key is a term ID and the value is an Integet repersenting the distance<a name="line.188"></a>
-<span class="sourceLineNo">189</span>     */<a name="line.189"></a>
-<span class="sourceLineNo">190</span>    public HashMap&lt;String, Integer&gt; computeChildPaths(int distance, Set relationshipType, LinkedObject term) {<a name="line.190"></a>
-<span class="sourceLineNo">191</span>        //the true call is required only once, at each call<a name="line.191"></a>
-<span class="sourceLineNo">192</span>        return computeChildPaths(distance, relationshipType, term, new HashMap&lt;String, Integer&gt;());<a name="line.192"></a>
-<span class="sourceLineNo">193</span>    }<a name="line.193"></a>
-<span class="sourceLineNo">194</span><a name="line.194"></a>
-<span class="sourceLineNo">195</span>}<a name="line.195"></a>
+<span class="sourceLineNo">161</span>        return paths;<a name="line.161"></a>
+<span class="sourceLineNo">162</span>    }<a name="line.162"></a>
+<span class="sourceLineNo">163</span><a name="line.163"></a>
+<span class="sourceLineNo">164</span>    /**<a name="line.164"></a>
+<span class="sourceLineNo">165</span>     * Will compute all the term paths from a given term to all its children, irrespective of distance<a name="line.165"></a>
+<span class="sourceLineNo">166</span>     *<a name="line.166"></a>
+<span class="sourceLineNo">167</span>     * @param distance         Distance in arcs between nodes. Set to 1 to begin, will be incremented in recursive method calls<a name="line.167"></a>
+<span class="sourceLineNo">168</span>     * @param relationshipType - a set of possible synonyms for the type of relationship to link the terms (is_a, part_of, develops_from)<a name="line.168"></a>
+<span class="sourceLineNo">169</span>     * @param term             The term to scan for a given distance<a name="line.169"></a>
+<span class="sourceLineNo">170</span>     * @return A hashmap where the key is a term ID and the value is an Integet repersenting the distance<a name="line.170"></a>
+<span class="sourceLineNo">171</span>     */<a name="line.171"></a>
+<span class="sourceLineNo">172</span>    public HashMap&lt;String, Integer&gt; computeChildPaths(int distance, Set relationshipType, LinkedObject term) {<a name="line.172"></a>
+<span class="sourceLineNo">173</span>        //the true call is required only once, at each call<a name="line.173"></a>
+<span class="sourceLineNo">174</span>        return computeChildPaths(distance, relationshipType, term, new HashMap&lt;String, Integer&gt;());<a name="line.174"></a>
+<span class="sourceLineNo">175</span>    }<a name="line.175"></a>
+<span class="sourceLineNo">176</span><a name="line.176"></a>
+<span class="sourceLineNo">177</span>}<a name="line.177"></a>
 
 
 
