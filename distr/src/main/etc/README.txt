@@ -22,10 +22,10 @@ of biological processes including metabolic and signaling pathways,
 molecular interactions and gene networks. Pathguide.org lists the 
 pathway databases and tools that support BioPAX.
 
-Links: 
-http://www.biopax.org/validation
+Links:
 http://www.biopax.org/validator
 http://sourceforge.net/projects/biopax/
+https://github.com/BioPAX/validator/wiki
 
 
 ******************************************************************************

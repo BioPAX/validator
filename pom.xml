@@ -157,11 +157,19 @@
 		<doxia-integration-tools.version>1.6</doxia-integration-tools.version>
 		<wagon-ssh.version>2.8</wagon-ssh.version>
 		<wagon-scm.version>2.8</wagon-scm.version>
+
+		<docker.image.prefix>pathwaycommons</docker.image.prefix>
+		<dockerfile-maven-plugin.version>1.4.4</dockerfile-maven-plugin.version>
 	</properties>
 
 	<build>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>com.spotify</groupId>
+					<artifactId>dockerfile-maven-plugin</artifactId>
+					<version>${dockerfile-maven-plugin.version}</version>
+				</plugin>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${maven-compiler-plugin.version}</version>
@@ -576,22 +584,6 @@
 	</reporting>
 
 	<profiles>
-		<profile>
-			<!-- A profile to deploy to a local directory -->
-			<id>local-deploy</id>
-			<distributionManagement>
-				<snapshotRepository>
-					<id>biopax.snapshots</id>
-					<name>BioPAX Snapshots Repository</name>
-					<url>${biopax.snapshot.url}</url>
-				</snapshotRepository>
-				<repository>
-					<id>biopax.releases</id>
-					<name>BioPAX Releases Repository</name>
-					<url>${biopax.release.url}</url>
-				</repository>
-			</distributionManagement>
-		</profile>
 		<profile>
 			<id>sonatype-release-profile</id>
 			<build>
