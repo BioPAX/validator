@@ -1,0 +1,19 @@
+format-version: 1.2
+data-version: releases/2017-07-29
+subsetdef: ubprop:upper_level "abstract upper-level terms not directly useful for analysis"
+synonymtypedef: HUMAN_PREFERRED "preferred term when talking about an instance of this class in Homo sapiens"
+synonymtypedef: LATIN "latin term"
+synonymtypedef: PLURAL "plural term"
+ontology: cl
+property_value: http://purl.org/dc/elements/1.1/license http://creativecommons.org/licenses/by/4.0/
+
+[Term]
+id: BFO:0000002
+name: continuant
+def: "An entity that exists in full at any time in which it exists at all, persists through time while maintaining its identity and has no temporal parts." []
+
+[Term]
+id: BFO:0000003
+name: occurrent
+def: "An entity that has temporal parts and that happens, unfolds or develops through time." []
+

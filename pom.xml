@@ -8,6 +8,10 @@
 	<version>4.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<prerequisites>
+		<maven>3.3</maven>
+	</prerequisites>
+
 	<modules>
 		<module>validator-core</module>
 		<module>obo-fetcher</module>
@@ -114,19 +118,18 @@
 	</developers>
 
 	<properties>
-		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<github.global.server>github</github.global.server>
 
 		<!-- dependencies versions -->
-		<spring.version>4.2.4.RELEASE</spring.version>
+		<spring.version>4.3.19.RELEASE</spring.version>
 		<paxtools.version>5.1.0</paxtools.version>
 		<license.licenseName>lgpl_v3</license.licenseName>
-		<junit.version>4.11</junit.version>
+		<junit.version>4.12</junit.version>
 		<commons-lang.version>3.4</commons-lang.version>
 		<commons-logging.version>1.1.1</commons-logging.version>
-		<aspectj.version>1.8.6</aspectj.version>
+		<aspectj.version>1.9.1</aspectj.version>
 		<log4j.version>1.2.13</log4j.version>
 		<commons-beanutils.version>1.9.2</commons-beanutils.version>
 		<commons-digester.version>2.1</commons-digester.version>
@@ -136,35 +139,48 @@
 		<taglibs.standard.version>1.1.2</taglibs.standard.version>
 		<commons-fileupload.version>1.3.1</commons-fileupload.version>
 		<commons-io.version>2.4</commons-io.version>
-
+		<javax.activation.version>1.2.0</javax.activation.version>
+		<jaxb-runtime.version>2.4.0-b180830.0438</jaxb-runtime.version>
+		<jaxb-api.version>2.4.0-b180830.0359</jaxb-api.version>
+		<javax.annotation-api.version>1.3.2</javax.annotation-api.version>
 		<!-- plugin dependencies versions -->
-		<maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
-		<maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
-		<maven-war-plugin.version>2.6</maven-war-plugin.version>
-		<maven-release-plugin.version>2.5.1</maven-release-plugin.version>
-		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
-		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
-		<maven-source-plugin.version>2.4</maven-source-plugin.version>
-		<maven-site-plugin.version>3.4</maven-site-plugin.version>
-		<maven-javadoc-plugin.version>2.10.2</maven-javadoc-plugin.version>
-		<maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
-		<maven-project-info-reports-plugin.version>2.8</maven-project-info-reports-plugin.version>
-		<maven-resources-plugin.version>2.7</maven-resources-plugin.version>
+		<maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-war-plugin.version>3.2.2</maven-war-plugin.version>
+		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+		<maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
+		<maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-site-plugin.version>3.7.1</maven-site-plugin.version>
+		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+		<maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
+		<maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
 		<jaxb2-maven-plugin.version>2.4</jaxb2-maven-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+		<maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+		<maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
 		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-		<nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
+		<nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
 		<doxia-integration-tools.version>1.6</doxia-integration-tools.version>
 		<wagon-ssh.version>2.8</wagon-ssh.version>
 		<wagon-scm.version>2.8</wagon-scm.version>
-
 		<docker.image.prefix>pathwaycommons</docker.image.prefix>
 		<dockerfile-maven-plugin.version>1.4.4</dockerfile-maven-plugin.version>
+		<versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 	</properties>
 
 	<build>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>versions-maven-plugin</artifactId>
+					<version>${versions-maven-plugin.version}</version>
+					<configuration>
+						<generateBackupPoms>false</generateBackupPoms>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>com.spotify</groupId>
 					<artifactId>dockerfile-maven-plugin</artifactId>
@@ -174,17 +190,30 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${maven-compiler-plugin.version}</version>
 					<configuration>
-						<source>${java.version}</source>
-						<target>${java.version}</target>
+						<release>10</release>
+						<source>10</source>
+						<target>10</target>
 					</configuration>
-				</plugin>			
+				</plugin>
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${maven-deploy-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>${maven-install-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${maven-clean-plugin.version}</version>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven-surefire-plugin.version}</version>
 					<configuration>
 						<testFailureIgnore>false</testFailureIgnore>
-						<argLine>-Dfile.encoding=UTF-8 -Xmx1g -ea</argLine>
+						<argLine>-Dfile.encoding=UTF-8 -Xmx2g -ea</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -245,6 +274,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
+					<version>${maven-site-plugin.version}</version>
 					<executions>
 						<execution>
 							<id>attach-descriptor</id>
@@ -486,10 +516,48 @@
 				<artifactId>commons-io</artifactId>
 				<version>${commons-io.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>javax.annotation</groupId>
+				<artifactId>javax.annotation-api</artifactId>
+				<version>${javax.annotation-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.xml.bind</groupId>
+				<artifactId>jaxb-api</artifactId>
+				<version>${jaxb-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jaxb</groupId>
+				<artifactId>jaxb-runtime</artifactId>
+				<version>${jaxb-runtime.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.activation</groupId>
+				<artifactId>javax.activation</artifactId>
+				<version>${javax.activation.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.activation</groupId>
+			<artifactId>javax.activation</artifactId>
+		</dependency>
 		<!-- %TODO switch to SLF4J and Logback -->
 		<dependency>
 			<groupId>commons-logging</groupId>

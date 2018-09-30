@@ -39,16 +39,29 @@
 						<goals>
 							<goal>xjc</goal>
 						</goals>
+						<configuration>
+							<clearOutputDir>false</clearOutputDir>
+							<packageName>org.biopax.validator.jaxb</packageName>
+							<failOnNoSchemas>true</failOnNoSchemas>
+							<sources>
+								<source>src/main/resources/validator-response-2.0.xsd</source>
+							</sources>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<clearOutputDir>false</clearOutputDir>
-					<packageName>org.biopax.validator.jaxb</packageName>
-					<failOnNoSchemas>true</failOnNoSchemas>
-					<sources>
-						<source>src/main/resources/validator-response-2.0.xsd</source>
-					</sources>
-				</configuration>
+				<dependencies>
+				  <dependency>
+					<groupId>org.glassfish.jaxb</groupId>
+					<artifactId>jaxb-runtime</artifactId>
+					<version>${jaxb-runtime.version}</version>
+					<scope>runtime</scope>
+				  </dependency>
+				  <dependency>
+					<groupId>com.sun.activation</groupId>
+					<artifactId>javax.activation</artifactId>
+					<version>${javax.activation.version}</version>
+				  </dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

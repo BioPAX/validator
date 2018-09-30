@@ -37,18 +37,8 @@
 				</configuration>
 <!-- 
 disabled making zip during install/package phase due to Travis CI fails (heap memory); 
-do: mvn assembly:single manually instead -->
-<!--
-				<executions>
-					<execution>
-						<id>make-distribution-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
--->				
+do run: mvn assembly:single manually instead
+-->
 			</plugin>
 		</plugins>
 	</build>

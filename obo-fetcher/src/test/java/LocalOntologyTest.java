@@ -28,14 +28,14 @@ public class LocalOntologyTest {
 	}
 
 	@Test
-	public void getValidTerms() throws OntologyLoaderException {
+	public void getValidTerms() {
 		final Set<OntologyTermI> terms = mod.getValidTerms("MOD:00647", true,
 				false);
 		assertEquals(3, terms.size());
 	}
 
 	@Test
-	public void getMiTermSynonyms() throws OntologyLoaderException {
+	public void getMiTermSynonyms() {
 		// GO:0055044 has 7 children (OLS 17 July 2008) = 7 valid terms
 		final Set<OntologyTermI> terms = mi.getValidTerms("MI:0018", false,
 				true);
@@ -57,7 +57,7 @@ public class LocalOntologyTest {
 
 	// there was a problem with this particular term!
 	@Test
-	public void getMiTermSynonyms0217() throws OntologyLoaderException {
+	public void getMiTermSynonyms0217() {
 		final Set<OntologyTermI> terms = mi.getValidTerms("MI:0217", false,
 				true);
 		assertEquals(1, terms.size());
@@ -73,7 +73,7 @@ public class LocalOntologyTest {
 	}
 
 	@Test
-	public void getModTermSynonyms() throws OntologyLoaderException {
+	public void getModTermSynonyms() {
 		final Set<OntologyTermI> terms = mod.getValidTerms("MOD:00007", false,
 				true);
 		assertEquals(1, terms.size());
@@ -87,7 +87,7 @@ public class LocalOntologyTest {
 	}
 
 	@Test
-	public void isObsolete() throws Exception {
+	public void isObsolete() {
 		final OntologyTermI term = mi.getTermForAccession("MI:0205");
 		assertTrue(mi.isObsolete(term));
 
@@ -96,14 +96,14 @@ public class LocalOntologyTest {
 	}
 
 	@Test
-	public void isObsolete_unknown_accession() throws Exception {
+	public void isObsolete_unknown_accession() {
 		final OntologyTermI term = new OntologyTermImpl("MI", "MI:xxxx",
 				"bogus term");
 		assertFalse(mi.isObsolete(term));
 	}
 
 	@Test
-	public void getTermForAccession() throws Exception {
+	public void getTermForAccession() {
 		final OntologyTermI term = mi.getTermForAccession("MI:0013");
 		assertNotNull(term);
 		assertEquals("MI:0013", term.getTermAccession());
@@ -111,7 +111,7 @@ public class LocalOntologyTest {
 	}
 
 	@Test
-	public void getTermForAccession_unknown_accession() throws Exception {
+	public void getTermForAccession_unknown_accession()  {
 		final OntologyTermI term = mi.getTermForAccession("MI:xxxx");
 		assertNull(term);
 	}
@@ -120,7 +120,7 @@ public class LocalOntologyTest {
 	// Children
 
 	@Test
-	public void getDirectChildren() throws Exception {
+	public void getDirectChildren() {
 		final OntologyTermI term = mi.getTermForAccession("MI:0417"); // footprinting
 		assertNotNull(term);
 
@@ -134,7 +134,7 @@ public class LocalOntologyTest {
 	}
 
 	@Test
-	public void getDirectChildren_unknown_accession() throws Exception {
+	public void getDirectChildren_unknown_accession() {
 		final OntologyTermI term = new OntologyTermImpl("MI", "MI:xxxx",
 				"bogus term");
 
@@ -144,7 +144,7 @@ public class LocalOntologyTest {
 	}
 
 	@Test
-	public void getAllChildren() throws Exception {
+	public void getAllChildren() {
 		final OntologyTermI term = mi.getTermForAccession("MI:0417"); // footprinting
 		assertNotNull(term);
 
@@ -168,7 +168,7 @@ public class LocalOntologyTest {
 	}
 
 	@Test
-	public void getAllChildren_unknown_accession() throws Exception {
+	public void getAllChildren_unknown_accession() {
 		final OntologyTermI term = new OntologyTermImpl("MI", "MI:xxxx",
 				"bogus term");
 
@@ -177,12 +177,10 @@ public class LocalOntologyTest {
 		assertEquals(0, children.size());
 	}
 
-	// /////////////////
-
 	// Parents
 
 	@Test
-	public void getDirectParents() throws Exception {
+	public void getDirectParents() {
 		final OntologyTermI term = mi.getTermForAccession("MI:0013");
 		assertNotNull(term);
 
@@ -194,7 +192,7 @@ public class LocalOntologyTest {
 	}
 
 	@Test
-	public void getDirectParents_unknown_accession() throws Exception {
+	public void getDirectParents_unknown_accession() {
 		final OntologyTermImpl term = new OntologyTermImpl("MI", "MI:xxxx",
 				"bogus term");
 		final Set<OntologyTermI> parents = mi.getDirectParents(term);
@@ -203,7 +201,7 @@ public class LocalOntologyTest {
 	}
 
 	@Test
-	public void getAllParents() throws Exception {
+	public void getAllParents() {
 		final OntologyTermI term = mi.getTermForAccession("MI:0013");
 		assertNotNull(term);
 
@@ -219,7 +217,7 @@ public class LocalOntologyTest {
 	}
 
 	@Test
-	public void getAllParents_unknown_accession() throws Exception {
+	public void getAllParents_unknown_accession() {
 		final OntologyTermImpl term = new OntologyTermImpl("MI", "MI:xxxx",
 				"bogus term");
 
@@ -252,7 +250,7 @@ public class LocalOntologyTest {
 	}
 	
 	@Test
-	public void getModChildren01157() throws OntologyLoaderException {
+	public void getModChildren01157() {
 		Set<OntologyTermI> terms = mod.getValidTerms("MOD:01157", true, false);
 		assertFalse(terms.isEmpty());
 		assertTrue(getAccessions(terms).contains("MOD:00036"));

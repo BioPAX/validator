@@ -1,8 +1,5 @@
 package org.biopax.validator;
 
-/*
- *
- */
 
 import java.io.*;
 import java.util.*;

@@ -2,8 +2,6 @@ package org.biopax.validator.impl;
 
 import java.util.*;
 
-import javax.annotation.PostConstruct;
-
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.level3.Level3Element;
@@ -15,6 +13,8 @@ import org.biopax.paxtools.util.ClassFilterSet;
 import org.biopax.psidev.ontology_manager.*;
 import org.biopax.validator.api.CvRestriction;
 import org.biopax.validator.api.beans.Validation;
+
+import javax.annotation.PostConstruct;
 
 
 /**

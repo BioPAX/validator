@@ -1,0 +1,50 @@
+format-version: 1.2
+date: 15:08:2014 14:45
+saved-by: gkoutos
+auto-generated-by: OBO-Edit 2.1-beta19
+subsetdef: abnormal_slim "Abnormal/normal slim"
+subsetdef: absent_slim "Absent/present slim"
+subsetdef: attribute_slim "Attribute slim"
+subsetdef: cell_quality "cell_quality"
+subsetdef: disposition_slim "Disposition slim"
+subsetdef: hpo_slim "Human phenotype slim"
+subsetdef: mpath_slim "Pathology slim"
+subsetdef: relational_slim "Relational slim: types of quality that require an additional entity in order to exist"
+subsetdef: scalar_slim "Scalar slim"
+subsetdef: value_slim "Value slim"
+default-namespace: quality
+namespace-id-rule: * UO:$sequence(7,0,9999999)$
+ontology: pato
+
+[Term]
+id: PATO:0000000
+name: pato
+is_obsolete: true
+
+[Term]
+id: PATO:0000001
+name: quality
+alt_id: PATO:0000072
+def: "A dependent entity that inheres in a bearer by virtue of how the bearer is related to other entities." [PATOC:GVG]
+synonym: "trait" EXACT []
+
+[Term]
+id: PATO:0000002
+name: value
+is_obsolete: true
+
+[Term]
+id: PATO:0000003
+name: assay
+is_obsolete: true
+
+[Term]
+id: PATO:0000004
+name: mobility
+def: "A quality of inhering in a bearer by virtue of the bearer's disposition to move freely." [PATOC:GVG]
+comment: Should be defined using translocation.
+subset: attribute_slim
+subset: disposition_slim
+subset: scalar_slim
+is_a: PATO:0001018 ! physical quality
+

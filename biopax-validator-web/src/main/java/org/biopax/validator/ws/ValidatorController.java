@@ -1,8 +1,5 @@
 package org.biopax.validator.ws;
 
-/*
- *
- */
 
 import java.io.*;
 import java.net.MalformedURLException;

@@ -1,9 +1,5 @@
 package org.biopax.validator.ws;
 
-/*
- *
- */
-
 import java.util.*;
 
 import org.apache.commons.logging.Log;

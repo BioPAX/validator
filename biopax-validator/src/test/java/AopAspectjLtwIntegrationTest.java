@@ -4,8 +4,6 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import java.io.*;
 
-import org.biopax.paxtools.model.BioPAXFactory;
-import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.validator.api.ValidatorUtils;
 import org.biopax.validator.api.Validator;
 import org.biopax.validator.api.beans.Validation;
@@ -15,15 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * This Is an Integration Test.
  *
  * Moreover, this here uses the 'production' application context,
  * i.e., enabling all the AOP aspects and Load-Time Weaving (LTW)! 
- * So, LTW is the one that sometimes makes things complicated 
- * (I believe, - due to Spring's bug...)
+ * So, LTW is the one that sometimes makes things complicated...
  *
  * NOTE: 
  *  Surprisingly, but the (sad) fact here is that, 
@@ -32,18 +29,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *  E.g., ControlAspect references not the same 'validator' bean
  *  instance as the autowired one here... 
  *  
- *  So, we do not want to use '@DirtiesContext' in this test class... 
- *
- * TODO Report the issue to Springsource
+ *  So, we do not want to use '@DirtiesContext' in this test class...
  *
  * @author rodche
  */
 //@Ignore
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {
 		"/META-INF/spring/appContext-loadTimeWeaving.xml",
-		"/META-INF/spring/appContext-validator.xml"})
-public class AOPAspectJLTWIntegrationTest {
+		"/META-INF/spring/appContext-validator.xml"
+})
+public class AopAspectjLtwIntegrationTest {
     @Autowired
     Validator validator;
     
@@ -52,8 +48,6 @@ public class AOPAspectJLTWIntegrationTest {
     
     @Autowired
     ApplicationContext context;
-
-    BioPAXFactory factory3 = BioPAXLevel.L3.getDefaultFactory();
     
     @Test
     public void testValidator() throws IOException {
@@ -67,13 +61,12 @@ public class AOPAspectJLTWIntegrationTest {
         
         assertFalse(result.getError().isEmpty());
     }
-     
     
     @Test
-    public void testUnknownProperty() throws IOException {
+    public void testUnknownProperty() {
     	Validation validation = new Validation(new IdentifierImpl());
     	validator.importModel(validation, getClass()
-    		.getResourceAsStream("testSyntaxErrors.xml")); 
+    		.getResourceAsStream("testSyntaxErrors.xml"));
     	validator.getResults().clear(); // clean after itself
     	assertEquals(1, validation.countErrors(null, null, "unknown.property", null, false, false));
     	assertEquals(0, validation.countErrors(null, null, "syntax.error", null, false, false));  
@@ -82,7 +75,7 @@ public class AOPAspectJLTWIntegrationTest {
     
 //    @Ignore("worked with paxtools 4.2.1; but paxtools 4.3.0-SNAPSHOT dependency breaks it; fixed 19-Mar-2014")
     @Test
-    public void testSyntaxErrors() throws IOException {
+    public void testSyntaxErrors() {
     	Validation validation = new Validation(new IdentifierImpl());
     	validator.importModel(validation, getClass()
     		.getResourceAsStream("testBiochemPathwayStepOneConversionRule.owl")); //misplaced.step.conversion
@@ -90,10 +83,9 @@ public class AOPAspectJLTWIntegrationTest {
     	assertFalse(validation.getError().isEmpty());
     	assertEquals(1, validation.countErrors(null, null, "syntax.error", null, false, false));   	
     }
-
     
     @Test
-    public void testClonedUtilityClass() throws IOException {
+    public void testClonedUtilityClass() {
     	Validation validation = new Validation(new IdentifierImpl());
     	validator.importModel(validation, getClass().getResourceAsStream("testEvidenceEquivalence.xml")); 
     	validator.validate(validation);
@@ -106,7 +98,7 @@ public class AOPAspectJLTWIntegrationTest {
     }
     
     @Test
-    public void testMemberPhysicalEntityRange() throws IOException {
+    public void testMemberPhysicalEntityRange() {
     	Validation validation = new Validation(new IdentifierImpl());
     	validator.importModel(validation, getClass()
     			.getResourceAsStream("testMemberPhysicalEntityRange.xml")); 
