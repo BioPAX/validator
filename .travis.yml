@@ -6,9 +6,6 @@ branches:
     - master
 
 jdk:
-  - oraclejdk8
+  - openjdk11
 sudo: false
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
+
