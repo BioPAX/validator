@@ -7,7 +7,7 @@ import java.io.*;
 import org.biopax.validator.api.ValidatorUtils;
 import org.biopax.validator.api.Validator;
 import org.biopax.validator.api.beans.Validation;
-import org.biopax.validator.impl.IdentifierImpl;
+import org.biopax.validator.impl.BiopaxIdentifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -53,7 +53,7 @@ public class AopAspectjLtwIntegrationTest {
     public void testValidator() throws IOException {
     	Resource resource = context
     		.getResource("classpath:biopax3-short-metabolic-pathway.owl");
-    	Validation result = new Validation(new IdentifierImpl());
+    	Validation result = new Validation(new BiopaxIdentifier());
     	result.setDescription(resource.getDescription());
     	validator.importModel(result, resource.getInputStream());
         validator.validate(result); // check all rules
@@ -64,7 +64,7 @@ public class AopAspectjLtwIntegrationTest {
     
     @Test
     public void testUnknownProperty() {
-    	Validation validation = new Validation(new IdentifierImpl());
+    	Validation validation = new Validation(new BiopaxIdentifier());
     	validator.importModel(validation, getClass()
     		.getResourceAsStream("testSyntaxErrors.xml"));
     	validator.getResults().clear(); // clean after itself
@@ -76,7 +76,7 @@ public class AopAspectjLtwIntegrationTest {
 //    @Ignore("worked with paxtools 4.2.1; but paxtools 4.3.0-SNAPSHOT dependency breaks it; fixed 19-Mar-2014")
     @Test
     public void testSyntaxErrors() {
-    	Validation validation = new Validation(new IdentifierImpl());
+    	Validation validation = new Validation(new BiopaxIdentifier());
     	validator.importModel(validation, getClass()
     		.getResourceAsStream("testBiochemPathwayStepOneConversionRule.owl")); //misplaced.step.conversion
     	validator.getResults().clear(); // clean after itself
@@ -86,7 +86,7 @@ public class AopAspectjLtwIntegrationTest {
     
     @Test
     public void testClonedUtilityClass() {
-    	Validation validation = new Validation(new IdentifierImpl());
+    	Validation validation = new Validation(new BiopaxIdentifier());
     	validator.importModel(validation, getClass().getResourceAsStream("testEvidenceEquivalence.xml")); 
     	validator.validate(validation);
     	validator.getResults().clear(); // clean after itself
@@ -99,7 +99,7 @@ public class AopAspectjLtwIntegrationTest {
     
     @Test
     public void testMemberPhysicalEntityRange() {
-    	Validation validation = new Validation(new IdentifierImpl());
+    	Validation validation = new Validation(new BiopaxIdentifier());
     	validator.importModel(validation, getClass()
     			.getResourceAsStream("testMemberPhysicalEntityRange.xml")); 
     	validator.validate(validation);

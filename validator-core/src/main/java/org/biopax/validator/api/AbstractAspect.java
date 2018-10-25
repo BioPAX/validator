@@ -1,8 +1,5 @@
 package org.biopax.validator.api;
 
-/*
- *
- */
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

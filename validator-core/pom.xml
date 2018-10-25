@@ -3,12 +3,12 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>4.0.1-SNAPSHOT</version>
+		<version>5.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>validator-core</artifactId>
-	<name>Object Model Validator Core</name>
-	<description>Flexible rule-based object validation and reporting core api and settings.</description>
+	<name>Core</name>
+	<description>Object model validation and reporting library</description>
 
 	<url>https://biopax.github.io/validator</url>
 
@@ -81,7 +81,6 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-
 	<dependencies>
 		<dependency>
 			<groupId>org.biopax.validator</groupId>
@@ -100,19 +99,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

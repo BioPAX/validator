@@ -194,7 +194,7 @@
 
 	<!-- end of the XrefRule config. -->
 	
-    <bean id="validator" class="org.biopax.validator.impl.ValidatorImpl" />
+  <bean id="validator" class="org.biopax.validator.impl.BiopaxValidator" />
     
 	<!-- BiopaxValidatorUtils configuration -->
 
@@ -217,7 +217,7 @@
        
 	<!-- end of BiopaxValidatorUtils config. -->
 
-  	<bean id="ontologyManager" class="org.biopax.validator.utils.BiopaxOntologyManager" scope="singleton">
+	<bean id="ontologyManager" class="org.biopax.validator.utils.BiopaxOntologyManager" scope="singleton">
 		 <constructor-arg index="0">
 		 	<util:properties local-override="false" location="classpath:obo.properties"/>
 		 </constructor-arg>
@@ -225,12 +225,11 @@
 	
 	<!-- a helper and a proxy to access MIRIAM and MI database citation and regexps 
    		to validate their corresponding IDs -->
-    <bean id="xrefHelper" class="org.biopax.validator.utils.XrefHelper" scope="singleton">
+  <bean id="xrefHelper" class="org.biopax.validator.utils.XrefHelper" scope="singleton">
 		<constructor-arg ref="extraDbSynonyms"/>
-        <constructor-arg ref="ontologyManager" />
-    </bean>
-	
-	
+    <constructor-arg ref="ontologyManager" />
+  </bean>
+
 	<context:component-scan base-package="org.biopax.validator.rules"/>
 	
 </beans>

@@ -4,7 +4,7 @@ package org.biopax.validator.impl;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
-import org.biopax.validator.api.beans.Validation.Identifier;
+import org.biopax.validator.api.Identifier;
 
 /**
  * BioPAX object domain specific implementation 
@@ -13,7 +13,7 @@ import org.biopax.validator.api.beans.Validation.Identifier;
  * @author rodche
  *
  */
-public final class IdentifierImpl implements Identifier {
+public final class BiopaxIdentifier implements Identifier {
 
 	/* (non-Javadoc)
 	 * @see org.biopax.validator.api.Identifier#getId(java.lang.Object)

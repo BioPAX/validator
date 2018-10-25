@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.validator.api.beans.*;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -28,13 +29,14 @@ import java.util.Locale;
 
 /**
  * Validator Utility Class (not BioPAX specific).
- * <p>
+ *
  * This is injected into other beans, keeps several global settings and objects,
  * e.g., marshaller, and also provides static service methods to register,
  * merge, do OXM, and resolve validation errors to human-readable verbose messages.
  *
  * @author rodche
  */
+@Configurable
 @Service
 public class ValidatorUtils {
   private static final Log logger = LogFactory.getLog(ValidatorUtils.class);

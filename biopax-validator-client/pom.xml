@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>org.biopax.validator</groupId>
 		<artifactId>parent</artifactId>
-		<version>4.0.1-SNAPSHOT</version>
+		<version>5.0.0-SNAPSHOT</version>
 	</parent>
 
     <artifactId>biopax-validator-client</artifactId>
 	<packaging>jar</packaging>
-	<name>BioPAX Validator Client</name>
+	<name>Client</name>
 	<description>An example client for the biopax-validator</description>
 	<url>https://biopax.github.io/validator</url>
 

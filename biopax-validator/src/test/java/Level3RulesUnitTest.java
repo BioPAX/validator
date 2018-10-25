@@ -8,9 +8,8 @@ import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.api.Rule;
 import org.biopax.validator.api.beans.Validation;
-import org.biopax.validator.impl.IdentifierImpl;
+import org.biopax.validator.impl.BiopaxIdentifier;
 import org.biopax.validator.rules.*;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -66,7 +65,7 @@ public class Level3RulesUnitTest {
 		reaction.addRight(right);
 		
 		// ok
-		Validation v = new Validation(new IdentifierImpl());
+		Validation v = new Validation(new BiopaxIdentifier());
 		left.setCellularLocation(cl); 
 		right.setCellularLocation(cl); 
 		rule.check(v, reaction);
@@ -83,7 +82,7 @@ public class Level3RulesUnitTest {
 		leftc.setCellularLocation(cr);
 		leftc.addComment("location changed without transport?");
 		
-		v = new Validation(new IdentifierImpl());
+		v = new Validation(new BiopaxIdentifier());
 		rule.check(v, reaction);
 		assertEquals(1, v.countErrors(reaction.getUri(), null, "participant.location.changed", null, false, false));
 		
@@ -92,14 +91,14 @@ public class Level3RulesUnitTest {
 		// for complexes, not ER but names are used to match...
 		leftc.removeName("cplx1");
 		leftc.addName("cplx2");
-		v = new Validation(new IdentifierImpl());
+		v = new Validation(new BiopaxIdentifier());
 		rule.check(v, reaction);
 		assertTrue(v.getError().isEmpty());
 		
 		right.setCellularLocation(cr); 
 		right.addComment("location changed without transport?");
 		// check for: same entity (names intersection), diff. location
-		v = new Validation(new IdentifierImpl());
+		v = new Validation(new BiopaxIdentifier());
 		rule.check(v, reaction);
 		assertEquals(1, v.countErrors(reaction.getUri(), null, "participant.location.changed", null, false, false));
 
@@ -121,7 +120,7 @@ public class Level3RulesUnitTest {
 		rightc.setCellularLocation(cr);
 		right.setCellularLocation(cr); 
 		left.setCellularLocation(cr); 
-		v = new Validation(new IdentifierImpl());
+		v = new Validation(new BiopaxIdentifier());
 		rule.check(v, reaction);
 		assertTrue(v.getError().isEmpty());
 	}
@@ -160,13 +159,13 @@ public class Level3RulesUnitTest {
 		left.setCellularLocation(cl); 
 		right.setCellularLocation(cr); 
 		// make sure it's valid
-		Validation v = new Validation(new IdentifierImpl());
+		Validation v = new Validation(new BiopaxIdentifier());
 		rule.check(v, reaction);
 		assertTrue(v.getError().isEmpty());
 		
 		// now set the same location on both sides and check	
 		right.setCellularLocation(cl); 
-		v = new Validation(new IdentifierImpl());
+		v = new Validation(new BiopaxIdentifier());
 		rule.check(v, reaction); 
 		assertEquals(1, v.countErrors(reaction.getUri(), null, "transport.location.same", null, false, false));
 		
@@ -200,7 +199,7 @@ public class Level3RulesUnitTest {
 		right.setCellularLocation(cr);
 		
 		// check again
-		v = new Validation(new IdentifierImpl());
+		v = new Validation(new BiopaxIdentifier());
 		rule.check(v, reaction);
 		assertTrue(v.getError().isEmpty());
 	}
@@ -213,7 +212,7 @@ public class Level3RulesUnitTest {
 		Level3Element bpe = level3.create(UnificationXref.class, 
 				"http://www.biopax.org/UnificationXref#Taxonomy_40674");
 		bpe.addComment("This is a valid ID");
-		Validation v = new Validation(new IdentifierImpl());
+		Validation v = new Validation(new BiopaxIdentifier());
 		rule.check(v, bpe);
 		assertTrue(v.getError().isEmpty());
 		
@@ -222,7 +221,7 @@ public class Level3RulesUnitTest {
 		
 		bpe = level3.create(UnificationXref.class, "Taxonomy UnificationXref_40674");
 		bpe.addComment("Invalid ID (has a space)");
-		v = new Validation(new IdentifierImpl());
+		v = new Validation(new BiopaxIdentifier());
 		rule.check(v, bpe); 
 		assertEquals(1, v.countErrors(v.identify(bpe), null, "invalid.rdf.id", null, false, false));
 
@@ -270,7 +269,7 @@ public class Level3RulesUnitTest {
     	pr.setDisplayName("ProteinReference1");
     	pr.addComment("No value is set for the 'organism' property (must be exactly one)!");
     	
-    	Validation v = new Validation(new IdentifierImpl());
+    	Validation v = new Validation(new BiopaxIdentifier());
     	rule.check(v, pr);
     	assertEquals(1, v.countErrors(pr.getUri(), null, "cardinality.violated", null, false, false));
 
@@ -282,7 +281,7 @@ public class Level3RulesUnitTest {
        	writeExample("testProteinReferenceOrganismCRRule.owl", m);
     	
     	pr.setOrganism(bioSource);
-    	v = new Validation(new IdentifierImpl());
+    	v = new Validation(new BiopaxIdentifier());
     	rule.check(v, pr); // should pass now
     	assertTrue(v.getError().isEmpty());
     }
@@ -293,27 +292,27 @@ public class Level3RulesUnitTest {
 	{
 		Rule rule = new ControlTypeRule();	
 		Catalysis ca = level3.create(Catalysis.class, "catalysis1");
-		Validation v = new Validation(new IdentifierImpl());
+		Validation v = new Validation(new BiopaxIdentifier());
 		rule.check(v, ca); // controlType==null, no error expected
 		assertTrue(v.getError().isEmpty());
 		ca.setControlType(ControlType.ACTIVATION);
-		v = new Validation(new IdentifierImpl());
+		v = new Validation(new BiopaxIdentifier());
 		rule.check(v, ca); // no error expected
 		assertTrue(v.getError().isEmpty());
 		ca.setControlType(ControlType.INHIBITION);
 		ca.addComment("error: illegal controlType");
-		v = new Validation(new IdentifierImpl());
+		v = new Validation(new BiopaxIdentifier());
 		rule.check(v, ca); 
 		assertEquals(1, v.countErrors(ca.getUri(), null, "range.violated", null, false, false));
 		
 		TemplateReactionRegulation tr = level3.create(TemplateReactionRegulation.class, "regulation1");
 		tr.setControlType(ControlType.INHIBITION);
-		v = new Validation(new IdentifierImpl());
+		v = new Validation(new BiopaxIdentifier());
 		rule.check(v, tr); // no error...
 		assertTrue(v.getError().isEmpty());
 		tr.setControlType(ControlType.ACTIVATION_ALLOSTERIC);
 		tr.addComment("error: illegal controlType");
-		v = new Validation(new IdentifierImpl());
+		v = new Validation(new BiopaxIdentifier());
 		rule.check(v, tr); 
 		assertEquals(1, v.countErrors(tr.getUri(), null, "range.violated", null, false, false));
 		
@@ -332,12 +331,12 @@ public class Level3RulesUnitTest {
 	{
 		Rule rule = new DegradationConversionDirectionRule();
 		Conversion dg = level3.create(Degradation.class, "degradation-conversion-1");
-		Validation v = new Validation(new IdentifierImpl());
+		Validation v = new Validation(new BiopaxIdentifier());
 		rule.check(v, dg); // direction is null, no error
 		assertTrue(v.getError().isEmpty());
 		dg.setConversionDirection(ConversionDirectionType.REVERSIBLE);
 		dg.addComment("error: illegal conversionDirection");
-		v = new Validation(new IdentifierImpl());
+		v = new Validation(new BiopaxIdentifier());
 		rule.check(v, dg); 
 		assertEquals(1, v.countErrors(dg.getUri(), null, "range.violated", null, false, false));
 		
@@ -379,7 +378,7 @@ public class Level3RulesUnitTest {
     	p.setCellularLocation(cv);
 		
     	Rule<EntityReference> rule = new EntityReferenceSamePhysicalEntitiesRule();
-    	Validation v = new Validation(new IdentifierImpl());
+    	Validation v = new Validation(new BiopaxIdentifier());
     	rule.check(v, pr);
     	// no err: different location
     	assertTrue(v.getError().isEmpty());
@@ -425,7 +424,7 @@ public class Level3RulesUnitTest {
 		assertTrue(rule.canCheck(model));
 		
 		// check
-		Validation v = new Validation(new IdentifierImpl());
+		Validation v = new Validation(new BiopaxIdentifier());
 		rule.check(v, model); 
 		assertEquals(1, v.countErrors(null, null, "cloned.utility.class", null, false, false));
 
@@ -433,7 +432,7 @@ public class Level3RulesUnitTest {
 		writeExample("testClonedUtilityClassRule.owl", model);	
 		
 		// now -fix!
-		v = new Validation(new IdentifierImpl(), "auto-fix-it", true, null, 0, null);
+		v = new Validation(new BiopaxIdentifier(), "auto-fix-it", true, null, 0, null);
 		rule.check(v, model);
 		//there is one error case, but -
 		assertEquals(1, v.countErrors(null, null, "cloned.utility.class", null, false, false));
@@ -450,7 +449,7 @@ public class Level3RulesUnitTest {
 		Model m = level3.createModel();
 		m.addNew(UnificationXref.class, "some_id");
 		m.addNew(RelationshipXref.class, "Some_ID");
-		Validation v = new Validation(new IdentifierImpl()); 
+		Validation v = new Validation(new BiopaxIdentifier());
 		rule.check(v, m); 
 		assertEquals(1, v.countErrors(null, null, "duplicate.id.ignoringcase", null, false, false));
 	}
@@ -482,7 +481,7 @@ public class Level3RulesUnitTest {
         assertFalse(rule.canCheck(c1));
         assertTrue(rule.canCheck(c2));
 
-        Validation v = new Validation(new IdentifierImpl());
+        Validation v = new Validation(new BiopaxIdentifier());
 		rule.check(v, c2);
 		assertEquals(1, v.countErrors(c2.getUri(), null, "wrong.conversion.class", null, false, false));
 
@@ -502,7 +501,7 @@ public class Level3RulesUnitTest {
         complex.addComponent(p2);
         c.addLeft(p1);
 
-        Validation v = new Validation(new IdentifierImpl());
+        Validation v = new Validation(new BiopaxIdentifier());
 		rule.check(v, p1);
 		assertEquals(1, v.countErrors(p1.getUri(), null, "ambiguous.feature", null, false, false));
 
@@ -523,13 +522,13 @@ public class Level3RulesUnitTest {
         p.addFeature(ef);
         p.addNotFeature(ef2);
 
-        Validation v = new Validation(new IdentifierImpl());
+        Validation v = new Validation(new BiopaxIdentifier());
 		rule.check(v, p);
 		assertEquals(1, v.countErrors(p.getUri(), null, "improper.feature.use", null, false, false));
 
         writeExample("testSimplePhysicalEntityFeaturesRule.owl", m);
 
-        v = new Validation(new IdentifierImpl(),"",true,null,0, null);
+        v = new Validation(new BiopaxIdentifier(),"",true,null,0, null);
         rule.check(v, p);
 		assertEquals(1, v.countErrors(p.getUri(), null, "improper.feature.use", null, false, false));
 		assertEquals(0, v.countErrors(p.getUri(), null, "improper.feature.use", null, false, true));
@@ -552,7 +551,7 @@ public class Level3RulesUnitTest {
 
         assertTrue(rule.canCheck(complex));
 
-        Validation v = new Validation(new IdentifierImpl()); //default is: no auto-fix 
+        Validation v = new Validation(new BiopaxIdentifier()); //default is: no auto-fix
 		rule.check(v, complex);
 		assertEquals(1, v.countErrors(complex.getUri(), null, "cyclic.inclusion", null, false, true));
 //			System.out.println(e + " " + Arrays.toString(e.getMsgArgs()));
@@ -575,7 +574,7 @@ public class Level3RulesUnitTest {
         ev2.addXref(x);
         ev2.addXref(ux2);
 
-        Validation v = new Validation(new IdentifierImpl());
+        Validation v = new Validation(new BiopaxIdentifier());
 		rule.check(v, x);
 		assertEquals(1, v.countErrors(v.identify(x), null, "shared.unification.xref", null, false, true));
 
@@ -609,7 +608,7 @@ public class Level3RulesUnitTest {
         p2.addFeature(ef1);       
 
         //Let's check the model by applying the rule (only one)...
-        Validation v = new Validation(new IdentifierImpl());
+        Validation v = new Validation(new BiopaxIdentifier());
 		rule.check(v, m);
 		assertEquals(1, v.countErrors(ef1.getUri(), null, "inverse.functional.violated", null, false, false));
         writeExample("testEntityFeatureInverseFunctionalRule.owl", m);
@@ -618,7 +617,7 @@ public class Level3RulesUnitTest {
 		//expected result: in the modified model, a new feature must be created 
 		//that replaces ef1 in the corresponding properties of p1 and pr1;
 		//whereas p2 and pr2 should stay untouched
-        v = new Validation(new IdentifierImpl(),"", true, null, 0, null);
+        v = new Validation(new BiopaxIdentifier(),"", true, null, 0, null);
         rule.check(v, m);
 		assertEquals(1, v.countErrors(ef1.getUri(), null, "inverse.functional.violated", null, false, false));
 		assertEquals(0, v.countErrors(ef1.getUri(), null, "inverse.functional.violated", null, false, true));

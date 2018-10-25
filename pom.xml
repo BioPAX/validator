@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.biopax.validator</groupId>
 	<artifactId>parent</artifactId>
-	<version>4.0.1-SNAPSHOT</version>
+	<version>5.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<prerequisites>
@@ -21,7 +21,7 @@
 		<module>distr</module>
 	</modules>
 
-	<name>Validator - Parent</name>
+	<name>Parent</name>
 	<description>The BioPAX Validator Project (including a general-purpose 
 	object model validation and error reporting API core, OBO ontologies manager, 
 	MIRIAM registry access (to resolve bio db names and identifiers), hundreds 
@@ -121,16 +121,14 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<github.global.server>github</github.global.server>
-
 		<!-- dependencies versions -->
 		<spring.version>4.3.19.RELEASE</spring.version>
 		<paxtools.version>5.1.0</paxtools.version>
 		<license.licenseName>lgpl_v3</license.licenseName>
 		<junit.version>4.12</junit.version>
 		<commons-lang.version>3.4</commons-lang.version>
-		<commons-logging.version>1.1.1</commons-logging.version>
 		<aspectj.version>1.9.1</aspectj.version>
-		<log4j.version>1.2.13</log4j.version>
+		<slf4j.version>1.7.25</slf4j.version>
 		<commons-beanutils.version>1.9.2</commons-beanutils.version>
 		<commons-digester.version>2.1</commons-digester.version>
 		<commons-collections.version>3.2.2</commons-collections.version>
@@ -190,9 +188,9 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${maven-compiler-plugin.version}</version>
 					<configuration>
-						<release>10</release>
-						<source>10</source>
-						<target>10</target>
+						<release>8</release>
+						<source>8</source>
+						<target>8</target>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -377,16 +375,20 @@
 				<artifactId>commons-lang3</artifactId>
 				<version>${commons-lang.version}</version>
 			</dependency>
-			<!-- %TODO switch to SLF4J and Logback -->
 			<dependency>
-				<groupId>commons-logging</groupId>
-				<artifactId>commons-logging</artifactId>
-				<version>${commons-logging.version}</version>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${log4j.version}</version>
+				<groupId>org.slf4j</groupId>
+				<artifactId>log4j-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -455,13 +457,11 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-instrument</artifactId>
 				<version>${spring.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-instrument-tomcat</artifactId>
 				<version>${spring.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.aspectj</groupId>
@@ -558,14 +558,15 @@
 			<groupId>com.sun.activation</groupId>
 			<artifactId>javax.activation</artifactId>
 		</dependency>
-		<!-- %TODO switch to SLF4J and Logback -->
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<!-- one of obo-fetcher's deps uses log4j directly-->
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -606,7 +607,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
-				<version>${maven-jxr-plugin.version}</version>
 				<reportSets>
 					<reportSet>
 						<id>aggregate</id>
@@ -620,7 +620,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>${maven-project-info-reports-plugin.version}</version>
 				<configuration>
 					<dependencyDetailsEnabled>false</dependencyDetailsEnabled>
 					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>

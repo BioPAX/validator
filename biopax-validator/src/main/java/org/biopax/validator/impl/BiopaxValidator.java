@@ -41,8 +41,8 @@ import org.springframework.stereotype.Service;
  * @author rodche
  */
 @Service
-public class ValidatorImpl implements Validator {	
-	private static final Log log = LogFactory.getLog(ValidatorImpl.class);
+public class BiopaxValidator implements Validator {
+	private static final Log log = LogFactory.getLog(BiopaxValidator.class);
 	
     @Autowired
 	private Set<Rule<?>> rules;  
@@ -53,7 +53,7 @@ public class ValidatorImpl implements Validator {
 	private ValidatorUtils utils;
 	
 	
-    public ValidatorImpl() {
+    public BiopaxValidator() {
 		results = Collections.newSetFromMap(new ConcurrentHashMap<Validation, Boolean>());
 	}
     
@@ -249,8 +249,7 @@ public class ValidatorImpl implements Validator {
 		Model model = simpleReader.convertFromOWL(inputStream); 
 		
 		if(model == null)
-			throw new ValidatorException(
-				"Failed importing a BioPAX model!");
+			throw new ValidatorException("Failed importing a BioPAX model!");
 		
 		associate(model, validation);
 	}

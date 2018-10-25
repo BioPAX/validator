@@ -12,7 +12,7 @@ import org.biopax.validator.api.beans.ErrorCaseType;
 import org.biopax.validator.api.beans.ErrorType;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.api.beans.ValidatorResponse;
-import org.biopax.validator.impl.IdentifierImpl;
+import org.biopax.validator.impl.BiopaxIdentifier;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class BiopaxValidatorUtilsTest {
 	@Test
 	public final void testMarshalUnmarshalValidationResponse() throws Exception {
 		ValidatorResponse response = new ValidatorResponse();
-		Validation validation = new Validation(new IdentifierImpl(), "test", false, Behavior.WARNING, 0, null);
+		Validation validation = new Validation(new BiopaxIdentifier(), "test", false, Behavior.WARNING, 0, null);
 		ErrorType e = new ErrorType("foo.bar", Behavior.ERROR);
 		ErrorCaseType err = new ErrorCaseType("junit-test", "Test", "test error message");
 		e.addErrorCase(err);
@@ -68,13 +68,13 @@ public class BiopaxValidatorUtilsTest {
 	@Test
 	public final void testMarshalUnmarshalFromMultipleResults() throws Exception {
 		// build two val. results
-		Validation validation1 = new Validation(new IdentifierImpl());
+		Validation validation1 = new Validation(new BiopaxIdentifier());
 		ErrorType e = new ErrorType("foo.bar", Behavior.ERROR);
 		ErrorCaseType err = new ErrorCaseType("junit-test", "Test", "test1 error message");
 		e.addErrorCase(err);
 		validation1.addError(e);
 		validation1.addComment("test1 comment");
-		Validation validation2 = new Validation(new IdentifierImpl());
+		Validation validation2 = new Validation(new BiopaxIdentifier());
 		e = new ErrorType("foo.boo", Behavior.WARNING);
 		err = new ErrorCaseType("junit-test", "Test", "test2 error message");
 		e.addErrorCase(err);

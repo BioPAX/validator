@@ -17,7 +17,7 @@ import org.biopax.validator.api.Validator;
 import org.biopax.validator.api.beans.Behavior;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.api.beans.ValidatorResponse;
-import org.biopax.validator.impl.IdentifierImpl;
+import org.biopax.validator.impl.BiopaxIdentifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -201,7 +201,7 @@ public class ValidatorController {
     	boolean isFix = Boolean.TRUE.equals(autofix);
     	
     	Validation validationResult = 
-    		new Validation(new IdentifierImpl(), resultName, isFix, errorLevel, errMax, profile);
+    		new Validation(new BiopaxIdentifier(), resultName, isFix, errorLevel, errMax, profile);
     	
 		//run the biopax-validator (this updates the validationResult object)
     	validator.importModel(validationResult, biopaxResource.getInputStream());

@@ -2,12 +2,12 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>4.0.1-SNAPSHOT</version>
+		<version>5.0.0-SNAPSHOT</version>
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>distr</artifactId>
-	<name>BioPAX Validator Assembly</name>
+	<name>Distribution</name>
 	<description>BioPAX Validator Distribution</description>
 	<url>https://biopax.github.io/validator</url>
 
@@ -35,8 +35,8 @@
 						<descriptor>src/main/assembly/assembly.xml</descriptor>
 					</descriptors>
 				</configuration>
-<!-- 
-disabled making zip during install/package phase due to Travis CI fails (heap memory); 
+<!--
+disabled making zip during install/package phase due to Travis CI fails (heap memory);
 do run: mvn assembly:single manually instead
 -->
 			</plugin>
@@ -50,24 +50,21 @@ do run: mvn assembly:single manually instead
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>biopax-validator-web</artifactId>
-			<version>${project.version}</version>
-			<type>war</type>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-instrument</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-instrument-tomcat</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.biopax.validator</groupId>
 			<artifactId>biopax-validator-client</artifactId>
 			<version>${project.version}</version>
 			<classifier>jar-with-dependencies</classifier>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -75,10 +72,23 @@ do run: mvn assembly:single manually instead
 			<version>${project.version}</version>
 			<type>jar</type>
 			<classifier>exec-war</classifier>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 	

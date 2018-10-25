@@ -11,15 +11,7 @@
   </formats>   
   
   <dependencySets>    
-    <dependencySet>   
-      <outputDirectory></outputDirectory>
-      <includes>
-        <include>org.biopax.validator:biopax-validator-web:war</include>
-      </includes>
-      <outputFileNameMapping>biopax-validator.war</outputFileNameMapping>
-      <unpack>false</unpack>
-    </dependencySet>
-    <dependencySet>   
+    <dependencySet>
       <outputDirectory></outputDirectory>
       <includes>
         <include>org.biopax.validator:biopax-validator-client:jar</include>
@@ -30,8 +22,9 @@
     <dependencySet>   
       <outputDirectory>lib</outputDirectory>
       <excludes>
-        <exclude>org.biopax.validator:biopax-validator-web:war</exclude>
         <exclude>org.biopax.validator:biopax-validator-client:jar</exclude>
+        <exclude>org.biopax.validator:biopax-validator-web:jar:exec-war</exclude>
+        <exclude>org.biopax.validator:distr:jar</exclude>
       </excludes>
       <unpack>false</unpack>
     </dependencySet>
@@ -43,23 +36,32 @@
       <outputFileNameMapping>biopax-validator-web.jar</outputFileNameMapping>
       <unpack>false</unpack>
     </dependencySet>
-  </dependencySets>     
-  
-  <fileSets>  
+  </dependencySets>
+
+  <fileSets>
     <fileSet>
-      <directory></directory>
+      <directory>..</directory>
       <includes>
-	  	<include>LICENSE.txt</include>
-	  </includes>
+        <include>README.md</include>
+      </includes>
       <fileMode>0644</fileMode>
       <outputDirectory></outputDirectory>
       <filtered>true</filtered>
-    </fileSet>     
+    </fileSet>
+    <fileSet>
+      <directory>..</directory>
+      <includes>
+        <include>LICENSE</include>
+      </includes>
+      <fileMode>0644</fileMode>
+      <outputDirectory></outputDirectory>
+      <filtered>true</filtered>
+    </fileSet>
     <fileSet>
       <directory>src/main/etc</directory>
       <includes>
-	  	<include>*.*</include>
-	  </includes>
+        <include>*.*</include>
+      </includes>
       <fileMode>0644</fileMode>
       <outputDirectory></outputDirectory>
       <filtered>true</filtered>
@@ -73,22 +75,22 @@
     <fileSet>
       <directory>src/main/etc/examples</directory>
       <includes>
-	  	<include>*.owl</include>
-	  	<include>*.txt</include>
-	  </includes>
+        <include>*.owl</include>
+        <include>*.txt</include>
+      </includes>
       <fileMode>0644</fileMode>
       <outputDirectory>sampleData</outputDirectory>
     </fileSet>
     <fileSet>
-        <directory>target</directory>
-        <outputDirectory></outputDirectory>
-        <includes>
-            <include>*.jar</include>
-        </includes>
-        <excludes>
-            <exclude>*-tests.jar</exclude>
-            <exclude>*-sources.jar</exclude>
-        </excludes>
+      <directory>target</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+      <excludes>
+        <exclude>*-tests.jar</exclude>
+        <exclude>*-sources.jar</exclude>
+      </excludes>
     </fileSet>
   </fileSets>
 </assembly>
