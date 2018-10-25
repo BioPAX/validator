@@ -2,7 +2,6 @@ package org.biopax.validator.impl;
 
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
-import org.biopax.validator.api.AbstractRule;
 import org.biopax.validator.api.CvRestriction;
 import org.biopax.validator.api.CvRule;
 import org.biopax.validator.api.CvValidator;

@@ -35,7 +35,7 @@ public class ErrorType implements Serializable, Comparable<ErrorType> {
 	private int totalCases = 0;
 
 	public ErrorType() {
-		errorCase = new TreeSet<ErrorCaseType>();
+		errorCase = new TreeSet<>();
 	}
 
 	public ErrorType(String code, Behavior type) {

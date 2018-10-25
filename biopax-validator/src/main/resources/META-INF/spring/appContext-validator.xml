@@ -191,13 +191,11 @@
 			<value>CELL ONTOLOGY</value>
 		</list>		
 	</util:set>
-
 	<!-- end of the XrefRule config. -->
 	
-  <bean id="validator" class="org.biopax.validator.impl.BiopaxValidator" />
+  <bean id="validator" class="org.biopax.validator.impl.BiopaxValidator" scope="singleton"/>
     
 	<!-- BiopaxValidatorUtils configuration -->
-
 	<bean id="rulesMessageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">
@@ -209,12 +207,11 @@
 		</property>
 	</bean>
 
-	<bean id="utils" class="org.biopax.validator.api.ValidatorUtils">
+	<bean id="utils" class="org.biopax.validator.api.BiopaxValidatorUtils">
 		<property name="messageSource" ref="rulesMessageSource" />
 		<property name="locale" value="en" />
 		<property name="maxErrors" value="10000" />
 	</bean>
-       
 	<!-- end of BiopaxValidatorUtils config. -->
 
 	<bean id="ontologyManager" class="org.biopax.validator.utils.BiopaxOntologyManager" scope="singleton">

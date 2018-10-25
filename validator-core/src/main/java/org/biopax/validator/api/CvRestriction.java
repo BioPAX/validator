@@ -1,6 +1,8 @@
 package org.biopax.validator.api;
 
 /**
+ * A controlled vocabulary (ontology) term restriction.
+ *
  * @author rodch
  */
 public final class CvRestriction {

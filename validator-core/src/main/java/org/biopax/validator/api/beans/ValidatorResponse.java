@@ -17,7 +17,7 @@ public class ValidatorResponse implements Serializable {
 	private List<Validation> validation;
 
 	public ValidatorResponse() {
-		validation = new ArrayList<Validation>();
+		validation = new ArrayList<>();
 	}
 
 	public List<Validation> getValidationResult() {

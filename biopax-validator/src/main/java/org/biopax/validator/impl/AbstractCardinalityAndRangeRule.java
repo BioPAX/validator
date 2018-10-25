@@ -6,7 +6,6 @@ import java.util.Set;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
-import org.biopax.validator.api.AbstractRule;
 import org.biopax.validator.api.ValidatorException;
 import org.biopax.validator.api.beans.Validation;
 

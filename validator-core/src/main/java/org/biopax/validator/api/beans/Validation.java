@@ -51,7 +51,7 @@ public class Validation implements Serializable {
 	private boolean fix = false;
 	@XmlAttribute(required=false)
 	private Behavior threshold;	
-	// limit not fixed error cases (1 means "fall-fast" mode, i.e., stop after the first serious and not fixed error)
+	// limit not fixed error cases (1 means "fail-fast" mode, i.e., stop after the first serious and not fixed error)
 	@XmlAttribute(required=false)
 	private int maxErrors;
 	@XmlAttribute(required=false)
@@ -65,10 +65,10 @@ public class Validation implements Serializable {
 	 * @param idCalculator a strategy object to get a domain-specific identifier (for reporting)
 	 */
 	public Validation(Identifier idCalculator) {
-		this.error = new TreeSet<ErrorType>();
-		this.objects = Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>());
+		this.error = new TreeSet<>();
+		this.objects = Collections.newSetFromMap(new ConcurrentHashMap<>());
 		this.description = "unknown";
-		this.comment = new HashSet<String>();
+		this.comment = new HashSet<>();
 		this.fix = false;
 		this.threshold = Behavior.WARNING;
 		this.maxErrors = Integer.MAX_VALUE;

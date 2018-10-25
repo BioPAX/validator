@@ -4,13 +4,9 @@ import org.biopax.validator.api.beans.Validation;
 
 
 /**
- * Validation rule interface.
- * Although at run time T is a BioPAXElement
- * (this is 100% true for the current version),
- * at compile time, when implementing a rule, one may
- * prefer to use other interfaces as well, e.g.,
- * Process or Named. Therefore, "T extends BioPAXElement"
- * is not used here.
+ * A validation rule.
+ *
+ * @param <T> a type of a model object or a data parser, stream, etc.
  *
  * @author rodche
  */

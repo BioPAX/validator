@@ -28,6 +28,7 @@ import org.biopax.validator.api.beans.Behavior;
 import org.biopax.validator.api.beans.ErrorType;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 
 
@@ -40,73 +41,74 @@ import org.springframework.stereotype.Service;
  * 
  * @author rodche
  */
+@Configurable
 @Service
 public class BiopaxValidator implements Validator {
 	private static final Log log = LogFactory.getLog(BiopaxValidator.class);
-	
-    @Autowired
-	private Set<Rule<?>> rules;  
-    
+
+	@Autowired
+	private Set<Rule<?>> rules;
+
 	private final Set<Validation> results;
-    
+
 	@Autowired
 	private ValidatorUtils utils;
-	
-	
-    public BiopaxValidator() {
+
+
+	public BiopaxValidator() {
 		results = Collections.newSetFromMap(new ConcurrentHashMap<Validation, Boolean>());
 	}
-    
-    
-    public void setRules(Set<Rule<?>> rules) {
+
+
+	public void setRules(Set<Rule<?>> rules) {
 		this.rules = rules;
 	}
 
-    
-    public Set<Rule<?>> getRules() {
+
+	public Set<Rule<?>> getRules() {
 		return rules;
 	}
 
-    
-    public Collection<Validation> getResults() {
-    	return results;
-    }
-    
-    
+
+	public Collection<Validation> getResults() {
+		return results;
+	}
+
+
 	public void validate(final Validation validation) {
 		assert(validation != null);
-		
+
 		if (validation == null || validation.getModel() == null) {
 			throw new ValidatorException(
 				"Failed: no BioPAX model to validate " +
-				"(have you successfully imported or created one already?)");
+					"(have you successfully imported or created one already?)");
 		}
 
 		// register the validation (if not done already)
 		if (!getResults().contains(validation)) {
-			getResults().add(validation); 
+			getResults().add(validation);
 		}
-		
-		
+
+
 		// break if max.errors exceeded (- reported by AOP interceptors, while parsing a file, or - in previous runs)
 		if (validation.isMaxErrorsSet()
-				&& validation.getNotFixedErrors() > validation.getMaxErrors()) {
+			&& validation.getNotFixedErrors() > validation.getMaxErrors()) {
 			log.info("Errors limit (" + validation.getMaxErrors() + ") is exceeded; exitting...");
-			return;	
+			return;
 		}
-		
-		
+
+
 		Model model = (Model) validation.getModel();
 
 		log.debug("validating model: " + model + " that has "
-					+ model.getObjects().size() + " objects");
-				
+			+ model.getObjects().size() + " objects");
+
 		if(model.getLevel() != BioPAXLevel.L3) {
-   			model = (new LevelUpgrader()).filter(model);
-   			validation.setModel(model);
-   			log.info("Upgraded to BioPAX Level3 model: " + validation.getDescription());			
-   		}
-		
+			model = (new LevelUpgrader()).filter(model);
+			validation.setModel(model);
+			log.info("Upgraded to BioPAX Level3 model: " + validation.getDescription());
+		}
+
 		assert(model != null && model.getLevel() == BioPAXLevel.L3);
 
 		// Check/fix Rule<? extends BioPAXElement> rules concurrently (low risk of getting CMEx), 
@@ -116,8 +118,8 @@ public class BiopaxValidator implements Validator {
 
 		// First, check/fix individual objects
 		// (no need to copy; these rules cannot add/remove objects in model)
-		for (BioPAXElement el : model.getObjects()) 
-		{	
+		for (BioPAXElement el : model.getObjects())
+		{
 			// rules can check/fix specific elements
 //			for (Rule rule : rules) {				
 //				Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
@@ -126,35 +128,35 @@ public class BiopaxValidator implements Validator {
 //				execute(exec, rule, validation, (Object) el);
 //			}
 			//sequentially apply all (capable,enabled) rules to the object in a separate thread
-			execute(exec, rules, validation, (Object) el);			
-		}		
+			execute(exec, rules, validation, (Object) el);
+		}
 		exec.shutdown(); //end accepting new jobs
 		try {
 			exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			throw new ValidatorException("Interrupted unexpectedly!");
-		}		
-		
+		}
+
 		//Second, apply all Rule<Model> rules -
 		//run Rule<Model> rules concurrently
-		exec = Executors.newFixedThreadPool(50);		
-		for (Rule rule : rules) 
+		exec = Executors.newFixedThreadPool(50);
+		for (Rule rule : rules)
 		{
 			Behavior behavior = utils
-				.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
-	        if (behavior == Behavior.IGNORE) 
-	        	continue; // skip disabled rule	        
-	        execute(exec, rule, validation, model);
-		}		
+				.getRuleBehavior(rule.getClass().getName(), validation.getProfile());
+			if (behavior == Behavior.IGNORE)
+				continue; // skip disabled rule
+			execute(exec, rule, validation, model);
+		}
 		exec.shutdown(); //end accepting jobs
 		try {
 			exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			throw new ValidatorException("Interrupted unexpectedly!");
 		}
-		
+
 		log.debug("All rules checked!");
-				
+
 		if (validation.isFix()) {
 			// discover, explicitly add child elements to the model
 			model.repair();
@@ -164,14 +166,14 @@ public class BiopaxValidator implements Validator {
 
 		// add comments and some statistics
 		validation.addComment("number of interactions : "
-				+ model.getObjects(Interaction.class).size());
+			+ model.getObjects(Interaction.class).size());
 		validation.addComment("number of physical entities : "
-				+ model.getObjects(PhysicalEntity.class).size());
+			+ model.getObjects(PhysicalEntity.class).size());
 		validation.addComment("number of genes : "
-				+ model.getObjects(Gene.class).size());
+			+ model.getObjects(Gene.class).size());
 		validation.addComment("number of pathways : "
-				+ model.getObjects(Pathway.class).size());
-		
+			+ model.getObjects(Pathway.class).size());
+
 		//update all error counts (total, fixed, notfixed)
 		for(ErrorType errorType : validation.getError()) {
 			errorType.setTotalCases(errorType.countErrors(null, null, false));
@@ -185,7 +187,7 @@ public class BiopaxValidator implements Validator {
 
 
 	private void execute(ExecutorService exec, final Rule rule,
-			final Validation validation, final Object obj) 
+											 final Validation validation, final Object obj)
 	{
 		exec.execute(new Runnable() {
 			@SuppressWarnings("unchecked") //obj can be either Model or a BPE
@@ -193,48 +195,48 @@ public class BiopaxValidator implements Validator {
 				try {
 					if (rule.canCheck(obj))
 						rule.check(validation, obj);
-				} catch (Throwable t) { 
+				} catch (Throwable t) {
 					//if we're here, there is probably a bug in the rule or validator!
 					String id = validation.identify(obj);
-		   			log.fatal(rule + ".check(" + id 
-		    			+ ") threw the exception: " + t.toString(), t);
-		   			// anyway, report it almost normally (for a user to see this in the results too)
-					validation.addError(utils.createError(id, "exception", 
+					log.fatal(rule + ".check(" + id
+						+ ") threw the exception: " + t.toString(), t);
+					// anyway, report it almost normally (for a user to see this in the results too)
+					validation.addError(utils.createError(id, "exception",
 						rule.getClass().getName(), null, false, t));
-		    	}
+				}
 			}
 		});
 	}
-	
+
 	private void execute(ExecutorService exec, final Set<Rule<?>> rules,
-			final Validation validation, final Object obj) 
+											 final Validation validation, final Object obj)
 	{
 		exec.execute(new Runnable() {
 			@SuppressWarnings("unchecked") //obj can be either Model or a BPE
 			public void run() {
 				for(Rule rule : rules) {
 					Behavior behavior = utils
-						.getRuleBehavior(rule.getClass().getName(), validation.getProfile());    	
-				    if (behavior == Behavior.IGNORE) 
-				    	continue; // skip disabled rule
-				    
-				    try {
-				    	if (rule.canCheck(obj))
-				    		rule.check(validation, obj);					
-				    } catch (Throwable t) { 
-				    	//if we're here, there is probably a bug in the rule or validator!
-				    	String id = validation.identify(obj);
-				    	log.fatal(rule + ".check(" + id 
-				    			+ ") threw the exception: " + t.toString(), t);
-				    	// anyway, report it almost normally (for a user to see this in the results too)
-				    	validation.addError(utils.createError(id, "exception", 
-				    			rule.getClass().getName(), null, false, t));
-				    }
+						.getRuleBehavior(rule.getClass().getName(), validation.getProfile());
+					if (behavior == Behavior.IGNORE)
+						continue; // skip disabled rule
+
+					try {
+						if (rule.canCheck(obj))
+							rule.check(validation, obj);
+					} catch (Throwable t) {
+						//if we're here, there is probably a bug in the rule or validator!
+						String id = validation.identify(obj);
+						log.fatal(rule + ".check(" + id
+							+ ") threw the exception: " + t.toString(), t);
+						// anyway, report it almost normally (for a user to see this in the results too)
+						validation.addError(utils.createError(id, "exception",
+							rule.getClass().getName(), null, false, t));
+					}
 				}
 			}
 		});
-	}	
-	
+	}
+
 
 	public void importModel(Validation validation, InputStream inputStream) {
 		// add the parser
@@ -242,30 +244,30 @@ public class BiopaxValidator implements Validator {
 		simpleReader.mergeDuplicates(true);
 		associate(inputStream, validation);
 		associate(simpleReader, validation);
-		/* 
+		/*
 		 * build a model and associate it with the validation (for post-validation later on);
 		 * during this, many errors/warnings may be caught and reported via AOP ;))
 		 */
-		Model model = simpleReader.convertFromOWL(inputStream); 
-		
+		Model model = simpleReader.convertFromOWL(inputStream);
+
 		if(model == null)
 			throw new ValidatorException("Failed importing a BioPAX model!");
-		
+
 		associate(model, validation);
 	}
-	
-	
+
+
 	public void associate(Object obj, Validation validation) {
 		assert(validation != null);
-		
+
 		if (!getResults().contains(validation)) {
 			if(validation != null)
 				getResults().add(validation); // registered a new one
-			else 
-				log.warn("Object " + obj + 
+			else
+				log.warn("Object " + obj +
 					" is being associated with NULL (Validation)!");
 		}
-		
+
 		if(obj instanceof Model) {
 			validation.setModel((Model) obj);
 		} else {
@@ -274,24 +276,24 @@ public class BiopaxValidator implements Validator {
 	}
 
 
-	public Collection<Validation> findValidation(Object o) 
-	{		
+	public Collection<Validation> findValidation(Object o)
+	{
 		// add forcedly associated keys
-		Collection<Validation> keys = new HashSet<Validation>();	
-		
-		if(o == null 
-				|| o.getClass().isPrimitive()
-				|| o instanceof String) {
+		Collection<Validation> keys = new HashSet<Validation>();
+
+		if(o == null
+			|| o.getClass().isPrimitive()
+			|| o instanceof String) {
 			return keys;
 		}
-		
+
 		for(Validation r: results) {
-			if (r.getObjects().contains(o) 
-				|| o.equals(r.getModel())) 
+			if (r.getObjects().contains(o)
+				|| o.equals(r.getModel()))
 			{
 				keys.add(r);
-			} 
-			else if (o instanceof BioPAXElement) 
+			}
+			else if (o instanceof BioPAXElement)
 			{
 				// associate using member models
 				BioPAXElement bpe = (BioPAXElement) o;
@@ -302,18 +304,18 @@ public class BiopaxValidator implements Validator {
 			}
 		}
 
-		if (keys.isEmpty()) 
+		if (keys.isEmpty())
 			log.debug("findKey: no result keys found "
-						+ "for the object : " + o);
-		
+				+ "for the object : " + o);
+
 		return keys;
 	}
-	
-	
+
+
 	public void indirectlyAssociate(Object parent, Object child) {
-		if (parent == null || child==null 
-				|| child.getClass().isPrimitive()
-				|| child instanceof String) {
+		if (parent == null || child==null
+			|| child.getClass().isPrimitive()
+			|| child instanceof String) {
 			return;
 		}
 
@@ -322,45 +324,45 @@ public class BiopaxValidator implements Validator {
 		}
 	}
 
-   
+
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * Saves or updates an error/warning case, found by an external tool, in all
 	 * {@link Validation} tasks known to this validator instance. 
 	 * This method is used by, e.g., AOP interceptors, which sense, catch, and
 	 * register problems that occur in external modules, such as Paxtools,
 	 * during the data read and/or modify.
-	 *  
+	 *
 	 */
-	public void report(Object obj, String errorCode, String reportedBy, boolean isFixed, Object... args) 
-	{		
+	public void report(Object obj, String errorCode, String reportedBy, boolean isFixed, Object... args)
+	{
 		if(obj == null) {
 			log.error("Attempted to registed an error " +
-					errorCode + " by " + reportedBy + " with NULL object");
+				errorCode + " by " + reportedBy + " with NULL object");
 			return;
 		}
-		
-		
-    	Collection<Validation> validations = findValidation(obj);			
+
+
+		Collection<Validation> validations = findValidation(obj);
 		if(validations.isEmpty()) {
 			// the object is not associated neither with parser nor model
-			log.warn("No validations are associated with the object: " 
-				+ obj + "; user won't receive this message: " + errorCode 
+			log.warn("No validations are associated with the object: "
+				+ obj + "; user won't receive this message: " + errorCode
 				+ "(fixed=" + isFixed + ") by " + reportedBy + "; " + args );
 		}
-		
+
 		// add to the corresponding validation result
-		for(Validation v: validations) { 	
-			ErrorType err = utils.createError(v.identify(obj), 
-					errorCode, reportedBy, v.getProfile(), isFixed, args);			
+		for(Validation v: validations) {
+			ErrorType err = utils.createError(v.identify(obj),
+				errorCode, reportedBy, v.getProfile(), isFixed, args);
 
 			// add or update: if there was the same type error,
 			// this will update/add to existing error cases (unique type-object-reporter combinations) 
 			v.addError(err);
-			
+
 			log.debug(v.getDescription() + " - added/updated " + err + " for " + obj + " as: " + isFixed);
-		}	
+		}
 
 	}
 }

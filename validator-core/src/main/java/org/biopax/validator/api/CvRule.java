@@ -4,7 +4,11 @@ package org.biopax.validator.api;
 import java.util.Set;
 
 
-
+/**
+ * A controlled vocabulary (ontology) term and context rule for some object property.
+ *
+ * @param <T> object type to check
+ */
 public interface CvRule<T> extends Rule<T>{
 
 	/**

@@ -1,16 +1,13 @@
 package org.biopax.validator.api;
 
 /**
- * This is a generic functional object (strategy)
+ * A functional object (strategy)
  * interface that contain the only method, which
  * is called by the validator framework to get an
- * identifier or name of a model element to report
- * an error about.
- *
- * Not BioPAX specific.
+ * identifier or name of a model element or parser
+ * and report an error about it.
  *
  * @author rodche
- *
  */
 public interface Identifier {
 

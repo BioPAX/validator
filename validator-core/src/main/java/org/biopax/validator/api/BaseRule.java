@@ -7,25 +7,22 @@ import org.biopax.validator.api.beans.Validation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Abstract validation rule.
+ * A validation rule.
  * 
  * @author rodche
  *
  * @param <T> a type the rule can validate, though it also depends on {@link #canCheck(Object)} method implementation
  */
-public abstract class AbstractRule<T> implements Rule<T> {
+public abstract class BaseRule<T> implements Rule<T> {
 
     protected Log logger;
 
-    @Autowired
     protected ValidatorUtils utils;
-    
-    
-    public AbstractRule() {
-        logger = LogFactory.getLog(this.getClass()); // concrete class
+
+    public BaseRule() {
+        logger = LogFactory.getLog(this.getClass());
     }
 
     
@@ -55,8 +52,7 @@ public abstract class AbstractRule<T> implements Rule<T> {
     			? utils.createError(
     				thingId, code, getClass().getName(), validation.getProfile(), setFixed, args)
     			// when - no config. available (JUnit tests?); it will be 'ERROR' type with default messages:
-    			: ValidatorUtils.createError(null, null,
-    				thingId, code, getClass().getName(), null, setFixed, args);
+    			: ValidatorUtils.createError(thingId, code, getClass().getName(), null, setFixed, args);
     	
     	validation.addError(error);
 
