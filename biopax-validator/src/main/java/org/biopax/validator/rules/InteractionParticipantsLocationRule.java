@@ -1,8 +1,5 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
 import java.util.Set;
 
@@ -11,7 +8,7 @@ import org.biopax.paxtools.model.level3.Interaction;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.TemplateReaction;
 import org.biopax.paxtools.model.level3.Transport;
-import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
 

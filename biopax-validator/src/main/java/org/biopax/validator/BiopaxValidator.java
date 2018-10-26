@@ -1,4 +1,4 @@
-package org.biopax.validator.impl;
+package org.biopax.validator;
 
 import java.io.InputStream;
 import java.util.*;

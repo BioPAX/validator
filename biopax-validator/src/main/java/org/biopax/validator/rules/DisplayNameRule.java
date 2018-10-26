@@ -1,13 +1,9 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
-
 
 import org.biopax.paxtools.model.level3.Named;
 import org.biopax.paxtools.model.level3.Provenance;
-import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
 

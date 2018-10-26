@@ -1,8 +1,5 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
 import org.apache.commons.collections15.CollectionUtils;
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
@@ -10,7 +7,7 @@ import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.Transport;
-import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
 

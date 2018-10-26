@@ -17,7 +17,7 @@ import org.biopax.validator.api.Validator;
 import org.biopax.validator.api.beans.Behavior;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.api.beans.ValidatorResponse;
-import org.biopax.validator.impl.BiopaxIdentifier;
+import org.biopax.validator.BiopaxIdentifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;

@@ -1,8 +1,5 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +9,7 @@ import org.biopax.paxtools.controller.ModelUtils;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.UtilityClass;
-import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.utils.Cluster;
 import org.springframework.stereotype.Component;

@@ -12,7 +12,7 @@ import org.biopax.validator.api.beans.ErrorCaseType;
 import org.biopax.validator.api.beans.ErrorType;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.api.beans.ValidatorResponse;
-import org.biopax.validator.impl.BiopaxIdentifier;
+import org.biopax.validator.BiopaxIdentifier;
 import org.junit.Before;
 import org.junit.Test;
 

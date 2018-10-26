@@ -1,12 +1,9 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
 import org.biopax.paxtools.model.level3.ModificationFeature;
 import org.biopax.paxtools.model.level3.SequenceModificationVocabulary;
-import org.biopax.validator.impl.CardinalityAndRangeRule;
+import org.biopax.validator.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**

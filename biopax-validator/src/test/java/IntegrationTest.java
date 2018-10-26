@@ -16,7 +16,7 @@ import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.api.beans.Validation;
-import org.biopax.validator.impl.BiopaxIdentifier;
+import org.biopax.validator.BiopaxIdentifier;
 import org.biopax.validator.rules.CellularLocationCvRule;
 import org.biopax.validator.rules.InteractionTypeCvRule;
 import org.biopax.validator.rules.ProteinModificationFeatureCvRule;

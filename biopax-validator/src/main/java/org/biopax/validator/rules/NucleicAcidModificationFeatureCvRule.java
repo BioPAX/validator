@@ -1,8 +1,5 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.ModificationFeature;
@@ -12,7 +9,7 @@ import org.biopax.paxtools.model.level3.NucleicAcidRegionReference;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.validator.api.CvRestriction;
 import org.biopax.validator.api.CvRestriction.UseChildTerms;
-import org.biopax.validator.impl.CvTermsRule;
+import org.biopax.validator.CvTermsRule;
 import org.springframework.stereotype.Component;
 
 /**

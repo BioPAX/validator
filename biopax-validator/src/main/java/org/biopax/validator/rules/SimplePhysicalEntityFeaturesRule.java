@@ -1,15 +1,12 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
 import org.biopax.paxtools.controller.ShallowCopy;
 import org.biopax.paxtools.model.level3.EntityFeature;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.normalizer.Normalizer;
-import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
 

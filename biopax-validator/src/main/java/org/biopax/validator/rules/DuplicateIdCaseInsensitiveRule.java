@@ -1,14 +1,11 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
 import java.util.Set;
 
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
-import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.utils.Cluster;
 import org.springframework.stereotype.Component;

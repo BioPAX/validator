@@ -1,13 +1,10 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.paxtools.controller.PrimitivePropertyEditor;
 import org.biopax.paxtools.controller.SimpleEditorMap;

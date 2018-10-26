@@ -1,8 +1,5 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
 import org.biopax.paxtools.model.level3.BindingFeature;
 import org.biopax.paxtools.model.level3.Complex;
@@ -10,7 +7,7 @@ import org.biopax.paxtools.model.level3.ComplexAssembly;
 import org.biopax.paxtools.model.level3.Entity;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.util.ClassFilterSet;
-import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
 

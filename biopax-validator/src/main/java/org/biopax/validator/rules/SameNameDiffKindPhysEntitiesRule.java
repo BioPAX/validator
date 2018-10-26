@@ -1,8 +1,5 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +8,7 @@ import org.apache.commons.collections15.CollectionUtils;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
-import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.utils.Cluster;
 import org.springframework.stereotype.Component;

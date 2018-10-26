@@ -1,10 +1,7 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
-import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
 import org.biopax.paxtools.model.*;

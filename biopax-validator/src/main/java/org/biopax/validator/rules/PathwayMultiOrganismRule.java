@@ -1,5 +1,6 @@
 package org.biopax.validator.rules;
 
+
 import org.biopax.paxtools.controller.Fetcher;
 import org.biopax.paxtools.controller.PathAccessor;
 import org.biopax.paxtools.controller.PropertyEditor;
@@ -7,7 +8,7 @@ import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.model.level3.BioSource;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.util.Filter;
-import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
 

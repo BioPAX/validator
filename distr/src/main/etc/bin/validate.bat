@@ -1,4 +1,4 @@
-set VALIDATOR_OPTS="-javaagent:lib/spring-instrument-${spring.version}.jar -Xmx2g -Dfile.encoding=UTF-8 --add-opens java.base/java.lang=ALL-UNNAMED"
+set VALIDATOR_OPTS="-javaagent:lib/spring-instrument-${spring.version}.jar -Xmx2g -Dfile.encoding=UTF-8"
 
 REM make sure the right (the one you want) java installation directory 
 REM goes before the system java, etc. in your current PATH

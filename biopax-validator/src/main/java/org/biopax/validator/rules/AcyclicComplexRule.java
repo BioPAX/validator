@@ -8,9 +8,8 @@ import org.biopax.paxtools.controller.Traverser;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Complex;
-import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.util.Filter;
-import org.biopax.validator.api.AbstractRule;
+import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package org.biopax.validator.impl;
+package org.biopax.validator;
 
 import org.biopax.validator.api.BaseRule;
 import org.biopax.validator.api.ValidatorUtils;
@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 public abstract class AbstractRule<T> extends BaseRule<T> {
 
   @Autowired
-  protected ValidatorUtils utils;
+  public void setUtils(ValidatorUtils utils) {
+    this.utils = utils;
+  }
 
 }

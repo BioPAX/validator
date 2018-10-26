@@ -10,7 +10,6 @@ import org.biopax.validator.api.Validator;
 import org.biopax.validator.api.ValidatorUtils;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.api.beans.ValidatorResponse;
-import org.biopax.validator.impl.BiopaxIdentifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;

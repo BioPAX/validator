@@ -1,4 +1,4 @@
-package org.biopax.validator.impl;
+package org.biopax.validator;
 
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;

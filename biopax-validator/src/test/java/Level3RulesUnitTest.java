@@ -8,7 +8,7 @@ import org.biopax.paxtools.model.*;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.api.Rule;
 import org.biopax.validator.api.beans.Validation;
-import org.biopax.validator.impl.BiopaxIdentifier;
+import org.biopax.validator.BiopaxIdentifier;
 import org.biopax.validator.rules.*;
 import org.junit.Test;
 

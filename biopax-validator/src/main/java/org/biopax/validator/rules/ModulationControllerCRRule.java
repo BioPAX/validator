@@ -1,13 +1,10 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
 import org.biopax.paxtools.model.level3.Modulation;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
-import org.biopax.validator.impl.CardinalityAndRangeRule;
+import org.biopax.validator.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**

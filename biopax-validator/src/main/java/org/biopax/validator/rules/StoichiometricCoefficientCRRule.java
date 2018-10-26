@@ -1,11 +1,8 @@
 package org.biopax.validator.rules;
 
-/*
- *
- */
 
 import org.biopax.paxtools.model.level3.Stoichiometry;
-import org.biopax.validator.impl.CardinalityAndRangeRule;
+import org.biopax.validator.CardinalityAndRangeRule;
 import org.springframework.stereotype.Component;
 
 /**

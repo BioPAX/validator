@@ -7,7 +7,7 @@ import java.io.*;
 import org.biopax.validator.api.ValidatorUtils;
 import org.biopax.validator.api.Validator;
 import org.biopax.validator.api.beans.Validation;
-import org.biopax.validator.impl.BiopaxIdentifier;
+import org.biopax.validator.BiopaxIdentifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
