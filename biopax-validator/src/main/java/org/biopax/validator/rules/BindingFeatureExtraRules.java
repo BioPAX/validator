@@ -36,7 +36,6 @@ public class BindingFeatureExtraRules extends AbstractRule<Model> {
 				boolean ab = a.getBindsTo() != null 
 					&& b.getBindsTo() != null
 						&& a.getBindsTo().isEquivalent(b.getBindsTo());
-				
 				return !a.isEquivalent(b) && ab;
 			}
 		};

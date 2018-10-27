@@ -55,11 +55,6 @@ do run: mvn assembly:single manually instead
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-instrument-tomcat</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.biopax.validator</groupId>
 			<artifactId>biopax-validator-client</artifactId>
 			<version>${project.version}</version>

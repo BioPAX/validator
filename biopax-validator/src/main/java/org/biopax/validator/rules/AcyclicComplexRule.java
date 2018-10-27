@@ -8,7 +8,6 @@ import org.biopax.paxtools.controller.Traverser;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Complex;
-import org.biopax.paxtools.util.Filter;
 import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
@@ -31,14 +30,9 @@ public class AcyclicComplexRule extends AbstractRule<Complex> {
 	}
 
 	public void check(final Validation validation, final Complex thing) {
-		final Traverser traverser = new AbstractTraverser(
-				SimpleEditorMap.L3, new Filter<PropertyEditor>() {
-					//complex.component only
-					public boolean filter(PropertyEditor editor) {
-						return editor.getProperty().equals("component");
-					}
-				})
-		{
+		final Traverser traverser
+      = new AbstractTraverser(SimpleEditorMap.L3, e -> e.getProperty().equals("component"))
+    {
 			@Override
 			protected void visit(Object range, BioPAXElement domain, Model model,
 					PropertyEditor editor) {

@@ -121,22 +121,22 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<github.global.server>github</github.global.server>
-		<!-- dependencies versions -->
+
 		<spring.version>4.3.19.RELEASE</spring.version>
 		<paxtools.version>5.1.0</paxtools.version>
-		<license.licenseName>lgpl_v3</license.licenseName>
+		<license.licenseName>MIT</license.licenseName>
 		<junit.version>4.12</junit.version>
-		<commons-lang.version>3.4</commons-lang.version>
-		<aspectj.version>1.9.1</aspectj.version>
+		<commons-lang.version>3.8.1</commons-lang.version>
+		<aspectj.version>1.9.2</aspectj.version>
 		<slf4j.version>1.7.25</slf4j.version>
         <logback.version>1.2.3</logback.version>
-		<commons-beanutils.version>1.9.2</commons-beanutils.version>
+		<commons-beanutils.version>1.9.3</commons-beanutils.version>
 		<commons-digester.version>2.1</commons-digester.version>
 		<commons-collections.version>3.2.2</commons-collections.version>
-		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
+		<javax.servlet-api.version>4.0.1</javax.servlet-api.version>
 		<jstl.version>1.2</jstl.version>
 		<taglibs.standard.version>1.1.2</taglibs.standard.version>
-		<commons-fileupload.version>1.3.1</commons-fileupload.version>
+		<commons-fileupload.version>1.3.3</commons-fileupload.version>
 		<commons-io.version>2.4</commons-io.version>
 		<javax.activation.version>1.2.0</javax.activation.version>
 		<jaxb-runtime.version>2.4.0-b180830.0438</jaxb-runtime.version>
@@ -212,7 +212,7 @@
 					<version>${maven-surefire-plugin.version}</version>
 					<configuration>
 						<testFailureIgnore>false</testFailureIgnore>
-						<argLine>-Dfile.encoding=UTF-8 -Xmx2g -ea</argLine>
+						<argLine>-Dfile.encoding=UTF-8 -Xmx2g -ea --illegal-access=permit</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -462,11 +462,6 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-instrument</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-instrument-tomcat</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
 			<dependency>

@@ -32,7 +32,7 @@
 				</configuration>
 			</plugin>
 			<!-- Must run this exec-jar as:
-			java -Xmx2g -jar target/biopax-validator-web-<VERSION>-exec-war.jar
+			java -javaagent:spring-instrument.jar -Xmx2g -jar target/biopax-validator-web-<VERSION>-exec-war.jar
 			-->
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
@@ -53,13 +53,6 @@
 							<!-- An HTTP access log pattern ('combined', modified just to get actual client IP)
                                  to match the ELK built-in %{COMBINEDAPACHELOG} Grok pattern -->
 							<accessLogValveFormat>%{X-Forwarded-For}i %l %u %t "%r" %s %b "%{Referer}i" "%{User-Agent}i"</accessLogValveFormat>
-							<extraDependencies>
-								<dependency>
-									<groupId>org.springframework</groupId>
-									<artifactId>spring-instrument-tomcat</artifactId>
-									<version>${spring.version}</version>
-								</dependency>
-							</extraDependencies>
 							<finalName>biopax-validator.jar</finalName>
 						</configuration>
 					</execution>
@@ -74,55 +67,19 @@
 						<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
 					</buildArgs>
 				</configuration>
-        <!--<executions>-->
-          <!--<execution>-->
-            <!--<id>default</id>-->
-            <!--<phase>deploy</phase>-->
-            <!--<goals>-->
-              <!--<goal>build</goal>-->
-              <!--<goal>push</goal>-->
-            <!--</goals>-->
-          <!--</execution>-->
-        <!--</executions>-->
+				<!--<executions>-->
+				<!--<execution>-->
+				<!--<id>default</id>-->
+				<!--<phase>deploy</phase>-->
+				<!--<goals>-->
+				<!--<goal>build</goal>-->
+				<!--<goal>push</goal>-->
+				<!--</goals>-->
+				<!--</execution>-->
+				<!--</executions>-->
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>tomcat</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<webResources>
-								<resource>
-									<filtering>true</filtering>
-									<targetPath>WEB-INF/views</targetPath>
-									<directory>src/main/webapp/WEB-INF/views</directory>
-									<includes>
-										<include>*.jsp</include>
-									</includes>
-								</resource>
-								<resource>
-									<targetPath>META-INF</targetPath>
-									<directory>src/main/tomcat/conf</directory>
-									<includes>
-										<include>context.xml</include>
-									</includes>
-								</resource>
-							</webResources>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 	<dependencies>
 		<dependency>
@@ -174,17 +131,17 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>log4j-over-slf4j</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.2.3</version>
-      <scope>runtime</scope>
-    </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 </project>

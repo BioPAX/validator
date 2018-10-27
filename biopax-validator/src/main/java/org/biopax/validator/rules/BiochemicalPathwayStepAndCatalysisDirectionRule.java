@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
  * @author rodche
  */
 @Component
-public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRule<BiochemicalPathwayStep> {
-
+public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRule<BiochemicalPathwayStep>
+{
 	private void fix(BiochemicalPathwayStep t, Object... values) 
 	{	
 		if(values[0] instanceof Catalysis) {
@@ -74,9 +74,8 @@ public class BiochemicalPathwayStepAndCatalysisDirectionRule extends AbstractRul
 				}
 			}
 		} else {
-			error(validation, step, "direction.conflict", false, "BiochemicalPathwayStep: stepDirection is unknown");
+			error(validation, step, "direction.conflict", false,
+				"BiochemicalPathwayStep: stepDirection is unknown");
 		}
-		
 	}
-	
 }

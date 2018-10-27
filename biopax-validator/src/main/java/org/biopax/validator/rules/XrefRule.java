@@ -24,8 +24,9 @@ public class XrefRule extends AbstractRule<Xref>{
 		return (thing instanceof Xref);
 	}
 	
-    public void check(final Validation validation, Xref x) {
-        String db = x.getDb();
+	public void check(final Validation validation, Xref x) {
+
+		String db = x.getDb();
 		if (db != null) { 
 			// check db
 			String preferedDbName = xrefHelper.getPrimaryDbName(db); 
@@ -134,13 +135,12 @@ public class XrefRule extends AbstractRule<Xref>{
 									+ " 'id' auto-fixed! (was: " + id + ")");
 							break;
 						}			
-						
-						
+
 						break; //breaks this loop anyway
 					} //end while
 				}
 			} 
 		} 
-    }
+	}
 
 }
