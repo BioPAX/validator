@@ -1,4 +1,4 @@
-#The BioPAX Validator ${project.version}
+# The BioPAX Validator ${project.version}
 
  - [biopax.org](http://www.biopax.org) 
  - [official online validator](http://www.biopax.org/validator/)
@@ -21,7 +21,7 @@ molecular interactions and gene networks. Pathguide.org lists the
 pathway databases and tools that support BioPAX.
 
 
-##Usage
+## Usage
 
 Download the latest ZIP distribution from 
 
@@ -30,7 +30,7 @@ http://www.biopax.org/downloads/validator/
 Unpack and use (it also includes the WAR file). 
 
 
-###Console (batch)
+### Console (batch)
 
 When run as
 
@@ -62,7 +62,7 @@ is very time/resources consuming task (mainly, due to OBO files parsing);
 after it's done, next validations are performed much faster.
 
 
-###Web service
+### Web service
 
 ```sh server.sh```
 
@@ -73,7 +73,7 @@ Use --help parameter to see all the server options (e.g., httpPort, ajpPort)
 
 
 
-##Developer notes
+## Developer notes
 
 It's built with Java ${java.version} (requires 8 or above), Paxtools ${paxtools.version} (BioPAX Model API, Java library), 
 Spring Framework ${spring.version}, OXM, @AspectJ, AOP, LTW, etc. Validation _Rules_ are java 
