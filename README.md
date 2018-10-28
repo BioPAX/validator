@@ -1,5 +1,8 @@
 # The BioPAX Validator ${project.version}
 
+[![Build Status](https://travis-ci.org/BioPAX/validator.svg?branch=master)](https://travis-ci.org/BioPAX/validator) 
+[![codebeat badge](https://codebeat.co/badges/3a2a8c07-037f-4ab1-9a2c-f123c57e3b98)](https://codebeat.co/projects/github-com-biopax-validator-master)
+
  - [biopax.org](http://www.biopax.org) 
  - [official online validator](http://www.biopax.org/validator/)
  - [and wiki](https://github.com/BioPAX/validator/wiki)
