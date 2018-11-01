@@ -1,8 +1,5 @@
 package org.biopax.psidev.ontology_manager;
 
-/*
- *
- */
 
 import java.util.Properties;
 import java.util.Set;

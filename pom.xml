@@ -8,10 +8,6 @@
 	<version>5.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<prerequisites>
-		<maven>3.3</maven>
-	</prerequisites>
-
 	<modules>
 		<module>validator-core</module>
 		<module>obo-fetcher</module>
