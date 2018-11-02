@@ -209,6 +209,7 @@
 					<configuration>
 						<testFailureIgnore>false</testFailureIgnore>
 						<argLine>-Dfile.encoding=UTF-8 -Xmx2g -ea --illegal-access=permit</argLine>
+						<!--important since the last ubuntu sec. update and supposedly surefire bug-->
 						<useSystemClassLoader>false</useSystemClassLoader>
 					</configuration>
 				</plugin>
