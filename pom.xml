@@ -143,7 +143,7 @@
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<maven-war-plugin.version>3.2.2</maven-war-plugin.version>
 		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-		<maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
+		<maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<maven-site-plugin.version>3.7.1</maven-site-plugin.version>
@@ -209,6 +209,7 @@
 					<configuration>
 						<testFailureIgnore>false</testFailureIgnore>
 						<argLine>-Dfile.encoding=UTF-8 -Xmx2g -ea --illegal-access=permit</argLine>
+						<useSystemClassLoader>false</useSystemClassLoader>
 					</configuration>
 				</plugin>
 				<plugin>
