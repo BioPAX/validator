@@ -13,27 +13,27 @@
 	<url>https://biopax.github.io/validator</url>
 
 	<build>
-		<finalName>biopax-validator</finalName>
+		<!--<finalName>biopax-validator</finalName>-->
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<webResources>
-						<resource>
-							<filtering>true</filtering>
-							<targetPath>WEB-INF/views</targetPath>
-							<directory>src/main/webapp/WEB-INF/views</directory>
-							<includes>
-								<include>*.jsp</include>
-							</includes>
-						</resource>
-					</webResources>
-				</configuration>
-			</plugin>
-			<!-- Must run this exec-jar as:
-			java -javaagent:spring-instrument.jar -Xmx2g -jar target/biopax-validator-web-<VERSION>-exec-war.jar
-			-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <filtering>true</filtering>
+                            <targetPath>WEB-INF/views</targetPath>
+                            <directory>src/main/webapp/WEB-INF/views</directory>
+                            <includes>
+                                <include>*.jsp</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+<!-- Must run the exec-jar as:
+java -javaagent:spring-instrument.jar -Xmx2g -jar target/biopax-validator-web-<VERSION>-exec-war.jar
+-->
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
@@ -46,14 +46,10 @@
 						</goals>
 						<phase>package</phase>
 						<configuration>
-							<path>/</path>
-							<enableNaming>false</enableNaming>
+                            <path>/</path>
 							<attachArtifactClassifier>exec-war</attachArtifactClassifier>
 							<attachArtifactClassifierType>jar</attachArtifactClassifierType>
-							<!-- An HTTP access log pattern ('combined', modified just to get actual client IP)
-                                 to match the ELK built-in %{COMBINEDAPACHELOG} Grok pattern -->
-							<accessLogValveFormat>%{X-Forwarded-For}i %l %u %t "%r" %s %b "%{Referer}i" "%{User-Agent}i"</accessLogValveFormat>
-							<finalName>biopax-validator.jar</finalName>
+                            <finalName>biopax-validator.jar</finalName>
 						</configuration>
 					</execution>
 				</executions>

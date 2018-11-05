@@ -9,6 +9,8 @@
             <outputPatternAsHeader>true</outputPatternAsHeader>
         </encoder>
     </appender>
+    <logger name="org.biopax.validator" level="info"/>
+    <logger name="org.springframework" level="info"/>
     <root level="warn">
         <appender-ref ref="console"/>
     </root>

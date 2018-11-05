@@ -14,8 +14,8 @@
 <h2>BioPAX Semantic Rules</h2>
 
 <div class="row">
-<h4>Currently available (loaded) validation rules and corresponding
-level of error they report in each validation profile (mode).</h4>
+<h4>Loaded validation rules and corresponding
+level (error/warning/ignore) in each mode (profile).</h4>
 <table class="table table-striped table-bordered">
 <thead>
 <tr><th colspan="2"></th><th colspan="2">Profile and level</th></tr>

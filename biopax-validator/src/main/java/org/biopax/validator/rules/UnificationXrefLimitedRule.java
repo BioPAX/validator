@@ -60,26 +60,20 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
   // to init on the first check(..) call
   void initInternalMaps() {
     if (!ready) {
-      for (Class<? extends BioPAXElement> clazz : allow.keySet()) {
-        final Set<String> a = allow.get(clazz);
-        for (String db : new HashSet<String>(a)) {
-          Collection<String> synonymsOfDb = helper.getSynonymsForDbName(db);
-          a.addAll(synonymsOfDb);
-        }
-      }
-
-      for (Class<? extends BioPAXElement> clazz : deny.keySet()) {
-        final Set<String> a = deny.get(clazz);
-        for (String db : new HashSet<String>(a)) {
-          Collection<String> synonymsOfDb = helper.getSynonymsForDbName(db);
-          a.addAll(synonymsOfDb);
-        }
-      }
-
+      addDbSynonymsTo(allow);
+      addDbSynonymsTo(deny);
       ready = true;
     }
   }
 
+  private void addDbSynonymsTo(Map<Class<? extends BioPAXElement>,Set<String>> map) {
+    for (Map.Entry<Class<? extends BioPAXElement>,Set<String>> entry : map.entrySet()) {
+      Set<String> val = entry.getValue();
+      for (String db : new HashSet<>(val))
+        for (String s : helper.getSynonymsForDbName(db))
+          val.add(s);
+    }
+  }
 
   /*
    * Constructor requires the two sets to be defined in

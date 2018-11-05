@@ -60,7 +60,7 @@
 							<outputDirectory>${project.build.outputDirectory}/org/biopax/validator/api/schema</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${project.build.directory}/generated-resources/schemas</directory>
+									<directory>${project.build.directory}/generated-resources/schemagen</directory>
 									<includes>
 										<include>**/*.xsd</include>
 									</includes>

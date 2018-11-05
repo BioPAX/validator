@@ -24,7 +24,6 @@
       <excludes>
         <exclude>org.biopax.validator:biopax-validator-client:jar</exclude>
         <exclude>org.biopax.validator:biopax-validator-web:jar:exec-war</exclude>
-        <exclude>org.biopax.validator:distr:jar</exclude>
       </excludes>
       <unpack>false</unpack>
     </dependencySet>

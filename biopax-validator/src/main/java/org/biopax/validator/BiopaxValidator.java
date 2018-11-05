@@ -97,7 +97,6 @@ public class BiopaxValidator implements Validator {
 			return;
 		}
 
-
 		Model model = (Model) validation.getModel();
 
 		log.debug("validating model: " + model + " that has "
@@ -185,7 +184,6 @@ public class BiopaxValidator implements Validator {
 		validation.setSummary("different types of problem: " + validation.getError().size());
 	}
 
-
 	private void execute(ExecutorService exec, final Rule rule,
 											 final Validation validation, final Object obj)
 	{
@@ -256,7 +254,6 @@ public class BiopaxValidator implements Validator {
 		associate(model, validation);
 	}
 
-
 	public void associate(Object obj, Validation validation) {
 		assert(validation != null);
 
@@ -311,7 +308,6 @@ public class BiopaxValidator implements Validator {
 		return keys;
 	}
 
-
 	public void indirectlyAssociate(Object parent, Object child) {
 		if (parent == null || child==null
 			|| child.getClass().isPrimitive()
@@ -323,7 +319,6 @@ public class BiopaxValidator implements Validator {
 			associate(child, key);
 		}
 	}
-
 
 	/**
 	 * {@inheritDoc}

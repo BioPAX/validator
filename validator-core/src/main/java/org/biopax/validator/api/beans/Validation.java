@@ -22,7 +22,7 @@ public class Validation implements Serializable {
 	
 	@XmlTransient
 	private Object model;
-	// "forcedly" associated objects, i.e., parser, model(s), and dangling elements 
+	// other associated objects, such as parser, stream, another model, non-model elements
 	@XmlTransient
 	private final Set<Object> objects;
 	// extra/optional settings
@@ -31,8 +31,7 @@ public class Validation implements Serializable {
 	// getting object's ID strategy (for error reporting)
 	@XmlTransient
 	private final Identifier idCalc;
-	
-	
+
 	@XmlElement(required=false)
 	private String modelData; //cannot store more than ~1Gb data.
 	@XmlElement
@@ -51,7 +50,8 @@ public class Validation implements Serializable {
 	private boolean fix = false;
 	@XmlAttribute(required=false)
 	private Behavior threshold;	
-	// limit not fixed error cases (1 means "fail-fast" mode, i.e., stop after the first serious and not fixed error)
+	// limit not fixed error cases (1 means "fail-fast" mode, i.e.,
+	// stop after the first serious and not fixed error)
 	@XmlAttribute(required=false)
 	private int maxErrors;
 	@XmlAttribute(required=false)

@@ -13,18 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
-public class ConfigController {
+public class InfoController {
 
   private Validator validator;
   private ValidatorUtils utils;
   private Properties errorTypes;
   private Set extraDbSynonyms;
 
-  public ConfigController() {
+  public InfoController() {
   }
 
-  public ConfigController(Validator validator, ValidatorUtils utils,
-                          Properties errorTypes, Set extraDbSynonyms) {
+  public InfoController(Validator validator, ValidatorUtils utils,
+                        Properties errorTypes, Set extraDbSynonyms) {
     this.validator = validator;
     this.utils = utils;
     this.errorTypes = errorTypes;

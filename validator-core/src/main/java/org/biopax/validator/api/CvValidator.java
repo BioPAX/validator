@@ -45,8 +45,7 @@ public interface CvValidator {
 	 * @param restrictions controlled vocabulary restrictions (on type, context, ontology terms)
 	 * @return set of valid ontology terms (turned into lower case)
 	 */
-	Set<String> getValidTermNamesLowerCase(
-			Collection<CvRestriction> restrictions);
+	Set<String> getValidTermNamesLowerCase(Collection<CvRestriction> restrictions);
 
 	/**
 	 * Gets term names and synonyms using the 
