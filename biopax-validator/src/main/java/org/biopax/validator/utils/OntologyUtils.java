@@ -358,11 +358,14 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
 
     // second, we populate unofficialDbNames by comparing
     // current allSynonyms (from Miriam and MI:0444) with extraSynonyms (from config. file)
-    for (String db : extraGroups)
-      if (!allSynonyms.contains(db))
-        unofficialDbNames.add(db);
+    if(extraGroups != null) {
+      for (String db : extraGroups)
+        if (!allSynonyms.contains(db))
+          unofficialDbNames.add(db);
 
-    extraGroups.getCollections().forEach(allSynonyms::addComposited);
+      extraGroups.getCollections().forEach(allSynonyms::addComposited);
+    }
+
     // find synonyms groups that overlap,
     Cluster<Collection<String>> clus = new Cluster<Collection<String>>() {
       @Override
@@ -401,11 +404,6 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
         this.allSynonyms.addComposited(groupsToMerge.iterator().next());
       }
     }
-
-    //TODO: move sanity checks to the integration tests
-    assert (!getSynonymsForDbName("EntrezGene").isEmpty());
-    assert (!getSynonymsForDbName("chebi").isEmpty());
-    assert xcheck();
   }
 
   @Override
@@ -461,8 +459,7 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
     return unofficialDbNames.contains(dbName(db));
   }
 
-  //sanity test
-  boolean xcheck() {
+  public boolean xcheck() {
     Collection<String>[] lists = allSynonyms.getCollections().toArray(new Collection[]{});
     for (int i = 0; i < lists.length; i++) {
       Collection<String> li = lists[i];
