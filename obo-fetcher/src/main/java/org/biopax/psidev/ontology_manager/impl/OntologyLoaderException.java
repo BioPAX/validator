@@ -5,13 +5,8 @@
  */
 package org.biopax.psidev.ontology_manager.impl;
 
-/*
- *
- */
-
-
 /**
- * TODO comment this
+ * Ontology loader/parser exception.
  *
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @version $Id: OntologyLoaderException.java 656 2007-06-29 11:18:19 +0100 (Fri, 29 Jun 2007) skerrien $

@@ -17,6 +17,7 @@ import org.biopax.paxtools.io.SimpleIOHandler.Triple;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.validator.api.AbstractAspect;
+import org.springframework.stereotype.Component;
 
 /**
  * This is the central aspect to report 
@@ -28,6 +29,7 @@ import org.biopax.validator.api.AbstractAspect;
  */
 @Configurable
 @Aspect
+@Component
 public class ExceptionsAspect extends AbstractAspect {
 
 	private static final Log log = LogFactory.getLog(ExceptionsAspect.class);

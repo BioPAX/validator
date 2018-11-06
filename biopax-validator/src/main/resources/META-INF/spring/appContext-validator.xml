@@ -188,11 +188,8 @@
 	</util:set>
 	<!-- end of the XrefRule config. -->
 
-	<bean id="validator" class="org.biopax.validator.BiopaxValidator" scope="singleton"/>
-
 	<!-- utils configuration -->
-	<bean id="rulesMessageSource"
-		  class="org.springframework.context.support.ResourceBundleMessageSource">
+	<bean id="rulesMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">
 			<list>
 				<value>rules</value> <!-- classpath:rules.properties resource -->
@@ -202,28 +199,6 @@
 		</property>
 	</bean>
 
-	<bean id="utils" class="org.biopax.validator.utils.BiopaxValidatorUtils">
-		<property name="messageSource" ref="rulesMessageSource" />
-		<property name="locale" value="en" />
-		<property name="maxErrors" value="10000" />
-	</bean>
-	<!-- end of utils config. -->
-
-	<bean id="ontologyManager" class="org.biopax.validator.utils.BiopaxOntologyManager" scope="singleton">
-		<constructor-arg index="0">
-			<util:properties local-override="false" location="classpath:obo.properties"/>
-		</constructor-arg>
-	</bean>
-
-	<!-- a helper and a proxy to access MIRIAM and MI database citation and regexps 
-   		to validate their corresponding IDs -->
-	<bean id="xrefHelper" class="org.biopax.validator.utils.XrefHelper" scope="singleton">
-		<constructor-arg ref="extraDbSynonyms"/>
-		<constructor-arg ref="ontologyManager" />
-	</bean>
-
-	<bean id="exceptionsAspect" class="org.biopax.validator.ExceptionsAspect"/>
-
-	<context:component-scan base-package="org.biopax.validator.rules"/>
+	<context:component-scan base-package="org.biopax.validator"/>
 
 </beans>

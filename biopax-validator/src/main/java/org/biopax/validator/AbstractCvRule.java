@@ -4,7 +4,7 @@ import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.validator.api.CvRestriction;
 import org.biopax.validator.api.CvRule;
-import org.biopax.validator.api.CvValidator;
+import org.biopax.validator.api.CvUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -20,7 +20,7 @@ import java.util.Set;
 public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRule<D> implements CvRule<D> {
 
   @Autowired
-  protected CvValidator ontologyManager;
+  protected CvUtils ontologyUtils;
 
   protected final Class<D> domain;
   protected final String property; // helps validate generic ControlledVocabulary instances
@@ -39,7 +39,7 @@ public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRu
   public AbstractCvRule(Class<D> domain, String property, CvRestriction... restrictions) {
     this.domain = domain;
     this.property = property;
-    this.restrictions = new HashSet<CvRestriction>(restrictions.length);
+    this.restrictions = new HashSet<>(restrictions.length);
     for (CvRestriction c : restrictions) {
       this.restrictions.add(c);
     }
@@ -47,10 +47,10 @@ public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRu
 
   @PostConstruct
   public void init() {
-    if (ontologyManager != null) {
-      setValidTerms(ontologyManager.getValidTermNames(this));
+    if (ontologyUtils != null) {
+      setValidTerms(ontologyUtils.getValidTermNames(this));
     } else {
-      throw new IllegalStateException("ontologyManager is NULL!");
+      throw new IllegalStateException("ontologyUtils is NULL!");
     }
   }
 
@@ -103,8 +103,8 @@ public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRu
    *
    * @return ontology manager
    */
-  public CvValidator getBiopaxOntologyManager() {
-    return ontologyManager;
+  public CvUtils getBiopaxOntologyManager() {
+    return ontologyUtils;
   }
 
   /**
@@ -127,9 +127,10 @@ public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRu
    * @return ontology IDs, such as e.g. 'MI', 'GO'
    */
   protected Set<String> getOntologyIDs() {
-    Set<String> ids = new HashSet<String>();
+    Set<String> ids = new HashSet<>();
     for (CvRestriction restriction : restrictions)
       ids.add(restriction.getOntologyId());
     return ids;
   }
+
 }

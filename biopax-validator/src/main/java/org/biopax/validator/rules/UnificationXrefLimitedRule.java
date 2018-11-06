@@ -5,7 +5,7 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
-import org.biopax.validator.utils.XrefHelper;
+import org.biopax.validator.XrefUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -53,7 +53,7 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
     deny.put(Interaction.class, new HashSet<String>(Arrays.asList("mi")));
   }
 
-  private XrefHelper helper;
+  private XrefUtils helper;
 
   private boolean ready = false;
 
@@ -82,8 +82,8 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
    * @param xrefHelper utils
    */
   @Autowired
-  public UnificationXrefLimitedRule(XrefHelper xrefHelper) {
-    helper = xrefHelper;
+  public UnificationXrefLimitedRule(XrefUtils xrefUtils) {
+    helper = xrefUtils;
   }
 
 

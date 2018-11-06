@@ -2,6 +2,7 @@ import static org.junit.Assert.*;
 
 import java.util.*;
 
+import org.biopax.validator.XrefUtils;
 import org.junit.*;
 import org.junit.runner.RunWith;
 
@@ -22,7 +23,6 @@ import org.biopax.validator.rules.InteractionTypeCvRule;
 import org.biopax.validator.rules.ProteinModificationFeatureCvRule;
 import org.biopax.validator.rules.XrefRule;
 import org.biopax.validator.rules.XrefSynonymDbRule;
-import org.biopax.validator.utils.XrefHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -30,16 +30,18 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
+ * Tests the BioPAX Validator.
+ *
+ * AspectJ LTW is disabled intentionally
+ * (here we don't check for rdf/xml parser or property editor errors)
+ *
  * @author rodche
  */
-//@Ignore
 @RunWith(SpringRunner.class)
-@ContextConfiguration(locations = {
-  "classpath:META-INF/spring/appContext-validator.xml"
-}) // AspectJ LTW is disabled!
+@ContextConfiguration("classpath:META-INF/spring/appContext-validator.xml")
 public class IntegrationTest {
   @Autowired
-  XrefHelper xrefHelper;
+  XrefUtils xrefUtils;
 
   @Autowired
   ApplicationContext context;
@@ -48,13 +50,11 @@ public class IntegrationTest {
   SimpleIOHandler simpleIO; // to write OWL examples of what rule checks
   final static String OUTDIR = IntegrationTest.class.getResource("").getPath();
 
-
   @Before
   public void setUp() {
     factory3 = BioPAXLevel.L3.getDefaultFactory();
     simpleIO = new SimpleIOHandler(BioPAXLevel.L3);
   }
-
 
   @Test
   public void testBuildPaxtoolsL2ModelSimple() {
@@ -67,7 +67,6 @@ public class IntegrationTest {
     assertFalse(model.getObjects().isEmpty());
   }
 
-
   @Test
   public void testBuildPaxtoolsL3ModelSimple() {
     System.out.println("with Level3 data");
@@ -78,7 +77,6 @@ public class IntegrationTest {
     assertNotNull(model);
     assertFalse(model.getObjects().isEmpty());
   }
-
 
   @Test
   public void testIsEquivalentUnificationXref() {
@@ -101,7 +99,6 @@ public class IntegrationTest {
 //    	assertFalse(x1.isEquivalent(x3)); // same ID does not matter anymore (since Apr'2011)!
     assertTrue(x1.isEquivalent(x3)); //only same ID and type matters if 'equals' and 'hashCode' were overridden in Paxtools...
   }
-
 
   /*
    * Tests:
@@ -129,40 +126,40 @@ public class IntegrationTest {
    */
   @Test
   public void testSynonymsWereRead() {
-    List<String> gs = xrefHelper.getSynonymsForDbName("go");
+    List<String> gs = xrefUtils.getSynonymsForDbName("go");
     assertTrue(gs.contains("GO"));
     assertTrue(gs.contains("GENE ONTOLOGY"));
     assertTrue(gs.contains("GENE_ONTOLOGY"));
 
-    assertTrue(xrefHelper.isUnofficialOrMisspelledDbName("GENE_ONTOLOGY"));
-    assertFalse(xrefHelper.isUnofficialOrMisspelledDbName("GO"));
-    assertTrue(xrefHelper.isUnofficialOrMisspelledDbName("medline"));
+    assertTrue(xrefUtils.isUnofficialOrMisspelledDbName("GENE_ONTOLOGY"));
+    assertFalse(xrefUtils.isUnofficialOrMisspelledDbName("GO"));
+    assertTrue(xrefUtils.isUnofficialOrMisspelledDbName("medline"));
   }
 
   @Test
   public void testXRefHelperContainsSynonyms() {
-    assertNotNull(xrefHelper.getPrimaryDbName("GO"));
-    assertNotNull(xrefHelper.getPrimaryDbName("GENE ONTOLOGY"));
-    assertNotNull(xrefHelper.getPrimaryDbName("GENE_ONTOLOGY"));
+    assertNotNull(xrefUtils.getPrimaryDbName("GO"));
+    assertNotNull(xrefUtils.getPrimaryDbName("GENE ONTOLOGY"));
+    assertNotNull(xrefUtils.getPrimaryDbName("GENE_ONTOLOGY"));
   }
 
   @Test
   public void testPrimarySynonym() {
     //not in Miriam: PIR
-    assertEquals("UNIPROT KNOWLEDGEBASE", xrefHelper.getPrimaryDbName("pir"));
+    assertEquals("UNIPROT KNOWLEDGEBASE", xrefUtils.getPrimaryDbName("pir"));
     //Miriam: Gene OntologyAccess
-    assertEquals("GENE ONTOLOGY", xrefHelper.getPrimaryDbName("go"));
-    assertEquals("KEGG COMPOUND", xrefHelper.getSynonymsForDbName("kegg compound").get(0));
-    assertEquals("KEGG COMPOUND", xrefHelper.getPrimaryDbName("ligand"));
-    assertEquals("KEGG GENOME", xrefHelper.getPrimaryDbName("kegg organism"));
-    assertEquals("KYOTO ENCYCLOPEDIA OF GENES AND GENOMES", xrefHelper.getPrimaryDbName("KEGG"));
+    assertEquals("GENE ONTOLOGY", xrefUtils.getPrimaryDbName("go"));
+    assertEquals("KEGG COMPOUND", xrefUtils.getSynonymsForDbName("kegg compound").get(0));
+    assertEquals("KEGG COMPOUND", xrefUtils.getPrimaryDbName("ligand"));
+    assertEquals("KEGG GENOME", xrefUtils.getPrimaryDbName("kegg organism"));
+    assertEquals("KYOTO ENCYCLOPEDIA OF GENES AND GENOMES", xrefUtils.getPrimaryDbName("KEGG"));
   }
 
   @Test
   public void testHasRegexp() {
-    List<String> goes = xrefHelper.getSynonymsForDbName("go");
+    List<String> goes = xrefUtils.getSynonymsForDbName("go");
     for (String db : goes) {
-      assertEquals("^GO:\\d{7}$", xrefHelper.getRegexpString(db));
+      assertEquals("^GO:\\d{7}$", xrefUtils.getRegexpString(db));
     }
   }
 
@@ -220,7 +217,8 @@ public class IntegrationTest {
     assertTrue(instance.canCheck(lcv));
     Validation v = new Validation(new BiopaxIdentifier());
     instance.check(v, lcv);
-    assertEquals(1, v.countErrors(lcv.getUri(), null, null, null, false, false));
+    assertEquals(1, v.countErrors(lcv.getUri(), null, null, null,
+      false, false));
   }
 
   @Test
@@ -246,12 +244,14 @@ public class IntegrationTest {
     x.setDb("ILLEGAL DB NAME");
     Validation v = new Validation(new BiopaxIdentifier());
     instance.check(v, x);
-    assertEquals(1, v.countErrors(x.getUri(), null, "unknown.db", null, false, false));
+    assertEquals(1, v.countErrors(x.getUri(), null, "unknown.db", null,
+      false, false));
 
     x.setDb("NCBI"); //ambiguous
     v = new Validation(new BiopaxIdentifier());
     instance.check(v, x);
-    assertEquals(1, v.countErrors(x.getUri(), null, "unknown.db", null, false, false));
+    assertEquals(1, v.countErrors(x.getUri(), null, "unknown.db", null,
+      false, false));
   }
 
 
@@ -263,7 +263,8 @@ public class IntegrationTest {
     x.setId("0000000");
     Validation v = new Validation(new BiopaxIdentifier());
     instance.check(v, x);
-    assertEquals(1, v.countErrors(x.getUri(), null, "invalid.id.format", null, false, false));
+    assertEquals(1, v.countErrors(x.getUri(), null, "invalid.id.format", null,
+      false, false));
   }
 
   /*
@@ -279,7 +280,6 @@ public class IntegrationTest {
     instance.check(v, x);
     assertTrue(v.getError().isEmpty());
   }
-
 
   @Test
   public void testInteractionTypeRule() {
@@ -330,9 +330,10 @@ public class IntegrationTest {
     ux = factory3.create(UnificationXref.class, "UnificationXref_MOD_00696");
     ux.setDb("MOD");
     ux.setId("MOD:00696");
-    	/* Note: in fact, both MOD:00696 and MI:0217 have synonym name "Phosphorylation"!
-    		TODO Validator (currently) checks names in the CV 'term' property only, but also should check what can be inferred from the xref.id!
-    	*/
+    /* Note: in fact, both MOD:00696 and MI:0217 have synonym name "Phosphorylation"!
+    	TODO Validator (currently) checks names in the CV 'term' property only,
+    	but also should check what can be inferred from the xref.id!
+    */
     iv.addXref(ux);
     m.add(ux);
     m.add(iv);
@@ -343,7 +344,6 @@ public class IntegrationTest {
 
     writeExample("testInteractionTypeRule.owl", m);
   }
-
 
   @Test
   public void testProteinModificationFeatureCvRule() {
@@ -379,7 +379,8 @@ public class IntegrationTest {
     x.setId("0000000");
     Validation v = new Validation(new BiopaxIdentifier());
     instance.check(v, x);
-    assertEquals(1, v.countErrors(x.getUri(), null, "db.name.spelling", null, false, false));
+    assertEquals(1, v.countErrors(x.getUri(), null, "db.name.spelling",
+      null, false, false));
 
     // use one of its official synonyms
     x.setDb("entre-zgene");
@@ -393,7 +394,8 @@ public class IntegrationTest {
     x.setId("0000000");
     v = new Validation(new BiopaxIdentifier());
     instance.check(v, x);
-    assertEquals(1, v.countErrors(x.getUri(), null, null, null, false, false));
+    assertEquals(1, v.countErrors(x.getUri(), null, null,
+      null, false, false));
     // use one of its official synonyms
     x.setDb("go");
     x.setId("0000000");
@@ -401,7 +403,6 @@ public class IntegrationTest {
     instance.check(v, x);
     assertTrue(v.getError().isEmpty());
   }
-
 
   private void writeExample(String file, Model model) {
     try {
@@ -411,4 +412,5 @@ public class IntegrationTest {
       throw new RuntimeException(e);
     }
   }
+
 }

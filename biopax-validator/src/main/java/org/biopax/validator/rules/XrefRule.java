@@ -4,7 +4,7 @@ package org.biopax.validator.rules;
 import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
-import org.biopax.validator.utils.XrefHelper;
+import org.biopax.validator.XrefUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class XrefRule extends AbstractRule<Xref>{
 
-    @Autowired
-    XrefHelper xrefHelper;
+  @Autowired
+  XrefUtils xrefUtils;
 
 	public boolean canCheck(Object thing) {
 		return (thing instanceof Xref);
@@ -29,24 +29,24 @@ public class XrefRule extends AbstractRule<Xref>{
 		String db = x.getDb();
 		if (db != null) { 
 			// check db
-			String preferedDbName = xrefHelper.getPrimaryDbName(db); 
+			String preferedDbName = xrefUtils.getPrimaryDbName(db);
 			if (preferedDbName == null) {
 				error(validation, x, "unknown.db", false, db);
 				return;
 			}
-			
-			//it's always in uppercase (by XrefHelper design)!
+
+			//it's always in uppercase by design
 			assert preferedDbName.equals(preferedDbName.toUpperCase());
 
 			// check id
 			String id = x.getId();
 			if (id != null) {
-				if (!xrefHelper.canCheckIdFormatIn(preferedDbName)) {
+				if (!xrefUtils.canCheckIdFormatIn(preferedDbName)) {
 					logger.info("Can't check IDs (no regexp) for " 
 							+ db + " (" + preferedDbName + ")");
-				} else if (!xrefHelper.checkIdFormat(preferedDbName, id)) {
+				} else if (!xrefUtils.checkIdFormat(preferedDbName, id)) {
 					
-					String regxp = xrefHelper.getRegexpString(preferedDbName);
+					String regxp = xrefUtils.getRegexpString(preferedDbName);
 					// report error with fixed=false 
 					error(validation, x, "invalid.id.format", false, db, preferedDbName, id, regxp);
 					
@@ -56,7 +56,7 @@ public class XrefRule extends AbstractRule<Xref>{
 						// (do before we next will try splitting it into id and idVersion parts)
 						if (preferedDbName.startsWith("UNIPROT")) {
 							if (id.contains("-")
-								&& xrefHelper.checkIdFormat("UniProt Isoform",id.toUpperCase())) 
+								&& xrefUtils.checkIdFormat("UniProt Isoform",id.toUpperCase()))
 							{
 								x.setDb("UniProt Isoform");
 								x.setId(id.toUpperCase());
@@ -67,7 +67,7 @@ public class XrefRule extends AbstractRule<Xref>{
 						} // guess it's in fact a PSI-MOD despite PSI-MI is used
 						else if (preferedDbName.equalsIgnoreCase("MOLECULAR INTERACTIONS ONTOLOGY")) {
 							if (id.toUpperCase().startsWith("MOD")
-								&& xrefHelper.checkIdFormat("MOD", id.toUpperCase())) 
+								&& xrefUtils.checkIdFormat("MOD", id.toUpperCase()))
 							{
 								x.setDb("PSI-MOD");
 								x.setId(id.toUpperCase());
@@ -85,7 +85,7 @@ public class XrefRule extends AbstractRule<Xref>{
 							i = id.lastIndexOf('-');
 						if(i > 0 && i < id.length()) {
 							String newId = id.substring(0, i);
-							if (xrefHelper.checkIdFormat(preferedDbName, newId)) {
+							if (xrefUtils.checkIdFormat(preferedDbName, newId)) {
 								x.setId(newId);
 								x.setIdVersion(id.substring(i + 1));
 								// update the error case, set fixed=true there
@@ -103,11 +103,11 @@ public class XrefRule extends AbstractRule<Xref>{
 							String prefix = regxp.substring(1, i).toUpperCase();
 							if (logger.isDebugEnabled())
 								logger.debug("Trying to fix id with missing prefix: " + prefix);
-							if(preferedDbName.equalsIgnoreCase(xrefHelper.getPrimaryDbName(prefix))
+							if(preferedDbName.equalsIgnoreCase(xrefUtils.getPrimaryDbName(prefix))
 									&& !id.toUpperCase().startsWith(prefix)) 
 							{
 								String newId = prefix + ':' + id;
-								if (xrefHelper.checkIdFormat(preferedDbName, newId)) {
+								if (xrefUtils.checkIdFormat(preferedDbName, newId)) {
 									x.setId(newId);
 									error(validation, x, "invalid.id.format", true);
 									if (logger.isDebugEnabled())
@@ -126,7 +126,7 @@ public class XrefRule extends AbstractRule<Xref>{
 						 * use upper-case symbols (e.g., Uniport's begin with P, Q, O; also - GO:, MOD:, and NP_ - same idea)
 						 */
 						String newId = id.toUpperCase();
-						if (xrefHelper.checkIdFormat(preferedDbName, newId)) {
+						if (xrefUtils.checkIdFormat(preferedDbName, newId)) {
 							x.setId(newId);
 							error(validation, x, "invalid.id.format", true);
 							if (logger.isDebugEnabled())

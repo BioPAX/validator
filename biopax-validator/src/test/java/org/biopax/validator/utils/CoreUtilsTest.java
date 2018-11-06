@@ -13,14 +13,9 @@ import org.biopax.validator.api.beans.ErrorType;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.api.beans.ValidatorResponse;
 import org.biopax.validator.BiopaxIdentifier;
-import org.junit.Before;
 import org.junit.Test;
 
-public class BiopaxValidatorUtilsTest {
-
-	@Before
-	public void setUp() throws Exception {
-	}
+public class CoreUtilsTest {
 
 	@Test
 	public final void testMarshalUnmarshalValidationResponse() throws Exception {
