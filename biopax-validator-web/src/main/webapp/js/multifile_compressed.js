@@ -1,8 +1,6 @@
-/*
- *  
- */
-// Multiple file selector by Stickman -- http://www.the-stickman.com 
-// with thanks to: [for Safari fixes] Luis Torrefranca -- http://www.law.pitt.edu and Shawn Parker & John Pennypacker -- http://www.fuzzycoconut.com [for duplicate name bug] 'neal'
+// Multiple file selector by Stickman -- http://www.the-stickman.com
+// with thanks to: [for Safari fixes] Luis Torrefranca -- http://www.law.pitt.edu and Shawn Parker & John Pennypacker
+// -- http://www.fuzzycoconut.com [for duplicate name bug] 'neal'
 function MultiSelector(list_target, max) {
 	this.list_target = list_target;
 	this.count = 0;
