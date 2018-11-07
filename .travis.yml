@@ -1,11 +1,12 @@
 language: java
 
-# whitelist
-branches:
-  only:
-    - master
-
 jdk: openjdk11
+
+#script: mvn clean verify
+# whitelist
+#branches:
+#  only:
+#    - master
 
 cache:
   directories:

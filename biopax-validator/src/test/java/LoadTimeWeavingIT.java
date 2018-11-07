@@ -38,7 +38,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 	"/META-INF/spring/appContext-loadTimeWeaving.xml",
 	"/META-INF/spring/appContext-validator.xml"
 })
-public class AopAspectjLtwIntegrationTest {
+public class LoadTimeWeavingIT {
 	@Autowired
 	Validator validator;
 

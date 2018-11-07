@@ -3,6 +3,7 @@ import static org.junit.Assert.*;
 import java.util.*;
 
 import org.biopax.validator.XrefUtils;
+import org.biopax.validator.api.Validator;
 import org.junit.*;
 import org.junit.runner.RunWith;
 
@@ -33,25 +34,28 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Tests the BioPAX Validator.
  *
  * AspectJ LTW is disabled intentionally
- * (here we don't check for rdf/xml parser or property editor errors)
+ * (here we don't check for the rdf/xml parser errors)
  *
  * @author rodche
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration("classpath:META-INF/spring/appContext-validator.xml")
-public class IntegrationTest {
+public class IntegrationTestIT {
   @Autowired
   XrefUtils xrefUtils;
 
   @Autowired
+  Validator validator;
+
+  @Autowired
   ApplicationContext context;
 
-  BioPAXFactory factory3;
-  SimpleIOHandler simpleIO; // to write OWL examples of what rule checks
-  final static String OUTDIR = IntegrationTest.class.getResource("").getPath();
+  private static BioPAXFactory factory3;
+  private static SimpleIOHandler simpleIO; // to write OWL examples of what rule checks
+  private static final String OUTPUT_DIR = IntegrationTestIT.class.getResource("").getPath();
 
-  @Before
-  public void setUp() {
+  @BeforeClass
+  public static void setUp() {
     factory3 = BioPAXLevel.L3.getDefaultFactory();
     simpleIO = new SimpleIOHandler(BioPAXLevel.L3);
   }
@@ -71,11 +75,16 @@ public class IntegrationTest {
   public void testBuildPaxtoolsL3ModelSimple() {
     System.out.println("with Level3 data");
     InputStream is = getClass().getResourceAsStream("biopax3-short-metabolic-pathway.owl");
-    SimpleIOHandler simpleReader = new SimpleIOHandler();
-    simpleReader.mergeDuplicates(true);
-    Model model = simpleReader.convertFromOWL(is);
-    assertNotNull(model);
+    Validation validation = new Validation(new BiopaxIdentifier());
+    validator.importModel(validation, is);
+    assertTrue(validation.getModel() instanceof Model);
+    Model model = (Model) validation.getModel();
     assertFalse(model.getObjects().isEmpty());
+    assertEquals(50,model.getObjects().size());
+    validator.validate(validation);
+    assertFalse(validation.getError().isEmpty());
+    assertEquals(3, validation.getError().size());
+    assertEquals(16, validation.getTotalProblemsFound());
   }
 
   @Test
@@ -96,8 +105,8 @@ public class IntegrationTest {
     x3.addComment("x3");
     x3.setDb(null);
     x3.setId("foo");
-//    	assertFalse(x1.isEquivalent(x3)); // same ID does not matter anymore (since Apr'2011)!
-    assertTrue(x1.isEquivalent(x3)); //only same ID and type matters if 'equals' and 'hashCode' were overridden in Paxtools...
+
+    assertTrue(x1.isEquivalent(x3)); //only ID and type matter as 'equals','hashCode' were overridden in Paxtools
   }
 
   /*
@@ -130,7 +139,6 @@ public class IntegrationTest {
     assertTrue(gs.contains("GO"));
     assertTrue(gs.contains("GENE ONTOLOGY"));
     assertTrue(gs.contains("GENE_ONTOLOGY"));
-
     assertTrue(xrefUtils.isUnofficialOrMisspelledDbName("GENE_ONTOLOGY"));
     assertFalse(xrefUtils.isUnofficialOrMisspelledDbName("GO"));
     assertTrue(xrefUtils.isUnofficialOrMisspelledDbName("medline"));
@@ -326,13 +334,13 @@ public class IntegrationTest {
 
     iv = factory3.create(InteractionVocabulary.class, "invalidCVTerm");
     iv.addTerm("phosphorylated residue");
-    iv.addComment("Invalid term (very similar, however)");
+    iv.addComment("Invalid term from MOD (very similar to MI one, however)");
     ux = factory3.create(UnificationXref.class, "UnificationXref_MOD_00696");
     ux.setDb("MOD");
     ux.setId("MOD:00696");
     /* Note: in fact, both MOD:00696 and MI:0217 have synonym name "Phosphorylation"!
     	TODO Validator (currently) checks names in the CV 'term' property only,
-    	but also should check what can be inferred from the xref.id!
+    	but it also should check what can be inferred from the xref.id!
     */
     iv.addXref(ux);
     m.add(ux);
@@ -340,7 +348,8 @@ public class IntegrationTest {
 
     v = new Validation(new BiopaxIdentifier());
     instance.check(v, iv);
-    assertEquals(1, v.countErrors(iv.getUri(), null, "illegal.cv.term", null, false, false));
+    assertEquals(1, v.countErrors(iv.getUri(), null, "illegal.cv.term",
+      null, false, false));
 
     writeExample("testInteractionTypeRule.owl", m);
   }
@@ -404,10 +413,10 @@ public class IntegrationTest {
     assertTrue(v.getError().isEmpty());
   }
 
-  private void writeExample(String file, Model model) {
+  private static void writeExample(String file, Model model) {
     try {
       simpleIO.convertToOWL(model,
-        new FileOutputStream(OUTDIR + File.separator + file));
+        new FileOutputStream(OUTPUT_DIR + File.separator + file));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
