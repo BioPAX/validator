@@ -30,6 +30,9 @@ public class RulesTest {
   private static final BioPAXIOHandler exporter = new SimpleIOHandler(BioPAXLevel.L3);
   private static final String TEST_DATA_DIR = RulesTest.class.getResource("").getPath();
 
+  @org.junit.Rule
+  public final ExpectedException exception = ExpectedException.none();
+
   private static void writeExample(String file, Model model) {
     try {
       exporter.convertToOWL(model, new FileOutputStream(TEST_DATA_DIR + File.separator + file));
@@ -37,9 +40,6 @@ public class RulesTest {
       e.printStackTrace();
     }
   }
-
-  @org.junit.Rule
-  public final ExpectedException exception = ExpectedException.none();
 
   @Test
   public void testBiochemReactParticipantsLocationRule() {

@@ -44,7 +44,7 @@ public class IntegrationTestIT {
   private Validator validator;
 
   @Autowired
-  ApplicationContext context;
+  private ApplicationContext context;
 
   private static BioPAXFactory factory3;
   private static SimpleIOHandler simpleIO; // to write OWL examples of what rule checks
