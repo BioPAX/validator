@@ -1,7 +1,7 @@
 # The BioPAX Validator ${project.version}
 
 [![Build Status](https://travis-ci.org/BioPAX/validator.svg?branch=master)](https://travis-ci.org/BioPAX/validator) 
-[![codebeat badge](https://codebeat.co/badges/3a2a8c07-037f-4ab1-9a2c-f123c57e3b98)](https://codebeat.co/projects/github-com-biopax-validator-master) 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/744577f72ed14794bf970c8e8dd3f57b)](https://www.codacy.com/app/IgorRodchenkov/validator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=BioPAX/validator&amp;utm_campaign=Badge_Grade)
 [![Coverage Status](https://coveralls.io/repos/github/BioPAX/validator/badge.svg)](https://coveralls.io/github/BioPAX/validator) 
 [![MIT licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
