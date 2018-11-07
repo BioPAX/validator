@@ -1,3 +1,5 @@
+package org.biopax.validator;
+
 import static org.junit.Assert.*;
 
 import org.junit.*;
@@ -40,10 +42,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 })
 public class LoadTimeWeavingIT {
 	@Autowired
-	Validator validator;
+	private Validator validator;
 
 	@Autowired
-	ApplicationContext context;
+	private ApplicationContext context;
 
 	@Test
 	public void testValidator() throws IOException {

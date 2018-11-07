@@ -12,6 +12,7 @@ import org.biopax.validator.api.Rule;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.rules.*;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 
 /**
@@ -31,16 +32,18 @@ public class RulesTest {
 
   private static void writeExample(String file, Model model) {
     try {
-      exporter.convertToOWL(model,
-        new FileOutputStream(TEST_DATA_DIR + File.separator + file));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+      exporter.convertToOWL(model, new FileOutputStream(TEST_DATA_DIR + File.separator + file));
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
     }
   }
 
+  @org.junit.Rule
+  public final ExpectedException exception = ExpectedException.none();
+
   @Test
   public void testBiochemReactParticipantsLocationRule() {
-    Rule rule = new BiochemReactParticipantsLocationRule();
+    Rule<BiochemicalReaction> rule = new BiochemReactParticipantsLocationRule();
     BiochemicalReaction reaction = level3.create(BiochemicalReaction.class, "BiochemicalReaction");
     Dna left = level3.create(Dna.class, "dna");
     Dna right = level3.create(Dna.class, "modifiedDna");
@@ -127,8 +130,8 @@ public class RulesTest {
 
 
   @Test
-  public void testBiochemReactParticipantsLocationRule_Transport() throws IOException {
-    Rule rule = new BiochemReactParticipantsLocationRule();
+  public void testBiochemReactParticipantsLocationRuleTransport() {
+    Rule<BiochemicalReaction> rule = new BiochemReactParticipantsLocationRule();
     BiochemicalReaction reaction = level3.create(TransportWithBiochemicalReaction.class,
       "transportWithBiochemicalReaction");
     reaction.addComment("This Transport contains one Rna that did not change its " +
@@ -209,7 +212,7 @@ public class RulesTest {
 
 
   @Test
-  public void testBiopaxElementIdRule() throws IOException {
+  public void testBiopaxElementIdRule() {
     Rule<BioPAXElement> rule = new BiopaxElementIdRule();
     Level3Element bpe = level3.create(UnificationXref.class,
       "http://www.biopax.org/UnificationXref#Taxonomy_40674");
@@ -232,9 +235,14 @@ public class RulesTest {
     writeExample("testBiopaxElementIdRule.owl", m);
 
     // weird but legal URIs:
-    URI.create("a");
-    URI.create("a,b,c");
-    //URI.create("a[b"); // will fail
+    URI uri;
+    uri = URI.create("a");
+    assertNotNull(uri);
+    uri = URI.create("a,b,c");
+    assertNotNull(uri);
+    exception.expect(IllegalArgumentException.class);
+    //noinspection ResultOfMethodCallIgnored
+    URI.create("a[b"); // will fail
   }
 
   @Test
@@ -246,12 +254,12 @@ public class RulesTest {
     Model m = level3.createModel();
     m.add(p);
     writeExample("testDuplicateNamesByExporter.xml", m);
-
     // read back and tricky-test
     BufferedReader in = new BufferedReader(new FileReader(
       TEST_DATA_DIR + File.separator + "testDuplicateNamesByExporter.xml"));
     char[] buf = new char[1000];
-    in.read(buf);
+    int n = in.read(buf);
+    assertTrue(n > 100);
     String xml = new String(buf);
     if(xml.indexOf(name) != xml.lastIndexOf(name)) {
       fail("displayName gets duplicated by the SimpleExporter!");
@@ -260,7 +268,7 @@ public class RulesTest {
 
 
   @Test
-  public void testProteinReferenceOrganismRule() throws IOException {
+  public void testProteinReferenceOrganismRule() {
     ProteinReferenceOrganismRule rule = new ProteinReferenceOrganismRule();
     BioSource bioSource = level3.create(BioSource.class, "BioSource-Human");
     bioSource.setDisplayName("Homo sapiens");
@@ -292,9 +300,9 @@ public class RulesTest {
 
 
   @Test
-  public void testControlTypeRule() throws IOException
+  public void testControlTypeRule()
   {
-    Rule rule = new ControlTypeRule();
+    Rule<Control> rule = new ControlTypeRule();
     Catalysis ca = level3.create(Catalysis.class, "catalysis1");
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, ca); // controlType==null, no error expected
@@ -333,10 +341,10 @@ public class RulesTest {
 
 
   @Test
-  public void testDegradationConversionDirectionRule() throws IOException
+  public void testDegradationConversionDirectionRule()
   {
-    Rule rule = new DegradationConversionDirectionRule();
-    Conversion dg = level3.create(Degradation.class, "degradation-conversion-1");
+    Rule<Degradation> rule = new DegradationConversionDirectionRule();
+    Degradation dg = level3.create(Degradation.class, "degradation-conversion-1");
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, dg); // direction is null, no error
     assertTrue(v.getError().isEmpty());
@@ -425,7 +433,7 @@ public class RulesTest {
     ref.setId("NP_001734");
     pr.addXref(ref);
 
-    Rule rule = new ClonedUtilityClassRule();
+    Rule<Model> rule = new ClonedUtilityClassRule();
     assertTrue(rule.canCheck(model));
 
     // check

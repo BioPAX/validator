@@ -1,16 +1,13 @@
+package org.biopax.validator;
+
 import static org.junit.Assert.*;
 
+import java.io.*;
 import java.util.*;
 
-import org.biopax.validator.XrefUtils;
 import org.biopax.validator.api.Validator;
 import org.junit.*;
 import org.junit.runner.RunWith;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXFactory;
@@ -18,7 +15,6 @@ import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.api.beans.Validation;
-import org.biopax.validator.BiopaxIdentifier;
 import org.biopax.validator.rules.CellularLocationCvRule;
 import org.biopax.validator.rules.InteractionTypeCvRule;
 import org.biopax.validator.rules.ProteinModificationFeatureCvRule;
@@ -42,10 +38,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ContextConfiguration("classpath:META-INF/spring/appContext-validator.xml")
 public class IntegrationTestIT {
   @Autowired
-  XrefUtils xrefUtils;
+  private XrefUtils xrefUtils;
 
   @Autowired
-  Validator validator;
+  private Validator validator;
 
   @Autowired
   ApplicationContext context;
@@ -290,7 +286,7 @@ public class IntegrationTestIT {
   }
 
   @Test
-  public void testInteractionTypeRule() {
+  public void testInteractionTypeRule() throws FileNotFoundException {
     InteractionTypeCvRule instance =
       (InteractionTypeCvRule) context.getBean("interactionTypeCvRule");
 
@@ -351,7 +347,7 @@ public class IntegrationTestIT {
     assertEquals(1, v.countErrors(iv.getUri(), null, "illegal.cv.term",
       null, false, false));
 
-    writeExample("testInteractionTypeRule.owl", m);
+    simpleIO.convertToOWL(m, new FileOutputStream(OUTPUT_DIR + File.separator + "testInteractionTypeRule.owl"));
   }
 
   @Test
@@ -411,15 +407,6 @@ public class IntegrationTestIT {
     v = new Validation(new BiopaxIdentifier());
     instance.check(v, x);
     assertTrue(v.getError().isEmpty());
-  }
-
-  private static void writeExample(String file, Model model) {
-    try {
-      simpleIO.convertToOWL(model,
-        new FileOutputStream(OUTPUT_DIR + File.separator + file));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 
 }
