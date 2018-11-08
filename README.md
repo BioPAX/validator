@@ -77,7 +77,6 @@ go to http://localhost:8080 in a browser.
 Use --help parameter to see all the server options (e.g., httpPort, ajpPort)
 
 
-
 ## Developer notes
 
 It's built with Java ${java.version} (requires 8 or above), Paxtools ${paxtools.version} (BioPAX Model API, Java library), 

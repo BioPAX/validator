@@ -28,9 +28,8 @@ import org.biopax.validator.api.CvRule;
 import org.biopax.validator.api.CvUtils;
 import org.biopax.validator.api.CvRestriction.UseChildTerms;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -288,12 +287,8 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   public synchronized void init() {
     try {
       log.info("Loading the configuration from obo.properties and building ontology trees...");
-      PropertiesFactoryBean oboPropertiesFactoryBean = new PropertiesFactoryBean();
-      oboPropertiesFactoryBean.setLocation(new ClassPathResource("obo.properties"));
-      oboPropertiesFactoryBean.setLocalOverride(false);
       //create new ontology manager and load/parse OBO files as specified in the properties.
-      oboPropertiesFactoryBean.afterPropertiesSet();
-      this.ontologyConfig = oboPropertiesFactoryBean.getObject();
+      this.ontologyConfig = PropertiesLoaderUtils.loadAllProperties("obo.properties");
       //create new ontology manager and load/parse OBO files as specified in the properties.
       this.ontologyManager = new OntologyManagerImpl(this.ontologyConfig);
       //Normalize ontology names

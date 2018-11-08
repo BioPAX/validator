@@ -7,6 +7,7 @@ import org.biopax.validator.api.Rule;
 import org.biopax.validator.api.Validator;
 import org.biopax.validator.api.beans.Behavior;
 import org.biopax.validator.api.beans.Category;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +21,7 @@ public class InfoController {
   private Properties errorTypes;
   private Set extraDbSynonyms;
 
-  public InfoController() {
-  }
-
+  @Autowired
   public InfoController(Validator validator, ValidatorUtils utils,
                         Properties errorTypes, Set extraDbSynonyms) {
     this.validator = validator;
@@ -39,7 +38,7 @@ public class InfoController {
   @RequestMapping(value="/rules")
   public @ModelAttribute("rules") Collection<AboutRule> rules() {
 
-    Set<AboutRule> rules = new TreeSet<AboutRule>();
+    Set<AboutRule> rules = new TreeSet<>();
 
     for(Rule r: validator.getRules()) {
       String name = r.getClass().getName();

@@ -65,8 +65,7 @@ do run: mvn assembly:single manually instead
 			<groupId>${project.groupId}</groupId>
 			<artifactId>biopax-validator-web</artifactId>
 			<version>${project.version}</version>
-			<type>jar</type>
-			<classifier>exec-war</classifier>
+			<type>war</type>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
