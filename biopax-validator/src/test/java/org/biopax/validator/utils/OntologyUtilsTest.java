@@ -2,6 +2,7 @@ package org.biopax.validator.utils;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
 
@@ -11,10 +12,12 @@ import org.biopax.validator.XrefUtils;
 import org.biopax.validator.api.CvUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 
 /**
- * Tests OntologyUtils' interfaces:  CvUtils, CvFactory, XrefUtils
+ * Unit test OntologyUtils' interfaces:  CvUtils, CvFactory, XrefUtils
  */
 public class OntologyUtilsTest {
 
@@ -23,8 +26,9 @@ public class OntologyUtilsTest {
   private static XrefUtils xrefUtils;
 
   @BeforeClass
-  public static void init() {
-    OntologyUtils utils = new OntologyUtils();
+  public static void init() throws IOException {
+    OntologyUtils utils = new OntologyUtils(null,
+      PropertiesLoaderUtils.loadProperties(new ClassPathResource("obo.properties")));
     utils.init();
     cvUtils = utils;
     cvFactory = utils;

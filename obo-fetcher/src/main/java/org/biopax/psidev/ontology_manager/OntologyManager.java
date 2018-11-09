@@ -72,11 +72,11 @@ public interface OntologyManager {
   OntologyTermI findTerm(OntologyAccess ontologyAccess, String term);
 
 
-    /**
-     * Collect all available names in the given collection of OntologyAccess terms.
-     * @param terms the terms for which we want the names.
-     * @return a non null collection of names.
-     */
+  /**
+  * Collect all available names in the given collection of OntologyAccess terms.
+  * @param terms the terms for which we want the names.
+  * @return a non null collection of names.
+  */
   //TODO: if min. java is 10, we'd replace 'static' with 'default'
   static Collection<String> getTermNames(Collection<OntologyTermI> terms) {
     if ( terms == null ) {

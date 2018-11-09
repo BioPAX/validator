@@ -180,7 +180,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <argLine>-Xmx3g -Dfile.encoding=UTF-8 -ea --illegal-access=permit</argLine>
+          <argLine>-Xmx3g -Dfile.encoding=UTF-8 -ea --illegal-access=permit -javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</argLine>
           <runOrder>alphabetical</runOrder>
           <includes>
             <include>**/*IT.java</include>
@@ -188,7 +188,7 @@
           <useSystemClassLoader>false</useSystemClassLoader>
         </configuration>
       </plugin>
-      <!-- Must run the exec-jar as: java -javaagent:spring-instrument.jar -Xmx2g -jar ... -->
+      <!-- Must run the exec-jar with option: -javaagent:/path/to/spring-instrument.jar -->
       <plugin>
         <groupId>com.spotify</groupId>
         <artifactId>dockerfile-maven-plugin</artifactId>

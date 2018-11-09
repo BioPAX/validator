@@ -1,6 +1,5 @@
 package org.biopax.validator.ws;
 
-//import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -9,9 +8,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 @Configuration
-//@SpringBootConfiguration
-@ImportResource({"classpath:META-INF/spring/appContext-validator.xml"})
-//  , "classpath:META-INF/spring/appContext-loadTimeWeaving.xml"})
+@ImportResource({"classpath*:META-INF/spring/appContext-validator.xml"})
+//and instead appContext-loadTimeWeaving.xml, we use AOP+LTW the following annotations:
 @EnableSpringConfigured //enables AOP
 @EnableLoadTimeWeaving(aspectjWeaving = EnableLoadTimeWeaving.AspectJWeaving.ENABLED)
 @EnableAspectJAutoProxy

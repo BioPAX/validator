@@ -10,8 +10,9 @@
 	<context:spring-configured/>
 	<context:annotation-config/>
 
-	<!-- XrefRule, XrefSynonymDbRule additional (optional) configuration 
-	The following LISTS of DB (biodata source) synonyms and typos will
+	<!--
+	XrefRule, XrefSynonymDbRule additional (optional) configuration.
+	The following LISTS of bio entity source synonyms and typos will
 	merge with overlapping groups from Miriam and PSI-MI ("database citation" 
 	ontology branch) and then used to warn about non-standard but 
 	somewhat close/known names and probably auto-fix all such cases. If
@@ -27,6 +28,7 @@
 			<value>RCSB PDB</value>
 		</list>
 		<list>
+      <value>NCBI GENE</value>
 			<value>ENTREZ GENE</value>
 			<value>ENTREZ_GENE</value>
 			<value>LOCUS_LINK</value>
@@ -40,12 +42,10 @@
 			<value>ENTREZ GI</value>
 			<value>GI</value>
 		</list>
-		<list>
-			<value>PUBCHEM-SUBSTANCE</value>
-			<value>NCBI PUBCHEM</value>
-			<value>PUBCHEM SUBSTANCE</value>
-			<value>PUBCHEM</value>
-		</list>
+    <list><!--unspecified PUBCHEM db (can be substance or compound):-->
+      <value>PUBCHEM</value>
+      <value>NCBI PUBCHEM</value>
+    </list>
 		<list>
 			<value>PUBMED</value>
 			<value>PMID</value>
@@ -74,10 +74,10 @@
 			<value>UMBBD</value>
 		</list>
 		<list>
+      <value>MI</value>
 			<value>PSI-MI</value>
 			<value>PSI MI</value>
 			<value>PSIMI</value>
-			<value>MI</value>
 		</list>
 		<list>
 			<value>REFSEQ PROTEIN</value>
@@ -112,8 +112,8 @@
 			<value>EMBL</value>
 		</list>
 		<list>
+      <value>GENPEPT</value>
 			<value>PROTEIN GENBANK IDENTIFIER</value>
-			<value>GENPEPT</value>
 		</list>
 		<list>
 			<value>KEGG COMPOUND</value>
@@ -150,9 +150,6 @@
 		</list>
 		<list>
 			<value>HUGE</value>
-		</list>
-		<list>
-			<value>HPRD</value>
 		</list>
 		<list>
 			<value>UNIPARC</value>
@@ -198,6 +195,8 @@
 			</list>
 		</property>
 	</bean>
+
+  <util:properties id="ontologyConfig" location="classpath*:obo.properties"/>
 
 	<context:component-scan base-package="org.biopax.validator"/>
 

@@ -53,13 +53,12 @@ public class InfoController {
    * This (DTO) is used in the 'rules' JSP page/view
    */
   public static class AboutRule implements Comparable<AboutRule>{
-    String name;
-    String tip;
-    Behavior stdProfile;
-    Behavior altProfile;
+    private String name;
+    private String tip;
+    private Behavior stdProfile;
+    private Behavior altProfile;
 
-    public AboutRule(String name, String tip, Behavior stdProfile,
-                     Behavior altProfile) {
+    AboutRule(String name, String tip, Behavior stdProfile, Behavior altProfile) {
       this.name = name;
       this.tip = tip;
       this.stdProfile = stdProfile;
@@ -121,18 +120,19 @@ public class InfoController {
       cfg.caseMsgTemplate = errorTypes.getProperty(cfg.code, "N/A");
     }
 
-    return new TreeSet<ErrorCfg>(map.values());
+    return new TreeSet<>(map.values());
   }
 
   /**
    * DTO (for the JSP view)
    */
   public static class ErrorCfg implements Comparable<ErrorCfg>{
-    public String code;
-    public String defaultMsg;
-    public String caseMsgTemplate;
-    public String category;
-    public ErrorCfg(String code) {
+    private String code;
+    private String defaultMsg;
+    private String caseMsgTemplate;
+    private String category;
+
+    ErrorCfg(String code) {
       this.code = code;
     }
 

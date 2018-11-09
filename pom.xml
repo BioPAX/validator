@@ -118,7 +118,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <github.global.server>github</github.global.server>
 
-    <spring.version>4.3.19.RELEASE</spring.version>
+    <spring.version>5.1.2.RELEASE</spring.version>
     <paxtools.version>5.1.0</paxtools.version>
     <license.licenseName>MIT</license.licenseName>
     <junit.version>4.12</junit.version>
@@ -146,6 +146,7 @@
     <maven-war-plugin.version>3.2.2</maven-war-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
     <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
     <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
     <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
@@ -209,9 +210,23 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${maven-surefire-plugin.version}</version>
           <configuration>
-            <testFailureIgnore>false</testFailureIgnore>
-            <argLine>-Dfile.encoding=UTF-8 -Xmx2g -ea --illegal-access=permit</argLine>
-            <!--important since the last ubuntu sec. update and supposedly surefire bug-->
+            <argLine>-Xmx3g -Dfile.encoding=UTF-8 -ea --illegal-access=permit</argLine>
+            <includes>
+              <include>**/*Test.java</include>
+            </includes>
+            <useSystemClassLoader>false</useSystemClassLoader>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven-failsafe-plugin.version}</version>
+          <configuration>
+            <argLine>-Xmx3g -Dfile.encoding=UTF-8 -ea --illegal-access=permit -javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</argLine>
+            <runOrder>alphabetical</runOrder>
+            <includes>
+              <include>**/*IT.java</include>
+            </includes>
             <useSystemClassLoader>false</useSystemClassLoader>
           </configuration>
         </plugin>
@@ -307,6 +322,14 @@
           <groupId>org.apache.maven.plugins</groupId>
           <version>${maven-gpg-plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>3.1.7</version>
+          <!--<configuration>-->
+            <!--<onlyAnalyze>org.biopax.validator.service.*,org.biopax.validator.ws.*</onlyAnalyze>-->
+          <!--</configuration>-->
+        </plugin>
       </plugins>
     </pluginManagement>
     <extensions>
@@ -357,6 +380,15 @@
         <configuration>
           <skipDeploy>true</skipDeploy>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <!--<configuration>-->
+          <!--<onlyAnalyze>,org.biopax.validator.ws.*,org.biopax.validator.service.*,-->
+            <!--org.biopax.validator.jaxb.*,org.biopax.validator.api.*,org.biopax.validator.rules.*,-->
+            <!--org.biopax.validator.utils.*,org.biopax.validator.api.beans.*</onlyAnalyze>-->
+        <!--</configuration>-->
       </plugin>
     </plugins>
   </build>

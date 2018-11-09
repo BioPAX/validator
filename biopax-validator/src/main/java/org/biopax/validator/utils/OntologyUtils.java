@@ -29,11 +29,9 @@ import org.biopax.validator.api.CvUtils;
 import org.biopax.validator.api.CvRestriction.UseChildTerms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
 
 /**
@@ -56,8 +54,11 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   private Properties ontologyConfig;
 
 	@Autowired
-  @Resource(name = "extraDbSynonyms")
-  public void setExtraGroups(Set<List<String>> extraDbSynonyms) {
+//  @Resource(name = "extraDbSynonyms")
+  public OntologyUtils(Set<List<String>> extraDbSynonyms, Properties ontologyConfig) {
+
+    this.ontologyConfig = ontologyConfig;
+
     // normalize and organize provided synonyms
     this.extraGroups = new CompositeCollection<>();
     if (extraDbSynonyms != null) {
@@ -75,30 +76,18 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
     return ontologyManager;
   }
 
-  /* (non-Javadoc)
-	 * @see org.biopax.validator.utils.CvUtils#getValidTermNames(org.biopax.validator.CvRule)
-	 */
 	public Set<String> getValidTermNames(CvRule<?> cvRule) {
 		return getValidTermNamesLowerCase(cvRule.getRestrictions());
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.biopax.validator.utils.CvUtils#getValidTerms(org.biopax.validator.CvRule)
-	 */
 	public Set<OntologyTermI> getValidTerms(CvRule<?> cvRule) {
 		return getValidTerms(cvRule.getRestrictions());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.biopax.validator.utils.CvUtils#getValidTermNames(java.util.Collection)
-	 */
 	public Set<String> getValidTermNames(Collection<CvRestriction> restrictions) {
 		return new HashSet<>(OntologyManager.getTermNames(getValidTerms(restrictions)));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.biopax.validator.utils.CvUtils#getValidTermNamesLowerCase(java.util.Collection)
-	 */
 	public Set<String> getValidTermNamesLowerCase(Collection<CvRestriction> restrictions) {
 		Set<String> names = new HashSet<>();
 		for(String name : getValidTermNames(restrictions)) {
@@ -107,16 +96,10 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
 		return names;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.biopax.validator.utils.CvUtils#getTermNames(org.biopax.validator.impl.CvTermRestriction)
-	 */
 	public Set<String> getTermNames(CvRestriction restriction) {
 		return new HashSet<>(OntologyManager.getTermNames(getTerms(restriction)));
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.biopax.validator.utils.CvUtils#getValidTerms(java.util.Collection)
-	 */
 	public Set<OntologyTermI> getValidTerms(Collection<CvRestriction> restrictions) {
 		Set<OntologyTermI> terms = new HashSet<>();
 		
@@ -137,9 +120,6 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
 		return terms;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.biopax.validator.utils.CvUtils#getTerms(org.biopax.validator.impl.CvTermRestriction)
-	 */
 	public Set<OntologyTermI> getTerms(CvRestriction restriction) {
 		Set<OntologyTermI> terms = new HashSet<>();
 		OntologyAccess ontologyAccess = ontologyManager.getOntology(restriction.getOntologyId());
@@ -286,9 +266,6 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   @PostConstruct //vital
   public synchronized void init() {
     try {
-      log.info("Loading the configuration from obo.properties and building ontology trees...");
-      //create new ontology manager and load/parse OBO files as specified in the properties.
-      this.ontologyConfig = PropertiesLoaderUtils.loadAllProperties("obo.properties");
       //create new ontology manager and load/parse OBO files as specified in the properties.
       this.ontologyManager = new OntologyManagerImpl(this.ontologyConfig);
       //Normalize ontology names
