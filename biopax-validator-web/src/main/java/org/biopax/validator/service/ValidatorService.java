@@ -14,13 +14,8 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
-
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 @Service
 public class ValidatorService implements ValidatorAdapter {
@@ -35,12 +30,6 @@ public class ValidatorService implements ValidatorAdapter {
     this.schema = new String(FileCopyUtils.copyToByteArray(LOADER
       .getResource("classpath:org/biopax/validator/api/schema/schema1.xsd")
       .getInputStream()),"UTF-8");
-  }
-
-  @RequestMapping(value = "/schema", method = RequestMethod.GET, produces = APPLICATION_XML_VALUE)
-  @ResponseBody
-  public String getSchema() {
-    return schema;
   }
 
   public Validation validate(Resource data,
@@ -71,6 +60,10 @@ public class ValidatorService implements ValidatorAdapter {
     }
 
     return validationResult;
+  }
+
+  public String getSchema() {
+    return schema;
   }
 
 }

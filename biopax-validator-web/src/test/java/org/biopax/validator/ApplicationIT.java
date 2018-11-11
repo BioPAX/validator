@@ -24,5 +24,12 @@ public class ApplicationIT {
     assertEquals("http://identifiers.org/ec-code/6.1.1.5", result);
   }
 
+  @Test
+  public void testGetSchema() {
+    String result = template.getForObject("/schema", String.class);
+    assertNotNull(result);
+    assertTrue(result.contains("element name=\"validatorResponse\""));
+  }
+
   //TODO: add tests: check a syntax rule, check a biopax model from URL or local file
 }

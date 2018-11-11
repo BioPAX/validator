@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 @Controller
 public class ValidatorController {
@@ -39,6 +40,11 @@ public class ValidatorController {
   @Autowired
   public ValidatorController(ValidatorAdapter service) {
     this.service = service;
+  }
+
+  @RequestMapping(value = "/schema", method = RequestMethod.GET, produces = APPLICATION_XML_VALUE)
+  @ResponseBody  public String getSchema() {
+    return service.getSchema();
   }
 
   //Views (pages)
