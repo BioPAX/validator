@@ -28,7 +28,7 @@ public class OntologyUtilsTest {
   @BeforeClass
   public static void init() throws IOException {
     OntologyUtils utils = new OntologyUtils(null,
-      PropertiesLoaderUtils.loadProperties(new ClassPathResource("obo.properties")));
+      PropertiesLoaderUtils.loadProperties(new ClassPathResource("test-obo.properties")));
     utils.init();
     cvUtils = utils;
     cvFactory = utils;

@@ -31,25 +31,22 @@ public class SuggesterControllerTest {
 
   @Before
   public void before() {
-    //valid synonym and valid id
+    // valid synonym and valid id
     String anXrefId = "6.1.1.5";
-    given(service.getPrimaryDbName("ec")).willReturn("Enzyme Nomenclature");
-    given(service.getIdentifiersOrgUri("ec", anXrefId))
+    given(service.xrefDbIdToUri("ec", anXrefId))
       .willReturn("http://identifiers.org/ec-code/" + anXrefId);
 
-    //a test typo (fixable) name
-    given(service.getPrimaryDbName("ec_code")).willReturn("Enzyme Nomenclature");
-    given(service.getIdentifiersOrgUri("ec_code", anXrefId))
-      .willThrow(new IllegalArgumentException("Datatype not found"));
-    given(service.getIdentifiersOrgUri("Enzyme Nomenclature", anXrefId))
+    // test typo (fixable) name
+    given(service.xrefDbIdToUri("ec_code", anXrefId))
+      .willReturn("http://identifiers.org/ec-code/" + anXrefId);
+    given(service.xrefDbIdToUri("Enzyme Nomenclature", anXrefId))
       .willReturn("http://identifiers.org/ec-code/" + anXrefId);
 
-    //a bad not-fixable name
-    given(service.getPrimaryDbName("foo")).willReturn(null);
-    given(service.getIdentifiersOrgUri("foo", anXrefId))
+    // bad not-fixable name
+    given(service.xrefDbIdToUri("foo", anXrefId))
       .willThrow(new IllegalArgumentException("Datatype not found"));
-
-    given(service.getIdentifiersOrgUri("ec", "foo"))
+    // bad id
+    given(service.xrefDbIdToUri("ec", "foo"))
       .willThrow(new IllegalArgumentException("does not matter"));
   }
 

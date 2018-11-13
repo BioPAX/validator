@@ -1,5 +1,6 @@
 package org.biopax.validator.service;
 
+import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.paxtools.normalizer.MiriamLink;
 import org.biopax.validator.CvFactory;
 import org.biopax.validator.XrefUtils;
@@ -17,21 +18,46 @@ public class SuggesterService implements Suggester {
     this.cvFactory = cvFactory;
   }
 
-  /**
-   * Gets the preferred name for a synonym, non-standard or misspelled one.
-   * @return preferred name or null if none found
-   */
   @Override
   public String getPrimaryDbName(String xrefDb) {
-    return xrefUtils.getPrimaryDbName(xrefDb);
+    String name = xrefUtils.getPrimaryDbName(xrefDb);
+    return (name != null) ? name.toLowerCase() : null;
   }
 
-  /**
-   * @throws IllegalArgumentException when xrefDb is invalid or xrefId does not match the pattern.
-   */
   @Override
-  public String getIdentifiersOrgUri(String xrefDb, String xrefId) {
-    return MiriamLink.getIdentifiersOrgURI(xrefDb, xrefId);
+  public Clue xref(Xref... x) {
+    throw new UnsupportedOperationException("Not implemented.");  //TODO implement
   }
+
+  @Override
+  public String xrefDbIdToUri(String db, String id) {
+    String uri;
+
+    try {
+      uri = MiriamLink.getIdentifiersOrgURI(db, id);
+    } catch (IllegalArgumentException e) {
+      if (e.toString().contains("Datatype")) { //honestly, a hack
+        //guess, auto-correct (supports some (mis)spellings, such as 'Entrez_Gene')
+        String pref = getPrimaryDbName(db);
+        if (pref == null) {
+          //'db' did not mach any data collection name in MIRIAM even despite some auto-correction
+          throw new IllegalArgumentException("Cannot recognize (or auto-fix) db: " + db);
+        } else {
+          try { //now with valid name
+            uri = MiriamLink.getIdentifiersOrgURI(pref, id);
+          } catch (IllegalArgumentException ex) {//pattern failed
+            throw new IllegalArgumentException(String.format(
+              "Although '%s' was recognized as '%s', it failed with: %s", db, pref, ex.toString()));
+          }
+        }
+      } else {
+        //id failed, or smth. else
+        throw new IllegalArgumentException(e);
+      }
+    }
+
+    return uri;
+  }
+
 
 }

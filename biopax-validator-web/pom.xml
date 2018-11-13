@@ -241,6 +241,14 @@
       </exclusions>
     </dependency>
     <dependency>
+      <!--use test resources from the biopax-validator module-->
+      <groupId>org.biopax.validator</groupId>
+      <artifactId>biopax-validator</artifactId>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>javax.annotation</groupId>
       <artifactId>javax.annotation-api</artifactId>
       <version>${javax.annotation-api.version}</version>

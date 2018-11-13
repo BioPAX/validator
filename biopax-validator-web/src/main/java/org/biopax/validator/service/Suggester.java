@@ -1,20 +1,30 @@
 package org.biopax.validator.service;
 
+import org.biopax.paxtools.model.level3.Xref;
+
 public interface Suggester {
 
   /**
-   * Gets the preferred name of the MIRIAM collection.
-   * @param xrefDb
-   * @return primary name if exists
+   * Gets the preferred name for a synonym, non-standard or misspelled one.
+   * @param xrefDb bio data/identifiers collection name or synonym
+   * @return preferred name or null if none found
    */
   String getPrimaryDbName(String xrefDb);
 
   /**
-   * Gets Identifiers.org URI (URL) for a bio entity record defined by db:id.
-   * @param xrefDb bio entity db/collection name
-   * @param xrefId bio entity identifier
-   * @return Identifiers.org standard URI for the bio resource
+   * Checks whether xrefs make sense and suggests preferred name, uri, namespace, etc.
+   * @param x (optional) xref elements to check and suggest values; if empty,
+   * @return recommendation/validation result.
    */
-  String getIdentifiersOrgUri(String xrefDb, String xrefId);
+  Clue xref(Xref... x);
+
+  /**
+   * Gets Identifiers.org URI (URL) for a bio entity record defined by db:id.
+   * @param db xref.db value (bio data/identifiers collection name)
+   * @param id xref.id value, an identifier, e.g., MI:0444, BMP2
+   * @return bio entity URI
+   * @throws IllegalArgumentException when db or id is invalid
+   */
+  String xrefDbIdToUri(String db, String id);
 
 }
