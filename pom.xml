@@ -326,9 +326,6 @@
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
           <version>3.1.7</version>
-          <!--<configuration>-->
-            <!--<onlyAnalyze>org.biopax.validator.service.*,org.biopax.validator.ws.*</onlyAnalyze>-->
-          <!--</configuration>-->
         </plugin>
       </plugins>
     </pluginManagement>
@@ -384,11 +381,9 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <!--<configuration>-->
-          <!--<onlyAnalyze>,org.biopax.validator.ws.*,org.biopax.validator.service.*,-->
-            <!--org.biopax.validator.jaxb.*,org.biopax.validator.api.*,org.biopax.validator.rules.*,-->
-            <!--org.biopax.validator.utils.*,org.biopax.validator.api.beans.*</onlyAnalyze>-->
-        <!--</configuration>-->
+        <configuration>
+          <onlyAnalyze>org.biopax.validator.-</onlyAnalyze>
+        </configuration>
       </plugin>
     </plugins>
   </build>

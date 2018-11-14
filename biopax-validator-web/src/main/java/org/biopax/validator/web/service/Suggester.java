@@ -1,6 +1,7 @@
-package org.biopax.validator.service;
+package org.biopax.validator.web.service;
 
-import org.biopax.paxtools.model.level3.Xref;
+import org.biopax.validator.web.dto.Clue;
+import org.biopax.validator.web.dto.Xref;
 
 public interface Suggester {
 
@@ -13,10 +14,10 @@ public interface Suggester {
 
   /**
    * Checks whether xrefs make sense and suggests preferred name, uri, namespace, etc.
-   * @param x (optional) xref elements to check and suggest values; if empty,
+   * @param xrefs (optional) xref elements to check and suggest values; if empty,
    * @return recommendation/validation result.
    */
-  Clue xref(Xref... x);
+  Clue xref(Xref[] xrefs);
 
   /**
    * Gets Identifiers.org URI (URL) for a bio entity record defined by db:id.

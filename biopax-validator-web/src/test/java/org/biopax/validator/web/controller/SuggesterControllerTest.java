@@ -1,6 +1,7 @@
-package org.biopax.validator.ws;
+package org.biopax.validator.web.controller;
 
-import org.biopax.validator.service.Suggester;
+import org.biopax.validator.web.dto.Clue;
+import org.biopax.validator.web.service.Suggester;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,12 +16,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SuggesterController.class)
-@AutoConfigureRestDocs(outputDir = "target/snippets")
+@AutoConfigureRestDocs//(outputDir = "target/snippets")
 public class SuggesterControllerTest {
 
   @Autowired
@@ -28,6 +31,8 @@ public class SuggesterControllerTest {
 
   @MockBean
   Suggester service;
+
+  private static Clue aClue = new Clue("xref");
 
   @Before
   public void before() {
@@ -48,24 +53,37 @@ public class SuggesterControllerTest {
     // bad id
     given(service.xrefDbIdToUri("ec", "foo"))
       .willThrow(new IllegalArgumentException("does not matter"));
+
+    given(service.xref(null)).willReturn(aClue);
   }
 
   @Test
-  public void shouldReturnUriOrErrorByXrefDbAndId() throws Exception {
-    mvc.perform(get("/Xref/ec/6.1.1.5/").accept(MediaType.APPLICATION_JSON))
+  public void shouldReturnUriOrErrorXrefDbIdToUri() throws Exception {
+    mvc.perform(get("/xref/ec/6.1.1.5/").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-      .andExpect(content().string(equalTo("http://identifiers.org/ec-code/6.1.1.5")));
+      .andExpect(content().string(equalTo("http://identifiers.org/ec-code/6.1.1.5")))
+      .andDo(document("one-xref"));
 
-    mvc.perform(get("/Xref/ec_code/6.1.1.5/").accept(MediaType.APPLICATION_JSON))
+    mvc.perform(get("/xref/ec_code/6.1.1.5/").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
       .andExpect(content().string(equalTo("http://identifiers.org/ec-code/6.1.1.5")));
 
-    mvc.perform(get("/Xref/foo/6.1.1.5/").accept(MediaType.APPLICATION_JSON))
+    mvc.perform(get("/xref/foo/6.1.1.5/").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().is4xxClientError());
 
     //invalid id
-    mvc.perform(get("/Xref/ec/foo/").accept(MediaType.APPLICATION_JSON))
+    mvc.perform(get("/xref/ec/foo/").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().is4xxClientError());
   }
+
+  @Test
+  public void shouldReturnClueXref() throws Exception {
+    mvc.perform(post("/xref").accept(MediaType.APPLICATION_JSON))
+      .andExpect(status().isOk())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+      .andExpect(content().json("{'info':'xref','values':[]}"))
+      .andDo(document("xref"));
+  }
+
 }

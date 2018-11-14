@@ -98,7 +98,7 @@
   </developers>
 
   <properties>
-    <start-class>org.biopax.validator.Application</start-class>
+    <start-class>org.biopax.validator.web.Application</start-class>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <paxtools.version>5.2.0-SNAPSHOT</paxtools.version>
@@ -162,7 +162,7 @@
         <artifactId>spotbugs-maven-plugin</artifactId>
         <version>3.1.7</version>
         <configuration>
-          <onlyAnalyze>org.biopax.validator.service.*,org.biopax.validator.ws.*</onlyAnalyze>
+          <onlyAnalyze>org.biopax.validator.web.-</onlyAnalyze>
         </configuration>
       </plugin>
       <plugin>

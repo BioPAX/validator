@@ -1,6 +1,8 @@
-package org.biopax.validator.ws;
+package org.biopax.validator.web.controller;
 
-import org.biopax.validator.service.Suggester;
+import org.biopax.validator.web.dto.Clue;
+import org.biopax.validator.web.service.Suggester;
+import org.biopax.validator.web.dto.Xref;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +17,8 @@ public class SuggesterController {
   @Autowired
   private Suggester service;
 
-  @GetMapping(value = "/Xref/{db}/{id}/", produces = APPLICATION_JSON_UTF8_VALUE)
-  public String xrefsDbId(@PathVariable String db, @PathVariable String id,
+  @GetMapping(value = "/xref/{db}/{id}/", produces = APPLICATION_JSON_UTF8_VALUE)
+  public String xrefDbId(@PathVariable String db, @PathVariable String id,
                           HttpServletResponse response) throws IOException {
     String uri = null;
     try {
@@ -28,6 +30,9 @@ public class SuggesterController {
     return uri;
   }
 
-  //TODO: return {db:'ec',dbOk:true,id:'1.1.1.1',idOk:true,uri:'http://identifiers.org/ec-code/1.1.1.1',name:'Enzyme Nomenclature'}
+  @PostMapping(value = "/xref", produces = APPLICATION_JSON_UTF8_VALUE)
+  public Clue xref(@RequestBody(required = false) Xref[] xrefs) {
+    return service.xref(xrefs);
+  }
 
 }

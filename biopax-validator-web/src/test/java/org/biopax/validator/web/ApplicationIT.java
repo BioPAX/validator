@@ -1,4 +1,4 @@
-package org.biopax.validator;
+package org.biopax.validator.web;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,7 @@ public class ApplicationIT {
   @Test
   public void testGetTypes() {
     String result = template.getForObject(
-      "/Xref/{db}/{id}/", String.class, "enzyme nomenclature", "6.1.1.5");
+      "/xref/{db}/{id}/", String.class, "enzyme nomenclature", "6.1.1.5");
     assertNotNull(result);
     assertEquals("http://identifiers.org/ec-code/6.1.1.5", result);
   }

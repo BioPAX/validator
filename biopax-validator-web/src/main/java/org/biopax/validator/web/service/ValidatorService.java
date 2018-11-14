@@ -1,4 +1,4 @@
-package org.biopax.validator.service;
+package org.biopax.validator.web.service;
 
 
 import org.biopax.paxtools.io.SimpleIOHandler;

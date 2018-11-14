@@ -1,4 +1,4 @@
-package org.biopax.validator.service;
+package org.biopax.validator.web.service;
 
 import org.biopax.paxtools.normalizer.Normalizer;
 import org.biopax.validator.api.beans.Behavior;

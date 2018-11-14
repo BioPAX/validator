@@ -1,4 +1,4 @@
-package org.biopax.validator.ws;
+package org.biopax.validator.web.controller;
 
 
 import java.io.*;
@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.paxtools.normalizer.Normalizer;
-import org.biopax.validator.api.ValidatorUtils;
 import org.biopax.validator.api.beans.Behavior;
 import org.biopax.validator.api.beans.Validation;
+import org.biopax.validator.web.service.ValidatorAdapter;
+import org.biopax.validator.api.ValidatorUtils;
 import org.biopax.validator.api.beans.ValidatorResponse;
-import org.biopax.validator.service.ValidatorAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;

@@ -1,4 +1,4 @@
-package org.biopax.validator.ws;
+package org.biopax.validator.web.controller;
 
 import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;

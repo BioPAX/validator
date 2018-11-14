@@ -1,12 +1,12 @@
-package org.biopax.validator.ws;
+package org.biopax.validator.web.controller;
 
 import java.util.*;
 
+import org.biopax.validator.api.beans.Behavior;
+import org.biopax.validator.api.beans.Category;
 import org.biopax.validator.api.ValidatorUtils;
 import org.biopax.validator.api.Rule;
 import org.biopax.validator.api.Validator;
-import org.biopax.validator.api.beans.Behavior;
-import org.biopax.validator.api.beans.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;

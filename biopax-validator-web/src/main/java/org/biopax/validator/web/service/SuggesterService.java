@@ -1,11 +1,15 @@
-package org.biopax.validator.service;
+package org.biopax.validator.web.service;
 
-import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.paxtools.normalizer.MiriamLink;
+import org.biopax.validator.web.dto.Clue;
+import org.biopax.validator.web.dto.Xref;
 import org.biopax.validator.CvFactory;
 import org.biopax.validator.XrefUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+
 
 @Service
 public class SuggesterService implements Suggester {
@@ -25,8 +29,18 @@ public class SuggesterService implements Suggester {
   }
 
   @Override
-  public Clue xref(Xref... x) {
-    throw new UnsupportedOperationException("Not implemented.");  //TODO implement
+  public Clue xref(Xref[] xrefs) {
+
+    Clue clue = new Clue("xref");
+
+    if(xrefs!=null && xrefs.length>0) {
+      //TODO check id, suggest prefered db and uri for each xref (replace the stub below)
+      Arrays.stream(xrefs).forEachOrdered(x -> clue.getValues().add(x.getDb()));
+    } else {
+      //TODO add info about all recommended db names, corresp. id patterns, uris, etc.
+    }
+
+    return clue;
   }
 
   @Override
@@ -41,18 +55,19 @@ public class SuggesterService implements Suggester {
         String pref = getPrimaryDbName(db);
         if (pref == null) {
           //'db' did not mach any data collection name in MIRIAM even despite some auto-correction
-          throw new IllegalArgumentException("Cannot recognize (or auto-fix) db: " + db);
+          throw new IllegalArgumentException("Cannot recognize DB: " + db);
         } else {
           try { //now with valid name
             uri = MiriamLink.getIdentifiersOrgURI(pref, id);
           } catch (IllegalArgumentException ex) {//pattern failed
             throw new IllegalArgumentException(String.format(
-              "Although '%s' was recognized as '%s', it failed with: %s", db, pref, ex.toString()));
+              "DB:'%s'('%s'), ID:'%s' failed : %s", db, pref, id, ex.toString()));
           }
         }
       } else {
         //id failed, or smth. else
-        throw new IllegalArgumentException(e);
+        throw new IllegalArgumentException(String.format(
+          "DB:'%s', ID:'%s' failed : %s", db, id, e.toString()));
       }
     }
 
