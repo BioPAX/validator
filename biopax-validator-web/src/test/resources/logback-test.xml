@@ -9,6 +9,7 @@
       <outputPatternAsHeader>true</outputPatternAsHeader>
     </encoder>
   </appender>
+  <logger name="org.apache.tomcat" level="error"/>
   <root level="info">
     <appender-ref ref="console"/>
   </root>

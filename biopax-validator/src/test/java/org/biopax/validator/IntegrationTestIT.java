@@ -41,7 +41,7 @@ public class IntegrationTestIT {
   private XrefUtils xrefUtils;
 
   @Autowired
-  private Validator validator;
+  private Validator biopaxValidator;
 
   @Autowired
   private ApplicationContext context;
@@ -72,12 +72,12 @@ public class IntegrationTestIT {
     System.out.println("with Level3 data");
     InputStream is = getClass().getResourceAsStream("biopax3-short-metabolic-pathway.owl");
     Validation validation = new Validation(new BiopaxIdentifier());
-    validator.importModel(validation, is);
+    biopaxValidator.importModel(validation, is);
     assertTrue(validation.getModel() instanceof Model);
     Model model = (Model) validation.getModel();
     assertFalse(model.getObjects().isEmpty());
     assertEquals(50,model.getObjects().size());
-    validator.validate(validation);
+    biopaxValidator.validate(validation);
     assertFalse(validation.getError().isEmpty());
     assertEquals(3, validation.getError().size());
     assertEquals(16, validation.getTotalProblemsFound());

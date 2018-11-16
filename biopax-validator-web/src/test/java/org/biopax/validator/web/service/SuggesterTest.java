@@ -36,8 +36,9 @@ public class SuggesterTest {
 
   @BeforeClass
   public static void init() throws IOException {
-    OntologyUtils utils = new OntologyUtils(null,
-      PropertiesLoaderUtils.loadProperties(new ClassPathResource("test-obo.properties")));//biopax-validator/src/test/resources
+    OntologyUtils utils = new OntologyUtils();
+    //using ontologies from biopax-validator/src/test/resources
+    utils.setOntologyConfig(PropertiesLoaderUtils.loadProperties(new ClassPathResource("test-obo.properties")));
     utils.init();
     suggester = new SuggesterService(utils, utils);
   }

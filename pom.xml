@@ -118,7 +118,11 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <github.global.server>github</github.global.server>
 
-    <spring.version>5.1.2.RELEASE</spring.version>
+    <!-- 5.1.2.RELEASE does not fail but cannot catch syntax errors usiing LTW-->
+    <spring.version>4.3.19.RELEASE</spring.version>
+    <agent.version>4.3.19.RELEASE</agent.version>
+    <agent>${settings.localRepository}/org/springframework/spring-instrument/${agent.version}/spring-instrument-${agent.version}.jar</agent>
+
     <paxtools.version>5.1.0</paxtools.version>
     <license.licenseName>MIT</license.licenseName>
     <junit.version>4.12</junit.version>
@@ -222,7 +226,7 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>${maven-failsafe-plugin.version}</version>
           <configuration>
-            <argLine>-Xmx3g -Dfile.encoding=UTF-8 -ea --illegal-access=permit -javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</argLine>
+            <argLine>-Xmx3g -Dfile.encoding=UTF-8 -ea --illegal-access=permit -javaagent:${agent}</argLine>
             <runOrder>alphabetical</runOrder>
             <includes>
               <include>**/*IT.java</include>
@@ -494,7 +498,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-instrument</artifactId>
-        <version>${spring.version}</version>
+        <version>${agent.version}</version>
       </dependency>
       <dependency>
         <groupId>org.aspectj</groupId>

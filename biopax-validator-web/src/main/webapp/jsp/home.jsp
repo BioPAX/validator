@@ -29,7 +29,7 @@ and Spring framework, report errors or warnings in several categories,
 and can optionally normalize BioPAX models, always auto-converting BioPAX Level 1, 2 to 3.
 There are also console and Java library version of this tool.
 </p>
-<a href="check.html" class="btn btn-primary btn-large">Start Validating</a>
+<a href="check" class="btn btn-primary btn-large">Start Validating</a>
 </div>
 </div>
 

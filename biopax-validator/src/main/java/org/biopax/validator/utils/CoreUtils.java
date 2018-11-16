@@ -10,6 +10,7 @@ import org.biopax.validator.api.beans.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ import java.util.Locale;
  * @author rodche
  */
 @Configurable
-@Component
+@Component("utils")
 public class CoreUtils implements ValidatorUtils {
   private static final Log logger = LogFactory.getLog(CoreUtils.class);
   public static final int DEFAULT_MAX_ERRORS = 10000;

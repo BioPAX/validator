@@ -19,6 +19,8 @@ import org.biopax.paxtools.model.Model;
 import org.biopax.validator.api.AbstractAspect;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 /**
  * This is the central aspect to report 
  * all the validation exceptions together with 
@@ -35,9 +37,10 @@ public class ExceptionsAspect extends AbstractAspect {
 	private static final Log log = LogFactory.getLog(ExceptionsAspect.class);
 
 	@Autowired
+	@Resource(name = "biopaxValidator")
 	@Override
-	public void setValidator(Validator validator) {
-		super.setValidator(validator);
+	public void setValidator(Validator biopaxValidator) {
+		super.setValidator(biopaxValidator);
 	}
 
 	/**

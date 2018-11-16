@@ -42,29 +42,24 @@ public class ValidatorController {
     this.service = service;
   }
 
-  @RequestMapping(value = "/schema", method = RequestMethod.GET, produces = APPLICATION_XML_VALUE)
+  @RequestMapping(value = {"schema","schema.html"}, method = RequestMethod.GET, produces = APPLICATION_XML_VALUE)
   @ResponseBody  public String getSchema() {
     return service.getSchema();
   }
 
   //Views (pages)
 
-  @RequestMapping("/")
-  public String contextRoot() {
-    return "home";
-  }
-
-  @RequestMapping("/home")
+  @RequestMapping({"/", "home", "home.html"})
   public String home() {
     return "home";
   }
 
-  @RequestMapping("/ws")
+  @RequestMapping({"ws","ws.html"})
   public String ws() {
     return "ws";
   }
 
-  @RequestMapping(value="/check", method=RequestMethod.GET)
+  @RequestMapping(value={"check","check.html"}, method=RequestMethod.GET)
   public void check(Model model) {
     model.addAttribute("normalizer", new Normalizer());
     //user can edit some of normalizer's options in the 'check' view
@@ -94,7 +89,7 @@ public class ValidatorController {
    * @return results view name (or null if XML or normalized RDF/XML were requested)
    * @throws IOException when data cannot be read from the files or URL, etc.
    */
-  @RequestMapping(value="/check", method=RequestMethod.POST)
+  @RequestMapping(value={"check","check.html"}, method=RequestMethod.POST)
   public String check(HttpServletRequest request, HttpServletResponse response,
                       Model mvcModel, Writer writer,
     @RequestParam(required=false) String url,

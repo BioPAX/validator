@@ -42,7 +42,7 @@ import org.springframework.stereotype.Service;
  * @author rodche
  */
 @Configurable
-@Service
+@Service("biopaxValidator")
 public class BiopaxValidator implements Validator {
 	private static final Log log = LogFactory.getLog(BiopaxValidator.class);
 

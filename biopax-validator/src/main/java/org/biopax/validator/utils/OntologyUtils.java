@@ -32,6 +32,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 
 /**
@@ -40,7 +41,6 @@ import javax.annotation.PostConstruct;
  * @author rodche
  */
 @Component
-@Scope("singleton")
 public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
 {
 	private final static Log log = LogFactory.getLog(OntologyUtils.class);
@@ -53,12 +53,9 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   private CompositeCollection<String> extraGroups; //set in Constructor
   private Properties ontologyConfig;
 
-	@Autowired
-//  @Resource(name = "extraDbSynonyms")
-  public OntologyUtils(Set<List<String>> extraDbSynonyms, Properties ontologyConfig) {
-
-    this.ontologyConfig = ontologyConfig;
-
+  @Autowired
+  @Resource(name = "extraDbSynonyms")
+  public void setExtraGroups(Set<List<String>> extraDbSynonyms){
     // normalize and organize provided synonyms
     this.extraGroups = new CompositeCollection<>();
     if (extraDbSynonyms != null) {
@@ -71,7 +68,12 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
     }
   }
 
-  @Override
+	@Autowired
+  @Resource(name = "ontologyConfig")
+  public void setOntologyConfig(Properties ontologyConfig) {
+    this.ontologyConfig = ontologyConfig;
+  }
+
   public OntologyManager getOntologyManager() {
     return ontologyManager;
   }
@@ -201,7 +203,7 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
     return ontologyManager.isChild(parentUrn, urn);
   }
 
-  <T extends ControlledVocabulary> T getControlledVocabulary(
+  private <T extends ControlledVocabulary> T getControlledVocabulary(
     OntologyTermI term, Class<T> cvClass, String xmlBase)
   {
     if (term == null)
@@ -238,7 +240,7 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
     return null;
   }
 
-  public Set<String> ontologyTermsToUris(Collection<OntologyTermI> terms) {
+  private Set<String> ontologyTermsToUris(Collection<OntologyTermI> terms) {
     Set<String> urns = new HashSet<>();
     for (OntologyTermI term : terms) {
       urns.add(ontologyTermToUri(term));
@@ -416,7 +418,7 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   @Override
   public boolean canCheckIdFormatIn(String name) {
     String db = getPrimaryDbName(name);
-    return (db == null) ? false : dataPatterns.get(db) != null;
+    return (db!=null) && (dataPatterns.get(db)!=null);
   }
 
   @Override
@@ -432,9 +434,9 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   }
 
   public boolean xcheck() {
-    Collection<String>[] lists = allSynonyms.getCollections().toArray(new Collection[]{});
+    Collection[] lists = allSynonyms.getCollections().toArray(new Collection[]{});
     for (int i = 0; i < lists.length; i++) {
-      Collection<String> li = lists[i];
+      Collection li = lists[i];
       for (int j = i + 1; j < lists.length; j++) {
         if (!Collections.disjoint(li, lists[j])) {
           log.error("Different synonym groups overlap: "

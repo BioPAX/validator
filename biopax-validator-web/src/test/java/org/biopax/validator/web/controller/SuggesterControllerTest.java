@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(SuggesterController.class)
-@AutoConfigureRestDocs//(outputDir = "target/snippets")
+@WebMvcTest(controllers = {SuggesterController.class})
+@AutoConfigureRestDocs
 public class SuggesterControllerTest {
 
   @Autowired

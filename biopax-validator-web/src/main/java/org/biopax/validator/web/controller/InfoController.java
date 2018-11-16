@@ -35,7 +35,7 @@ public class InfoController {
     return Behavior.values();
   }
 
-  @RequestMapping(value="/rules")
+  @RequestMapping(value={"rules","rules.html"})
   public @ModelAttribute("rules") Collection<AboutRule> rules() {
 
     Set<AboutRule> rules = new TreeSet<>();
@@ -101,7 +101,7 @@ public class InfoController {
     return Category.values();
   }
 
-  @RequestMapping(value="/errorTypes")
+  @RequestMapping(value={"errorTypes","errorTypes.html"})
   public @ModelAttribute("errorTypes") Collection<ErrorCfg> errorTypes() {
     Map<String, ErrorCfg> map = new HashMap<String, ErrorCfg>();
     // keys there are as: CODE, CODE.default, CODE.category (CODE is a validation error id)
@@ -179,6 +179,6 @@ public class InfoController {
   }
 
   // JSP view knows what to do (uses the MVC model and model attributes)
-  @RequestMapping("/extraCfg")
+  @RequestMapping({"extraCfg","extraCfg.html"})
   public void extraCfg() {}
 }

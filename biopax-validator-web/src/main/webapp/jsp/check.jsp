@@ -78,7 +78,7 @@
 		<input id="retHtml" type="radio" name="retDesired" value="html" id="retHtml" checked="checked"/>
 		<label for="retHtml">HTML</label>
 		<input id="retXml" type="radio" name="retDesired" value="xml"/>
-		<label for="retXml">XML (<a href="ws.html">unmarshalable</a>)</label>
+		<label for="retXml">XML (<a href="ws">unmarshalable</a>)</label>
 		<input id="retOwl" type="radio" name="retDesired" value="owl" id="retOwl" disabled="disabled"/>
 		<label for="retOwl">BioPAX (if modified)</label>
 	</div>

@@ -32,7 +32,7 @@
         <include>org.biopax.validator:biopax-validator-web:war</include>
       </includes>
       <outputDirectory></outputDirectory>
-      <outputFileNameMapping>biopax-validator-web.jar</outputFileNameMapping>
+      <outputFileNameMapping>biopax-validator-web.war</outputFileNameMapping>
       <unpack>false</unpack>
     </dependencySet>
   </dependencySets>

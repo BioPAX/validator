@@ -21,12 +21,12 @@ import java.io.IOException;
 public class ValidatorService implements ValidatorAdapter {
   private final static DefaultResourceLoader LOADER = new DefaultResourceLoader();
 
-  private Validator validator; //to inject the biopax-validator
+  private Validator biopaxValidator; //to inject the biopax-validator
   private final String schema;
 
   @Autowired
-  public ValidatorService(Validator validator) throws IOException {
-    this.validator = validator;
+  public ValidatorService(Validator biopaxValidator) throws IOException {
+    this.biopaxValidator = biopaxValidator;
     this.schema = new String(FileCopyUtils.copyToByteArray(LOADER
       .getResource("classpath:org/biopax/validator/api/schema/schema1.xsd")
       .getInputStream()),"UTF-8");
@@ -40,9 +40,9 @@ public class ValidatorService implements ValidatorAdapter {
     Validation validationResult = new Validation(new BiopaxIdentifier(),
       data.getDescription(), isFix, errorLevel, errMax, profile);
     //run the biopax-validator (this updates the validationResult object)
-    validator.importModel(validationResult, data.getInputStream());
-    validator.validate(validationResult);
-    validator.getResults().remove(validationResult);
+    biopaxValidator.importModel(validationResult, data.getInputStream());
+    biopaxValidator.validate(validationResult);
+    biopaxValidator.getResults().remove(validationResult);
 
     if(isFix) { // do normalize too
       if(normalizer == null) //e.g., when '/check' called from a client/script, not JSP
