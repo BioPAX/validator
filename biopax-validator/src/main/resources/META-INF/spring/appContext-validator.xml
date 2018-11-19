@@ -28,7 +28,7 @@
 			<value>RCSB PDB</value>
 		</list>
 		<list>
-      <value>NCBI GENE</value>
+			<value>NCBI GENE</value>
 			<value>ENTREZ GENE</value>
 			<value>ENTREZ_GENE</value>
 			<value>LOCUS_LINK</value>
@@ -42,10 +42,10 @@
 			<value>ENTREZ GI</value>
 			<value>GI</value>
 		</list>
-    <list><!--unspecified PUBCHEM db (can be substance or compound):-->
-      <value>PUBCHEM</value>
-      <value>NCBI PUBCHEM</value>
-    </list>
+		<list><!--unspecified PUBCHEM (substance or compound?)-->
+			<value>PUBCHEM</value>
+			<value>NCBI PUBCHEM</value>
+		</list>
 		<list>
 			<value>PUBMED</value>
 			<value>PMID</value>
@@ -74,7 +74,7 @@
 			<value>UMBBD</value>
 		</list>
 		<list>
-      <value>MI</value>
+			<value>MI</value>
 			<value>PSI-MI</value>
 			<value>PSI MI</value>
 			<value>PSIMI</value>
@@ -112,7 +112,7 @@
 			<value>EMBL</value>
 		</list>
 		<list>
-      <value>GENPEPT</value>
+			<value>GENPEPT</value>
 			<value>PROTEIN GENBANK IDENTIFIER</value>
 		</list>
 		<list>
@@ -183,7 +183,6 @@
 			<value>CELL ONTOLOGY</value>
 		</list>
 	</util:set>
-	<!-- end of the XrefRule config. -->
 
 	<!-- utils configuration -->
 	<bean id="rulesMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -196,8 +195,21 @@
 		</property>
 	</bean>
 
-  <util:properties id="ontologyConfig" location="classpath*:obo.properties"/>
+  <bean id="utils" class="org.biopax.validator.utils.CoreUtils">
+    <property name="messageSource" ref="rulesMessageSource"/>
+    <property name="locale" value="en"/>
+    <property name="maxErrors" value="10000"/>
+  </bean>
 
-	<context:component-scan base-package="org.biopax.validator"/>
+  <bean id="ontologyUtils" class="org.biopax.validator.utils.OntologyUtils">
+    <property name="extraGroups" ref="extraDbSynonyms"/>
+    <property name="ontologyConfig">
+      <util:properties location="classpath*:obo.properties"/>
+    </property>
+  </bean>
+
+  <bean id="biopaxValidator" class="org.biopax.validator.BiopaxValidator"/>
+
+	<context:component-scan base-package="org.biopax.validator.rules"/>
 
 </beans>

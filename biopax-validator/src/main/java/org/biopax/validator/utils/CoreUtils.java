@@ -7,14 +7,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.validator.api.ValidatorUtils;
 import org.biopax.validator.api.beans.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Scope;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Locale;
 
 /**
@@ -27,7 +23,6 @@ import java.util.Locale;
  * @author rodche
  */
 @Configurable
-@Component("utils")
 public class CoreUtils implements ValidatorUtils {
   private static final Log logger = LogFactory.getLog(CoreUtils.class);
   public static final int DEFAULT_MAX_ERRORS = 10000;
@@ -41,8 +36,6 @@ public class CoreUtils implements ValidatorUtils {
     this.locale = LocaleContextHolder.getLocale();
   }
 
-  @Autowired
-  @Resource(name = "rulesMessageSource")
   public void setMessageSource(MessageSource rulesMessageSource) {
     this.messageSource = rulesMessageSource;
   }
@@ -57,19 +50,16 @@ public class CoreUtils implements ValidatorUtils {
     return locale;
   }
 
-  @Override
   public int getMaxErrors() {
     return maxErrors;
   }
-
-  @Override
   public void setMaxErrors(int max) {
     maxErrors = max;
   }
 
-  @Override
   public ErrorType createError(String objectName, String errorCode,
-                               String ruleName, String profile, boolean isFixed, Object... msgArgs)
+                               String ruleName, String profile,
+                               boolean isFixed, Object... msgArgs)
   {
     if (objectName == null) {
       objectName = "null";
@@ -108,7 +98,6 @@ public class CoreUtils implements ValidatorUtils {
     return error;
   }
 
-  @Override
   public Behavior getRuleBehavior(String ruleName, String profile) {
     if (messageSource == null) return Behavior.ERROR;
 
@@ -127,7 +116,6 @@ public class CoreUtils implements ValidatorUtils {
     return Behavior.valueOf(value.toUpperCase());
   }
 
-  @Override
   public String getRuleDescription(String ruleName) {
     //the default locale is used to get the ruleName intentionally
     String tip = messageSource.getMessage(ruleName, null, "", Locale.getDefault());

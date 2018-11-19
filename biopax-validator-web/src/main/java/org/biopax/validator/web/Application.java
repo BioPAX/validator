@@ -6,7 +6,9 @@ import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+
 @SpringBootApplication
+@EnableWebMvc
 public class Application implements WebMvcConfigurer {
 
   public static void main(String[] args) {

@@ -1,13 +1,14 @@
 <!DOCTYPE aspectj PUBLIC "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
 <aspectj>
-	<weaver options="-verbose -showWeaveInfo -XmessageHandlerClass:org.springframework.aop.aspectj.AspectJWeaverMessageHandler -Xlint:ignore">
-        <!--removed: -Xreweavable option-->
-        <!-- only weave classes within packages that match listed -->
-        <include within="org.biopax.paxtools.io.*" />
-        <include within="org.biopax.paxtools.controller.*" />
-        <include within="org.biopax.validator.*" />
-    </weaver>
-    <aspects>
-        <aspect name="org.biopax.validator.ExceptionsAspect" />
-    </aspects>
+  <weaver
+    options="-verbose -showWeaveInfo -XmessageHandlerClass:org.springframework.aop.aspectj.AspectJWeaverMessageHandler -Xlint:ignore">
+    <!--removed: -Xreweavable option-->
+    <!-- only weave classes within packages that match listed -->
+    <include within="org.biopax.paxtools.io.*"/>
+    <include within="org.biopax.paxtools.controller.*"/>
+    <include within="org.biopax.validator.*" />
+  </weaver>
+  <aspects>
+    <aspect name="org.biopax.validator.ExceptionsAspect"/>
+  </aspects>
 </aspectj>

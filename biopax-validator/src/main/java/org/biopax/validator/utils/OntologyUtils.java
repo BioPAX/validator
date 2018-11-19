@@ -27,12 +27,8 @@ import org.biopax.validator.api.CvRestriction;
 import org.biopax.validator.api.CvRule;
 import org.biopax.validator.api.CvUtils;
 import org.biopax.validator.api.CvRestriction.UseChildTerms;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
 
 /**
@@ -40,7 +36,6 @@ import javax.annotation.Resource;
  * 
  * @author rodche
  */
-@Component
 public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
 {
 	private final static Log log = LogFactory.getLog(OntologyUtils.class);
@@ -53,8 +48,6 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   private CompositeCollection<String> extraGroups; //set in Constructor
   private Properties ontologyConfig;
 
-  @Autowired
-  @Resource(name = "extraDbSynonyms")
   public void setExtraGroups(Set<List<String>> extraDbSynonyms){
     // normalize and organize provided synonyms
     this.extraGroups = new CompositeCollection<>();
@@ -68,8 +61,6 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
     }
   }
 
-	@Autowired
-  @Resource(name = "ontologyConfig")
   public void setOntologyConfig(Properties ontologyConfig) {
     this.ontologyConfig = ontologyConfig;
   }

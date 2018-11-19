@@ -10,6 +10,8 @@
     </encoder>
   </appender>
   <logger name="org.apache.tomcat" level="error"/>
+  <logger name="org.biopax.ols" level="error"/>
+  <logger name="org.biopax.psidev" level="error"/>
   <root level="info">
     <appender-ref ref="console"/>
   </root>

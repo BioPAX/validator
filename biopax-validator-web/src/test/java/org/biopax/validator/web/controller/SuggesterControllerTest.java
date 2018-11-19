@@ -30,7 +30,7 @@ public class SuggesterControllerTest {
   private MockMvc mvc;
 
   @MockBean
-  Suggester service;
+  private Suggester service;
 
   private static Clue aClue = new Clue("xref");
 

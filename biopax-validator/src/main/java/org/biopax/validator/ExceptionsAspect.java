@@ -17,9 +17,7 @@ import org.biopax.paxtools.io.SimpleIOHandler.Triple;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.validator.api.AbstractAspect;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 
 /**
  * This is the central aspect to report 
@@ -31,13 +29,11 @@ import javax.annotation.Resource;
  */
 @Configurable
 @Aspect
-@Component
 public class ExceptionsAspect extends AbstractAspect {
 
 	private static final Log log = LogFactory.getLog(ExceptionsAspect.class);
 
 	@Autowired
-	@Resource(name = "biopaxValidator")
 	@Override
 	public void setValidator(Validator biopaxValidator) {
 		super.setValidator(biopaxValidator);
@@ -53,23 +49,24 @@ public class ExceptionsAspect extends AbstractAspect {
 	 * @param jp (AspectJ) joint point
 	 * @param model biopax model
 	 */
-	@Around("execution(void org.biopax.paxtools.io.SimpleIOHandler.createAndBind(*)) " +
+	@Around("execution(void org.biopax.paxtools.io.SimpleIOHandler+.createAndBind(*)) " +
 		"&& args(model)")
-	public void adviseCreateAndBind(ProceedingJoinPoint jp, Model model) {
+	public Object adviseCreateAndBind(ProceedingJoinPoint jp, Model model) {
 		SimpleIOHandler reader = (SimpleIOHandler) jp.getTarget();
-
 		// associate the model with the reader (and validation results)
 		getValidator().indirectlyAssociate(reader, model);
 
+		Object ret = null;
 		try {
-			jp.proceed();
+			ret = jp.proceed();
 		} catch (Throwable ex) {
 			reportException(ex, reader, "syntax.error", "SimpleIOHandler.createAndBind interceptor", null);
 		}
+
+		return ret;
 	}
 
-
-	@Around("execution(* org.biopax.paxtools.io.SimpleIOHandler.processIndividual(*)) "
+	@Around("execution(* org.biopax.paxtools.io.SimpleIOHandler+.processIndividual(*)) "
 		+ "&& args(model)")
 	public String adviseProcessIndividual(ProceedingJoinPoint jp, Model model) {
 		String id = null;
@@ -83,10 +80,9 @@ public class ExceptionsAspect extends AbstractAspect {
 		return id;
 	}
 
-
-	@Around("execution(private void org.biopax.paxtools.io.SimpleIOHandler.bindValue(..))" +
+	@Around("execution(private void org.biopax.paxtools.io.SimpleIOHandler+.bindValue(..))" +
 		" && args(triple, model)")
-	public void adviseBindValue(ProceedingJoinPoint jp, Triple triple, Model model) {
+	public Object adviseBindValue(ProceedingJoinPoint jp, Triple triple, Model model) {
 		if(log.isDebugEnabled())
 			log.debug("adviseBindValue, triple: " + triple);
 
@@ -115,11 +111,14 @@ public class ExceptionsAspect extends AbstractAspect {
 			}
 		}
 
+    Object ret = null;
 		try {
-			jp.proceed();
+			ret = jp.proceed();
 		} catch (Throwable t) {
 			reportException(t, o, "syntax.error", "SimpleIOHandler.bindValue interceptor", triple.toString());
 		}
+
+		return ret;
 	}
 
 	@Around("execution(protected void org.biopax.paxtools.controller.PropertyEditor*+.checkRestrictions(..)) " +
@@ -128,21 +127,24 @@ public class ExceptionsAspect extends AbstractAspect {
 		try {
 			jp.proceed();
 		} catch (Throwable ex) {
-			reportException(ex, bean, "syntax.error", "PropertyEditor.checkRestrictions interceptor", String.valueOf(value));
+			reportException(ex, bean, "syntax.error", "PropertyEditor.checkRestrictions interceptor",
+        String.valueOf(value));
 		}
 	}
-
 
 	@Around("execution(protected void org.biopax.paxtools.controller.PropertyEditor*+.invokeMethod(..)) " +
 		"&& args(method, bean, value)")
-	public void adviseInvokeMethod(ProceedingJoinPoint jp, Method method, BioPAXElement bean, Object value) {
-		try {
-			jp.proceed();
+	public Object adviseInvokeMethod(ProceedingJoinPoint jp, Method method, BioPAXElement bean, Object value) {
+		Object ret = null;
+	  try {
+			ret = jp.proceed();
 		} catch (Throwable ex) {
-			reportException(ex, bean, "syntax.error", "PropertyEditor.invokeMethod interceptor", "method: "+ method + ", value: " + value);
+			reportException(ex, bean, "syntax.error", "PropertyEditor.invokeMethod interceptor",
+        "method: "+ method + ", value: " + value);
 		}
-	}
 
+		return ret;
+	}
 
 	@Around("execution(* org.biopax.paxtools.io.BioPAXIOHandler*+.convertFromOWL(*))")
 	public Object adviseConvertFromOwl(ProceedingJoinPoint jp) {
@@ -156,8 +158,7 @@ public class ExceptionsAspect extends AbstractAspect {
 		return model;
 	}
 
-
-	@Before("execution(* org.biopax.paxtools.io.SimpleIOHandler.skip(..))")
+	@Before("execution(* org.biopax.paxtools.io.SimpleIOHandler+.skip(..))")
 	public void adviseUnknownClass(JoinPoint jp) {
 		SimpleIOHandler reader = (SimpleIOHandler) jp.getTarget();
 		String loc = reader.getXmlStreamInfo();

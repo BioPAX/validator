@@ -129,10 +129,6 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                 out.close();
             }
 
-            if ( ontologyFile == null ) {
-                log.error( "The ontology file is still null..." );
-            }
-
             // Parse file
             return parseOboFile( ontologyFile, ontologyID );
 
