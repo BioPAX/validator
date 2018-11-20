@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.bind.annotation.*;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.validator.api.Identifier;
@@ -22,7 +22,7 @@ public class Validation implements Serializable {
 	
 	@XmlTransient
 	private Object model;
-	// "forcedly" associated objects, i.e., parser, model(s), and dangling elements 
+	// other associated objects, such as parser, stream, another model, non-model elements
 	@XmlTransient
 	private final Set<Object> objects;
 	// extra/optional settings
@@ -31,13 +31,12 @@ public class Validation implements Serializable {
 	// getting object's ID strategy (for error reporting)
 	@XmlTransient
 	private final Identifier idCalc;
-	
-	
-	@XmlElement(required=false)
+
+	@XmlElement
 	private String modelData; //cannot store more than ~1Gb data.
 	@XmlElement
 	private final Set<ErrorType> error;
-	@XmlAttribute(required=false)
+	@XmlAttribute
 	private String description;
 	@XmlElement
 	private final Set<String> comment;
@@ -48,13 +47,14 @@ public class Validation implements Serializable {
 	@XmlAttribute
 	private int totalProblemsFound = 0;
 	@XmlAttribute
-	private boolean fix = false;
-	@XmlAttribute(required=false)
+	private boolean fix;
+	@XmlAttribute
 	private Behavior threshold;	
-	// limit not fixed error cases (1 means "fail-fast" mode, i.e., stop after the first serious and not fixed error)
-	@XmlAttribute(required=false)
+	// limit not fixed error cases (1 means "fail-fast" mode, i.e.,
+	// stop after the first serious and not fixed error)
+	@XmlAttribute
 	private int maxErrors;
-	@XmlAttribute(required=false)
+	@XmlAttribute
 	private String profile;
 	@XmlAttribute
 	private String summary;
@@ -74,22 +74,16 @@ public class Validation implements Serializable {
 		this.maxErrors = Integer.MAX_VALUE;
 		this.profile = null;
 		this.properties = new Properties();
-		this.idCalc = (idCalculator != null) ? idCalculator : new Identifier() {			
-			// fall-back Identifier strategy implementation that uses toString
-			public String identify(Object obj) {
-				return String.valueOf(obj);
-			}
-		} ;
+		// fall-back to a simple identity strategy implementation if idCalulator==null
+		this.idCalc = (idCalculator != null) ? idCalculator : String::valueOf;
 	}
 
-	
 	/** 
 	 * Default Constructor (this is mainly for OXM)
 	 */
 	public Validation() {
 		this(null);
 	}
-	
 
 	/**
 	 * Non-default settings Constructor. 
@@ -121,7 +115,6 @@ public class Validation implements Serializable {
 		if(profile != null && !profile.isEmpty())
 			this.profile = profile;
 	}
-
 	
 	/**
 	 * Gets the current Model.
@@ -133,7 +126,6 @@ public class Validation implements Serializable {
 		return model;
 	}
 
-	
 	/**
 	 * Sets Model (to check or report about)
 	 * 
@@ -149,7 +141,6 @@ public class Validation implements Serializable {
 		this.model = model;
 	}
 
-
 	/**
 	 * List of error types; each item has unique code.
 	 * 
@@ -162,7 +153,6 @@ public class Validation implements Serializable {
 		return error;
 	}
 
-
 	/**
 	 * This method should never be used (it's only used by the Spring OXM framework)
 	 * 
@@ -172,7 +162,6 @@ public class Validation implements Serializable {
 		error.clear();
 		error.addAll(errors);
 	}
-
 
 	/**
 	 * This method should never be used
@@ -213,7 +202,6 @@ public class Validation implements Serializable {
 						System.getProperty("line.separator")+"<br/>")
 				: null;
 	}
-
 
 	/**
 	 * Adds or updates the error (with cases) to the errors collection.
@@ -270,16 +258,6 @@ public class Validation implements Serializable {
 			break;
 		}
 	}
-	
-
-	/**
-	 * Removes the error type and all cases.
-	 * @param e error
-	 */
-	public synchronized void removeError(ErrorType e) {
-		error.remove(e);
-	}
-		
 
 	/**
 	 * Sets the information about this validation task. 
@@ -289,7 +267,6 @@ public class Validation implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
 
 	/**
 	 * Information about this validation task. 
@@ -300,7 +277,6 @@ public class Validation implements Serializable {
 		return description;
 	}
 
-	
 	/**
 	 * This method should never be used
 	 * (this is for OXM frameworks only)
@@ -311,7 +287,6 @@ public class Validation implements Serializable {
 		this.comment.clear();
 		this.comment.addAll(comments);
 	}
-	
 
 	/**
 	 * Add some details, stats regarding the validation task.
@@ -320,7 +295,6 @@ public class Validation implements Serializable {
 	public void addComment(String comment) {
 		this.comment.add(comment);
 	}
-	
 
 	/**
 	 * Comments (e.g., counts) about this validation task.
@@ -329,8 +303,7 @@ public class Validation implements Serializable {
 	public Collection<String> getComment() {
 		return comment;
 	}
-	
-	
+
 	/**
 	 * Validation results summary.
 	 * @return summary
@@ -341,8 +314,7 @@ public class Validation implements Serializable {
 	public void setSummary(String summary) {
 		this.summary = summary;
 	}
-	
-	
+
 	/**
 	 * String representation of this validation settings and results:
 	 * {@link #getDescription()} plus {@link #getSummary()}
@@ -355,19 +327,6 @@ public class Validation implements Serializable {
 		+ getSummary() + ")";
 	}
 
-	
-	/**
-	 * Searches for existing (registered) error type.
-	 * This is mostly for testing.
-	 * 
-	 * @param code error code
-	 * @param type level
-	 * @return matching error class
-	 */
-	public ErrorType findErrorType(String code, Behavior type) {
-		return findErrorType(new ErrorType(code, type));
-	}
-	
 	/*
 	 * Finds the same error type among
 	 * existing (already happened to have error cases)
@@ -386,8 +345,7 @@ public class Validation implements Serializable {
 		} 
 		return null;
 	}
-	
-	
+
 	/*
 	 * Finds the same error case in the registry.
 	 * 
@@ -398,14 +356,9 @@ public class Validation implements Serializable {
 	 *
 	 */
 	private ErrorCaseType findErrorCase(ErrorType errorType, ErrorCaseType errCase) {
-		ErrorType etype = findErrorType(errorType);
-		if (etype != null) {
-			ErrorCaseType ecase = etype.findErrorCase(errCase);
-			return ecase; //bug fixed ('return' was missing)
-		}
-		return null;
+		ErrorType e = findErrorType(errorType);
+		return (e != null) ? e.findErrorCase(errCase) : null;
 	}
-	
 
 	/**
 	 * Counts the number of errors/warnings.
@@ -426,7 +379,7 @@ public class Validation implements Serializable {
 		
 		for(ErrorType et : getError()) {
 			// skip warnings?
-			if(ignoreWarnings == true && et.getType() == Behavior.WARNING) {
+			if(ignoreWarnings && et.getType() == Behavior.WARNING) {
 				continue;
 			}
 			
@@ -446,7 +399,6 @@ public class Validation implements Serializable {
 		return count;
 	}
 
-
 	/**
 	 * Objects associated with this validation by the Validator,
 	 * usually - indirectly, during I/O operations. 
@@ -461,7 +413,6 @@ public class Validation implements Serializable {
 		return objects;
 	}
 
-
 	/**
 	 * @return true if auto-fix is enabled; otherwise - false
 	 */
@@ -469,14 +420,12 @@ public class Validation implements Serializable {
 		return fix;
 	}
 
-
 	/**
 	 * @param fix true when auto-fix is enabled
 	 */
 	protected void setFix(boolean fix) {
 		this.fix = fix;
 	}
-
 
 	/**
 	 * Gets the error reporting level/threshold, i.e., 
@@ -513,7 +462,6 @@ public class Validation implements Serializable {
 		this.totalProblemsFound = n;
 	}
 
-
 	/**
 	 * Total number of {@link Behavior#ERROR} and 
 	 * {@link Behavior#WARNING} cases, NOT fixed.
@@ -537,15 +485,14 @@ public class Validation implements Serializable {
 		notFixedErrors = n;
 	}
 
-
 	/** 
-	 * Finds a previously reported
-	 * by the rule error case and marks it as fixed.
+	 * Finds the error case reported by the rule and marks it as fixed.
 	 * 
 	 * @param objectId model element identifier (associated with the error)
 	 * @param rule a validation rule name (that reports the error code)
 	 * @param errCode specific error code
 	 * @param newMsg a message, if not null/empty, to replace the original one
+   * @apiNote this method can be used by other applications that use the validator as library.
 	 */	
 	public void setFixed(String objectId, String rule, String errCode, String newMsg) 
 	{
@@ -566,7 +513,6 @@ public class Validation implements Serializable {
 				ect.setMessage(newMsg);
 		}
 	}
-
 	
 	/**
 	 * Errors limit. After this value is reached, the validator stops registering new error cases
@@ -580,7 +526,6 @@ public class Validation implements Serializable {
 		return (isMaxErrorsSet()) ? maxErrors : 0;
 	}
 
-	
 	/**
 	 * Sets the errors threshold (max no. errors to collect/report),
 	 * an integer value between 0 and {@link Integer#MAX_VALUE}, otherwise
@@ -588,10 +533,9 @@ public class Validation implements Serializable {
 	 * 
 	 * @param maxErrors max no. errors to collect
 	 */
-	protected void setMaxErrors(int maxErrors) {
+	public void setMaxErrors(int maxErrors) {
 		this.maxErrors = maxErrors;
 	}
-	
 
 	/**
 	 * @return true iif {@link #maxErrors} is greater than 0 and less than {@link Integer#MAX_VALUE}
@@ -601,7 +545,6 @@ public class Validation implements Serializable {
 		return this.maxErrors > 0 
 			&& this.maxErrors < Integer.MAX_VALUE;
 	}
-
 	
 	/**
 	 * Gets normalizer settings.
@@ -611,7 +554,6 @@ public class Validation implements Serializable {
 	public Properties getProperties() {
 		return properties;
 	}
-
 
 	/**
 	 * Validation profile (a set of active rules and levels)
@@ -623,7 +565,6 @@ public class Validation implements Serializable {
 		return profile;
 	}
 
-
 	/**
 	 * Sets the validation profile to use when checking/reporting issues.
 	 * 
@@ -632,8 +573,7 @@ public class Validation implements Serializable {
 	protected void setProfile(String profile) {
 		this.profile = profile;
 	}
-	
-	
+
 	/**
 	 * Gets a domain-specific identifier 
 	 * for a model element, stream, parser, etc.

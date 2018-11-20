@@ -10,8 +10,5 @@ VALIDATOR_OPTS="-javaagent:lib/spring-instrument-${spring.version}.jar -Xmx4g -D
 # if you have a Google Analytics account and want to track this app visits,
 # add your code using the JVM option: -Dbiopax.validator.ga.code="UA-XXXX-Y"
 
-# to see more options, use: java -jar biopax-validator-web.jar --help
-# $1 - can be -httpPort=8080, $2 - can be -ajpPort=8009 (or whatever ports we want it use)
-
-
-$JAVA_HOME/bin/java -server $VALIDATOR_OPTS -jar biopax-validator-web.jar "$1" "$2"
+# to see more options, use: java -jar biopax-validator-web.war --help
+$JAVA_HOME/bin/java --illegal-access=permit -server $VALIDATOR_OPTS -jar biopax-validator-web.war -httpPort=8080

@@ -7,7 +7,6 @@ import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.level3.Level3Element;
 import org.biopax.paxtools.model.level3.ControlledVocabulary;
 import org.biopax.paxtools.model.level3.UnificationXref;
-import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.paxtools.normalizer.Normalizer;
 import org.biopax.paxtools.util.ClassFilterSet;
 import org.biopax.psidev.ontology_manager.*;
@@ -80,10 +79,10 @@ public abstract class CvTermsRule<T extends Level3Element> extends AbstractCvRul
       else {
         //TODO (an advanced feature, a separate rule - ) to check if multiple terms are synonyms (equivalent)...
 
-        final Set<String> badTerms = new HashSet<String>(); // initially - none
-        final Map<String, Set<OntologyTermI>> noXrefTerms = new HashMap<String, Set<OntologyTermI>>();
+        final Set<String> badTerms = new HashSet<>(); // initially - none
+        final Map<String, Set<OntologyTermI>> noXrefTerms = new HashMap<>();
         //original terms set to iterate over (to avoid concurrent modification exceptions - other rules can modify the set simultaneously)
-        final Set<String> terms = Collections.unmodifiableSet(new HashSet<String>(cv.getTerm()));
+        final Set<String> terms = Collections.unmodifiableSet(new HashSet<>(cv.getTerm()));
 
         // first, check terms (names) are valid
         for(String name : terms)
@@ -106,7 +105,7 @@ public abstract class CvTermsRule<T extends Level3Element> extends AbstractCvRul
         for (UnificationXref x : new ClassFilterSet<>(
           cv.getXref(), UnificationXref.class))
         {
-          OntologyTermI ot = ((OntologyManager) ontologyManager).findTermByAccession(x.getId());
+          OntologyTermI ot = ontologyUtils.getOntologyManager().findTermByAccession(x.getId());
           if(ot == null || !getValidTerms().contains(ot.getPreferredName().toLowerCase())) {
             badXrefs.add(x);
           }
@@ -124,14 +123,14 @@ public abstract class CvTermsRule<T extends Level3Element> extends AbstractCvRul
           // only for valid terms
           if(getValidTerms().contains(name.toLowerCase())) {
             // check if there is the corresponding unification xref
-            Set<OntologyTermI> ots = ((OntologyManager) ontologyManager)
-              .searchTermByName(name.toLowerCase(), getOntologyIDs());
+            Set<OntologyTermI> ots = ontologyUtils
+              .getOntologyManager().searchTermByName(name.toLowerCase(), getOntologyIDs());
             assert(!ots.isEmpty()); // shouldn't be, because the above getValidTerms() contains the name
             boolean noXrefsForTermNameFound = true; // next, - prove otherwise is the case
             terms: for(OntologyTermI term : ots) {
               String id = term.getTermAccession();
               // search for the xref with the same xref.id
-              for (UnificationXref x : new ClassFilterSet<Xref,UnificationXref>(
+              for (UnificationXref x : new ClassFilterSet<>(
                 cv.getXref(), UnificationXref.class)) {
                 if(id.equalsIgnoreCase(x.getId()))  {
                   noXrefsForTermNameFound = false;
@@ -167,7 +166,7 @@ public abstract class CvTermsRule<T extends Level3Element> extends AbstractCvRul
              *    Well, let's try to fix, anyway (and modifying ValidatorImpl as well)!
              *    That's awesome!
              */
-            Set<OntologyTermI> validTermIs = ontologyManager.getValidTerms(this);
+            Set<OntologyTermI> validTermIs = ontologyUtils.getValidTerms(this);
             for (String name : noXrefTerms.keySet()) {
               //get previously saved valid ontology term beans by name
               Set<OntologyTermI> ots = noXrefTerms.get(name);
@@ -176,7 +175,7 @@ public abstract class CvTermsRule<T extends Level3Element> extends AbstractCvRul
               for (OntologyTermI term : ots) {
                 // skip terms that are not applicable although having the same synonym name
                 if(validTermIs.contains(term)) {
-                  OntologyAccess ont = ((OntologyManager)ontologyManager).getOntology(term.getOntologyId());
+                  OntologyAccess ont = ontologyUtils.getOntologyManager().getOntology(term.getOntologyId());
                   //if term's parents does not contain any of these terms
                   if(Collections.disjoint(ots, ont.getAllParents(term))) {
                     topvalids.add(term);
@@ -186,7 +185,7 @@ public abstract class CvTermsRule<T extends Level3Element> extends AbstractCvRul
               Set<String> added = new HashSet<>();
               for (OntologyTermI term : topvalids) {
                 String ontId = term.getOntologyId();
-                String db = ((OntologyManager) ontologyManager).getOntology(ontId).getName();
+                String db = ontologyUtils.getOntologyManager().getOntology(ontId).getName();
                 String id = term.getTermAccession();
                 // auto-create and add the xref to the cv;
                 // generate an URI in the same namespace
@@ -234,8 +233,7 @@ public abstract class CvTermsRule<T extends Level3Element> extends AbstractCvRul
     for (UnificationXref x : new ClassFilterSet<>(
       cv.getXref(), UnificationXref.class))
     {
-      OntologyTermI ot = ((OntologyManager) ontologyManager)
-        .findTermByAccession(x.getId());
+      OntologyTermI ot = ontologyUtils.getOntologyManager().findTermByAccession(x.getId());
       //if found and valid
       if (ot != null && getValidTerms().contains(ot.getPreferredName().toLowerCase())) {
         inferred.add(ot.getPreferredName());

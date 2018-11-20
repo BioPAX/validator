@@ -1,9 +1,5 @@
 package org.biopax.psidev.ontology_manager.impl;
 
-/*
- *
- */
-
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

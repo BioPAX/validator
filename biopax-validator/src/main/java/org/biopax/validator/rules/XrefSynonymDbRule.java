@@ -4,7 +4,7 @@ package org.biopax.validator.rules;
 import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
-import org.biopax.validator.utils.XrefHelper;
+import org.biopax.validator.XrefUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class XrefSynonymDbRule extends AbstractRule<Xref> {
 
   @Autowired
-  XrefHelper xrefHelper;
+  XrefUtils xrefUtils;
 
   public boolean canCheck(Object thing) {
     return (thing instanceof Xref);
@@ -30,11 +30,11 @@ public class XrefSynonymDbRule extends AbstractRule<Xref> {
       return; // another (cardinality) rule reports
     }
 
-    String primary = xrefHelper.getPrimaryDbName(db);
+    String primary = xrefUtils.getPrimaryDbName(db);
     // if primary is null, do nothing, - another rule (XrefRule) reports this
     if (primary != null && !primary.equalsIgnoreCase(db)) {
       // report only if it is definitely not official db synonym
-      if (xrefHelper.isUnofficialOrMisspelledDbName(db))
+      if (xrefUtils.isUnofficialOrMisspelledDbName(db))
         error(validation, x, "db.name.spelling", validation.isFix(), db, primary);
 
       // fix, sometimes w/o error message, anyway ;)

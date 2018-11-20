@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:p="http://www.springframework.org/schema/p"
 	   xmlns:context="http://www.springframework.org/schema/context"
-	   xmlns:oxm="http://www.springframework.org/schema/oxm"
-	   xmlns:aop="http://www.springframework.org/schema/aop"
 	   xmlns:util="http://www.springframework.org/schema/util"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm.xsd
-       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 	<context:spring-configured/>
 	<context:annotation-config/>
 
-	<!-- XrefRule, XrefSynonymDbRule additional (optional) configuration 
-	The following LISTS of DB (biodata source) synonyms and typos will
+	<!--
+	XrefRule, XrefSynonymDbRule additional (optional) configuration.
+	The following LISTS of bio entity source synonyms and typos will
 	merge with overlapping groups from Miriam and PSI-MI ("database citation" 
 	ontology branch) and then used to warn about non-standard but 
 	somewhat close/known names and probably auto-fix all such cases. If
@@ -32,6 +28,7 @@
 			<value>RCSB PDB</value>
 		</list>
 		<list>
+			<value>NCBI GENE</value>
 			<value>ENTREZ GENE</value>
 			<value>ENTREZ_GENE</value>
 			<value>LOCUS_LINK</value>
@@ -45,11 +42,9 @@
 			<value>ENTREZ GI</value>
 			<value>GI</value>
 		</list>
-		<list>
-			<value>PUBCHEM-SUBSTANCE</value>
-			<value>NCBI PUBCHEM</value>
-			<value>PUBCHEM SUBSTANCE</value>
+		<list><!--unspecified PUBCHEM (substance or compound?)-->
 			<value>PUBCHEM</value>
+			<value>NCBI PUBCHEM</value>
 		</list>
 		<list>
 			<value>PUBMED</value>
@@ -79,10 +74,10 @@
 			<value>UMBBD</value>
 		</list>
 		<list>
+			<value>MI</value>
 			<value>PSI-MI</value>
 			<value>PSI MI</value>
 			<value>PSIMI</value>
-			<value>MI</value>
 		</list>
 		<list>
 			<value>REFSEQ PROTEIN</value>
@@ -117,8 +112,8 @@
 			<value>EMBL</value>
 		</list>
 		<list>
-			<value>PROTEIN GENBANK IDENTIFIER</value>
 			<value>GENPEPT</value>
+			<value>PROTEIN GENBANK IDENTIFIER</value>
 		</list>
 		<list>
 			<value>KEGG COMPOUND</value>
@@ -157,9 +152,6 @@
 			<value>HUGE</value>
 		</list>
 		<list>
-			<value>HPRD</value>
-		</list>
-		<list>
 			<value>UNIPARC</value>
 		</list>
 		<list>
@@ -191,13 +183,9 @@
 			<value>CELL ONTOLOGY</value>
 		</list>
 	</util:set>
-	<!-- end of the XrefRule config. -->
-
-	<bean id="validator" class="org.biopax.validator.BiopaxValidator" scope="singleton"/>
 
 	<!-- utils configuration -->
-	<bean id="rulesMessageSource"
-		  class="org.springframework.context.support.ResourceBundleMessageSource">
+	<bean id="rulesMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">
 			<list>
 				<value>rules</value> <!-- classpath:rules.properties resource -->
@@ -207,25 +195,20 @@
 		</property>
 	</bean>
 
-	<bean id="utils" class="org.biopax.validator.utils.BiopaxValidatorUtils">
-		<property name="messageSource" ref="rulesMessageSource" />
-		<property name="locale" value="en" />
-		<property name="maxErrors" value="10000" />
-	</bean>
-	<!-- end of utils config. -->
+  <bean id="utils" class="org.biopax.validator.utils.CoreUtils">
+    <property name="messageSource" ref="rulesMessageSource"/>
+    <property name="locale" value="en"/>
+    <property name="maxErrors" value="10000"/>
+  </bean>
 
-	<bean id="ontologyManager" class="org.biopax.validator.utils.BiopaxOntologyManager" scope="singleton">
-		<constructor-arg index="0">
-			<util:properties local-override="false" location="classpath:obo.properties"/>
-		</constructor-arg>
-	</bean>
+  <bean id="ontologyUtils" class="org.biopax.validator.utils.OntologyUtils">
+    <property name="extraGroups" ref="extraDbSynonyms"/>
+    <property name="ontologyConfig">
+      <util:properties location="classpath*:obo.properties"/>
+    </property>
+  </bean>
 
-	<!-- a helper and a proxy to access MIRIAM and MI database citation and regexps 
-   		to validate their corresponding IDs -->
-	<bean id="xrefHelper" class="org.biopax.validator.utils.XrefHelper" scope="singleton">
-		<constructor-arg ref="extraDbSynonyms"/>
-		<constructor-arg ref="ontologyManager" />
-	</bean>
+  <bean id="biopaxValidator" class="org.biopax.validator.BiopaxValidator"/>
 
 	<context:component-scan base-package="org.biopax.validator.rules"/>
 

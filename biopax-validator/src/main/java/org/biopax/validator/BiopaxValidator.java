@@ -28,8 +28,6 @@ import org.biopax.validator.api.beans.Behavior;
 import org.biopax.validator.api.beans.ErrorType;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.stereotype.Service;
 
 
 /**
@@ -41,8 +39,6 @@ import org.springframework.stereotype.Service;
  * 
  * @author rodche
  */
-@Configurable
-@Service
 public class BiopaxValidator implements Validator {
 	private static final Log log = LogFactory.getLog(BiopaxValidator.class);
 
@@ -56,7 +52,7 @@ public class BiopaxValidator implements Validator {
 
 
 	public BiopaxValidator() {
-		results = Collections.newSetFromMap(new ConcurrentHashMap<Validation, Boolean>());
+		results = Collections.newSetFromMap(new ConcurrentHashMap<>());
 	}
 
 
@@ -96,7 +92,6 @@ public class BiopaxValidator implements Validator {
 			log.info("Errors limit (" + validation.getMaxErrors() + ") is exceeded; exitting...");
 			return;
 		}
-
 
 		Model model = (Model) validation.getModel();
 
@@ -142,11 +137,10 @@ public class BiopaxValidator implements Validator {
 		exec = Executors.newFixedThreadPool(50);
 		for (Rule rule : rules)
 		{
-			Behavior behavior = utils
-				.getRuleBehavior(rule.getClass().getName(), validation.getProfile());
-			if (behavior == Behavior.IGNORE)
-				continue; // skip disabled rule
-			execute(exec, rule, validation, model);
+			Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(),
+        validation.getProfile());
+			if (behavior != Behavior.IGNORE)
+				execute(exec, rule, validation, model);
 		}
 		exec.shutdown(); //end accepting jobs
 		try {
@@ -185,7 +179,6 @@ public class BiopaxValidator implements Validator {
 		validation.setSummary("different types of problem: " + validation.getError().size());
 	}
 
-
 	private void execute(ExecutorService exec, final Rule rule,
 											 final Validation validation, final Object obj)
 	{
@@ -215,8 +208,8 @@ public class BiopaxValidator implements Validator {
 			@SuppressWarnings("unchecked") //obj can be either Model or a BPE
 			public void run() {
 				for(Rule rule : rules) {
-					Behavior behavior = utils
-						.getRuleBehavior(rule.getClass().getName(), validation.getProfile());
+					Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(),
+            validation.getProfile());
 					if (behavior == Behavior.IGNORE)
 						continue; // skip disabled rule
 
@@ -256,7 +249,6 @@ public class BiopaxValidator implements Validator {
 		associate(model, validation);
 	}
 
-
 	public void associate(Object obj, Validation validation) {
 		assert(validation != null);
 
@@ -269,8 +261,8 @@ public class BiopaxValidator implements Validator {
 		}
 
 		if(obj instanceof Model) {
-			validation.setModel((Model) obj);
-		} else {
+			validation.setModel(obj);
+		} else if(obj != null) {
 			validation.getObjects().add(obj);
 		}
 	}
@@ -311,7 +303,6 @@ public class BiopaxValidator implements Validator {
 		return keys;
 	}
 
-
 	public void indirectlyAssociate(Object parent, Object child) {
 		if (parent == null || child==null
 			|| child.getClass().isPrimitive()
@@ -323,7 +314,6 @@ public class BiopaxValidator implements Validator {
 			associate(child, key);
 		}
 	}
-
 
 	/**
 	 * {@inheritDoc}

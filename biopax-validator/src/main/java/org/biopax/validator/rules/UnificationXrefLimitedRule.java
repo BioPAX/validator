@@ -5,7 +5,7 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
-import org.biopax.validator.utils.XrefHelper;
+import org.biopax.validator.XrefUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -53,33 +53,27 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
     deny.put(Interaction.class, new HashSet<String>(Arrays.asList("mi")));
   }
 
-  private XrefHelper helper;
+  private XrefUtils helper;
 
   private boolean ready = false;
 
   // to init on the first check(..) call
   void initInternalMaps() {
     if (!ready) {
-      for (Class<? extends BioPAXElement> clazz : allow.keySet()) {
-        final Set<String> a = allow.get(clazz);
-        for (String db : new HashSet<String>(a)) {
-          Collection<String> synonymsOfDb = helper.getSynonymsForDbName(db);
-          a.addAll(synonymsOfDb);
-        }
-      }
-
-      for (Class<? extends BioPAXElement> clazz : deny.keySet()) {
-        final Set<String> a = deny.get(clazz);
-        for (String db : new HashSet<String>(a)) {
-          Collection<String> synonymsOfDb = helper.getSynonymsForDbName(db);
-          a.addAll(synonymsOfDb);
-        }
-      }
-
+      addDbSynonymsTo(allow);
+      addDbSynonymsTo(deny);
       ready = true;
     }
   }
 
+  private void addDbSynonymsTo(Map<Class<? extends BioPAXElement>,Set<String>> map) {
+    for (Map.Entry<Class<? extends BioPAXElement>,Set<String>> entry : map.entrySet()) {
+      Set<String> val = entry.getValue();
+      for (String db : new HashSet<>(val))
+        for (String s : helper.getSynonymsForDbName(db))
+          val.add(s);
+    }
+  }
 
   /*
    * Constructor requires the two sets to be defined in
@@ -88,8 +82,8 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
    * @param xrefHelper utils
    */
   @Autowired
-  public UnificationXrefLimitedRule(XrefHelper xrefHelper) {
-    helper = xrefHelper;
+  public UnificationXrefLimitedRule(XrefUtils xrefUtils) {
+    helper = xrefUtils;
   }
 
 

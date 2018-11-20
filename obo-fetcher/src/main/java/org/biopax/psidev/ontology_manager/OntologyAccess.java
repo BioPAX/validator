@@ -1,9 +1,5 @@
 package org.biopax.psidev.ontology_manager;
 
-/*
- *
- */
-
 
 import java.util.Collection;
 import java.util.Set;

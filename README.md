@@ -5,10 +5,10 @@
 [![Coverage Status](https://coveralls.io/repos/github/BioPAX/validator/badge.svg)](https://coveralls.io/github/BioPAX/validator) 
 [![MIT licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
- - [biopax.org](http://www.biopax.org) 
- - [official online validator](http://www.biopax.org/validator/)
- - [and wiki](https://github.com/BioPAX/validator/wiki)
- 
+- [biopax.org](http://www.biopax.org)
+- [official online validator](http://www.biopax.org/validator/)
+- [and wiki](https://github.com/BioPAX/validator/wiki)
+
   The BioPAX Validator is a command line tool, Java library, and online
 web service for BioPAX formatted pathway data validation. The validator
 checks for more than a hundred BioPAX Level3 rules and best practices, 
@@ -25,7 +25,6 @@ of biological processes including metabolic and signaling pathways,
 molecular interactions and gene networks. Pathguide.org lists the 
 pathway databases and tools that support BioPAX.
 
-
 ## Usage
 
 Download the latest ZIP distribution from 
@@ -33,7 +32,6 @@ Download the latest ZIP distribution from
 http://www.biopax.org/downloads/validator/
 
 Unpack and use (it also includes the WAR file). 
-
 
 ### Console (batch)
 
@@ -66,17 +64,14 @@ parameter for the validate.sh. This is because Validator's initialization
 is very time/resources consuming task (mainly, due to OBO files parsing); 
 after it's done, next validations are performed much faster.
 
-
 ### Web service
 
 ```sh server.sh```
 
 starts the BioPAX Validator app with built-in application server: 
-go to http://localhost:8080 in a browser.
+go to [http://localhost:8080] in a browser.
 
 Use --help parameter to see all the server options (e.g., httpPort, ajpPort)
-
-
 
 ## Developer notes
 
@@ -116,7 +111,7 @@ without real validation job).
 You can also edit links in obo.properties file and classpath in validate.sh 
 script to use alternative OBO files (e.g., the latest). However, when an ontology
 is unavailable or broken, the validator fails with a message: 
-```
+```text
 Caused by: psidev.ontology_manager.impl.OntologyLoaderException: Failed loading/parsing ontology CL 
 from http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/anatomy/cell_type/cell.obo
 ```

@@ -5,9 +5,6 @@
  */
 package org.biopax.psidev.ontology_manager.impl;
 
-/*
- *
- */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,8 +15,6 @@ import org.biopax.ols.impl.OBO2FormatParser;
 import org.biopax.ols.impl.TermBean;
 import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
-
-
 
 
 import java.io.*;
@@ -33,7 +28,7 @@ import java.util.*;
 /**
  * Wrapper class that hides the way OLS handles OBO files.
  *
- * @author Samuel Kerrien
+ * @author Samuorg.biopax.validator.*el Kerrien
  * @version $Id: OboLoader.java 656 2007-06-29 11:18:19 +0100 (Fri, 29 Jun 2007) skerrien $
  * @since <pre>30-Sep-2005</pre>
  */
@@ -132,10 +127,6 @@ public class OboLoader extends BaseOBO2AbstractLoader {
                 is.close();
                 out.flush();
                 out.close();
-            }
-
-            if ( ontologyFile == null ) {
-                log.error( "The ontology file is still null..." );
             }
 
             // Parse file

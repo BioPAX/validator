@@ -23,17 +23,16 @@
       <outputDirectory>lib</outputDirectory>
       <excludes>
         <exclude>org.biopax.validator:biopax-validator-client:jar</exclude>
-        <exclude>org.biopax.validator:biopax-validator-web:jar:exec-war</exclude>
-        <exclude>org.biopax.validator:distr:jar</exclude>
+        <exclude>org.biopax.validator:biopax-validator-web:war</exclude>
       </excludes>
       <unpack>false</unpack>
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.biopax.validator:biopax-validator-web:jar:exec-war</include>
+        <include>org.biopax.validator:biopax-validator-web:war</include>
       </includes>
       <outputDirectory></outputDirectory>
-      <outputFileNameMapping>biopax-validator-web.jar</outputFileNameMapping>
+      <outputFileNameMapping>biopax-validator-web.war</outputFileNameMapping>
       <unpack>false</unpack>
     </dependencySet>
   </dependencySets>

@@ -9,8 +9,8 @@
 </owl:Ontology>
 
 <bp:InteractionVocabulary rdf:about="invalidCVTerm">
- <bp:comment rdf:datatype = "xsd:string">Invalid term (very similar, however)</bp:comment>
- <bp:term rdf:datatype = "xsd:string">phosphorylated</bp:term>
+ <bp:comment rdf:datatype = "xsd:string">Invalid term from MOD (very similar to MI one, however)</bp:comment>
+ <bp:term rdf:datatype = "xsd:string">phosphorylated residue</bp:term>
 </bp:InteractionVocabulary>
 
 <bp:InteractionVocabulary rdf:about="synonymCVTerm">
