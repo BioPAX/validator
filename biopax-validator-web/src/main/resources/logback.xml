@@ -9,11 +9,13 @@
       <outputPatternAsHeader>true</outputPatternAsHeader>
     </encoder>
   </appender>
+  <logger name="org.springframework" level="info"/>
+  <logger name="AspectJ Weaver" level="info"/>
   <logger name="org.apache.tomcat" level="error"/>
   <logger name="org.biopax.ols" level="error"/>
   <logger name="org.biopax.psidev" level="error"/>
   <logger name="org.biopax.psidev.ontology_manager.impl.OntologyManagerImpl" level="info"/>
-  <root level="info">
+  <root level="warn">
     <appender-ref ref="console"/>
   </root>
 </configuration>
