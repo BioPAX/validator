@@ -51,5 +51,4 @@ public class ApplicationIT {
       null, false, false));
   }
 
-  //TODO: add tests: check a syntax rule, check a biopax model from URL or local file
 }

@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractAspect {
 	private static final Log log = LogFactory.getLog(AbstractAspect.class);
 
-	private Validator validator;
+	protected Validator validator;
 
 	/**
 	 * Registers the error in the validator.
@@ -88,7 +88,5 @@ public abstract class AbstractAspect {
 		return validator;
 	}
 
-	public void setValidator(Validator validator) {
-		this.validator = validator;
-	}
+	public abstract void setValidator(Validator biopaxValidator);
 }

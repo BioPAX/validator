@@ -33,11 +33,11 @@ public class ExceptionsAspect extends AbstractAspect {
 
 	private static final Log log = LogFactory.getLog(ExceptionsAspect.class);
 
-	@Autowired
+  @Autowired
 	@Override
-	public void setValidator(Validator biopaxValidator) {
-		super.setValidator(biopaxValidator);
-	}
+  public void setValidator(Validator biopaxValidator) {
+    this.validator = biopaxValidator;
+  }
 
 	/**
 	 * This captures the exceptions that occur
@@ -87,26 +87,28 @@ public class ExceptionsAspect extends AbstractAspect {
 			log.debug("adviseBindValue, triple: " + triple);
 
 		SimpleIOHandler reader = (SimpleIOHandler) jp.getTarget();
+
 		// try to find the best object to report about...
-		Object o = reader;
-		BioPAXElement el = model.getByID(triple.domain);
-		if(el != null) {
-			o =  el;
-			PropertyEditor<?,?> editor = reader.getEditorMap()
-				.getEditorForProperty(triple.property, el.getModelInterface());
-			if (editor == null) {
-				// auto-fix (for some)
-				if(triple.property.equals("taxonXref")) {
-					report(el, "unknown.property",
-						"SimpleIOHandler.bindValue interceptor",
-						true, triple.property +
-							" - replaced with 'xref'");
-					triple.property = "xref";
-				} else {
-					report(el, "unknown.property",
-						"SimpleIOHandler.bindValue interceptor",
-						false, triple.property +
-							" - skipped");
+		if(triple.domain==null || triple.property==null) {
+			report(reader, "syntax.error",
+				"SimpleIOHandler.bindValue interceptor", false, triple +	" - skipped");
+		} else {
+			BioPAXElement el = model.getByID(triple.domain);
+			if (el != null) {
+				PropertyEditor<?, ?> editor = reader.getEditorMap()
+					.getEditorForProperty(triple.property, el.getModelInterface());
+				if (editor == null) {
+					// auto-fix (for some)
+					if (triple.property != null && triple.property.equals("taxonXref")) {
+						report(el, "unknown.property",
+							"SimpleIOHandler.bindValue interceptor",
+							true, triple.property + " - replaced with 'xref'");
+						triple.property = "xref";
+					} else {
+						report(el, "unknown.property",
+							"SimpleIOHandler.bindValue interceptor",
+							false, triple.property + " - skipped");
+					}
 				}
 			}
 		}
@@ -115,7 +117,8 @@ public class ExceptionsAspect extends AbstractAspect {
 		try {
 			ret = jp.proceed();
 		} catch (Throwable t) {
-			reportException(t, o, "syntax.error", "SimpleIOHandler.bindValue interceptor", triple.toString());
+			reportException(t, reader, "syntax.error", "SimpleIOHandler.bindValue interceptor",
+        String.valueOf(triple));
 		}
 
 		return ret;

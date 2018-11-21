@@ -6,7 +6,7 @@
     <!-- only weave classes within packages that match listed -->
     <include within="org.biopax.paxtools.io.*"/>
     <include within="org.biopax.paxtools.controller.*"/>
-    <include within="org.biopax.validator.*" />
+    <include within="org.biopax.validator.ExceptionsAspect" />
   </weaver>
   <aspects>
     <aspect name="org.biopax.validator.ExceptionsAspect"/>
