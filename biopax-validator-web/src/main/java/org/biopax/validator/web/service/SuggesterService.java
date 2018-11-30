@@ -30,14 +30,23 @@ public class SuggesterService implements Suggester {
 
   @Override
   public Clue xref(Xref[] xrefs) {
-
-    Clue clue = new Clue("xref");
+    Clue clue;
 
     if(xrefs!=null && xrefs.length>0) {
-      //TODO check id, suggest prefered db and uri for each xref (replace the stub below)
-      Arrays.stream(xrefs).forEachOrdered(x -> clue.getValues().add(x.getDb()));
+      clue = new Clue("Checked xrefs; suggested standard name and URI for valid ones.");
+      Arrays.stream(xrefs).forEach(xref -> clue.addValue(suggest(xref.getDb(), xref.getId())));
     } else {
-      //TODO add info about all recommended db names, corresp. id patterns, uris, etc.
+      clue = new Clue("A list of recommended data collection names and ID " +
+        "patterns for BioPAX Xref.db and Xref.id.");
+      Arrays.stream(MiriamLink.getDataTypesId())
+        .map(MiriamLink::getDatatype).forEach(datatype -> {
+          Xref x = new Xref();
+          x.setPreferredDb(datatype.getName());
+          x.setNamespace(datatype.getNamespace());
+          x.setId(datatype.getPattern());
+          x.setUri(String.format("http://identifiers.org/%s/", x.getNamespace()));
+          clue.addValue(x);
+      });
     }
 
     return clue;
@@ -45,34 +54,38 @@ public class SuggesterService implements Suggester {
 
   @Override
   public String xrefDbIdToUri(String db, String id) {
-    String uri;
+    Xref checked = suggest(db, id);
+    if (!checked.isDbOk()) {
+      throw new IllegalArgumentException("Cannot recognize DB: " + db);
+    } else if(!checked.isIdOk()) {
+      throw new IllegalArgumentException(String.format(
+        "DB:'%s'('%s'), ID:'%s' failed", db, checked.getPreferredDb(), id));
+    }
 
-    try {
-      uri = MiriamLink.getIdentifiersOrgURI(db, id);
-    } catch (IllegalArgumentException e) {
-      if (e.toString().contains("Datatype")) { //honestly, a hack
-        //guess, auto-correct (supports some (mis)spellings, such as 'Entrez_Gene')
-        String pref = getPrimaryDbName(db);
-        if (pref == null) {
-          //'db' did not mach any data collection name in MIRIAM even despite some auto-correction
-          throw new IllegalArgumentException("Cannot recognize DB: " + db);
-        } else {
-          try { //now with valid name
-            uri = MiriamLink.getIdentifiersOrgURI(pref, id);
-          } catch (IllegalArgumentException ex) {//pattern failed
-            throw new IllegalArgumentException(String.format(
-              "DB:'%s'('%s'), ID:'%s' failed : %s", db, pref, id, ex.toString()));
-          }
-        }
-      } else {
-        //id failed, or smth. else
-        throw new IllegalArgumentException(String.format(
-          "DB:'%s', ID:'%s' failed : %s", db, id, e.toString()));
+    return checked.getUri();
+  }
+
+  private Xref suggest(String db, String id) {
+    Xref x = new Xref();
+    x.setDb(db);
+    x.setId(id);
+    //check (can auto-correct some misspellings, such as 'Entrez_Gene')
+    String name = getPrimaryDbName(db);
+    if (name == null) {
+      x.setDbOk(false);
+    } else {
+      x.setDbOk(true);
+      x.setPreferredDb(name);
+      x.setNamespace(MiriamLink.getDatatype(name).getNamespace());
+      try { //now with valid name
+        String uri = MiriamLink.getIdentifiersOrgURI(name, id);
+        x.setUri(uri);
+        x.setIdOk(true);
+      } catch (IllegalArgumentException ex) {//pattern failed
+        x.setIdOk(false);
       }
     }
 
-    return uri;
+    return x;
   }
-
-
 }

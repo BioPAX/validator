@@ -9,12 +9,10 @@ import org.junit.rules.ExpectedException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
-import static org.hamcrest.Matchers.*;
-
 import java.io.IOException;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-
 
 public class SuggesterTest {
   private static Suggester suggester;
@@ -22,10 +20,10 @@ public class SuggesterTest {
   private final String URIEC = "http://identifiers.org/ec-code/";
   private final String URIGENE = "http://identifiers.org/ncbi.gene/";
   private final String EC = "ec";
-  private final String NSEC = "ec-code:";
+  private final String NSEC = "ec-code";
   private final String PREFEREC = "enzyme nomenclature";
   private final String ECCODE = "1.1.1.1";
-  private final String NSGENE = "ncbi.gene:";
+  private final String NSGENE = "ncbi.gene";
   private final String FOO = "foo";
   private final String GENEID = "1111";
 
@@ -53,26 +51,34 @@ public class SuggesterTest {
   public void xref() {
     Clue c = suggester.xref(null);
     assertNotNull(c);
-    assertTrue(c.getValues().isEmpty());
-    assertThat(c.getInfo(), equalTo("xref"));
+    assertFalse(c.getValues().isEmpty());
+    assertThat(c.getInfo(), startsWith("A list of recommended"));
 
     //x is a valid xref
     Xref x = new Xref();
-    x.setUri(NSEC+ECCODE);
     x.setDb(EC);
     x.setId(ECCODE);
     //y has invalid xref.id
     Xref y = new Xref();
-    y.setUri(NSEC+FOO);
     y.setDb(EC);
     y.setId(FOO);
 
     c = suggester.xref(new Xref[]{x, y});
     assertNotNull(c);
     assertThat(c.getValues().size(), equalTo(2));
-    assertThat(c.getInfo(), equalTo("xref"));
+    assertThat(c.getInfo(), startsWith("Checked"));
 
-    //TODO more assertions
+    assertTrue(((Xref)c.getValues().get(0)).isDbOk());
+    assertTrue(((Xref)c.getValues().get(0)).isIdOk());
+    assertThat(((Xref)c.getValues().get(0)).getNamespace(), equalTo(NSEC));
+    assertThat(((Xref)c.getValues().get(0)).getUri(), equalTo(URIEC + ECCODE));
+    assertThat(((Xref)c.getValues().get(0)).getPreferredDb(), equalTo(PREFEREC));
+
+    assertTrue(((Xref)c.getValues().get(1)).isDbOk()); //ok
+    assertThat(((Xref)c.getValues().get(1)).getPreferredDb(), equalTo(PREFEREC));
+    assertThat(((Xref)c.getValues().get(1)).getNamespace(), equalTo(NSEC));
+    assertFalse(((Xref)c.getValues().get(1)).isIdOk()); //not ok
+    assertNull(((Xref)c.getValues().get(1)).getUri()); //null
   }
 
   @Test

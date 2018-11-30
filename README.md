@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/BioPAX/validator.svg?branch=master)](https://travis-ci.org/BioPAX/validator) 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/744577f72ed14794bf970c8e8dd3f57b)](https://www.codacy.com/app/IgorRodchenkov/validator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=BioPAX/validator&amp;utm_campaign=Badge_Grade)
-[![Coverage Status](https://coveralls.io/repos/github/BioPAX/validator/badge.svg)](https://coveralls.io/github/BioPAX/validator) 
 [![MIT licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 - [biopax.org](http://www.biopax.org)

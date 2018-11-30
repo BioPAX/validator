@@ -9,9 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 
@@ -26,11 +30,23 @@ public class ApplicationIT {
   private Validator biopaxValidator;
 
   @Test
-  public void testGetTypes() {
+  public void testGetXref() {
     String result = template.getForObject(
       "/xref/{db}/{id}/", String.class, "enzyme nomenclature", "6.1.1.5");
     assertNotNull(result);
     assertEquals("http://identifiers.org/ec-code/6.1.1.5", result);
+  }
+
+  @Test
+  public void testPostXrefs() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    HttpEntity<String> httpEntity = new HttpEntity<>("", headers);
+    String result = template.postForObject("/xref", httpEntity, String.class);
+    assertNotNull(result);
+    assertTrue(result.startsWith("{\"info\":\"A list of recommended data collection names and ID patterns"));
+    //TODO: POST a couple of xrefs, e.g., [{db:"ec",id:"foo"}, {db:"ec",id:"1.1.1.1"}] and add assertions
   }
 
   @Test

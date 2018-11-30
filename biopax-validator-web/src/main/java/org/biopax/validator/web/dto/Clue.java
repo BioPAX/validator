@@ -37,4 +37,8 @@ public class Clue {
   public void setValues(List<Object> values) {
     this.values = values;
   }
+
+  public boolean addValue(Object v) {
+    return values.add(v);
+  }
 }
