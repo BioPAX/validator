@@ -31,8 +31,16 @@ public class SuggesterController {
   }
 
   @PostMapping(value = "/xref", produces = APPLICATION_JSON_UTF8_VALUE)
-  public Clue xref(@RequestBody(required = false) Xref[] xrefs) {
-    return service.xref(xrefs);
+  public Clue xref(@RequestBody Xref[] xrefs, HttpServletResponse response)
+    throws IOException {
+
+    try {
+      return service.xref(xrefs);
+    } catch (IllegalArgumentException e) {
+      response.sendError(400, e.toString());
+    }
+
+    return null;
   }
 
 }

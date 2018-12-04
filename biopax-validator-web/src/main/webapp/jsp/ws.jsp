@@ -11,15 +11,13 @@
 
 <jsp:include page="header.jsp"/>
 
-<h2>The BioPAX Validator Web Service</h2>
+<h2>The BioPAX Validator Web Services</h2>
 
 <div class="row">
-<div class="jumbotron">
 <h3>Check</h3>
-To validate and, optionally, auto-fix and normalize local or remote BioPAX file(s), 
-submit a multipart/form-data HTTP POST request to 
-<a class="btn btn-success" href="check">this URL</a>.
-</div>
+	<p>To validate and, optionally, auto-fix and normalize local or remote BioPAX file(s),
+		submit a multipart/form-data HTTP POST request to
+		<a class="btn btn-success" href="check">this URL</a>.</p>
 </div>
 
 <div class="row">
@@ -60,6 +58,11 @@ As an example, there is a basic BioPAX validator client module
 (it connects to the http://www.biopax.org/biopax-validator/check), and the
 <a target="_blank" href="http://sourceforge.net/p/biopax/validator/ci/default/tree/biopax-validator-client/">
 sources are here</a> (see test classes there as well:).
+</div>
+
+<div class="row">
+<h3>Suggest</h3>
+	<p>A new experimental <a target="_blank" href="docs/index.html">BioPAX Suggester</a> web service.</p>
 </div>
 
 <jsp:include page="footer.jsp"/>

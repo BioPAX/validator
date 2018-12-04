@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -42,11 +40,16 @@ public class ApplicationIT {
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
     headers.setContentType(MediaType.APPLICATION_JSON);
-    HttpEntity<String> httpEntity = new HttpEntity<>("", headers);
+    HttpEntity<String> requestEntity = new HttpEntity<>(headers); //no body
+    ResponseEntity<String> responseEntity = template.exchange("/xref", HttpMethod.POST, requestEntity, String.class);
+    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+
+    HttpEntity<String> httpEntity = new HttpEntity<>(
+      "[{\"db\":\"ec\",\"id\":\"foo\"}, {\"db\":\"ec\",\"id\":\"1.1.1.1\"}]", headers);
     String result = template.postForObject("/xref", httpEntity, String.class);
     assertNotNull(result);
-    assertTrue(result.startsWith("{\"info\":\"A list of recommended data collection names and ID patterns"));
-    //TODO: POST a couple of xrefs, e.g., [{db:"ec",id:"foo"}, {db:"ec",id:"1.1.1.1"}] and add assertions
+    assertTrue(result.startsWith("{\"info\":\"Checked"));
+    assertTrue(result.contains("ec-code") && result.contains("enzyme nomenclature"));
   }
 
   @Test

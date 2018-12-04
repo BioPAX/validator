@@ -36,17 +36,19 @@ public class SuggesterService implements Suggester {
       clue = new Clue("Checked xrefs; suggested standard name and URI for valid ones.");
       Arrays.stream(xrefs).forEach(xref -> clue.addValue(suggest(xref.getDb(), xref.getId())));
     } else {
-      clue = new Clue("A list of recommended data collection names and ID " +
-        "patterns for BioPAX Xref.db and Xref.id.");
-      Arrays.stream(MiriamLink.getDataTypesId())
-        .map(MiriamLink::getDatatype).forEach(datatype -> {
-          Xref x = new Xref();
-          x.setPreferredDb(datatype.getName());
-          x.setNamespace(datatype.getNamespace());
-          x.setId(datatype.getPattern());
-          x.setUri(String.format("http://identifiers.org/%s/", x.getNamespace()));
-          clue.addValue(x);
-      });
+      // null or empty xrefs value is not allowed
+//      clue = new Clue("A list of recommended data collection names and ID " +
+//        "patterns for BioPAX Xref.db and Xref.id.");
+//      Arrays.stream(MiriamLink.getDataTypesId())
+//        .map(MiriamLink::getDatatype).forEach(datatype -> {
+//          Xref x = new Xref();
+//          x.setPreferredDb(datatype.getName());
+//          x.setNamespace(datatype.getNamespace());
+//          x.setId(datatype.getPattern());
+//          x.setUri(String.format("http://identifiers.org/%s/", x.getNamespace()));
+//          clue.addValue(x);
+//      });
+      throw new IllegalArgumentException("Input array is empty or null.");
     }
 
     return clue;

@@ -49,10 +49,12 @@ public class SuggesterTest {
 
   @Test
   public void xref() {
+    exception.expect(IllegalArgumentException.class);
     Clue c = suggester.xref(null);
-    assertNotNull(c);
-    assertFalse(c.getValues().isEmpty());
-    assertThat(c.getInfo(), startsWith("A list of recommended"));
+    assertNull(c);
+//    assertNotNull(c);
+//    assertFalse(c.getValues().isEmpty());
+//    assertThat(c.getInfo(), startsWith("A list of recommended"));
 
     //x is a valid xref
     Xref x = new Xref();
