@@ -43,10 +43,10 @@
 					<li><a href="https://github.com/BioPAX/validator/issues" target="_blank">Report</a></li>
 					<li><a href="#" class="top-scroll">Top</a></li>
                   </ul>
-          	  </div> <!-- collapse -->
-      </div> <!-- container -->
+          	  </div> <%-- collapse --%>
+      </div> <%-- container --%>
  	</nav>
 </header>
 
 <div class="container">
-<!-- to be closed in the footer.jsp -->
+<%-- to be closed in the footer.jsp --%>

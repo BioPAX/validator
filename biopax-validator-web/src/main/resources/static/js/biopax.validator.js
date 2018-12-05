@@ -11,13 +11,13 @@ function switchInput() {
     f.disabled = true;
     f.value = null;
     u.disabled = false;
-  } else { //just in case...
-    console.error("unsupported value");
+  } else {
+    //nothing (should not happen)
   }
 }
 
 function isUrl(s) {
-  var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+  var regexp = /(ftp|http|https):\/\/(\w+:?\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@\-\/]))?/;
   return regexp.test(s);
 }
 
@@ -43,7 +43,6 @@ function updateValidatorOptions() {
     retOwl.disabled = false;
   }
 }
-
 
 //run
 var opts = document.forms["validate"].elements["switch"];

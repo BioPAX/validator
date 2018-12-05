@@ -1,14 +1,14 @@
-# The BioPAX Validator ${project.version}
+# The BioPAX Validator
 
 [![Build Status](https://travis-ci.org/BioPAX/validator.svg?branch=master)](https://travis-ci.org/BioPAX/validator) 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/744577f72ed14794bf970c8e8dd3f57b)](https://www.codacy.com/app/IgorRodchenkov/validator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=BioPAX/validator&amp;utm_campaign=Badge_Grade)
 [![MIT licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-- [biopax.org](http://www.biopax.org)
-- [official online validator](http://www.biopax.org/validator/)
-- [and wiki](https://github.com/BioPAX/validator/wiki)
+-  [biopax.org](http://www.biopax.org)
+-  [official online validator](http://www.biopax.org/validator/)
+-  [and wiki](https://github.com/BioPAX/validator/wiki)
 
-  The BioPAX Validator is a command line tool, Java library, and online
+The BioPAX Validator is a command line tool, Java library, and online
 web service for BioPAX formatted pathway data validation. The validator
 checks for more than a hundred BioPAX Level3 rules and best practices, 
 provides human readable reports and can automatically fix some common 
@@ -17,7 +17,7 @@ first auto-converted to the Level3, and then Level3 rules apply).
 The validator is in use by the BioPAX community and is continuously being
 improved and expanded based on community feedback.
 
-  BioPAX is a community developed standard language for integration, 
+BioPAX is a community developed standard language for integration, 
 exchange and analysis of biological pathway data. BioPAX is defined 
 in Web Ontology Language (OWL) and can represent a broad spectrum 
 of biological processes including metabolic and signaling pathways, 
@@ -26,29 +26,25 @@ pathway databases and tools that support BioPAX.
 
 ## Usage
 
-Download the latest ZIP distribution from 
-
-http://www.biopax.org/downloads/validator/
-
-Unpack and use (it also includes the WAR file). 
+Download and expand the latest ZIP distribution from <http://www.biopax.org/downloads/validator/>.
 
 ### Console (batch)
 
 When run as
 
-```$sh path/to/validate.sh [args]```
+```$sh validate.sh```
 
-it prints a brief help message when no arguments provided. 
+it prints the information about available command-line options. 
 
-The following example is how to validate a file or all files in a directory: 
+The following command checks all the BioPAX (.owl) files in a directory: 
 
-```sh validate.sh input_dir_or_file --profile=notstrict```
+```sh validate.sh input_dir --profile=notstrict```
 
 Validation results are saved to the **current** work directory.
 
 For data files under ~100Mb, you can also use biopax-validator-client.jar, 
 which can do faster, for it does not do initialization every time 
-(loading large ontology files); e.g., try it without arguments for more information:
+(loading large ontology files); try it without arguments for more information:
 
 ```java -jar biopax-validator-client.jar <in> <out> [optional parameters...]```
 
@@ -68,7 +64,7 @@ after it's done, next validations are performed much faster.
 ```sh server.sh```
 
 starts the BioPAX Validator app with built-in application server: 
-go to [http://localhost:8080] in a browser.
+go to <http://localhost:8080> in a browser.
 
 Use --help parameter to see all the server options (e.g., httpPort, ajpPort)
 
