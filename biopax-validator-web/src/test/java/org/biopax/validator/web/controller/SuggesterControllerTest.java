@@ -25,9 +25,9 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+//import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+//import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+//import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = {SuggesterController.class})
@@ -86,18 +86,14 @@ public class SuggesterControllerTest {
   }
 
   @Test
-  public void shouldReturnIdError4xx() throws Exception {
+  public void shouldReturnDbError4xx() throws Exception {
     mvc.perform(get("/xref/foo/6.1.1.5/").accept(MediaType.APPLICATION_JSON))
       .andDo(print())
-      .andExpect(status().is4xxClientError());
-
-    //invalid id
-    mvc.perform(get("/xref/ec/foo/").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().is4xxClientError());
   }
 
   @Test
-  public void shouldReturnDbError4xx() throws Exception {
+  public void shouldReturnIdError4xx() throws Exception {
     mvc.perform(get("/xref/ec/foo/").accept(MediaType.APPLICATION_JSON))
       .andDo(print())
       .andExpect(status().is4xxClientError());
@@ -143,7 +139,7 @@ public class SuggesterControllerTest {
     String inpContent = mapper.writeValueAsString(new Xref[]{x,y});
     String outContent = mapper.writeValueAsString(xyClue);
 
-   String ret = mvc.perform(post("/xref")
+    String ret = mvc.perform(post("/xref")
           .accept(MediaType.APPLICATION_JSON)
           .contentType(MediaType.APPLICATION_JSON)
           .content(inpContent))
