@@ -36,8 +36,6 @@ public class PhysicalEntityAmbiguousFeatureRule extends AbstractRule<PhysicalEnt
                 }
             }
 
-            // TODO: Call Emek's feature resolver function explicitly if the PE is to be fixed
-
             error(validation, thing, "ambiguous.feature", false, thing.getName());
         }
     }

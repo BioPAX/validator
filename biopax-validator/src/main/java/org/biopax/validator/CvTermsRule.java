@@ -27,7 +27,7 @@ public abstract class CvTermsRule<T extends Level3Element> extends AbstractCvRul
   /**
    * Constructor.
    *
-   * TODO a feature: to allow using a properties path in the 'property' parameter, like "modificationFeature/modificationType"
+   * TODO: (a feature) to allow using a path in 'property' parameter (e.g., "modificationFeature/modificationType")
    *
    * @param domain biopax property domain (object)
    * @param property biopax property name
@@ -77,7 +77,7 @@ public abstract class CvTermsRule<T extends Level3Element> extends AbstractCvRul
         /* won't report/fix what other rules (e.g., 'controlledVocabularyTermCRRule') or Normalizer do */
       }
       else {
-        //TODO (an advanced feature, a separate rule - ) to check if multiple terms are synonyms (equivalent)...
+        //TODO: check if multiple terms are synonyms (equivalent)
 
         final Set<String> badTerms = new HashSet<>(); // initially - none
         final Map<String, Set<OntologyTermI>> noXrefTerms = new HashMap<>();

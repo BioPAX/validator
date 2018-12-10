@@ -28,7 +28,6 @@ public class EntityReferenceSamePhysicalEntitiesRule extends
 		public boolean match(SimplePhysicalEntity e1, SimplePhysicalEntity e2) {
 			return  e1.hasEquivalentFeatures(e2) 
 					&& e1.hasEquivalentCellularLocation(e2);
-			//TODO add 'standardName' for comparison?
 		}
 	};
 	

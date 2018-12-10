@@ -165,7 +165,7 @@ public class ValidatorController {
       for(Validation result : validatorResponse.getValidationResult()) {
         if(result.getModelData() != null)
           writer.write(result.getModelData() + NEWLINE);
-        else // write "empty" rdf TODO: perhaps, simply skip?
+        else // write "empty" rdf
           writer.write("<rdf:RDF></rdf:RDF>" + NEWLINE);
       }
     }

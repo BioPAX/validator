@@ -18,7 +18,7 @@ import java.util.Set;
  * change compartments on the other side (otherwise it should be a 
  * TransportWithBiochemicalReaction)
  * 
- * TODO Complexes are matched by name, other physical entities can be "identified" using entity reference.
+ * Complexes are matched by name, other physical entities can be "identified" using entity reference.
  * 
  * @author rodche
  */

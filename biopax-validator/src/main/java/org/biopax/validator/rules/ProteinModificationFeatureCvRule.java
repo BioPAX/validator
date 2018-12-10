@@ -28,7 +28,6 @@ public class ProteinModificationFeatureCvRule extends CvTermsRule<ModificationFe
 				new CvRestriction("MI:0120","MI", true, 
 						UseChildTerms.ALL, false));
 		 */
-		//TODO discuss with community, which terms are allowed
 		super(ModificationFeature.class, "modificationType",
 				new CvRestriction("MOD:01156", "MOD", false, UseChildTerms.ALL, false), 
 				new CvRestriction("MOD:01157", "MOD", false, UseChildTerms.ALL, false)

@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
  * when complex'es is not.
  * 
  * @author rodche
- *
- * TODO check for "same location" taking into account the cell compartments hierarchy?
  */
 @Component
 public class ComplexComponentsSameLocationRule extends AbstractRule<Complex> {

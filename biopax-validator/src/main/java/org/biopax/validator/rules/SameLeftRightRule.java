@@ -35,7 +35,6 @@ public class SameLeftRightRule extends AbstractRule<Conversion>
             	boolean isSame = false;           	
                	isSame = righty.isEquivalent(lefty) && lefty.isEquivalent(righty);
             	if(isSame) {
-                   // TODO what if both actually have no xrefs, features, i.e., none of "distinguishing" properties? -
             		// a fix/hack - to consider ER's different for this rule purpose only
             		if(lefty instanceof SimplePhysicalEntity) 
             		{	// SimplePhysicalEntity can have an entity reference

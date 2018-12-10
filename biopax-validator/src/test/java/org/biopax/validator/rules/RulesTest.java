@@ -19,9 +19,6 @@ import org.junit.rules.ExpectedException;
  * This test suite is also generates the examples (BioPAX L3 OWL files)
  * that illustrate the corresponding rule violation.
  *
- * TODO Test all the L3 rules and generate OWL examples (for invalid cases).
- * TODO Also test valid use cases (look for 'false positives').
- *
  * @author rodche
  */
 public class RulesTest {

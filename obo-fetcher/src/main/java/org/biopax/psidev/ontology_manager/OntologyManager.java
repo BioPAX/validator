@@ -77,7 +77,7 @@ public interface OntologyManager {
   * @param terms the terms for which we want the names.
   * @return a non null collection of names.
   */
-  //TODO: if min. java is 10, we'd replace 'static' with 'default'
+  //if min. java is 10, we'd replace 'static' with 'default'
   static Collection<String> getTermNames(Collection<OntologyTermI> terms) {
     if ( terms == null ) {
       return Collections.emptyList();
