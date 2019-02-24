@@ -23,7 +23,7 @@
   <organization>
     <name>University of Toronto (baderlab.org) and Memorial Sloan-Kettering Cancer Center (cbio.mskcc.org).
       BioPAX.org</name>
-    <url>http://www.biopax.org</url>
+    <url>https://www.biopax.org</url>
   </organization>
 
   <mailingLists>
@@ -68,7 +68,7 @@
       <name>Sonatype Nexus Snapshots</name>
       <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
     </snapshotRepository>
-    <downloadUrl>http://www.biopax.org/downloads/</downloadUrl>
+    <downloadUrl>https://www.biopax.org/downloads/</downloadUrl>
   </distributionManagement>
 
   <repositories>

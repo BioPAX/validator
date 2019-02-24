@@ -55,8 +55,8 @@ to save locally and view off-line</li>
 
 <div class="row">
 As an example, there is a basic BioPAX validator client module 
-(it connects to the http://www.biopax.org/biopax-validator/check), and the
-<a target="_blank" href="http://sourceforge.net/p/biopax/validator/ci/default/tree/biopax-validator-client/">
+(it connects to the http://www.biopax.org/validator/check), and the
+<a target="_blank" href="https://github.com/BioPAX/validator/tree/master/biopax-validator-client">
 sources are here</a> (see test classes there as well:).
 </div>
 

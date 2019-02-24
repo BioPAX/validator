@@ -24,7 +24,7 @@ cannot be expressed in OWL or rule definition languages, to deal with
 syntax and semantic errors introduced in the course of pathway data modeling.
 Rules originate from the BioPAX Level3 specification and the community best practice, 
 are expressed as generic Java classes built around the 
-<a href="http://www.ncbi.nlm.nih.gov/pubmed/24068901" target="_blank">Paxtools</a> API 
+<a href="https://www.ncbi.nlm.nih.gov/pubmed/24068901" target="_blank">Paxtools</a> API
 and Spring framework, report errors or warnings in several categories,  
 and can optionally normalize BioPAX models, always auto-converting BioPAX Level 1, 2 to 3.
 There are also console and Java library version of this tool.

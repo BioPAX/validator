@@ -10,7 +10,7 @@
 				  <span class="icon-bar"></span>
 				  <span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="http://www.biopax.org" target="_blank">
+				<a class="navbar-brand" href="https://www.biopax.org" target="_blank">
 				 BioPAX.org
 				</a>
 			  </div>              
@@ -35,7 +35,7 @@
 							<li><a href="https://github.com/BioPAX/validator/wiki" target="_blank">Wiki (Validator)</a></li>
 							<li><a href="https://github.com/BioPAX/validator/wiki/BioPAXRules" target="_blank">Wiki (Rules)</a></li>
 							<li><a href="https://biopax.github.io/validator/" target="_blank">Project, Docs</a></li>
-							<li><a href="http://www.pathwaycommons.org" target="_blank">Pathway Commons</a></li>
+							<li><a href="https://www.pathwaycommons.org" target="_blank">Pathway Commons</a></li>
 							<li><a href="http://www.ebi.ac.uk/miriam/" target="_blank">MIRIAM</a></li>
 							<li><a href="http://www.obofoundry.org/" target="_blank">OBO</a></li>
                     	</ul>

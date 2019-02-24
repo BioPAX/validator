@@ -9,7 +9,7 @@
 <meta name="description" content="BioPAX Validator" />
 <meta name="keywords" content="BioPAX, Validation, Validator, Rule, OWL, RDF, Exchange" />
 <link rel="shortcut icon" href="'<spring:url value='/images//favicon.ico'/>'"/>
-<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="<spring:url value='/css/biopax.validator.css'/>" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
