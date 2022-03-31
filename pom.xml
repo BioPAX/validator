@@ -119,7 +119,7 @@
     <github.global.server>github</github.global.server>
 
     <!-- 5.1.2.RELEASE does not fail but cannot catch syntax errors using LTW-->
-    <spring.version>5.2.3.RELEASE</spring.version>
+    <spring.version>5.3.18</spring.version>
     <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</agent>
 
     <paxtools.version>5.2.1-SNAPSHOT</paxtools.version>
