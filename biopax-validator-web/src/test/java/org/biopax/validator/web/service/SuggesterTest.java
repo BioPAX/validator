@@ -3,36 +3,28 @@ package org.biopax.validator.web.service;
 import org.biopax.validator.web.dto.Clue;
 import org.biopax.validator.web.dto.Xref;
 import org.biopax.validator.utils.OntologyUtils;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import java.io.IOException;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SuggesterTest {
   private static Suggester suggester;
 
   private final String URIEC = "http://identifiers.org/ec-code/";
-  private final String URIGENE = "http://identifiers.org/ncbi.gene/";
+  private final String URIGENE = "http://identifiers.org/ncbigene/";
   private final String EC = "ec";
   private final String NSEC = "ec-code";
   private final String PREFEREC = "enzyme nomenclature";
   private final String ECCODE = "1.1.1.1";
-  private final String NSGENE = "ncbi.gene";
   private final String FOO = "foo";
   private final String GENEID = "1111";
 
-  @org.junit.Rule
-  public final ExpectedException exception = ExpectedException.none();
-  //in a test, put exception.expect(UnsupportedOperationException.class)
-  //before the line that should throw that exception.
-
-  @BeforeClass
+  @BeforeAll
   public static void init() throws IOException {
     OntologyUtils utils = new OntologyUtils();
     //using ontologies from biopax-validator/src/test/resources
@@ -49,13 +41,6 @@ public class SuggesterTest {
 
   @Test
   public void xref() {
-    exception.expect(IllegalArgumentException.class);
-    Clue c = suggester.xref(null);
-    assertNull(c);
-//    assertNotNull(c);
-//    assertFalse(c.getValues().isEmpty());
-//    assertThat(c.getInfo(), startsWith("A list of recommended"));
-
     //x is a valid xref
     Xref x = new Xref();
     x.setDb(EC);
@@ -65,36 +50,34 @@ public class SuggesterTest {
     y.setDb(EC);
     y.setId(FOO);
 
-    c = suggester.xref(new Xref[]{x, y});
-    assertNotNull(c);
-    assertThat(c.getValues().size(), equalTo(2));
-    assertThat(c.getInfo(), startsWith("Checked"));
-
-    assertTrue(((Xref)c.getValues().get(0)).isDbOk());
-    assertTrue(((Xref)c.getValues().get(0)).isIdOk());
-    assertThat(((Xref)c.getValues().get(0)).getNamespace(), equalTo(NSEC));
-    assertThat(((Xref)c.getValues().get(0)).getUri(), equalTo(URIEC + ECCODE));
-    assertThat(((Xref)c.getValues().get(0)).getPreferredDb(), equalTo(PREFEREC));
-
-    assertTrue(((Xref)c.getValues().get(1)).isDbOk()); //ok
-    assertThat(((Xref)c.getValues().get(1)).getPreferredDb(), equalTo(PREFEREC));
-    assertThat(((Xref)c.getValues().get(1)).getNamespace(), equalTo(NSEC));
-    assertFalse(((Xref)c.getValues().get(1)).isIdOk()); //not ok
-    assertNull(((Xref)c.getValues().get(1)).getUri()); //null
+    final Clue c = suggester.xref(new Xref[]{x, y});
+    assertAll(
+      () -> assertThrows(IllegalArgumentException.class ,()->suggester.xref(null)),
+      () -> assertNotNull(c),
+      () -> assertEquals(2, c.getValues().size()),
+      () -> assertTrue(c.getInfo().startsWith("Checked")),
+      () -> assertTrue(((Xref)c.getValues().get(0)).isDbOk()),
+      () -> assertTrue(((Xref)c.getValues().get(0)).isIdOk()),
+      () -> assertEquals(NSEC, ((Xref)c.getValues().get(0)).getNamespace()),
+      () -> assertEquals(URIEC + ECCODE, ((Xref)c.getValues().get(0)).getUri()),
+      () -> assertEquals(PREFEREC, ((Xref)c.getValues().get(0)).getPreferredDb()),
+      () -> assertTrue(((Xref)c.getValues().get(1)).isDbOk()), //ok
+      () -> assertEquals(PREFEREC, ((Xref)c.getValues().get(1)).getPreferredDb()),
+      () -> assertEquals(NSEC, ((Xref)c.getValues().get(1)).getNamespace()),
+      () -> assertFalse(((Xref)c.getValues().get(1)).isIdOk()), //not ok
+      () -> assertNull(((Xref)c.getValues().get(1)).getUri()) //null
+    );
   }
 
   @Test
   public void xrefDbIdToUri() {
-    assertThat(suggester.xrefDbIdToUri(EC, ECCODE), equalTo(URIEC + ECCODE));
-
-    exception.expect(IllegalArgumentException.class);
-    suggester.xrefDbIdToUri(FOO, ECCODE);
-
-    exception.expect(IllegalArgumentException.class);
-    suggester.xrefDbIdToUri(EC, FOO);
-
-    assertThat(suggester.xrefDbIdToUri("NCBI Gene", GENEID), equalTo(URIGENE + GENEID));
-    // "entrez_gene" (non-standard name) should be auto-fixed, mapped to "ncbi gene"
-    assertThat(suggester.xrefDbIdToUri("entrez_gene", GENEID), equalTo(URIGENE + GENEID));
+    assertAll(
+      () -> assertEquals(URIEC + ECCODE, suggester.xrefDbIdToUri(EC, ECCODE)),
+      () -> assertThrows(IllegalArgumentException.class ,()->suggester.xrefDbIdToUri(FOO, ECCODE)),
+      () -> assertThrows(IllegalArgumentException.class ,()->suggester.xrefDbIdToUri(EC, FOO)),
+      () -> assertEquals(URIGENE + GENEID, suggester.xrefDbIdToUri("NCBI Gene", GENEID)),
+      // "entrez gene" (non-standard name) should be auto-fixed, mapped to "ncbigene"
+      () -> assertEquals(URIGENE + GENEID, suggester.xrefDbIdToUri("entrez gene", GENEID))
+    );
   }
 }

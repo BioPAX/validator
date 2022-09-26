@@ -3,9 +3,10 @@ package org.biopax.validator.web.controller;
 import org.biopax.validator.web.dto.Clue;
 import org.biopax.validator.web.dto.Xref;
 import org.biopax.validator.web.service.Suggester;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -16,7 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,7 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 //import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 //import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
-@RunWith(SpringRunner.class)
+
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = {SuggesterController.class})
 @AutoConfigureRestDocs
 public class SuggesterControllerTest {
@@ -53,7 +55,7 @@ public class SuggesterControllerTest {
 
   private static Clue aClue = new Clue("some info");
 
-  @Before
+  @BeforeEach
   public void before() {
     // valid synonym and valid id
     String anXrefId = "6.1.1.5";
