@@ -114,7 +114,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <release>18</release>
+          <release>17</release>
         </configuration>
       </plugin>
       <plugin>
@@ -130,7 +130,9 @@
         <configuration>
           <mainClass>${start-class}</mainClass>
           <jvmArguments>${jvm.options}</jvmArguments>
-          <agent>${agent}</agent>
+          <agents>
+            <agent>${agent}</agent>
+          </agents>
         </configuration>
       </plugin>
       <plugin>
