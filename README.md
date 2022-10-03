@@ -2,6 +2,9 @@
 
 [![MIT licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
+[![Java CI with Maven](https://github.com/BioPAX/validator/actions/workflows/maven.yml/badge.svg)](https://github.com/BioPAX/validator/actions/workflows/maven.yml)
+
+
 -  [biopax.org](http://www.biopax.org)
 -  [official online validator](http://www.biopax.org/validator/)
 -  [and wiki](https://github.com/BioPAX/validator/wiki)
