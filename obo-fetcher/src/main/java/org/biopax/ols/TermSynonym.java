@@ -1,9 +1,5 @@
 package org.biopax.ols;
 
-/*
- *
- */
-
 import java.util.Collection;
 
 /**
@@ -16,35 +12,26 @@ public interface TermSynonym {
      *
      * @return
      */
-    public String getSynonym();
+    String getSynonym();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public Term getParentTerm();
+    Term getParentTerm();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public Term getSynonymType();
+    Term getSynonymType();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public Collection<DbXref> getSynonymXrefs();
+    Collection<DbXref> getSynonymXrefs();
 }
-
-
-
-
-
-
-
-
-

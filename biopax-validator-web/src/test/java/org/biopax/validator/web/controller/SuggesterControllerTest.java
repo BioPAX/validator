@@ -26,9 +26,6 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-//import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-//import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-//import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
 
 @ExtendWith(SpringExtension.class)
@@ -79,7 +76,7 @@ public class SuggesterControllerTest {
     mvc.perform(get("/xref/ec/6.1.1.5/").accept(MediaType.APPLICATION_JSON))
       .andDo(print())
       .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
       .andExpect(content().string(equalTo("http://identifiers.org/ec-code/6.1.1.5")));
 
     mvc.perform(get("/xref/ec_code/6.1.1.5/").accept(MediaType.APPLICATION_JSON))

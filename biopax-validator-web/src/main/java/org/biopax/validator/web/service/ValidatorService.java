@@ -28,8 +28,7 @@ public class ValidatorService implements ValidatorAdapter {
   public ValidatorService(Validator biopaxValidator) throws IOException {
     this.biopaxValidator = biopaxValidator;
     this.schema = new String(FileCopyUtils.copyToByteArray(LOADER
-      .getResource("classpath:org/biopax/validator/api/schema/schema1.xsd")
-      .getInputStream()),"UTF-8");
+      .getResource("classpath:validator-response-2.0.xsd").getInputStream()),"UTF-8");
   }
 
   public Validation validate(Resource data,

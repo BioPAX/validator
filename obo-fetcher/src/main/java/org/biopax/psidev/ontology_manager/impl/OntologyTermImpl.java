@@ -6,6 +6,7 @@ package org.biopax.psidev.ontology_manager.impl;
 
 
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.ArrayList;
 
@@ -19,7 +20,9 @@ import org.biopax.psidev.ontology_manager.OntologyTermI;
  * @version $Id$
  * @since 2.0.0
  */
-public class OntologyTermImpl implements OntologyTermI {
+public class OntologyTermImpl implements OntologyTermI, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String acc;
 

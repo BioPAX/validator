@@ -1,23 +1,19 @@
 package org.biopax.ols.impl;
 
-/*
- *
- */
-
-
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.biopax.ols.DbXref;
 import org.biopax.ols.Term;
 import org.biopax.ols.TermSynonym;
 
-
-
 /**
  * @author R. Cote
  * @version $Id: TermSynonymBean.java,v 1.1 2006/03/23 12:32:41 rglcote Exp $
  */
-public class TermSynonymBean implements TermSynonym {
+public class TermSynonymBean implements TermSynonym, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * <p>Represents ...</p>

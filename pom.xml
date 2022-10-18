@@ -118,6 +118,7 @@
     <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</agent>
     <paxtools.version>5.3.0-SNAPSHOT</paxtools.version>
     <license.licenseName>MIT</license.licenseName>
+    <jvm.options>-Xmx3g -Dfile.encoding=UTF-8 -ea --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvm.options>
   </properties>
 
   <build>
@@ -145,7 +146,7 @@
           <version>2.22.2</version>
           <configuration>
             <testFailureIgnore>false</testFailureIgnore>
-            <argLine>-Xmx3g -Dfile.encoding=UTF-8 -ea --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED</argLine>
+            <argLine>${jvm.options}</argLine>
             <includes>
               <include>**/*Test.java</include>
             </includes>
@@ -157,7 +158,7 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>2.22.1</version>
           <configuration>
-            <argLine>-Xmx3g -Dfile.encoding=UTF-8 --illegal-access=permit -javaagent:${agent}</argLine>
+            <argLine>${jvm.options} -javaagent:${agent}</argLine>
             <runOrder>alphabetical</runOrder>
             <includes>
               <include>**/*IT.java</include>

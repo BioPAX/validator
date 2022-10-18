@@ -259,8 +259,9 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   @PostConstruct //vital
   public synchronized void init() {
     try {
-      //create new ontology manager and load/parse OBO files as specified in the properties.
-      this.ontologyManager = new OntologyManagerImpl(this.ontologyConfig);
+      //create new ontology manager and load OBO files as specified in the properties.
+      ontologyManager = new OntologyManagerImpl();
+      ontologyManager.loadOntologies(ontologyConfig);
       //Normalize ontology names
       for (String id : ontologyManager.getOntologyIDs()) {
         String officialName = MiriamLink.getName(id);
@@ -268,7 +269,7 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
         log.debug(id + " (" + officialName + ")");
       }
     } catch (Throwable e) {
-      throw new RuntimeException("Failed to load or parse all required biological ontologies!", e);
+      throw new RuntimeException("Failed to load ontologies", e);
     }
 
     // Build collections of the recommended xref.db names and synonyms and corresponding id patterns

@@ -1,10 +1,6 @@
 package org.biopax.ols.impl;
 
-/*
- *
- */
-
-
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.biopax.ols.Annotation;
@@ -15,13 +11,13 @@ import org.biopax.ols.TermPath;
 import org.biopax.ols.TermRelationship;
 import org.biopax.ols.TermSynonym;
 
-
 /**
  * @author R. Cote
  * @version $Id: TermBean.java,v 1.2 2006/11/24 13:41:27 rglcote Exp $
  */
+public class TermBean implements Term, Serializable {
 
-public class TermBean implements Term {
+    private static final long serialVersionUID = 1L;
 
     /**
      * <p>Represents ...</p>

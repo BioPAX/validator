@@ -1,49 +1,36 @@
 package org.biopax.ols;
 
-/*
- *
- */
-
 /**
  * @author R. Cote
  * @version $Id: Annotation.java,v 1.10 2006/06/07 15:48:35 rglcote Exp $
  */
 public interface Annotation {
 
-    public static final String OBO_COMMENT = "comment";
-    public static final String OBO_CONSIDER_REPLACEMENT = "consider replacement";
-    public static final String OBO_REPLACED_BY = "replaced by";
-    public static final String SUBSET = "subset";
+    String OBO_COMMENT = "comment";
+    String OBO_CONSIDER_REPLACEMENT = "consider replacement";
+    String OBO_REPLACED_BY = "replaced by";
+    String SUBSET = "subset";
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public Term getParentTerm();
+    Term getParentTerm();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public String getAnnotationType();
+    String getAnnotationType();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public String getAnnotationStringValue();
-    public Double getAnnotationNumberValue();
-    public String getAnnotationCompleteValue();
+    String getAnnotationStringValue();
+    Double getAnnotationNumberValue();
+    String getAnnotationCompleteValue();
 }
-
-
-
-
-
-
-
-
-

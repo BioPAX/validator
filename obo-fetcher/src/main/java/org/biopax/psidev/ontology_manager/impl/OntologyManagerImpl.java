@@ -5,54 +5,43 @@ import org.apache.commons.logging.LogFactory;
 import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyManager;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.util.ResourceUtils;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 /**
- * Central access to configured OntologyAccess.
+ * Access to the specified bio/chem ontologies (loaded from several OBO format files).
  *
  * @author Florian Reisinger
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
- * @author rodche (baderlab.org) - re-factored for the BioPAX Validator
+ * @author rodche (baderlab.org) - simplified it for BioPAX Validator
  * @since 2.0.0
  */
 public class OntologyManagerImpl implements OntologyManager {
 
   private static final Log log = LogFactory.getLog(OntologyManagerImpl.class);
-  private static final ResourceLoader LOADER = new DefaultResourceLoader();
+  private static final String TMPDIR = System.getProperty("java.io.tmpdir");
 
   /**
    * The Map that holds the Ontologies.
    * The key is the ontology ID and the value is a ontology inplementing the OntologyAccess interface.
    */
-  private Map<String, OntologyAccess> ontologyMap;
+  private Map<String, OntologyAccess> ontologyMap = new HashMap<>();
 
-  /**
-   * Create a new OntologyManagerImpl with no configuration (no associated ontology).
-   */
   public OntologyManagerImpl() {
-    ontologyMap = new HashMap<>();
-  }
-
-  /**
-   * Creates a new OntologyManagerImpl managing the ontology specified in the config map.
-   *
-   * @param cfg configuration properties for the manager (ID=resource_location).
-   * @throws OntologyLoaderException when the configuration could not be parsed or loading of an ontology failed.
-   */
-  public OntologyManagerImpl(Properties cfg) throws OntologyLoaderException {
-    this();
-    loadOntologies(cfg);
-    log.debug("Successfully configured OntologyManagerImpl.");
   }
 
   public void putOntology( String ontologyID, OntologyAccess ontologyAccess ) {
     if ( ontologyMap.containsKey( ontologyID ) ) {
-      log.warn( "OntologyAccess with the ID '" + ontologyID + "' already exists. Overwriting!" );
+      log.warn( "OntologyAccess with id='" + ontologyID + "' already exists; overwriting" );
     }
     ontologyMap.put( ontologyID, ontologyAccess );
   }
@@ -69,60 +58,61 @@ public class OntologyManagerImpl implements OntologyManager {
     return ontologyMap.containsKey( ontologyID );
   }
 
-  public void loadOntologies( Properties config )
+  public synchronized void loadOntologies( Properties config )
     throws OntologyLoaderException
   {
     if ( config != null && !config.isEmpty()) {
-      for ( Object ontId : config.keySet() )
-      {
+      for ( Object ontId : config.keySet() ) {
         String key = (String) ontId;
+        String resource = config.getProperty(key);
         try {
-          URI uri = LOADER.getResource(config.getProperty(key)).getURI();
-          log.info( "Loading ontology: ID= " + ontId + ", uri=" + uri);
-          OntologyAccess oa = fetchOntology( key, "OBO", uri );
+          log.info( "Loading ontology: " + key + ", " + resource);
+          OntologyAccess oa = fetchOntology( key, resource);
           putOntology(key, oa);
-        } catch ( Throwable e ) { //using Throwable because StackOverflowError is also possible here
-          throw new OntologyLoaderException("Failed loading/parsing ontology " + key
-                                              + " from " + config.getProperty(key), e );
+        } catch ( Throwable e ) {
+          throw new OntologyLoaderException("Failed fetching ontology " + key + " from " + resource, e);
         }
       }
     } else {
-      throw new OntologyLoaderException("OntologyAccess configuration map is missing or empty (map)!");
+      throw new OntologyLoaderException("OntologyAccess config map is missing or empty");
     }
   }
 
-  private OntologyAccess fetchOntology( String ontologyID, String format, URI uri )
-    throws OntologyLoaderException {
-    OntologyAccess oa = null;
+  private synchronized OntologyAccess fetchOntology( String ontologyID, String resource) throws Exception {
+    OntologyAccess oa = null; // to make
 
-    // check the format
-    if ( "OBO".equals( format ) ) {
-      if ( uri == null ) {
-        throw new IllegalArgumentException( "The given CvSource doesn't have a URL" );
-      } else {
-        URL url;
-        try {
-          url = uri.toURL();
-        } catch ( MalformedURLException e ) {
-          throw new IllegalArgumentException( "The given CvSource doesn't have a valid URL: " + uri );
-        }
-
-        // parse the URL and load the ontology
-        OboLoader loader = new OboLoader();
-        try {
-          log.debug( "Parsing ontology at URL: " + url );
-          oa = loader.parseOboFile( url, ontologyID );
-          oa.setName(ontologyID);
-        } catch ( Exception e ) {
-          throw new OntologyLoaderException( "OboFile parser failed with Exception: ", e );
-        }
+    final Path serialized = Paths.get(TMPDIR,ontologyID + "_" + resource.hashCode() + ".bin");
+    //deserialize if the cache file exists
+    if(Files.exists(serialized)) {
+      try {
+        oa = (OntologyAccess) new ObjectInputStream(Files.newInputStream(serialized, StandardOpenOption.READ))
+          .readObject();
+        log.info( "Loaded ontology " + ontologyID + " from cache " + serialized );
+      } catch (Exception e) {
+        log.error("Failed to deserialize ontology from cache " + serialized, e);
       }
-    } else {
-      throw new OntologyLoaderException( "Unsupported ontology format: " + format );
     }
 
-    log.info( "Successfully created OntologyAccessImpl from values: ontology="
-                + ontologyID + " format=" + format + " location=" + uri );
+    if(oa == null) {// load the ontology from the resource
+      try {
+        URL url = ResourceUtils.getURL(resource);
+        oa = new OboLoader().parseOboFile(url, ontologyID);
+        oa.setName(ontologyID);
+        log.info( "Loaded ontology " + ontologyID + " from " + resource );
+        // serialize (reusable cache file)
+        try {
+          new ObjectOutputStream(Files.newOutputStream(serialized,
+            StandardOpenOption.CREATE,
+            StandardOpenOption.TRUNCATE_EXISTING)
+          ).writeObject(oa);
+          log.info( "Serialized " + ontologyID + " to a cache file " + serialized);
+        } catch (Exception e) {
+          log.error("Failed to serialize " + ontologyID + " to: " + serialized, e);
+        }
+      } catch (Exception e) {
+        throw new OntologyLoaderException("OBO file loader failed", e);
+      }
+    }
 
     return oa;
   }
@@ -132,10 +122,10 @@ public class OntologyManagerImpl implements OntologyManager {
   }
 
   public Set<OntologyTermI> searchTermByName(String name, Set<String> ontologies) {
-    Set<OntologyTermI> found  = new HashSet<OntologyTermI>();
+    Set<OntologyTermI> found  = new HashSet<>();
     assert name!=null : "searchTermByName: null arg.";
 
-    Set<String> ontologyIDs = new HashSet<String>(getOntologyIDs());
+    Set<String> ontologyIDs = new HashSet<>(getOntologyIDs());
     if(ontologies != null && !ontologies.isEmpty())
       ontologyIDs.retainAll(ontologies);
 
@@ -144,7 +134,7 @@ public class OntologyManagerImpl implements OntologyManager {
       for(OntologyTermI term : oa.getOntologyTerms()) {
         String prefName = term.getPreferredName();
         if(prefName == null) {
-          log.error("searchTermByName: NULL preffered name for term "
+          log.error("searchTermByName: null preferred name for term "
                       + term.getTermAccession() + " in " + ontologyId + "; report to authors.");
         } else if(name.equalsIgnoreCase(prefName)) {
           found.add(term);

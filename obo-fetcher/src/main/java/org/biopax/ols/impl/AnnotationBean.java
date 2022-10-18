@@ -1,12 +1,9 @@
 package org.biopax.ols.impl;
 
-/*
- *
- */
-
 import org.biopax.ols.Annotation;
 import org.biopax.ols.Term;
 
+import java.io.Serializable;
 
 /**
  * <p>Implementation of Annotation interface</p>
@@ -14,7 +11,9 @@ import org.biopax.ols.Term;
  * @author R. Cote
  * @version $Id: AnnotationBean.java,v 1.4 2008/05/20 16:40:00 rglcote Exp $
  */
-public class AnnotationBean implements Annotation {
+public class AnnotationBean implements Annotation, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * <p>Represents ...</p>
@@ -127,7 +126,6 @@ public class AnnotationBean implements Annotation {
         }
 
         return retval;
-
     }
 
     public void setAnnotationNumberValue(Double annotationNumberValue) {
@@ -146,7 +144,7 @@ public class AnnotationBean implements Annotation {
     public void setAnnotationDoubleValue(String str) {
         try {
             if (str != null && !str.equals("none")){
-                annotationNumberValue = new Double(str);
+                annotationNumberValue = Double.parseDouble(str);
             }
         } catch (NumberFormatException nfe){
             throw new RuntimeException("AnnotationBean.setAnnotationDoubleValue could not parse string: " + str, nfe);

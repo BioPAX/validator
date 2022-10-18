@@ -1,9 +1,5 @@
 package org.biopax.ols;
 
-/*
- *
- */
-
 import java.util.Collection;
 
 /**
@@ -16,114 +12,103 @@ public interface Term {
      *
      * @return
      */
-    public String getDefinition();
+    String getDefinition();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public String getIdentifier();
+    String getIdentifier();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public boolean isObsolete();
+    boolean isObsolete();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public boolean isRootTerm();
+    boolean isRootTerm();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public boolean isLeaf();
+    boolean isLeaf();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public boolean isInstance();
+    boolean isInstance();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public String getName();
+    String getName();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public Ontology getParentOntology();
+    Ontology getParentOntology();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public Collection<TermSynonym> getSynonyms();
+    Collection<TermSynonym> getSynonyms();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public Collection<TermRelationship> getRelationships();
+    Collection<TermRelationship> getRelationships();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public Collection<TermPath> getPaths();
+    Collection<TermPath> getPaths();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public String getNamespace();
+    String getNamespace();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public String getTermPk();
+    String getTermPk();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public Collection<Annotation> getAnnotations();
+    Collection<Annotation> getAnnotations();
 
     /**
      * <p>Does ...</p>
      *
      * @return
      */
-    public Collection<DbXref> getXrefs();
-
-
+    Collection<DbXref> getXrefs();
 }
-
-
-
-
-
-
-
-
-

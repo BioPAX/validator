@@ -6,7 +6,7 @@ import org.junit.*;
 
 import java.util.*;
 
-//@Ignore
+@Ignore
 public class LocalOntologyTest {
 
 	static OntologyManager manager;
@@ -15,14 +15,14 @@ public class LocalOntologyTest {
 
 	static {
 		final Properties cfg = new Properties();
-		cfg.put("MI", "classpath:mi.obo");
-		cfg.put("MOD", "classpath:mod.obo");
-		
+		cfg.put("MI", "classpath:test-mi.obo");
+		cfg.put("MOD", "classpath:test-mod.obo");
 		try {
-			manager = new OntologyManagerImpl(cfg);
+			manager = new OntologyManagerImpl();
+			manager.loadOntologies(cfg);
 			mod = manager.getOntology("MOD");
 			mi = manager.getOntology("MI");
-		} catch (OntologyLoaderException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -116,7 +116,6 @@ public class LocalOntologyTest {
 		assertNull(term);
 	}
 
-	// ////////////////
 	// Children
 
 	@Test

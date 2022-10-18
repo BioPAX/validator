@@ -4,7 +4,6 @@ import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyManager;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
 import org.biopax.psidev.ontology_manager.impl.OntologyAccessImpl;
-import org.biopax.psidev.ontology_manager.impl.OntologyLoaderException;
 import org.biopax.psidev.ontology_manager.impl.OntologyManagerImpl;
 import org.junit.*;
 
@@ -15,13 +14,14 @@ import java.util.Properties;
 public class OntologyParserTest {
 	 
 	@Test
-	public void ontologyLoading() throws OntologyLoaderException {
+	public void ontologyLoading() throws Exception {
 		
 		final Properties cfg = new Properties();
-		cfg.put("MI", "classpath:mi.obo");
-		cfg.put("MOD", "classpath:mod.obo");
+		cfg.put("MI", "classpath:test-mi.obo");
+		cfg.put("MOD", "classpath:test-mod.obo");
 		
-		OntologyManager manager = new OntologyManagerImpl(cfg);
+		OntologyManager manager = new OntologyManagerImpl();
+		manager.loadOntologies(cfg);
 		
 		Collection<String> ontologyIDs = manager.getOntologyIDs();
 		assertTrue(ontologyIDs.contains("MOD"));

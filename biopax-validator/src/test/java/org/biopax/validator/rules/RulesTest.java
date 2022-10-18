@@ -12,7 +12,6 @@ import org.biopax.validator.BiopaxIdentifier;
 import org.biopax.validator.api.Rule;
 import org.biopax.validator.api.beans.Validation;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 
 /**
@@ -26,9 +25,6 @@ public class RulesTest {
   private static final BioPAXFactory level3 =BioPAXLevel.L3.getDefaultFactory();
   private static final BioPAXIOHandler exporter = new SimpleIOHandler(BioPAXLevel.L3);
   private static final String TEST_DATA_DIR = RulesTest.class.getResource("").getPath();
-
-  @org.junit.Rule
-  public final ExpectedException exception = ExpectedException.none();
 
   private static void writeExample(String file, Model model) {
     try {
@@ -237,9 +233,12 @@ public class RulesTest {
     assertNotNull(uri);
     uri = URI.create("a,b,c");
     assertNotNull(uri);
-    exception.expect(IllegalArgumentException.class);
-    //noinspection ResultOfMethodCallIgnored
-    URI.create("a[b"); // will fail
+
+    try {
+      URI.create("a[b"); // will fail
+      fail("should throw IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+    }
   }
 
   @Test

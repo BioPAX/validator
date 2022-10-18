@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 public class SuggesterController {
@@ -17,7 +17,7 @@ public class SuggesterController {
   @Autowired
   private Suggester service;
 
-  @GetMapping(value = "/xref/{db}/{id}/", produces = APPLICATION_JSON_UTF8_VALUE)
+  @GetMapping(value = "/xref/{db}/{id}/", produces = APPLICATION_JSON_VALUE)
   public String xrefDbId(@PathVariable String db, @PathVariable String id,
                           HttpServletResponse response) throws IOException {
     String uri = null;
@@ -30,7 +30,7 @@ public class SuggesterController {
     return uri;
   }
 
-  @PostMapping(value = "/xref", produces = APPLICATION_JSON_UTF8_VALUE)
+  @PostMapping(value = "/xref", produces = APPLICATION_JSON_VALUE)
   public Clue xref(@RequestBody Xref[] xrefs, HttpServletResponse response)
     throws IOException {
 

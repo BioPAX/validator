@@ -1,20 +1,12 @@
 package org.biopax.ols.impl;
 
-/*
- *
- */
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bbop.dataadapter.DataAdapterException;
 import org.biopax.ols.Parser;
 import org.obo.dataadapter.OBOAdapter;
 import org.obo.dataadapter.OBOFileAdapter;
 import org.obo.datamodel.*;
 import org.obo.util.TermUtil;
-
-
-
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,19 +20,18 @@ import java.util.Set;
  * @version $Id: AbstractParser.java,v 1.9 2008/04/16 13:49:44 rglcote Exp $
  */
 public class OBO2FormatParser implements Parser {
-
     private static Log logger = LogFactory.getLog(OBO2FormatParser.class);
 
-    private OBOSession session = null;
+    private OBOSession session;
 
-    public OBO2FormatParser(String filePath) throws DataAdapterException {
+    public OBO2FormatParser(String filePath) throws Exception {
         OBOFileAdapter adapter = new OBOFileAdapter();
         OBOFileAdapter.OBOAdapterConfiguration config = new OBOFileAdapter.OBOAdapterConfiguration();
         config.getReadPaths().add(filePath);
         session = adapter.doOperation(OBOAdapter.READ_ONTOLOGY, config, null);
     }
 
-    public OBO2FormatParser(Collection<String> filePaths) throws DataAdapterException {
+    public OBO2FormatParser(Collection<String> filePaths) throws Exception {
         OBOFileAdapter adapter = new OBOFileAdapter();
         OBOFileAdapter.OBOAdapterConfiguration config = new OBOFileAdapter.OBOAdapterConfiguration();
         config.getReadPaths().addAll(filePaths);
@@ -53,9 +44,8 @@ public class OBO2FormatParser implements Parser {
      * @return a set of OBOClass/Instance objects, or null if session is not initialized
      */
     public Set<OBOObject> getTerms() {
-
         LinkDatabase lnkDb = session.getLinkDatabase();
-        HashSet<OBOObject> terms = new HashSet<OBOObject>();
+        HashSet<OBOObject> terms = new HashSet<>();
         for (IdentifiedObject io : lnkDb.getObjects()) {
             //do not return built-in obo: constructs
             if ((io instanceof OBOClass || io instanceof Instance) 
@@ -64,7 +54,6 @@ public class OBO2FormatParser implements Parser {
             }
         }
         return terms;
-
     }
 
     /**
@@ -84,7 +73,7 @@ public class OBO2FormatParser implements Parser {
      */
     public Set<OBOObject> getRootTerms(boolean useGreedy) {
 
-        HashSet<OBOObject> roots = new HashSet<OBOObject>();
+        HashSet<OBOObject> roots = new HashSet<>();
         /*
 	     * {@link RootAlgorithm#GREEDY GREEDY} root algorithm.
      	 *
@@ -101,17 +90,11 @@ public class OBO2FormatParser implements Parser {
          */
 
         if (useGreedy) {
-
             //use greedy root detection
-            /**
-             * Returns all non-obsolete root terms in a given {@link LinkDatabase}.
-             * Equivalent to {@link #getRoots(session.getLinkDatabase(), true, false, false, false)}.
-             */
+            // returns all non-obsolete root terms in a given LinkDatabase
             Collection<OBOClass> tmpRoots = TermUtil.getRoots(session);
             roots.addAll(tmpRoots);
-
         } else {
-
             //use strict root detection
             Collection<LinkedObject> tmpRoots = TermUtil.getRoots(RootAlgorithm.STRICT, session.getLinkDatabase());
             for (LinkedObject lnk : tmpRoots) {
@@ -119,11 +102,9 @@ public class OBO2FormatParser implements Parser {
                     roots.add((OBOClass) lnk);
                 }
             }
-
         }
 
         return roots;
-
     }
 
 
@@ -135,8 +116,9 @@ public class OBO2FormatParser implements Parser {
      * @param relationshipType - a set of possible synonyms for the type of relationship to link the terms (is_a, part_of, develops_from)
      * @return A hashmap where the key is a term ID and the value is an Integet repersenting the distance
      */
-    private HashMap<String, Integer> computeChildPaths(int distance, Set relationshipType, LinkedObject term, HashMap<String, Integer> paths) {
-
+    private HashMap<String, Integer> computeChildPaths(int distance, Set relationshipType, LinkedObject term,
+                                                       HashMap<String, Integer> paths)
+    {
         //get all children
         Collection<Link> children = term.getChildren();
 
@@ -152,9 +134,6 @@ public class OBO2FormatParser implements Parser {
                     logger.error("Stack overflow when computing child paths for: " + term.getID() + " for relationships: " + relationshipType);
                     throw new IllegalStateException(e);
                 }
-//            } else {
-//                logger.debug("reltype is:" + trm.getType().getID() + " but expected :" + relationshipType);
-//                }
             }
         }
 
@@ -171,7 +150,7 @@ public class OBO2FormatParser implements Parser {
      */
     public HashMap<String, Integer> computeChildPaths(int distance, Set relationshipType, LinkedObject term) {
         //the true call is required only once, at each call
-        return computeChildPaths(distance, relationshipType, term, new HashMap<String, Integer>());
+        return computeChildPaths(distance, relationshipType, term, new HashMap<>());
     }
 
 }

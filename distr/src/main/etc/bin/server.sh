@@ -11,4 +11,4 @@ VALIDATOR_OPTS="-javaagent:lib/spring-instrument-${spring.version}.jar -Xmx4g -D
 # add your code using the JVM option: -Dbiopax.validator.ga.code="UA-XXXX-Y"
 
 # to see more options, use: java -jar biopax-validator-web.war --help
-$JAVA_HOME/bin/java --illegal-access=permit -server $VALIDATOR_OPTS -jar biopax-validator-web.war --server.port=8080
+$JAVA_HOME/bin/java -server $VALIDATOR_OPTS -jar biopax-validator-web.war --server.port=8080

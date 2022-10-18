@@ -1,10 +1,4 @@
-/*
- * Copyright (c) 2002 The European Bioinformatics Institute, and others.
- * All rights reserved. Please see the file LICENSE
- * in the root directory of this distribution.
- */
 package org.biopax.psidev.ontology_manager.impl;
-
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,13 +10,11 @@ import org.biopax.ols.impl.TermBean;
 import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
 
-
 import java.io.*;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 /**
@@ -33,22 +25,15 @@ import java.util.*;
  * @since <pre>30-Sep-2005</pre>
  */
 public class OboLoader extends BaseOBO2AbstractLoader {
-
-    /**
-     * Sets up a logger for that class.
-     */
     public static final Log log = LogFactory.getLog( OboLoader.class );
-
-    private static final String ONTOLOGY_REGISTRY_NAME = "ontology.registry.map";
 
     public OboLoader( ) {
     }
 
-
     /**
      * Parse the given OBO file and build a representation of the DAG into an IntactOntology.
      *
-     * @param file the input file. It has to exist and to be readable, otherwise it will break.
+     * @param file the input file (has to exist and be readable)
      * @return a non null IntactOntology.
      */
     public OntologyAccess parseOboFile( File file, String ontologyID) {
@@ -65,79 +50,38 @@ public class OboLoader extends BaseOBO2AbstractLoader {
             setParser(new OBO2FormatParser(file.getAbsolutePath()));
             process();
         } catch ( Exception e ) {
-            log.fatal( "Parse failed: " + e.getMessage(), e );
+            log.fatal("Parse failed", e);
         }
-
         return buildOntology(ontologyID);
     }
-    
-    
+
+
     /**
-     * Load an OBO file from an URL.
+     * Load an OBO data from URL (uses a temporary local file).
+     * Can read from a https:, file:, jar:file: (classpath) URL.
      *
-     * @param url the URL to load (must not be null)
-     * @return an ontology
+     * @param url of the resource to load (not null)
+     * @return ontology access object
      * @see #parseOboFile(File, String)
      */
-    public OntologyAccess parseOboFile( URL url, String ontologyID ) throws OntologyLoaderException {
-        // load config file (ie. a map)
-        // check if that URL has already been loaded
-        // if so, get the associated temp file and check if available
-        // if available, then load it and skip URL load
-        // if any of the above failed, load it from the network.
-
+    public OntologyAccess parseOboFile(URL url, String ontologyID ) throws Exception {
         if ( url == null ) {
-            throw new IllegalArgumentException( "Please give a non null URL." );
+            throw new IllegalArgumentException( "URL is null" );
         }
-
-        File ontologyFile = null;
-
+        log.info( "Loading OBO data from URI: " + url );
         try {
-            if ( ontologyFile == null || !ontologyFile.exists() || !ontologyFile.canRead() ) {
-                // if it is not defined, not there or not readable...
-                // Read URL content
-                log.info( "Loading URL: " + url );
-                URLConnection con = url.openConnection();
-                long size = con.getContentLength(); // -1 if not stat available
-                log.info( "size = " + size );
-
-                InputStream is = url.openStream();
-
-                // make the temporary file name specific to the URL
-                String name = null;
-                String filename = url.getFile();
-                int idx = filename.lastIndexOf( '/' );
-                if ( idx != -1 ) {
-                    name = filename.substring( idx+1, filename.length() );
-                    name = name.replaceAll("[.,;:&^%$@*?=]", "_");
-                } else {
-                    name = "unknown";
-                }
-
-                ontologyFile = Files.createTempFile(name + "_", ".obo").toFile();
-                ontologyFile.deleteOnExit();
-                log.debug( "The OBO file will be temporary stored as: " + ontologyFile.getAbsolutePath() );
-
-                FileOutputStream out = new FileOutputStream( ontologyFile );
-                if(size == -1) size = 1024 * 1024 * 1024; //Integer.MAX_VALUE;
-                ReadableByteChannel source = Channels.newChannel(is);
-				size = out.getChannel().transferFrom(source, 0, size);
-				log.info(size + " bytes downloaded");
-
-                is.close();
-                out.flush();
-                out.close();
-            }
-
-            // Parse file
-            return parseOboFile( ontologyFile, ontologyID );
-
+            Path tmp = Files.createTempFile(ontologyID + "_", ".obo");
+            tmp.toFile().deleteOnExit();
+            log.info("Using a temporary OBO file: " + tmp);
+            Files.copy(url.openStream(), tmp, StandardCopyOption.REPLACE_EXISTING);
+            // process the temporary OBO file
+            return parseOboFile(tmp.toFile(), ontologyID);
         } catch ( IOException e ) {
-            throw new OntologyLoaderException( "Error while loading URL (" + url + ")", e );
+            throw new OntologyLoaderException( "Failed to parse OBO data from URI", e );
         }
     }
-    
-    
+
+
     private OntologyAccess buildOntology(String ontologyID) {
 
         OntologyAccess ontologyAccess = new OntologyAccessImpl();
@@ -156,15 +100,10 @@ public class OboLoader extends BaseOBO2AbstractLoader {
             
             // convert term into a OboTerm
             OntologyTermI ontologyTerm = new OntologyTermImpl(ontologyID, term.getIdentifier(), term.getName());
-// this workaround is not required anymore (since obo-fetcher impl. has changed).
-//          StringEscapeUtils.unescapeXml(term.getName()) );
-//          // unescapeXml above and below was a workaround a bug in ols-1.18 OBO parser (org.biopax.ols.loader..),
-//          // which returned, e.g., "O4&;apos;-phospho-L-tyrosine" instead "O4'-phospho-L-tyrosine")
             
-            final Collection<TermSynonym> synonyms = (Collection<TermSynonym>) term.getSynonyms();
+            final Collection<TermSynonym> synonyms = term.getSynonyms();
             if( synonyms != null ) {
                 for ( TermSynonym synonym : synonyms ) {
-//                    ontologyTerm.getNameSynonyms().add( StringEscapeUtils.unescapeXml(synonym.getSynonym()) );
                     ontologyTerm.getNameSynonyms().add( synonym.getSynonym() );
                 }
             }
@@ -182,19 +121,18 @@ public class OboLoader extends BaseOBO2AbstractLoader {
             TermBean term = ( TermBean ) iterator.next();
             // a quick workaround an issue that we want to ignore PSI-MOD included in PSI-MI
             if("PSI-MOD".equals(term.getNamespace()) && ("PSI-MI".equals(ontologyID) || "MI".equals(ontologyID)))
-            	continue; // skip
-            
+                continue; // skip
+
             if ( term.getRelationships() != null ) {
                 for ( Iterator iterator1 = term.getRelationships().iterator(); iterator1.hasNext(); ) {
                     TermRelationship relation = ( TermRelationship ) iterator1.next();
-
                     // to ignore PSI-MOD included in PSI-MI, simply to check for NPE -
                     try {
-                    	ontologyAccess.addLink( relation.getObjectTerm().getIdentifier(),
-                                relation.getSubjectTerm().getIdentifier() );
+                        ontologyAccess.addLink( relation.getObjectTerm().getIdentifier(),
+                          relation.getSubjectTerm().getIdentifier() );
                     } catch (NullPointerException e) {
-                   		log.warn("Skipping terms relationship " + relation + "; " + e);
-					}
+                        log.warn("Skipping terms relationship " + relation + "; " + e);
+                    }
                 }
             }
         }

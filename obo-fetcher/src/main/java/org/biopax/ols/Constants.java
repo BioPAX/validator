@@ -1,10 +1,5 @@
 package org.biopax.ols;
 
-/*
- *
- */
-
-
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -17,11 +12,9 @@ import java.util.HashSet;
  * @version $Id: Constants.java,v 1.15 2008/02/12 16:47:13 rglcote Exp $
  */
 public class Constants {
-
     public static final String OLS_CONFIG_FILE = "ols-config.properties";
     public static final String OLS_DBALIAS = "OLS_MAIN";
     public static final String OLS_FAILOVER_DBALIAS = "OLS_FAILOVER";
-
 
     public static final int IS_A_RELATION_TYPE_ID = 1;
     public static final int PART_OF_RELATION_TYPE_ID = 2;

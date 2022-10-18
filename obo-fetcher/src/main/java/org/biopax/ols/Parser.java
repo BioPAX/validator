@@ -1,9 +1,5 @@
 package org.biopax.ols;
 
-/*
- *
- */
-
 import org.obo.datamodel.LinkedObject;
 import org.obo.datamodel.OBOObject;
 import org.obo.datamodel.OBOSession;
@@ -19,7 +15,7 @@ import java.util.Set;
  */
 public interface Parser {
 
-    public enum PARSER_TYPE {
+    enum PARSER_TYPE {
         OBO_PARSER, OWL_PARSER
     }
 

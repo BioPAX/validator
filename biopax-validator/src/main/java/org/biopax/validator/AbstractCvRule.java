@@ -54,9 +54,6 @@ public abstract class AbstractCvRule<D extends BioPAXElement> extends AbstractRu
     }
   }
 
-  ;
-
-
   public boolean canCheck(Object thing) {
     return domain.isInstance(thing);
   }

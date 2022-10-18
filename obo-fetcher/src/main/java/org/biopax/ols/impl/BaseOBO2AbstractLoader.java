@@ -1,9 +1,5 @@
 package org.biopax.ols.impl;
 
-/*
- *
- */
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.biopax.ols.Annotation;
@@ -31,9 +27,8 @@ import java.util.*;
  * @author Richard Cote
  */
 public abstract class BaseOBO2AbstractLoader implements Loader {
-
     protected static Log logger = LogFactory.getLog(BaseOBO2AbstractLoader.class);
-    protected HashMap<String, Term> ontologyTerms = new HashMap<String, Term>(5000);
+    protected HashMap<String, Term> ontologyTerms = new HashMap<>(5000);
     protected String ONTOLOGY_DEFINITION;
     protected String FULL_NAME;
     protected String SHORT_NAME;
@@ -51,11 +46,11 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
     protected TermBean BROAD = null;
     protected TermBean RELATED = null;
     protected TermBean SYNONYM = null;
-    protected final HashSet<String> PART_OF_SET = new HashSet<String>();
-    protected final HashSet<String> IS_A_SET = new HashSet<String>();
-    protected final HashSet<String> DEV_FROM_SET = new HashSet<String>();
-    private HashMap<String, Term> unknown_relations = new HashMap<String, Term>();
-    private TreeSet<String> rootTerms = new TreeSet<String>();
+    protected final HashSet<String> PART_OF_SET = new HashSet<>();
+    protected final HashSet<String> IS_A_SET = new HashSet<>();
+    protected final HashSet<String> DEV_FROM_SET = new HashSet<>();
+    private HashMap<String, Term> unknown_relations = new HashMap<>();
+    private TreeSet<String> rootTerms = new TreeSet<>();
     protected Parser parser;
 
     //for PSI-MOD
@@ -87,7 +82,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
      * @throws IllegalStateException if the parser has not been initialized
      */
     protected Collection<String> getRootTerms() {
-        HashSet<String> retval = new HashSet<String>();
+        HashSet<String> retval = new HashSet<>();
         if (parser != null) {
             Set<OBOObject> roots = parser.getRootTerms(useGreedy);
             if (roots != null) {
@@ -107,9 +102,8 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
      * @throws IllegalStateException if the parser has not been initialized
      */
     protected void process() {
-
         //returns unmodifiable set, so need to create a modifiable one
-        Set<OBOObject> terms = new HashSet<OBOObject>();
+        Set<OBOObject> terms = new HashSet<>();
 
         //sanity check
         if (parser == null) {
@@ -164,7 +158,6 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
 
         //add to OntologyAccess
         ontBean.setTerms(ontologyTerms.values());
-
     }
 
 
@@ -775,30 +768,8 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
 
         HashSet<TermRelationship> retval = new HashSet<TermRelationship>();
 
-//        //check to see if a term has instances
-//        //if there are instances, add them as children so that the relationship can be created by the loader
-//        if (instances.get(obj.getID()) != null && !instances.get(obj.getID()).isEmpty()){
-//            for(String inst : instances.get(obj.getID())){
-//
-//                Term childTrm = ontologyTerms.get(inst);
-//                TermRelationshipBean trb = new TermRelationshipBean();
-//                trb.setSubjectTerm(childTrm);
-//                trb.setObjectTerm(trm);
-//                TermBean otherRelation = getUnknownRelationTermBean("is_instance_of");
-//                if (otherRelation != null) {
-//                    trb.setPredicateTerm(otherRelation);
-//                }
-//                //set ontology
-//                trb.setParentOntology(ontBean);
-//                //add to retval
-//                retval.add(trb);
-//
-//            }
-//        }
-
         Collection<Link> children = obj.getChildren();
         for (Link lnk : children) {
-
             //get the child term from the link
             //use its ID to lookup in the map we created
             //if null, continue
@@ -1206,7 +1177,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
     /**
      * takes a string and trims whitespace. if resulting string is empty, return null;
      *
-     * @param inStr     - string to trim. if null, return null;
+     * @param inStr string to trim; if null, return null
      */
     protected String safeTrim(String inStr) {
         if (inStr != null) {
@@ -1221,7 +1192,6 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
         }
     }
 
-
     /**
      * returns the OntologyAccess that has been loaded from file.
      *
@@ -1232,7 +1202,8 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
         if (ontBean != null)
             return ontBean;
         else {
-            throw new IllegalStateException("OntologyAccess bean not properly initialized. Did you call the proper sequence of methods: configure(), parse(), process()?");
+            throw new IllegalStateException("OntologyAccess bean not properly initialized. " +
+              "Did you call the proper sequence of methods: configure(), parse(), process()?");
         }
     }
 
