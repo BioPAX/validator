@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.logging.Log;

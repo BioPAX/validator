@@ -1,11 +1,10 @@
-import static org.junit.Assert.*;
-
 import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyManager;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
 import org.biopax.psidev.ontology_manager.impl.OntologyAccessImpl;
 import org.biopax.psidev.ontology_manager.impl.OntologyManagerImpl;
-import org.junit.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 import java.util.Collection;
@@ -24,20 +23,20 @@ public class OntologyParserTest {
 		manager.loadOntologies(cfg);
 		
 		Collection<String> ontologyIDs = manager.getOntologyIDs();
-		assertTrue(ontologyIDs.contains("MOD"));
-		assertTrue(ontologyIDs.contains("MI"));
+		Assertions.assertTrue(ontologyIDs.contains("MOD"));
+		Assertions.assertTrue(ontologyIDs.contains("MI"));
 
 		OntologyAccess oa2 = manager.getOntology("MOD");
-		assertNotNull(oa2);
-		assertTrue(oa2 instanceof OntologyAccessImpl);
+		Assertions.assertNotNull(oa2);
+		Assertions.assertTrue(oa2 instanceof OntologyAccessImpl);
 		
 		OntologyTermI t = oa2.getTermForAccession("MOD:00048");
-		assertNotNull(t);
+		Assertions.assertNotNull(t);
 		//test that apostrophe is not escaped (-due to a bug in the OBO parser, part of ols-1.18)!
-		assertTrue(t.getPreferredName().equalsIgnoreCase("O4'-phospho-L-tyrosine"));
+		Assertions.assertTrue(t.getPreferredName().equalsIgnoreCase("O4'-phospho-L-tyrosine"));
 		
 		oa2 = manager.getOntology("MI");
-		assertNotNull(oa2);
-		assertTrue(oa2 instanceof OntologyAccessImpl);
+		Assertions.assertNotNull(oa2);
+		Assertions.assertTrue(oa2 instanceof OntologyAccessImpl);
 	}
 }

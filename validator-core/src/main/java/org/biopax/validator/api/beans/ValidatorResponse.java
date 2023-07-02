@@ -3,7 +3,7 @@ package org.biopax.validator.api.beans;
 
 import java.io.Serializable;
 import java.util.*;
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 
 @XmlRootElement

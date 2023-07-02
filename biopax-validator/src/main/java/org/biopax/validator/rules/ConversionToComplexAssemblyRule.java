@@ -2,16 +2,15 @@ package org.biopax.validator.rules;
 
 
 import org.biopax.paxtools.controller.Fetcher;
-import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
-import org.biopax.paxtools.util.Filter;
 import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,15 +29,11 @@ import java.util.Set;
 public class ConversionToComplexAssemblyRule extends AbstractRule<Conversion> {
     public void check(final Validation validation, Conversion thing) {
     	//for thread safety (concurrency) we're using a new fetcher here rather than static one 
-    	Fetcher fetcher = new Fetcher(
-    			SimpleEditorMap.L3, new Filter<PropertyEditor>() {
-    				//complex.component only
-    				public boolean filter(PropertyEditor editor) {
-    					return editor.getProperty().equals("component");
-    				}
-    			});   	
-        Set<PhysicalEntity> left = new HashSet<PhysicalEntity>(getPEsRecursively(thing.getLeft(), fetcher)); //need a mutable set
-        Set<PhysicalEntity> right = getPEsRecursively(thing.getRight(), fetcher);
+      //complex.component only
+      Fetcher fetcher = new Fetcher(
+    			SimpleEditorMap.L3, editor -> editor.getProperty().equals("component"));
+        Set<PhysicalEntity> left = new HashSet<>(getPEsRecursively(thing.getLeft(), fetcher)); //need a mutable set
+        Set<PhysicalEntity> right = new HashSet<>(getPEsRecursively(thing.getRight(), fetcher));
         left.removeAll(right);
 
         int complexDiff = getComplexCount(thing.getLeft()) - getComplexCount(thing.getRight());
@@ -59,7 +54,7 @@ public class ConversionToComplexAssemblyRule extends AbstractRule<Conversion> {
         return count;
     }
 
-    private Set<PhysicalEntity> getPEsRecursively(Set<PhysicalEntity> pes, Fetcher fetcher) {
+    private Collection<PhysicalEntity> getPEsRecursively(Set<PhysicalEntity> pes, Fetcher fetcher) {
     	Model m = BioPAXLevel.L3.getDefaultFactory().createModel();
     	for(PhysicalEntity pe : pes) {
     		if(pe instanceof Complex)
@@ -67,8 +62,7 @@ public class ConversionToComplexAssemblyRule extends AbstractRule<Conversion> {
     		else 
     			if(!m.containsID(pe.getUri()))
     				m.add(pe);
-    	}   
-
+    	}
     	return m.getObjects(PhysicalEntity.class);
     }
 

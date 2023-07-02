@@ -1,7 +1,5 @@
 package org.biopax.validator.rules;
 
-import static org.junit.Assert.*;
-
 import java.io.*;
 import java.net.URI;
 
@@ -11,7 +9,8 @@ import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.BiopaxIdentifier;
 import org.biopax.validator.api.Rule;
 import org.biopax.validator.api.beans.Validation;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -63,7 +62,7 @@ public class RulesTest {
     left.setCellularLocation(cl);
     right.setCellularLocation(cl);
     rule.check(v, reaction);
-    assertTrue(v.getError().isEmpty());
+    Assertions.assertTrue(v.getError().isEmpty());
 
     // test complex (rule cannot use entityReference to match "the same" entity)
     PhysicalEntity leftc = level3.create(Complex.class, "complex");
@@ -78,7 +77,7 @@ public class RulesTest {
 
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, reaction);
-    assertEquals(1, v.countErrors(reaction.getUri(), null, "participant.location.changed",
+    Assertions.assertEquals(1, v.countErrors(reaction.getUri(), null, "participant.location.changed",
       null, false, false));
 
     // different complex, another location is ok for this rule,
@@ -88,14 +87,14 @@ public class RulesTest {
     leftc.addName("cplx2");
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, reaction);
-    assertTrue(v.getError().isEmpty());
+    Assertions.assertTrue(v.getError().isEmpty());
 
     right.setCellularLocation(cr);
     right.addComment("location changed without transport?");
     // check for: same entity (names intersection), diff. location
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, reaction);
-    assertEquals(1, v.countErrors(reaction.getUri(), null, "participant.location.changed",
+    Assertions.assertEquals(1, v.countErrors(reaction.getUri(), null, "participant.location.changed",
       null, false, false));
 
     // generate the example OWL
@@ -118,7 +117,7 @@ public class RulesTest {
     left.setCellularLocation(cr);
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, reaction);
-    assertTrue(v.getError().isEmpty());
+    Assertions.assertTrue(v.getError().isEmpty());
   }
 
 
@@ -158,13 +157,13 @@ public class RulesTest {
     // make sure it's valid
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, reaction);
-    assertTrue(v.getError().isEmpty());
+    Assertions.assertTrue(v.getError().isEmpty());
 
     // now set the same location on both sides and check
     right.setCellularLocation(cl);
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, reaction);
-    assertEquals(1, v.countErrors(reaction.getUri(), null, "transport.location.same",
+    Assertions.assertEquals(1, v.countErrors(reaction.getUri(), null, "transport.location.same",
       null, false, false));
 
     m.add(left); m.add(right);
@@ -199,7 +198,7 @@ public class RulesTest {
     // check again
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, reaction);
-    assertTrue(v.getError().isEmpty());
+    Assertions.assertTrue(v.getError().isEmpty());
   }
 
 
@@ -212,7 +211,7 @@ public class RulesTest {
     bpe.addComment("This is a valid ID");
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, bpe);
-    assertTrue(v.getError().isEmpty());
+    Assertions.assertTrue(v.getError().isEmpty());
 
     Model m = level3.createModel(); // to later generate examples
     m.add(bpe);
@@ -221,7 +220,7 @@ public class RulesTest {
     bpe.addComment("Invalid ID (has a space)");
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, bpe);
-    assertEquals(1, v.countErrors(v.identify(bpe), null, "invalid.rdf.id",
+    Assertions.assertEquals(1, v.countErrors(v.identify(bpe), null, "invalid.rdf.id",
       null, false, false));
 
     m.add(bpe);
@@ -230,13 +229,13 @@ public class RulesTest {
     // weird but legal URIs:
     URI uri;
     uri = URI.create("a");
-    assertNotNull(uri);
+    Assertions.assertNotNull(uri);
     uri = URI.create("a,b,c");
-    assertNotNull(uri);
+    Assertions.assertNotNull(uri);
 
     try {
       URI.create("a[b"); // will fail
-      fail("should throw IllegalArgumentException");
+      Assertions.fail("should throw IllegalArgumentException");
     } catch (IllegalArgumentException e) {
     }
   }
@@ -255,10 +254,10 @@ public class RulesTest {
       TEST_DATA_DIR + File.separator + "testDuplicateNamesByExporter.xml"));
     char[] buf = new char[1000];
     int n = in.read(buf);
-    assertTrue(n > 100);
+    Assertions.assertTrue(n > 100);
     String xml = new String(buf);
     if(xml.indexOf(name) != xml.lastIndexOf(name)) {
-      fail("displayName gets duplicated by the SimpleExporter!");
+      Assertions.fail("displayName gets duplicated by the SimpleExporter!");
     }
   }
 
@@ -278,7 +277,7 @@ public class RulesTest {
 
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, pr);
-    assertEquals(1, v.countErrors(pr.getUri(), null, "cardinality.violated",
+    Assertions.assertEquals(1, v.countErrors(pr.getUri(), null, "cardinality.violated",
       null, false, false));
 
     // write the example
@@ -291,7 +290,7 @@ public class RulesTest {
     pr.setOrganism(bioSource);
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, pr); // should pass now
-    assertTrue(v.getError().isEmpty());
+    Assertions.assertTrue(v.getError().isEmpty());
   }
 
 
@@ -302,28 +301,28 @@ public class RulesTest {
     Catalysis ca = level3.create(Catalysis.class, "catalysis1");
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, ca); // controlType==null, no error expected
-    assertTrue(v.getError().isEmpty());
+    Assertions.assertTrue(v.getError().isEmpty());
     ca.setControlType(ControlType.ACTIVATION);
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, ca); // no error expected
-    assertTrue(v.getError().isEmpty());
+    Assertions.assertTrue(v.getError().isEmpty());
     ca.setControlType(ControlType.INHIBITION);
     ca.addComment("error: illegal controlType");
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, ca);
-    assertEquals(1, v.countErrors(ca.getUri(), null, "range.violated",
+    Assertions.assertEquals(1, v.countErrors(ca.getUri(), null, "range.violated",
       null, false, false));
 
     TemplateReactionRegulation tr = level3.create(TemplateReactionRegulation.class, "regulation1");
     tr.setControlType(ControlType.INHIBITION);
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, tr); // no error...
-    assertTrue(v.getError().isEmpty());
+    Assertions.assertTrue(v.getError().isEmpty());
     tr.setControlType(ControlType.ACTIVATION_ALLOSTERIC);
     tr.addComment("error: illegal controlType");
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, tr);
-    assertEquals(1, v.countErrors(tr.getUri(), null, "range.violated",
+    Assertions.assertEquals(1, v.countErrors(tr.getUri(), null, "range.violated",
       null, false, false));
 
     // write the example XML
@@ -343,12 +342,12 @@ public class RulesTest {
     Degradation dg = level3.create(Degradation.class, "degradation-conversion-1");
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, dg); // direction is null, no error
-    assertTrue(v.getError().isEmpty());
+    Assertions.assertTrue(v.getError().isEmpty());
     dg.setConversionDirection(ConversionDirectionType.REVERSIBLE);
     dg.addComment("error: illegal conversionDirection");
     v = new Validation(new BiopaxIdentifier());
     rule.check(v, dg);
-    assertEquals(1, v.countErrors(dg.getUri(), null, "range.violated",
+    Assertions.assertEquals(1, v.countErrors(dg.getUri(), null, "range.violated",
       null, false, false));
 
     // write the example
@@ -390,7 +389,7 @@ public class RulesTest {
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, pr);
     // no err: different location
-    assertTrue(v.getError().isEmpty());
+    Assertions.assertTrue(v.getError().isEmpty());
   }
 
   @Test
@@ -430,12 +429,12 @@ public class RulesTest {
     pr.addXref(ref);
 
     Rule<Model> rule = new ClonedUtilityClassRule();
-    assertTrue(rule.canCheck(model));
+    Assertions.assertTrue(rule.canCheck(model));
 
     // check
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, model);
-    assertEquals(1, v.countErrors(null, null, "cloned.utility.class", null, false, false));
+    Assertions.assertEquals(1, v.countErrors(null, null, "cloned.utility.class", null, false, false));
 
     // write the example
     writeExample("testClonedUtilityClassRule.owl", model);
@@ -444,9 +443,9 @@ public class RulesTest {
     v = new Validation(new BiopaxIdentifier(), "auto-fix-it", true, null, 0, null);
     rule.check(v, model);
     //there is one error case, but -
-    assertEquals(1, v.countErrors(null, null, "cloned.utility.class", null, false, false));
+    Assertions.assertEquals(1, v.countErrors(null, null, "cloned.utility.class", null, false, false));
     // - it is fixed
-    assertEquals(0, v.countErrors(null, null, "cloned.utility.class", null, false, true));
+    Assertions.assertEquals(0, v.countErrors(null, null, "cloned.utility.class", null, false, true));
     // write the example
     writeExample("testClonedUtilityClassRuleFixed.owl", model);
   }
@@ -460,7 +459,7 @@ public class RulesTest {
     m.addNew(RelationshipXref.class, "Some_ID");
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, m);
-    assertEquals(1, v.countErrors(null, null, "duplicate.id.ignoringcase", null, false, false));
+    Assertions.assertEquals(1, v.countErrors(null, null, "duplicate.id.ignoringcase", null, false, false));
   }
 
 
@@ -487,12 +486,12 @@ public class RulesTest {
     c2.addLeft(p2);
     c2.addRight(complex);
 
-    assertFalse(rule.canCheck(c1));
-    assertTrue(rule.canCheck(c2));
+    Assertions.assertFalse(rule.canCheck(c1));
+    Assertions.assertTrue(rule.canCheck(c2));
 
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, c2);
-    assertEquals(1, v.countErrors(c2.getUri(), null, "wrong.conversion.class", null, false, false));
+    Assertions.assertEquals(1, v.countErrors(c2.getUri(), null, "wrong.conversion.class", null, false, false));
 
     writeExample("testConversionToComplexAssemblyRule.owl", m);
   }
@@ -512,7 +511,7 @@ public class RulesTest {
 
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, p1);
-    assertEquals(1, v.countErrors(p1.getUri(), null, "ambiguous.feature", null, false, false));
+    Assertions.assertEquals(1, v.countErrors(p1.getUri(), null, "ambiguous.feature", null, false, false));
 
     writeExample("testPhysicalEntityAmbiguousFeatureRule.owl", m);
   }
@@ -533,14 +532,14 @@ public class RulesTest {
 
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, p);
-    assertEquals(1, v.countErrors(p.getUri(), null, "improper.feature.use", null, false, false));
+    Assertions.assertEquals(1, v.countErrors(p.getUri(), null, "improper.feature.use", null, false, false));
 
     writeExample("testSimplePhysicalEntityFeaturesRule.owl", m);
 
     v = new Validation(new BiopaxIdentifier(),"",true,null,0, null);
     rule.check(v, p);
-    assertEquals(1, v.countErrors(p.getUri(), null, "improper.feature.use", null, false, false));
-    assertEquals(0, v.countErrors(p.getUri(), null, "improper.feature.use", null, false, true));
+    Assertions.assertEquals(1, v.countErrors(p.getUri(), null, "improper.feature.use", null, false, false));
+    Assertions.assertEquals(0, v.countErrors(p.getUri(), null, "improper.feature.use", null, false, true));
 
     writeExample("testSimplePhysicalEntityFeaturesRuleFixed.owl", m);
   }
@@ -558,11 +557,11 @@ public class RulesTest {
     complex.addComponent(component);
     component.addComponent(complex);
 
-    assertTrue(rule.canCheck(complex));
+    Assertions.assertTrue(rule.canCheck(complex));
 
     Validation v = new Validation(new BiopaxIdentifier()); //default is: no auto-fix
     rule.check(v, complex);
-    assertEquals(1, v.countErrors(complex.getUri(), null, "cyclic.inclusion", null, false, true));
+    Assertions.assertEquals(1, v.countErrors(complex.getUri(), null, "cyclic.inclusion", null, false, true));
 //			System.out.println(e + " " + Arrays.toString(e.getMsgArgs()));
 
     writeExample("testAcyclicComplexRule.owl", m);
@@ -585,7 +584,7 @@ public class RulesTest {
 
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, x);
-    assertEquals(1, v.countErrors(v.identify(x), null, "shared.unification.xref", null, false, true));
+    Assertions.assertEquals(1, v.countErrors(v.identify(x), null, "shared.unification.xref", null, false, true));
 
     writeExample("testSharedUnificationXrefRule.owl", m);
   }
@@ -619,7 +618,7 @@ public class RulesTest {
     //Let's check the model by applying the rule (only one)...
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, m);
-    assertEquals(1, v.countErrors(ef1.getUri(), null, "inverse.functional.violated", null, false, false));
+    Assertions.assertEquals(1, v.countErrors(ef1.getUri(), null, "inverse.functional.violated", null, false, false));
     writeExample("testEntityFeatureInverseFunctionalRule.owl", m);
 
     //Now, let's apply the same rule but tell the validator to fix the model...
@@ -628,8 +627,8 @@ public class RulesTest {
     //whereas p2 and pr2 should stay untouched
     v = new Validation(new BiopaxIdentifier(),"", true, null, 0, null);
     rule.check(v, m);
-    assertEquals(1, v.countErrors(ef1.getUri(), null, "inverse.functional.violated", null, false, false));
-    assertEquals(0, v.countErrors(ef1.getUri(), null, "inverse.functional.violated", null, false, true));
+    Assertions.assertEquals(1, v.countErrors(ef1.getUri(), null, "inverse.functional.violated", null, false, false));
+    Assertions.assertEquals(0, v.countErrors(ef1.getUri(), null, "inverse.functional.violated", null, false, true));
     writeExample("testEntityFeatureInverseFunctionalRuleFixed.owl", m);
   }
 }

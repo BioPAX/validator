@@ -1,14 +1,10 @@
 package org.biopax.validator;
 
-/*
- *
- */
-
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
-import javax.xml.bind.*;
+import jakarta.xml.bind.*;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
@@ -40,7 +36,7 @@ public class BiopaxValidatorClient {
 	 * Default BioPAX Validator's URL
 	 */
 	public static final String 
-		DEFAULT_VALIDATOR_URL = "http://www.biopax.org/validator/check.html";
+		DEFAULT_VALIDATOR_URL = "https://www.biopax.org/validator/check.html";
 	
 	/**
 	 * The Java Option to set a BioPAX Validator URL 

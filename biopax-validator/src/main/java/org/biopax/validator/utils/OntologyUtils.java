@@ -1,12 +1,9 @@
 package org.biopax.validator.utils;
 
-
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.collections15.collection.CompositeCollection;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,8 +11,9 @@ import org.biopax.paxtools.model.BioPAXFactory;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.level3.ControlledVocabulary;
 import org.biopax.paxtools.model.level3.UnificationXref;
-import org.biopax.paxtools.normalizer.MiriamLink;
+import org.biopax.paxtools.normalizer.Namespace;
 import org.biopax.paxtools.normalizer.Normalizer;
+import org.biopax.paxtools.normalizer.Resolver;
 import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyManager;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
@@ -33,7 +31,7 @@ import javax.annotation.PostConstruct;
 
 /**
  * Handles BioPAX recommended ontologies, controlled vocabularies and xrefs.
- * 
+ *
  * @author rodche
  */
 public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
@@ -42,32 +40,16 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
 
 	//see the post-construct init() method, where the following fields get initialized
 	private OntologyManager ontologyManager;
-  private CompositeCollection<String> allSynonyms; //set in init()!
-  private Set<String> unofficialDbNames; // to be generated
-	private Map<String, Pattern> dataPatterns;
-  private CompositeCollection<String> extraGroups; //set in Constructor
-  private Properties ontologyConfig;
+    private CompositeCollection<String> allSynonyms; //set in init()!
+    private Properties ontologyConfig;
 
-  public void setExtraGroups(Set<List<String>> extraDbSynonyms){
-    // normalize and organize provided synonyms
-    this.extraGroups = new CompositeCollection<>();
-    if (extraDbSynonyms != null) {
-      for (List<String> group : extraDbSynonyms) {
-        Collection<String> newG = new ArrayList<>();
-        for (String s : group)
-          newG.add(dbName(s)); //trim, uppercase, add
-        this.extraGroups.addComposited(newG);
-      }
+    public void setOntologyConfig(Properties ontologyConfig) {
+        this.ontologyConfig = ontologyConfig;
     }
-  }
 
-  public void setOntologyConfig(Properties ontologyConfig) {
-    this.ontologyConfig = ontologyConfig;
-  }
-
-  public OntologyManager getOntologyManager() {
-    return ontologyManager;
-  }
+    public OntologyManager getOntologyManager() {
+        return ontologyManager;
+    }
 
 	public Set<String> getValidTermNames(CvRule<?> cvRule) {
 		return getValidTermNamesLowerCase(cvRule.getRestrictions());
@@ -154,81 +136,51 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
 	}
 
   public <T extends ControlledVocabulary> T getControlledVocabulary(
-    String db, String id, Class<T> cvClass, String xmlBase)
+    String uri, Class<T> cvClass, String xmlBase)
   {
-    OntologyAccess ontologyAccess = ontologyManager.getOntology(db);
-    if (ontologyAccess == null) // it may be urn - try again
-      ontologyAccess = getOntologyByUrn(db);
-    OntologyTermI term = ontologyManager.findTerm(ontologyAccess, id);
-
-    return (term != null) ? getControlledVocabulary(term, cvClass, xmlBase) : null;
+    OntologyTermI term = ontologyManager.getTermByUri(uri);
+    return getControlledVocabulary(term, cvClass, xmlBase);
   }
 
-  public <T extends ControlledVocabulary> T getControlledVocabulary(
-    String urn, Class<T> cvClass, String xmlBase)
-  {
-    OntologyTermI term = ontologyManager.getTermByUri(urn);
-    T cv = getControlledVocabulary(term, cvClass, xmlBase);
-    if (cv != null)
-      cv.addComment("auto-generated");
-    return cv;
+  public Set<String> getDirectChildren(String uri) {
+    return ontologyTermsToUris(ontologyManager.getDirectChildren(uri));
   }
 
-  public Set<String> getDirectChildren(String urn) {
-    return ontologyTermsToUris(ontologyManager.getDirectChildren(urn));
+  public Set<String> getDirectParents(String uri) {
+    return ontologyTermsToUris(ontologyManager.getDirectParents(uri));
   }
 
-  public Set<String> getDirectParents(String urn) {
-    return ontologyTermsToUris(ontologyManager.getDirectParents(urn));
+  public Set<String> getAllChildren(String uri) {
+    return ontologyTermsToUris(ontologyManager.getAllChildren(uri));
   }
 
-  public Set<String> getAllChildren(String urn) {
-    return ontologyTermsToUris(ontologyManager.getAllChildren(urn));
+  public Set<String> getAllParents(String uri) {
+    return ontologyTermsToUris(ontologyManager.getAllParents(uri));
   }
 
-  public Set<String> getAllParents(String urn) {
-    return ontologyTermsToUris(ontologyManager.getAllParents(urn));
-  }
-
-  public boolean isChild(String parentUrn, String urn) {
-    return ontologyManager.isChild(parentUrn, urn);
+  public boolean isChild(String parentUrn, String uri) {
+    return ontologyManager.isChild(parentUrn, uri);
   }
 
   private <T extends ControlledVocabulary> T getControlledVocabulary(
-    OntologyTermI term, Class<T> cvClass, String xmlBase)
-  {
-    if (term == null)
+    OntologyTermI term, Class<T> cvClass, String xmlBase) {
+    if (term == null) {
       return null;
+    }
 
     BioPAXFactory factory = BioPAXLevel.L3.getDefaultFactory();
-
-    String urn = ontologyTermToUri(term);
-    T cv = factory.create(cvClass, urn);
+    String uri = ontologyTermToUri(term);
+    T cv = factory.create(cvClass, uri);
     cv.addTerm(term.getPreferredName());
-
     String ontId = term.getOntologyId(); // like "GO"
     String db = ontologyManager.getOntology(ontId).getName(); // names were fixed in the constructor!
-    String rdfid = Normalizer.uri(xmlBase, db, term.getTermAccession(), UnificationXref.class);
-    UnificationXref uref = factory.create(UnificationXref.class, rdfid);
-    uref.setDb(db);
-    uref.setId(term.getTermAccession());
-    cv.addXref(uref);
+    String xUri = Normalizer.uri(xmlBase, db, term.getTermAccession(), UnificationXref.class);
+    UnificationXref ux = factory.create(UnificationXref.class, xUri);
+    ux.setDb(db.toLowerCase());
+    ux.setId(term.getTermAccession());
+    cv.addXref(ux);
 
     return cv;
-  }
-
-  /*
-   * Gets OntologyAccess by (Miriam's) datatype URI
-   */
-  private OntologyAccess getOntologyByUrn(String dtUrn) {
-    for (String id : ontologyManager.getOntologyIDs()) {
-      OntologyAccess ont = ontologyManager.getOntology(id);
-      String urn = MiriamLink.getDataTypeURI(id);
-      if (dtUrn.equalsIgnoreCase(urn)) {
-        return ont;
-      }
-    }
-    return null;
   }
 
   private Set<String> ontologyTermsToUris(Collection<OntologyTermI> terms) {
@@ -244,7 +196,7 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
     if (term != null) {
       String ontologyID = term.getOntologyId();
       String accession = term.getTermAccession();
-      uri = MiriamLink.getIdentifiersOrgURI(ontologyID, accession);
+      uri = Resolver.getURI(ontologyID, accession);
     }
     return uri;
   }
@@ -252,9 +204,8 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   /*
    * Post-construct initializer.
    *
-   * Loads and merges bio database/datasource names and synonyms
-   * from Miriam resource, PSI-MI ontology ("database citation" branch),
-   * and extra (configured by user) names.
+   * Load, merge bio identifiers db/datasource names and synonyms
+   * from Miriam registry, MI ontology "database citation" branch, and other (custom) name variants.
    */
   @PostConstruct //vital
   public synchronized void init() {
@@ -264,7 +215,11 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
       ontologyManager.loadOntologies(ontologyConfig);
       //Normalize ontology names
       for (String id : ontologyManager.getOntologyIDs()) {
-        String officialName = MiriamLink.getName(id);
+        Namespace ns = Resolver.getNamespace(id);
+        String officialName = id;
+        if(ns != null) {
+          officialName = ns.getName();
+        }
         ontologyManager.getOntology(id).setName(officialName);
         log.debug(id + " (" + officialName + ")");
       }
@@ -272,40 +227,27 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
       throw new RuntimeException("Failed to load ontologies", e);
     }
 
-    // Build collections of the recommended xref.db names and synonyms and corresponding id patterns
-    this.dataPatterns = new ConcurrentHashMap<>();
+    // Build collections of recommended (valid) xref.db names and corresponding id patterns
     this.allSynonyms = new CompositeCollection<>();
-    this.unofficialDbNames = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    // need a temporaty, local "all synonyms" collection
-    // (hide the member one)
+
+    // a temporary local collection (hides the member/field: allSynonyms)
     CompositeCollection<String> allSynonyms = new CompositeCollection<>();
-    // first, we simple prepare lists of db synonyms,
-    // from  Miriam, MI, and "extra" set (already done - constructor arg.)
-    for (String dt : MiriamLink.getDataTypesName()) {
-      String regexp = MiriamLink.getDataTypePattern(dt);
-      Pattern pattern = null;
-      try {
-        pattern = Pattern.compile(regexp);
-      } catch (PatternSyntaxException e) {
-        log.error(
-          "Pattern compilation failed for MIRIAM " +
-            "db=" + dt + "; regexp=" + dt + "; " + e);
-      }
-      String db = dbName(dt); //uppercase
-      List<String> synonyms = new ArrayList<>();
-      synonyms.add(db);
-      String[] names = MiriamLink.getNames(dt);
-      if (names != null)
-        for (String name : names) {
-          String s = dbName(name);
-          if (!synonyms.contains(s))
-            synonyms.add(s);
-        }
-      //save
+
+    // first, we prepare lists of db synonyms from
+    //  - Bioregistry.io (get each entry's prefix, name, synonyms)
+    //  - MI (OBO terms under the "database citation" root)
+    for (Namespace ns : Resolver.getNamespaces().values()) {
+      String name = dbName(ns.getName()); //trim,uppercase
+      String prefix = dbName(ns.getPrefix());
+      final List<String> synonyms = new ArrayList<>();
+      synonyms.add(name);
+      synonyms.add(prefix);
+      //add synonyms from the registry
+      ns.getSynonyms().forEach((s) -> synonyms.add(dbName(s)));
+      //add custom synonyms of given prefix from the Resolver's map
+      Resolver.getSynonymap().entrySet().stream().filter(e -> StringUtils.equals(ns.getPrefix(),e.getValue()))
+              .forEach(e -> synonyms.add(dbName(e.getKey())));
       allSynonyms.addComposited(synonyms);
-      // also associate primary name with ID patterns
-      if (pattern != null) //null value is not allowed for ConcurrentHashMap
-        dataPatterns.put(db, pattern); // will be used with all synonyms
     }
 
     // load all names from MI 'database citation'
@@ -322,46 +264,35 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
       allSynonyms.addComposited(synonyms);
     }
 
-    // second, we populate unofficialDbNames by comparing
-    // current allSynonyms (from Miriam and MI:0444) with extraSynonyms (from config. file)
-    if(extraGroups != null) {
-      for (String db : extraGroups)
-        if (!allSynonyms.contains(db))
-          unofficialDbNames.add(db);
-
-      extraGroups.getCollections().forEach(allSynonyms::addComposited);
-    }
-
     // find synonyms groups that overlap,
-    Cluster<Collection<String>> clus = new Cluster<Collection<String>>() {
+    Cluster<Collection<String>> clus = new Cluster<>() {
       @Override
       public boolean match(Collection<String> a, Collection<String> b) {
         return !Collections.disjoint(a, b);
       }
     };
 
-    // find all overlapping groups of names (can be single-group "clusters" as well))
-    // get the set of clusters (sets) of overlapping synonym lists! (i.e., we're in fact clustering List<String> objects)
+    // find all overlapping groups of names (can be single-group "clusters" as well)
+    // get the set of clusters (sets) of overlapping synonym lists!
+    // (i.e., we're in fact clustering List<String> objects)
     Set<Set<Collection<String>>> groupsOfGroups = clus.cluster(allSynonyms.getCollections(), Integer.MAX_VALUE);
 
-    // perform overlapping groups merging
-    // so that Miriam's preferred name goes first
+    // perform overlapping groups merging so that preferred name goes first
     for (Set<Collection<String>> groupsToMerge : groupsOfGroups) {
       if (groupsToMerge.size() > 1) {
         List<String> merged = new ArrayList<>();
-        String primary = null;
         for (Collection<String> group : groupsToMerge) {
           for (String name : group) {
-            if (dataPatterns.containsKey(name))
-              primary = name;
             if (!merged.contains(name))
               merged.add(name);
           }
         }
-
-        if (primary != null) {
-          merged.remove(primary);
-          merged.add(0, primary);
+        //if possible, move the preferred name on top
+        String topName = merged.get(0);
+        Namespace ns = Resolver.getNamespace(topName);
+        if(ns != null) {
+          String preferName = dbName(ns.getName());
+          merged.add(0, preferName);
         }
         this.allSynonyms.addComposited(merged);
       } else {
@@ -374,18 +305,13 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
 
   @Override
   public String dbName(String name) {
-    return name.trim().toUpperCase();
+    return (StringUtils.isBlank(name)) ? null : name.trim().toUpperCase();
   }
 
   @Override
   public List<String> getSynonymsForDbName(String name) {
-    return getSynonymsForName(name, allSynonyms);
-  }
-
-  private List<String> getSynonymsForName(String name, CompositeCollection<String> groups) {
     String dbName = dbName(name);
-
-    for (Collection<String> group : groups.getCollections()) {
+    for (Collection<String> group : allSynonyms.getCollections()) {
       if (group.contains(dbName)) {
         return (List<String>) group;
       }
@@ -396,50 +322,32 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   @Override
   public String getPrimaryDbName(String name) {
     List<String> names = getSynonymsForDbName(name);
-    //get the first name
     return (names.isEmpty()) ? null : names.iterator().next();
   }
 
   @Override
   public boolean checkIdFormat(String db, String id) {
-    String name = getPrimaryDbName(db);
-    Pattern p = dataPatterns.get(name);
-    return p.matcher(id).find();
+    db = getPrimaryDbName(db); //allow synonyms otherwise unknown to Resolver (e.g. from MI but not in bioregistry/miriam)
+    return Resolver.checkRegExp(id, db);
   }
 
   @Override
   public boolean canCheckIdFormatIn(String name) {
     String db = getPrimaryDbName(name);
-    return (db!=null) && (dataPatterns.get(db)!=null);
+    Namespace ns = Resolver.getNamespace(db);
+    return  ns != null && StringUtils.isNotBlank(ns.getPattern());
   }
 
   @Override
   public String getRegexpString(String db) {
-    String name = getPrimaryDbName(db);
-    Pattern p = dataPatterns.get(name);
-    return (p != null) ? p.pattern() : null;
+    Namespace ns = Resolver.getNamespace(getPrimaryDbName(db));
+    return  (ns != null) ? ns.getPattern() : null;
   }
 
   @Override
   public boolean isUnofficialOrMisspelledDbName(final String db) {
-    return unofficialDbNames.contains(dbName(db));
-  }
-
-  public boolean xcheck() {
-    Collection[] lists = allSynonyms.getCollections().toArray(new Collection[]{});
-    for (int i = 0; i < lists.length; i++) {
-      Collection li = lists[i];
-      for (int j = i + 1; j < lists.length; j++) {
-        if (!Collections.disjoint(li, lists[j])) {
-          log.error("Different synonym groups overlap: "
-                      + li.toString() + " has names in common with "
-                      + lists[j].toString());
-          return false;
-        }
-      }
-    }
-
-    return true; //no overlap
+    String name = dbName(db);
+    return !allSynonyms.contains(name) && Resolver.isKnownNameOrVariant(name);
   }
 
 }

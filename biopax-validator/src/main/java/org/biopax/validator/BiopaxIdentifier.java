@@ -19,7 +19,7 @@ public final class BiopaxIdentifier implements Identifier {
 	 * @see org.biopax.validator.api.Identifier#getId(java.lang.Object)
 	 */
 	public String identify(Object obj) {
-    	String id = "";
+    String id;
     	
 		if(obj instanceof SimpleIOHandler) {
 			SimpleIOHandler r = (SimpleIOHandler) obj;

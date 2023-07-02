@@ -24,7 +24,7 @@ public interface XrefUtils {
    * Gets the primary name for the DB.
    * It returns NULL for "unknown" database name.
    *
-   * @param name case insensitive name (of a bio ID type/resource) name
+   * @param name case-insensitive name (of a bio ID type/resource) name
    * @return preferred name
    */
   String getPrimaryDbName(String name);
@@ -42,7 +42,7 @@ public interface XrefUtils {
   boolean checkIdFormat(String db, String id);
 
   /**
-   * @param name a database name (used in xrefs), case insensitive
+   * @param name a database name (used in xrefs), case-insensitive
    * @return true if it's possible to check the format.
    */
   boolean canCheckIdFormatIn(String name);
@@ -68,11 +68,4 @@ public interface XrefUtils {
    */
   boolean isUnofficialOrMisspelledDbName(String db);
 
-
-
-  /**
-   * Test that different groups/clasters of db synonyms do not overlap.
-   * @return
-   */
-  boolean xcheck();
 }

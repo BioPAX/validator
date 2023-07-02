@@ -35,9 +35,6 @@ public class XrefRule extends AbstractRule<Xref>{
 				return;
 			}
 
-			//it's always in uppercase by design
-			assert preferedDbName.equals(preferedDbName.toUpperCase());
-
 			// check id
 			String id = x.getId();
 			if (id != null) {

@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.biopax.validator</groupId>
   <artifactId>parent</artifactId>
-  <version>5.1.1-SNAPSHOT</version>
+  <version>6.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -174,9 +174,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <github.global.server>github</github.global.server>
-    <spring.version>5.3.28</spring.version>
+    <spring.version>5.3.29</spring.version>
     <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</agent>
-    <paxtools.version>5.3.0</paxtools.version>
+    <paxtools.version>6.0.0-SNAPSHOT</paxtools.version>
     <license.licenseName>MIT</license.licenseName>
     <jvm.options>-Xmx3g -Dfile.encoding=UTF-8 -ea --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvm.options>
   </properties>
@@ -203,12 +203,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.2</version>
+          <version>3.1.2</version>
           <configuration>
             <testFailureIgnore>false</testFailureIgnore>
             <argLine>${jvm.options}</argLine>
             <includes>
-              <include>**/*Test.java</include>
+              <include>**/*Test</include>
             </includes>
             <useSystemClassLoader>false</useSystemClassLoader>
           </configuration>
@@ -216,12 +216,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.22.1</version>
+          <version>3.1.2</version>
           <configuration>
             <argLine>${jvm.options} -javaagent:${agent}</argLine>
             <runOrder>alphabetical</runOrder>
             <includes>
-              <include>**/*IT.java</include>
+              <include>**/*IT</include>
             </includes>
             <useSystemClassLoader>false</useSystemClassLoader>
           </configuration>
@@ -241,7 +241,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.2.1</version>
+          <version>3.3.0</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -287,7 +287,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>jaxb2-maven-plugin</artifactId>
-          <version>2.5.0</version>
+          <version>3.1.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -437,16 +437,6 @@
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>spring-web</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-webmvc</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
         <artifactId>spring-aop</artifactId>
         <version>${spring.version}</version>
       </dependency>
@@ -519,20 +509,32 @@
         <version>1.3.2</version>
       </dependency>
       <dependency>
-        <groupId>javax.xml.bind</groupId>
-        <artifactId>jaxb-api</artifactId>
-        <version>2.4.0-b180830.0359</version>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>4.0.0</version>
       </dependency>
       <dependency>
-        <groupId>org.glassfish.jaxb</groupId>
-        <artifactId>jaxb-runtime</artifactId>
-        <version>2.4.0-b180830.0438</version>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-impl</artifactId>
+        <version>4.0.3</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
-        <groupId>com.sun.activation</groupId>
-        <artifactId>javax.activation</artifactId>
-        <version>1.2.0</version>
+        <groupId>jakarta.activation</groupId>
+        <artifactId>jakarta.activation-api</artifactId>
+        <version>2.1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.9.3</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>5.9.3</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -543,21 +545,16 @@
       <artifactId>javax.annotation-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.glassfish.jaxb</groupId>
-      <artifactId>jaxb-runtime</artifactId>
-      <scope>runtime</scope>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sun.activation</groupId>
-      <artifactId>javax.activation</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
     </dependency>
     <dependency>
       <!-- one of obo-fetcher's deps uses log4j directly-->

@@ -1,7 +1,5 @@
 package org.biopax.validator.utils;
 
-import static org.junit.Assert.*;
-
 import java.io.*;
 
 import javax.xml.transform.stream.StreamSource;
@@ -13,7 +11,8 @@ import org.biopax.validator.api.beans.ErrorType;
 import org.biopax.validator.api.beans.Validation;
 import org.biopax.validator.api.beans.ValidatorResponse;
 import org.biopax.validator.BiopaxIdentifier;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CoreUtilsTest {
 
@@ -31,19 +30,19 @@ public class CoreUtilsTest {
 		Writer writer = new StringWriter();
 		ValidatorUtils.write(response, writer, null);
 		String xml = writer.toString();
-		assertTrue(xml.length()>0);
+		Assertions.assertTrue(xml.length()>0);
 		
 		ValidatorResponse resp = (ValidatorResponse) ValidatorUtils.getUnmarshaller()
 			.unmarshal(new StreamSource(new StringReader(xml)));
-		assertTrue(resp.getValidationResult().size() == 1);
+		Assertions.assertTrue(resp.getValidationResult().size() == 1);
 		
 		writer = new StringWriter();
 		ValidatorUtils.write(resp, writer, null);
 		String xml2 = writer.toString();
-		assertTrue(xml2.length()>0);
+		Assertions.assertTrue(xml2.length()>0);
 		
 //		System.out.println(xml+"\n\n\n"+xml2);
-		assertEquals(xml, xml2);
+		Assertions.assertEquals(xml, xml2);
 		
 		// test pretty html output works (by XSLT)
 		writer = new StringWriter();
@@ -51,7 +50,7 @@ public class CoreUtilsTest {
 		String html = writer.toString();
 		
 //		System.out.println(html);
-		assertTrue(html.length()>0);
+		Assertions.assertTrue(html.length()>0);
 		
 		writer = new PrintWriter(new FileOutputStream(getClass().getClassLoader().getResource("")
 				.getPath() + File.separator + "testXsltReport.html"));
@@ -83,7 +82,7 @@ public class CoreUtilsTest {
 		StringWriter writer = new StringWriter();
 		ValidatorUtils.write(resp1, writer, null);
 		String xmlresp1 = writer.toString();
-		assertTrue(xmlresp1.length()>0);
+		Assertions.assertTrue(xmlresp1.length()>0);
 		//System.out.println(xmlresp1);
 		
 		// Now,
@@ -91,29 +90,29 @@ public class CoreUtilsTest {
 		writer = new StringWriter();
 		ValidatorUtils.write(validation1, writer, null);
 		String xml1 = writer.toString();
-		assertTrue(xml1.length()>0);
+		Assertions.assertTrue(xml1.length()>0);
 		// serialize the second result only as well
 		writer = new StringWriter();
 		ValidatorUtils.write(validation2, writer, null);
 		String xml2 = writer.toString();
-		assertTrue(xml2.length()>0);
+		Assertions.assertTrue(xml2.length()>0);
 		
 		
 		// unmarshall each (independent xml results), 
 		// then build a new response from them, and serialize
 		ValidatorResponse res = (ValidatorResponse) ValidatorUtils.getUnmarshaller()
 			.unmarshal(new StreamSource(new StringReader(xml1)));
-		assertNotNull(res);
-		assertFalse(res.getValidationResult().isEmpty());
+		Assertions.assertNotNull(res);
+		Assertions.assertFalse(res.getValidationResult().isEmpty());
 		Validation res1 = res.getValidationResult().get(0);
-		assertTrue(res1.getError().size() == 1);
+		Assertions.assertTrue(res1.getError().size() == 1);
 		
 		res = (ValidatorResponse) ValidatorUtils.getUnmarshaller()
 			.unmarshal(new StreamSource(new StringReader(xml2)));
-		assertNotNull(res);
-		assertFalse(res.getValidationResult().isEmpty());
+		Assertions.assertNotNull(res);
+		Assertions.assertFalse(res.getValidationResult().isEmpty());
 		Validation res2 = res.getValidationResult().get(0);
-		assertTrue(res2.getError().size() == 1);
+		Assertions.assertTrue(res2.getError().size() == 1);
 		ValidatorResponse resp2 = new ValidatorResponse();
 		resp2.addValidationResult(res1);
 		resp2.addValidationResult(res2);
@@ -121,8 +120,8 @@ public class CoreUtilsTest {
 		writer = new StringWriter();
 		ValidatorUtils.write(resp2, writer, null);
 		String xmlresp2 = writer.toString();
-		assertTrue(xmlresp2.length()>0);
+		Assertions.assertTrue(xmlresp2.length()>0);
 		
-		assertEquals(xmlresp1, xmlresp2);	
+		Assertions.assertEquals(xmlresp1, xmlresp2);
 	}
 }

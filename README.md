@@ -12,7 +12,7 @@
 The BioPAX Validator is a command line tool, Java library, and online
 web service for BioPAX formatted pathway data validation. The validator
 checks for more than a hundred BioPAX Level3 rules and best practices, 
-provides human readable reports and can automatically fix some common 
+provides human-readable reports and can automatically fix some common 
 mistakes in data (can also process Level1 and Level2 data, which are 
 first auto-converted to the Level3, and then Level3 rules apply). 
 The validator is in use by the BioPAX community and is continuously being
