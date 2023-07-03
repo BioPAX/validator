@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author rodche
  */
-public class ValidatorTest {
+public class ValidatorIT {
 
   static XrefUtils xrefUtils;
   static Validator biopaxValidator;
@@ -47,7 +47,7 @@ public class ValidatorTest {
     xrefUtils = (XrefUtils) context.getBean("ontologyUtils");
   }
 
-  private static final String OUTPUT_DIR = ValidatorTest.class.getResource("").getPath();
+  private static final String OUTPUT_DIR = ValidatorIT.class.getResource("").getPath();
 
   @Test
   public void buildPaxtoolsL2ModelSimple() {
