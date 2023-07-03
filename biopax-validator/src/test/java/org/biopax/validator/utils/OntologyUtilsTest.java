@@ -8,12 +8,15 @@ import org.biopax.paxtools.model.level3.*;
 import org.biopax.validator.CvFactory;
 import org.biopax.validator.XrefUtils;
 import org.biopax.validator.api.CvUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.platform.commons.util.CollectionUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test OntologyUtils' interfaces:  CvUtils, CvFactory, XrefUtils
@@ -37,74 +40,87 @@ public class OntologyUtilsTest {
   @Test
   public void ontologyLoading() {
     Collection<String> ontologyIDs = cvUtils.getOntologyManager().getOntologyIDs();
-    Assertions.assertTrue(ontologyIDs.contains("GO"));
-    Assertions.assertEquals("gene ontology", cvUtils
-      .getOntologyManager().getOntology("GO").getName().toLowerCase());
-    Assertions.assertTrue(ontologyIDs.contains("MOD"));
+    assertAll(
+        () -> assertTrue(ontologyIDs.contains("GO")),
+        () -> assertEquals("gene ontology", cvUtils.getOntologyManager()
+            .getOntology("GO").getName().toLowerCase()),
+        () -> assertTrue(ontologyIDs.contains("MOD"))
+    );
   }
 
   @Test
-  public void testGetDirectChildren() {
+  public void getDirectChildren() {
     Set<String> dc = cvFactory.getDirectChildren("urn:miriam:go:GO%3A0005654");
-    Assertions.assertFalse(dc.isEmpty());
-    Assertions.assertTrue(dc.contains("bioregistry.io/go:0044451"));
+    assertAll(
+        () -> assertFalse(dc.isEmpty()),
+        () -> assertTrue(dc.contains("bioregistry.io/go:0044451"))
+    );
   }
 
   @Test
-  public void testGetAllChildren() {
+  public void getAllChildren() {
     Set<String> dc = cvFactory.getAllChildren("identifiers.org/GO:0005654");
-    Assertions.assertFalse(dc.isEmpty());
-    Assertions.assertTrue(dc.contains("bioregistry.io/go:0044451"));
-    Assertions.assertTrue(dc.contains("bioregistry.io/go:0071821"));
-    Assertions.assertTrue(dc.contains("bioregistry.io/go:0070847"));
+    assertAll(
+        () -> assertFalse(dc.isEmpty()),
+        () -> assertTrue(dc.contains("bioregistry.io/go:0044451")),
+        () -> assertTrue(dc.contains("bioregistry.io/go:0071821")),
+        () -> assertTrue(dc.contains("bioregistry.io/go:0070847"))
+    );
   }
 
   @Test
-  public void testGetDirectParents() {
+  public void getDirectParents() {
     Set<String> dc = cvFactory.getDirectParents("urn:miriam:go:GO%3A0005654");
-    Assertions.assertFalse(dc.isEmpty());
-    Assertions.assertTrue(dc.contains("bioregistry.io/go:0031981"));
+    assertAll(
+        () -> assertFalse(dc.isEmpty()),
+        () -> assertTrue(dc.contains("bioregistry.io/go:0031981"))
+    );
   }
 
   @Test
-  public void testGetAllParents() {
+  public void getAllParents() {
     Set<String> dc = cvFactory.getAllParents("identifiers.org/go/GO:0005654");
-    Assertions.assertFalse(dc.isEmpty());
-    Assertions.assertTrue(dc.contains("bioregistry.io/go:0031981"));
-    Assertions.assertTrue(dc.contains("bioregistry.io/go:0044428"));
-    Assertions.assertTrue(dc.contains("bioregistry.io/go:0044422"));
+    assertAll(
+        () -> assertFalse(dc.isEmpty()),
+        () -> assertTrue(dc.contains("bioregistry.io/go:0031981")),
+        () -> assertTrue(dc.contains("bioregistry.io/go:0044428")),
+        () -> assertTrue(dc.contains("bioregistry.io/go:0044422"))
+    );
   }
 
-  @Test // using correct ID(s)
-  public void testGetObject() {
-    CellularLocationVocabulary cv = cvFactory.getControlledVocabulary(
-            "urn:miriam:go:GO%3A0005737", CellularLocationVocabulary.class,"");
-    Assertions.assertNotNull(cv);
-    cv = cvFactory.getControlledVocabulary( //using a deprecated URL
-      "identifiers.org/go/GO:0005737",CellularLocationVocabulary.class,"");
-    Assertions.assertNotNull(cv);
-    cv = cvFactory.getControlledVocabulary( //using a deprecated URN (obo.go)
-        "urn:miriam:obo.go:GO%3A0005737", CellularLocationVocabulary.class,"");
-    Assertions.assertNotNull(cv);
-    //same
-    cv = cvFactory.getControlledVocabulary(
-      "identifiers.org/GO:0005737",CellularLocationVocabulary.class,"");
-    Assertions.assertNotNull(cv);
+  @ParameterizedTest
+  @ValueSource(strings = {
+      "urn:miriam:go:GO%3A0005737",
+      "identifiers.org/go/GO:0005737",
+      "urn:miriam:obo.go:GO%3A0005737",
+      "https://identifiers.org/GO:0005737",
+      "bioregistry.io/go:0005737"
+  })
+  public void buildCellularLocationVocabularyWhenIdOk(String uri) {
+    CellularLocationVocabulary cv = cvFactory.getControlledVocabulary(uri
+            , CellularLocationVocabulary.class,"");
+    assertAll(
+        () -> assertTrue(cv instanceof CellularLocationVocabulary),
+        () -> assertEquals("cytoplasm", CollectionUtils.getOnlyElement(cv.getTerm())),
+        () -> assertTrue(cv.getComment()!=null && cv.getComment().isEmpty())
+    );
   }
 
   @Test // using bad ID (with 'X' in it)
-  public void testGetObject2() {
+  public void getObject2() {
     CellularLocationVocabulary cv = cvFactory.getControlledVocabulary(
       "urn:miriam:go:GO%3A0005737X",CellularLocationVocabulary.class,"");
-    Assertions.assertNull(cv);
+    assertNull(cv);
   }
 
   @Test
-  public void testEscapeChars() {
+  public void escapeChars() {
     ControlledVocabulary cv = cvFactory.getControlledVocabulary(
       "bioregistry.io/mod:00048",SequenceModificationVocabulary.class,"");
-    Assertions.assertNotNull(cv);
-    Assertions.assertTrue(cv.getTerm().contains("O4'-phospho-L-tyrosine")); // apostrophe
+    assertAll(
+        () -> assertTrue(cv instanceof SequenceModificationVocabulary),
+        () -> assertTrue(cv.getTerm().contains("O4'-phospho-L-tyrosine")) // apostrophe
+    );
   }
 
 }

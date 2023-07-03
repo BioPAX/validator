@@ -327,7 +327,7 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
 
   @Override
   public boolean checkIdFormat(String db, String id) {
-    db = getPrimaryDbName(db); //allow synonyms otherwise unknown to Resolver (e.g. from MI but not in bioregistry/miriam)
+    db = getPrimaryDbName(db); //allow synonyms otherwise unknown to Resolver (e.g. from MI but not in bioregistry)
     return Resolver.checkRegExp(id, db);
   }
 

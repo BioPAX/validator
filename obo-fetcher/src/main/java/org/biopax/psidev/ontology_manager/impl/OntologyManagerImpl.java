@@ -168,7 +168,7 @@ public class OntologyManagerImpl implements OntologyManager {
     if(!StringUtils.hasText(uri)) {
       return null;
     }
-    if (uri.toLowerCase().startsWith("urn:miriam:")) {
+    if (uri.toLowerCase().startsWith("urn:miriam:")) { //btw, this type of URI is deprecated
       int pos = uri.lastIndexOf(':'); //e.g. the last colon in "urn:miriam:go:GO%3A0005654"
       String acc = uri.substring(pos + 1);
       acc = urlDecode(acc);

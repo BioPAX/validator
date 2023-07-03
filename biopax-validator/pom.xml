@@ -11,6 +11,7 @@
   <name>Implementation</name>
   <description>BioPAX Semantic Rules and Best Practices validation</description>
   <url>https://biopax.github.io/validator</url>
+  <packaging>jar</packaging>
 
   <dependencies>
     <dependency>

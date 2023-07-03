@@ -178,7 +178,7 @@
     <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</agent>
     <paxtools.version>6.0.0-SNAPSHOT</paxtools.version>
     <license.licenseName>MIT</license.licenseName>
-    <jvm.options>-Xmx3g -Dfile.encoding=UTF-8 -ea --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvm.options>
+    <jvm.options>-Xmx2g -Dfile.encoding=UTF-8 -ea --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvm.options>
   </properties>
 
   <build>
@@ -198,32 +198,6 @@
           <version>2.16.0</version>
           <configuration>
             <generateBackupPoms>false</generateBackupPoms>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.1.2</version>
-          <configuration>
-            <testFailureIgnore>false</testFailureIgnore>
-            <argLine>${jvm.options}</argLine>
-            <includes>
-              <include>**/*Test</include>
-            </includes>
-            <useSystemClassLoader>false</useSystemClassLoader>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.1.2</version>
-          <configuration>
-            <argLine>${jvm.options} -javaagent:${agent}</argLine>
-            <runOrder>alphabetical</runOrder>
-            <includes>
-              <include>**/*IT</include>
-            </includes>
-            <useSystemClassLoader>false</useSystemClassLoader>
           </configuration>
         </plugin>
         <plugin>
@@ -297,6 +271,28 @@
             <doclint>none</doclint>
             <failOnError>false</failOnError>
             <excludePackageNames>org.biopax.validator.jaxb:org.biopax.validator.api.beans:org.biopax.validator.impl:org.biopax.validator.rules:net.biomodels.*</excludePackageNames>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.1.2</version>
+          <configuration>
+            <argLine>${jvm.options}</argLine>
+<!--            <useSystemClassLoader>false</useSystemClassLoader>-->
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>3.1.2</version>
+          <configuration>
+            <argLine>${jvm.options} -javaagent:${agent}</argLine>
+            <runOrder>alphabetical</runOrder>
+            <useSystemClassLoader>false</useSystemClassLoader>
+            <includes>
+              <include>**/*IT.java</include>
+            </includes>
           </configuration>
         </plugin>
       </plugins>
@@ -574,6 +570,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.5.0</version>
         <configuration>
           <linksource>true</linksource>
           <notimestamp>true</notimestamp>
@@ -626,7 +623,7 @@
         <reportSets>
           <reportSet>
             <reports>
-              <report>index</report>
+<!--              <report>index</report>-->
               <report>summary</report>
               <report>modules</report>
               <report>dependencies</report>

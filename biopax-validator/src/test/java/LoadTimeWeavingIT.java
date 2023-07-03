@@ -1,6 +1,4 @@
-package org.biopax.validator;
-
-import org.junit.jupiter.api.Assertions;
+import org.biopax.validator.BiopaxIdentifier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import java.io.*;
@@ -13,6 +11,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This Is an Integration Test.
@@ -54,8 +54,7 @@ public class LoadTimeWeavingIT {
 		biopaxValidator.importModel(result, resource.getInputStream());
 		biopaxValidator.validate(result); // check all rules
 		biopaxValidator.getResults().clear(); // clean after itself
-
-		Assertions.assertFalse(result.getError().isEmpty());
+		assertFalse(result.getError().isEmpty());
 	}
 
 	@Test
@@ -63,9 +62,9 @@ public class LoadTimeWeavingIT {
 		Validation validation = new Validation(new BiopaxIdentifier());
 		biopaxValidator.importModel(validation, getClass().getResourceAsStream("/testSyntaxErrors.xml"));
 		biopaxValidator.getResults().clear(); // clean after itself
-		Assertions.assertEquals(1, validation.countErrors(null, null, "unknown.property",
+		assertEquals(1, validation.countErrors(null, null, "unknown.property",
 			null, false, false));
-		Assertions.assertEquals(0, validation.countErrors(null, null, "syntax.error",
+		assertEquals(0, validation.countErrors(null, null, "syntax.error",
 			null, false, false));
 	}
 
@@ -74,8 +73,8 @@ public class LoadTimeWeavingIT {
 		Validation validation = new Validation(new BiopaxIdentifier());
 		biopaxValidator.importModel(validation, getClass().getResourceAsStream("/testBiochemPathwayStepOneConversionRule.owl")); //misplaced.step.conversion
 		biopaxValidator.getResults().clear(); // clean after itself
-		Assertions.assertFalse(validation.getError().isEmpty());
-		Assertions.assertEquals(1, validation.countErrors(null, null, "syntax.error",
+		assertFalse(validation.getError().isEmpty());
+		assertEquals(1, validation.countErrors(null, null, "syntax.error",
       null, false, false));
 	}
 
@@ -85,11 +84,11 @@ public class LoadTimeWeavingIT {
 		biopaxValidator.importModel(validation, getClass().getResourceAsStream("/testEvidenceEquivalence.xml"));
 		biopaxValidator.validate(validation);
 		biopaxValidator.getResults().clear(); // clean after itself
-		System.out.println(validation.getError().toString());
+//		System.out.println(validation.getError().toString());
 		//there are several errors related to CV use,
-		Assertions.assertFalse(validation.getError().isEmpty());
+		assertFalse(validation.getError().isEmpty());
 		//but - no cloned.utility.class error case
-		Assertions.assertEquals(0, validation.countErrors(null, null, "cloned.utility.class",
+		assertEquals(0, validation.countErrors(null, null, "cloned.utility.class",
       null, false, false));
 	}
 
@@ -100,7 +99,7 @@ public class LoadTimeWeavingIT {
 			.getResourceAsStream("/testMemberPhysicalEntityRange.xml"));
 		biopaxValidator.validate(validation);
 		biopaxValidator.getResults().clear(); // clean after itself
-		Assertions.assertEquals(1, validation.countErrors(null, null, "syntax.error",
+		assertEquals(1, validation.countErrors(null, null, "syntax.error",
       null, false, false));
 	}
 }

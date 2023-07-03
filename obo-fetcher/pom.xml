@@ -12,6 +12,7 @@
 	<name>Ontologies</name>
 	<description>OBO ontology access and handling (derived from EBI PSIDEV Ontology Manager and OLS)</description>
 	<url>https://biopax.github.io/validator</url>
+	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>

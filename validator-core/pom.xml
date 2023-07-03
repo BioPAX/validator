@@ -10,6 +10,7 @@
 	<artifactId>validator-core</artifactId>
 	<name>Core</name>
 	<description>Object model validation and reporting library</description>
+	<packaging>jar</packaging>
 
 	<url>https://biopax.github.io/validator</url>
 

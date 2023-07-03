@@ -153,10 +153,7 @@
         <version>3.1.2</version>
         <configuration>
           <argLine>${jvm.options}</argLine>
-          <includes>
-            <include>**/*Test</include>
-          </includes>
-          <useSystemClassLoader>false</useSystemClassLoader>
+<!--          <useSystemClassLoader>false</useSystemClassLoader>-->
         </configuration>
       </plugin>
       <plugin>
@@ -165,11 +162,8 @@
         <version>3.1.2</version>
         <configuration>
           <argLine>${jvm.options} -javaagent:${agent}</argLine>
-          <runOrder>alphabetical</runOrder>
-          <includes>
-            <include>**/*IT</include>
-          </includes>
-          <useSystemClassLoader>false</useSystemClassLoader>
+<!--          <runOrder>alphabetical</runOrder>-->
+<!--          <useSystemClassLoader>false</useSystemClassLoader>-->
         </configuration>
       </plugin>
       <plugin>

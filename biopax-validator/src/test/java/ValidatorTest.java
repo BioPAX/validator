@@ -1,10 +1,9 @@
-package org.biopax.validator;
-
 import java.io.*;
 import java.util.*;
 
+import org.biopax.validator.BiopaxIdentifier;
+import org.biopax.validator.XrefUtils;
 import org.biopax.validator.api.Validator;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -19,16 +18,19 @@ import org.biopax.validator.rules.InteractionTypeCvRule;
 import org.biopax.validator.rules.ProteinModificationFeatureCvRule;
 import org.biopax.validator.rules.XrefRule;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the BioPAX Validator.
  *
  * @author rodche
  */
-public class ValidatorIT {
+public class ValidatorTest {
 
   static XrefUtils xrefUtils;
   static Validator biopaxValidator;
@@ -45,7 +47,7 @@ public class ValidatorIT {
     xrefUtils = (XrefUtils) context.getBean("ontologyUtils");
   }
 
-  private static final String OUTPUT_DIR = ValidatorIT.class.getResource("").getPath();
+  private static final String OUTPUT_DIR = ValidatorTest.class.getResource("").getPath();
 
   @Test
   public void buildPaxtoolsL2ModelSimple() {
@@ -53,8 +55,8 @@ public class ValidatorIT {
     SimpleIOHandler io = new SimpleIOHandler();
     io.mergeDuplicates(true);
     Model model = io.convertFromOWL(is);
-    Assertions.assertNotNull(model);
-    Assertions.assertFalse(model.getObjects().isEmpty());
+    assertNotNull(model);
+    assertFalse(model.getObjects().isEmpty());
   }
 
   @Test
@@ -62,14 +64,14 @@ public class ValidatorIT {
     InputStream is = getClass().getResourceAsStream("/biopax3-short-metabolic-pathway.owl");
     Validation validation = new Validation(new BiopaxIdentifier());
     biopaxValidator.importModel(validation, is);
-    Assertions.assertTrue(validation.getModel() instanceof Model);
+    assertTrue(validation.getModel() instanceof Model);
     Model model = (Model) validation.getModel();
-    Assertions.assertFalse(model.getObjects().isEmpty());
-    Assertions.assertEquals(50, model.getObjects().size());
+    assertFalse(model.getObjects().isEmpty());
+    assertEquals(50, model.getObjects().size());
     biopaxValidator.validate(validation);
-    Assertions.assertFalse(validation.getError().isEmpty());
-    Assertions.assertEquals(3, validation.getError().size());
-    Assertions.assertEquals(16, validation.getTotalProblemsFound());
+    assertFalse(validation.getError().isEmpty());
+    assertEquals(3, validation.getError().size());
+    assertEquals(16, validation.getTotalProblemsFound());
   }
 
   @Test
@@ -84,54 +86,61 @@ public class ValidatorIT {
     x2.setDb("db");
     x2.setId("id");
 
-    Assertions.assertTrue(x1.isEquivalent(x2));
+    assertTrue(x1.isEquivalent(x2));
 
     UnificationXref x3 = factory3.create(UnificationXref.class, "x1");
     x3.addComment("x3");
     x3.setDb(null);
     x3.setId("foo");
 
-    Assertions.assertTrue(x1.isEquivalent(x3)); //only ID and type matter as 'equals','hashCode' were overridden in Paxtools
+    assertTrue(x1.isEquivalent(x3)); //only ID and type matter as 'equals','hashCode' were overridden in Paxtools
   }
 
 
   @Test
   public void synonymsWereRead() {
     List<String> gs = xrefUtils.getSynonymsForDbName("go");
-    Assertions.assertTrue(gs.contains("GO"));
-    Assertions.assertTrue(gs.contains("GENE ONTOLOGY"));
-    Assertions.assertTrue(xrefUtils.isUnofficialOrMisspelledDbName("GENE_ONTOLOGY"));
-    Assertions.assertFalse(xrefUtils.isUnofficialOrMisspelledDbName("GO"));
-    Assertions.assertFalse(xrefUtils.isUnofficialOrMisspelledDbName("medline"));
+    assertAll(
+        () -> assertTrue(gs.contains("GO")),
+        () -> assertTrue(gs.contains("GENE ONTOLOGY")),
+        () -> assertTrue(xrefUtils.isUnofficialOrMisspelledDbName("GENE_ONTOLOGY")),
+        () -> assertFalse(xrefUtils.isUnofficialOrMisspelledDbName("GO")),
+        () -> assertFalse(xrefUtils.isUnofficialOrMisspelledDbName("medline"))
+    );
   }
 
   @Test
   public void xRefHelperContainsSynonyms() {
-    Assertions.assertNotNull(xrefUtils.getPrimaryDbName("GO"));
-    Assertions.assertNotNull(xrefUtils.getPrimaryDbName("GENE ONTOLOGY"));
+    assertAll(
+        () -> assertNotNull(xrefUtils.getPrimaryDbName("GO")),
+        () -> assertNotNull(xrefUtils.getPrimaryDbName("GENE ONTOLOGY"))
+    );
   }
 
   @Test
   public void primarySynonym() {
     //not in registry: PIR
-    Assertions.assertEquals("UNIPROT PROTEIN", xrefUtils.getPrimaryDbName("pir"));
-    Assertions.assertEquals("GENE ONTOLOGY", xrefUtils.getPrimaryDbName("go"));
-    Assertions.assertEquals("KEGG COMPOUND", xrefUtils.getSynonymsForDbName("kegg compound").get(0));
-    Assertions.assertEquals("KEGG COMPOUND", xrefUtils.getPrimaryDbName("ligand")); //ligand (deprecated) is inside kegg compound!
-    Assertions.assertEquals("KEGG GENOME", xrefUtils.getPrimaryDbName("kegg organism"));
-    Assertions.assertEquals("KYOTO ENCYCLOPEDIA OF GENES AND GENOMES", xrefUtils.getPrimaryDbName("KEGG"));
+    assertAll(
+        () -> assertEquals("UNIPROT PROTEIN", xrefUtils.getPrimaryDbName("pir")),
+        () -> assertEquals("GENE ONTOLOGY", xrefUtils.getPrimaryDbName("go")),
+        () -> assertEquals("KEGG COMPOUND", xrefUtils.getSynonymsForDbName("kegg compound").get(0)),
+        () -> assertEquals("KEGG COMPOUND", xrefUtils.getPrimaryDbName("ligand")), //ligand (deprecated) is inside kegg compound!
+        () -> assertEquals("KEGG GENOME", xrefUtils.getPrimaryDbName("kegg organism")),
+        () -> assertEquals("KYOTO ENCYCLOPEDIA OF GENES AND GENOMES", xrefUtils.getPrimaryDbName("KEGG"))
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource
+  public void hasRegexp(String db) {
+      assertEquals("^\\d{7}$", xrefUtils.getRegexpString(db));
+  }
+  static List<String> hasRegexp() { //source of args for the above parameterized test
+    return xrefUtils.getSynonymsForDbName("go");
   }
 
   @Test
-  public void hasRegexp() {
-    List<String> goes = xrefUtils.getSynonymsForDbName("go");
-    for (String db : goes) {
-      Assertions.assertEquals("^\\d{7}$", xrefUtils.getRegexpString(db));
-    }
-  }
-
-  @Test
-  public void xrefIdTemplateMatch() {
+  public void xrefIdTemplateMatchOK() {
     Xref xref = BioPAXLevel.L3.getDefaultFactory().create(UnificationXref.class, "1");
     XrefRule r = (XrefRule) context.getBean("xrefRule");
 
@@ -145,6 +154,8 @@ public class ValidatorIT {
     xref.setDb("RefSeq");
     xref.setId("XP_001075834");
     r.check(v, xref);
+
+    assertTrue(v.getError().isEmpty());
   }
 
   /*
@@ -157,7 +168,7 @@ public class ValidatorIT {
     InteractionTypeCvRule rule =
       (InteractionTypeCvRule) context.getBean("interactionTypeCvRule");
 
-    Assertions.assertFalse(rule.getValidTerms().isEmpty());
+    assertFalse(rule.getValidTerms().isEmpty());
 
     Validation validation = new Validation(new BiopaxIdentifier());
 
@@ -176,6 +187,8 @@ public class ValidatorIT {
     Model m = simpleIO.convertFromOWL(getClass().getResourceAsStream("/InteractionVocabulary-Phosphorylation.xml"));
     InteractionVocabulary vv = (InteractionVocabulary) m.getByID("Interaction_Phosphorylation");
     rule.check(validation, vv);
+
+    assertTrue(validation.getError().isEmpty());
   }
 
 
@@ -185,10 +198,10 @@ public class ValidatorIT {
       (CellularLocationCvRule) context.getBean("cellularLocationCvRule");
     CellularLocationVocabulary lcv = BioPAXLevel.L3.getDefaultFactory().create(CellularLocationVocabulary.class, "badTerm");
     lcv.addTerm("LOCATION?");
-    Assertions.assertTrue(instance.canCheck(lcv));
+    assertTrue(instance.canCheck(lcv));
     Validation v = new Validation(new BiopaxIdentifier());
     instance.check(v, lcv);
-    Assertions.assertEquals(1, v.countErrors(lcv.getUri(), null, null, null,
+    assertEquals(1, v.countErrors(lcv.getUri(), null, null, null,
       false, false));
   }
 
@@ -205,7 +218,7 @@ public class ValidatorIT {
 
     Validation v = new Validation(new BiopaxIdentifier());
     instance.check(v, cl);
-    Assertions.assertTrue(v.getError().isEmpty());
+    assertTrue(v.getError().isEmpty());
   }
 
   @Test
@@ -215,13 +228,13 @@ public class ValidatorIT {
     x.setDb("ILLEGAL DB NAME");
     Validation v = new Validation(new BiopaxIdentifier());
     instance.check(v, x);
-    Assertions.assertEquals(1, v.countErrors(x.getUri(), null, "unknown.db", null,
+    assertEquals(1, v.countErrors(x.getUri(), null, "unknown.db", null,
       false, false));
 
     x.setDb("NCBI"); //ambiguous
     v = new Validation(new BiopaxIdentifier());
     instance.check(v, x);
-    Assertions.assertEquals(1, v.countErrors(x.getUri(), null, "unknown.db", null,
+    assertEquals(1, v.countErrors(x.getUri(), null, "unknown.db", null,
       false, false));
   }
 
@@ -234,7 +247,7 @@ public class ValidatorIT {
     x.setId("0000000");
     Validation v = new Validation(new BiopaxIdentifier());
     instance.check(v, x);
-    Assertions.assertEquals(1, v.countErrors(x.getUri(), null, "invalid.id.format", null,
+    assertEquals(1, v.countErrors(x.getUri(), null, "invalid.id.format", null,
       false, false));
   }
 
@@ -249,7 +262,7 @@ public class ValidatorIT {
     x.setId("0000000");
     Validation v = new Validation(new BiopaxIdentifier());
     instance.check(v, x);
-    Assertions.assertTrue(v.getError().isEmpty());
+    assertTrue(v.getError().isEmpty());
   }
 
   @Test
@@ -273,7 +286,7 @@ public class ValidatorIT {
 
     Validation v = new Validation(new BiopaxIdentifier());
     instance.check(v, iv);
-    Assertions.assertTrue(v.getError().isEmpty());
+    assertTrue(v.getError().isEmpty());
 
     iv = BioPAXLevel.L3.getDefaultFactory().create(InteractionVocabulary.class, "synonymCVTerm");
     iv.addTerm("phosphorylation");
@@ -283,7 +296,7 @@ public class ValidatorIT {
 
     v = new Validation(new BiopaxIdentifier());
     instance.check(v, iv);
-    Assertions.assertTrue(v.getError().isEmpty());
+    assertTrue(v.getError().isEmpty());
 
     iv = BioPAXLevel.L3.getDefaultFactory().create(InteractionVocabulary.class, "okCVTerm");
     iv.addTerm("Phosphorylation");
@@ -293,7 +306,7 @@ public class ValidatorIT {
 
     v = new Validation(new BiopaxIdentifier());
     instance.check(v, iv);
-    Assertions.assertTrue(v.getError().isEmpty());
+    assertTrue(v.getError().isEmpty());
 
     iv = BioPAXLevel.L3.getDefaultFactory().create(InteractionVocabulary.class, "invalidCVTerm");
     iv.addTerm("phosphorylated residue");
@@ -311,7 +324,7 @@ public class ValidatorIT {
 
     v = new Validation(new BiopaxIdentifier());
     instance.check(v, iv);
-    Assertions.assertEquals(1, v.countErrors(iv.getUri(), null, "illegal.cv.term",
+    assertEquals(1, v.countErrors(iv.getUri(), null, "illegal.cv.term",
       null, false, false));
     SimpleIOHandler simpleIO = new SimpleIOHandler(BioPAXLevel.L3);
     simpleIO.convertToOWL(m, new FileOutputStream(OUTPUT_DIR + File.separator + "testInteractionTypeRule.owl"));
@@ -322,7 +335,7 @@ public class ValidatorIT {
     ProteinModificationFeatureCvRule rule =
       (ProteinModificationFeatureCvRule) context.getBean("proteinModificationFeatureCvRule");
 
-    Assertions.assertTrue(rule.getValidTerms().contains("(2S,3R)-3-hydroxyaspartic acid".toLowerCase()));
+    assertTrue(rule.getValidTerms().contains("(2S,3R)-3-hydroxyaspartic acid".toLowerCase()));
 
     SequenceModificationVocabulary cv = BioPAXLevel.L3.getDefaultFactory().create(SequenceModificationVocabulary.class, "MOD_00036");
     cv.addTerm("(2S,3R)-3-hydroxyaspartic acid");
@@ -336,6 +349,6 @@ public class ValidatorIT {
 
     Validation v = new Validation(new BiopaxIdentifier());
     rule.check(v, mf); // should not fail
-    Assertions.assertTrue(v.getError().isEmpty());
+    assertTrue(v.getError().isEmpty());
   }
 }
