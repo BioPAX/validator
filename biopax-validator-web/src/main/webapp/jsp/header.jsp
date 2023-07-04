@@ -25,7 +25,6 @@
 							<li><a href="ws">Web Service</a></li>
 							<li><a href="rules">BioPAX Rules</a></li>
 							<li><a href="errorTypes">Errors</a></li>
-							<li><a href="extraCfg">Other</a></li>
                     	</ul>
                 	</li>
 					<li class="dropdown">

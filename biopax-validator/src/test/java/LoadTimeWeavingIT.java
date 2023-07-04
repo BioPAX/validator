@@ -58,14 +58,20 @@ public class LoadTimeWeavingIT {
 	}
 
 	@Test
-	public void unknownProperty() {
+	public void unknownProperty() { // important!
 		Validation validation = new Validation(new BiopaxIdentifier());
 		biopaxValidator.importModel(validation, getClass().getResourceAsStream("/testSyntaxErrors.xml"));
 		biopaxValidator.getResults().clear(); // clean after itself
-		assertEquals(1, validation.countErrors(null, null, "unknown.property",
-			null, false, false));
-		assertEquals(0, validation.countErrors(null, null, "syntax.error",
-			null, false, false));
+		assertAll(
+				() -> assertEquals(1, validation.countErrors(null, null, "unknown.property",
+			null, false, false)),
+				() -> assertEquals(0, validation.countErrors(null, null, "syntax.error",
+			null, false, false)),
+				() -> assertEquals(1,validation.getError().size())
+		);
+		biopaxValidator.validate(validation);
+		assertEquals(5,validation.getError().size());
+		validation.getError().stream().forEach(System.out::println);
 	}
 
 	@Test

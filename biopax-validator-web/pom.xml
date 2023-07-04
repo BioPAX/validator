@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.14</version>
+    <version>2.7.15</version>
     <relativePath />
   </parent>
 
@@ -153,7 +153,6 @@
         <version>3.1.2</version>
         <configuration>
           <argLine>${jvm.options}</argLine>
-<!--          <useSystemClassLoader>false</useSystemClassLoader>-->
         </configuration>
       </plugin>
       <plugin>
@@ -162,8 +161,6 @@
         <version>3.1.2</version>
         <configuration>
           <argLine>${jvm.options} -javaagent:${agent}</argLine>
-<!--          <runOrder>alphabetical</runOrder>-->
-<!--          <useSystemClassLoader>false</useSystemClassLoader>-->
         </configuration>
       </plugin>
       <plugin>

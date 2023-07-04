@@ -27,7 +27,17 @@ pathway databases and tools that support BioPAX.
 
 ## Usage
 
-Download and expand the latest ZIP distribution from <http://www.biopax.org/downloads/validator/>.
+Download and expand the latest ZIP distribution from <http://www.biopax.org/downloads/validator/> 
+
+Or build it from the sources:
+
+```
+mvn clean install
+cd dist
+mvn assembly:assembly
+```
+
+then use the resulting `biopax-validator-${version}-all.zip` (move somewhere, expand)
 
 ### Console (batch)
 
@@ -92,8 +102,8 @@ BioPAX error types, levels, categories, messages, cases are reported.
 Spring AOP, MessageSource, resource bundles, and OXM help collect the errors, 
 translate to human-readable messages and write the validation report (xml or html).
 Settings such as _behavior_ (level), error code, category and message templates
-are configured via the resource bundles: rules.properties, codes.properties and 
-profiles.properties (e.g., /rules_fr_CA.properties can be added to see messages 
+are configured via the resource bundles: `rules.properties`, `codes.properties` and 
+`profiles.properties` (e.g., `/rules_fr_CA.properties` can be added to see messages 
 in French). 
 
 To disable LTW AOP, set ```<context:load-time-weaver aspectj-weaving="off"/>```
@@ -116,3 +126,16 @@ or revert to the default configuration)
 
 The validator-core module is not specific to BioPAX; 
 it could be used for another domain with alternative validation rules module.
+
+You can also start the web add as
+
+```
+cd biopax-validator-web
+mvn spring-boot:run
+```
+
+and also access it at localhost:8080 (live reload is enabled can edit js/css/html/jsp and see the effect 
+without restarting the app)
+
+This is convenient for development but the problem is that LTW does not properly/fully wok for some reason, -
+the validator will not catch syntax errors or unknown property errors, unlike when it's run via `sh server.sh`.
