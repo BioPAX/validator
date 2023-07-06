@@ -174,8 +174,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <github.global.server>github</github.global.server>
-    <spring.version>5.3.29</spring.version>
-    <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</agent>
+    <spring-framework.version>5.3.29</spring-framework.version>
+    <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring-framework.version}/spring-instrument-${spring-framework.version}.jar</agent>
     <paxtools.version>6.0.0-SNAPSHOT</paxtools.version>
     <license.licenseName>MIT</license.licenseName>
     <jvm.options>-Xmx2g -Dfile.encoding=UTF-8 -ea --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvm.options>
@@ -410,54 +410,54 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-beans</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context-support</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
         <scope>test</scope>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-oxm</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-tx</artifactId>
         <scope>runtime</scope>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-aop</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-aspects</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-instrument</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.aspectj</groupId>

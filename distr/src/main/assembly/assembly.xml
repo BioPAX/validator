@@ -39,14 +39,6 @@
       <directory>..</directory>
       <includes>
         <include>README.md</include>
-      </includes>
-      <fileMode>0644</fileMode>
-      <outputDirectory></outputDirectory>
-      <filtered>true</filtered>
-    </fileSet>
-    <fileSet>
-      <directory>..</directory>
-      <includes>
         <include>LICENSE</include>
       </includes>
       <fileMode>0644</fileMode>
