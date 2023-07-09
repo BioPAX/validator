@@ -1,4 +1,3 @@
-# todo: move to ../dist and update to use server.sh and LTW agent properly
 FROM eclipse-temurin:latest
 VOLUME /tmp
 ARG APP_JAR

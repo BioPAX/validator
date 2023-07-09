@@ -183,8 +183,6 @@
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.directory}</outputDirectory>
-              <includeArtifactIds>spring-instrument</includeArtifactIds>
-              <excludeTransitive>true</excludeTransitive>
             </configuration>
           </execution>
         </executions>

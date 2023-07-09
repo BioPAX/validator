@@ -279,7 +279,7 @@
           <version>3.1.2</version>
           <configuration>
             <argLine>${jvm.options}</argLine>
-<!--            <useSystemClassLoader>false</useSystemClassLoader>-->
+            <runOrder>alphabetical</runOrder>
           </configuration>
         </plugin>
         <plugin>
@@ -290,9 +290,6 @@
             <argLine>${jvm.options} -javaagent:${agent}</argLine>
             <runOrder>alphabetical</runOrder>
             <useSystemClassLoader>false</useSystemClassLoader>
-            <includes>
-              <include>**/*IT.java</include>
-            </includes>
           </configuration>
         </plugin>
       </plugins>
