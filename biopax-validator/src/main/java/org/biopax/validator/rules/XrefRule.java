@@ -1,6 +1,7 @@
 package org.biopax.validator.rules;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.validator.AbstractRule;
 import org.biopax.validator.api.beans.Validation;
@@ -47,26 +48,24 @@ public class XrefRule extends AbstractRule<Xref>{
 					// report error with fixed=false 
 					error(validation, x, "invalid.id.format", false, db, preferedDbName, id, regxp);
 					
-					// Now - try to fix (in some cases...) 
+					// try to fix (in some cases) using a hack
 					while(validation.isFix()) { //- no worries - will use 'break' to escape the infinite loop
-						// guess it's a "UniProt Isoform" ID -	
-						// (do before we next will try splitting it into id and idVersion parts)
-						if (preferedDbName.startsWith("UNIPROT")) {
+						// guess it's a Uniprot Isoform (next try splitting it into id and idVersion parts)
+						if (StringUtils.startsWithIgnoreCase(preferedDbName, "UNIPROT")) {
 							if (id.contains("-")
-								&& xrefUtils.checkIdFormat("UniProt Isoform",id.toUpperCase()))
-							{
-								x.setDb("UniProt Isoform");
+								&& xrefUtils.checkIdFormat("uniprot isoform",id.toUpperCase())) {
+								x.setDb("uniprot isoform");
 								x.setId(id.toUpperCase());
 								// update the error case, set fixed=true
 								error(validation, x, "invalid.id.format", true);
 								break;
-							} 
-						} // guess it's in fact a PSI-MOD despite PSI-MI is used
+							}
+						} // guess it's in fact a PSI-MOD despite PSI-MI is used (todo: likely useless/obsolete code)
 						else if (preferedDbName.equalsIgnoreCase("MOLECULAR INTERACTIONS ONTOLOGY")) {
 							if (id.toUpperCase().startsWith("MOD")
 								&& xrefUtils.checkIdFormat("MOD", id.toUpperCase()))
 							{
-								x.setDb("PSI-MOD");
+								x.setDb("MOD");
 								x.setId(id.toUpperCase());
 								// update the error case, set fixed=true
 								error(validation, x, "invalid.id.format", true);
@@ -119,7 +118,7 @@ public class XrefRule extends AbstractRule<Xref>{
 						
 						/*
 						 * Turning ID to upper case can sometimes help (e.g., KEGG, - c00022 to C00022 helps!) - 
-						 * because most identifier patterns corresp. to MIRIAM data collections are case sensitive and 
+						 * because most identifier patterns corresp. to MIRIAM data collections are case-sensitive and
 						 * use upper-case symbols (e.g., Uniport's begin with P, Q, O; also - GO:, MOD:, and NP_ - same idea)
 						 */
 						String newId = id.toUpperCase();
