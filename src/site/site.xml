@@ -1,54 +1,43 @@
 <project name="The BioPAX Validator">
 
-<bannerLeft>
-    <name>PathwayCommons</name>
-    <src>http://www.pathwaycommons.org/pc/jsp/images/pathwaycommons/pc_logo.gif</src>
-    <href>http://code.google.com/p/pathway-commons/</href>
-</bannerLeft>
+    <bannerLeft>
+        <name>PathwayCommons</name>
+        <src>https://www.pathwaycommons.org/pc/jsp/images/pathwaycommons/pc_logo.gif</src>
+        <href>https://github.com/pathwaycommons/</href>
+    </bannerLeft>
 
-<!--<bannerRight>-->
-	<!--<name>GitHub</name>-->
-    <!--<src>http://logo...</src>-->
-    <!--<href>http://...</href>-->
-<!--</bannerRight>-->
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.11.2</version>
+    </skin>
 
-<skin>
-	<groupId>org.apache.maven.skins</groupId>
-	<artifactId>maven-fluido-skin</artifactId>
-	<version>1.3.0</version>
-</skin>
+    <custom>
+        <fluidoSkin>
+            <sideBarEnabled>true</sideBarEnabled>
+            <topBarEnabled>true</topBarEnabled>
+            <profile>production</profile>
+            <googleSearch>
+                <sitesearch/>
+            </googleSearch>
+            <facebookLike/>
+            <googlePlusOne/>
+        </fluidoSkin>
+    </custom>
 
-<custom>
-	<fluidoSkin>
-		<sideBarEnabled>true</sideBarEnabled>
-		<topBarEnabled>true</topBarEnabled>
-		<profile>production</profile>
-		<googleSearch>
-       			<sitesearch/>
-		</googleSearch>
-		<facebookLike />
-		<googlePlusOne />
-	</fluidoSkin>
-</custom>
-
-<body>
-
-<breadcrumbs>
-	<item name="Home" href="../"/>
-	<item name="Validator ${project.version}" href="./" />
-</breadcrumbs>
-
-<links>
-<item name="BioPAX" href="http://www.biopax.org/" />
-<item name="Docs" href="http://www.biopax.org/validation" />
-<item name="Changelog" href="http://biopax.hg.sourceforge.net/hgweb/biopax/validator/shortlog/tip" />
-</links>
-
-<menu ref="modules" />
-
-<menu ref="reports" inherit="top"/>
-
-
-</body>
-
+    <body>
+        <breadcrumbs>
+            <item name="Home" href="../"/>
+            <item name="v${project.version}" href="./"/>
+        </breadcrumbs>
+        <links>
+            <item name="BioPAX.org" href="https://www.biopax.org"/>
+            <item name="Validator" href="https://www.biopax.org/validator"/>
+            <item name="Docs" href="https://biopax.github.io/validator"/>
+            <item name="Javadoc" href="apidocs/index.html"/>
+            <item name="Project" href="https://github.com/BioPAX/validator"/>
+        </links>
+        <menu ref="modules"/>
+        <menu ref="reports" inherit="top"/>
+    </body>
 </project>

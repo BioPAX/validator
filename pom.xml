@@ -65,7 +65,7 @@
     <site>
       <!-- do:
         mvn site site:stage -DstagingDirectory=/tmp/path
-         - then manually commit/push to the gh-pages branch. -->
+         - then manually copy the site and push to the gh-pages branch. -->
       <id>github</id>
       <name>BioPAX Validator Maven site</name>
       <url>https://biopax.github.io/validator/${project.version}</url>
@@ -114,9 +114,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <github.global.server>github</github.global.server>
-    <spring.version>5.3.23</spring.version>
+    <spring.version>5.3.28</spring.version>
     <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</agent>
-    <paxtools.version>5.3.0-SNAPSHOT</paxtools.version>
+    <paxtools.version>5.2.1</paxtools.version>
     <license.licenseName>MIT</license.licenseName>
     <jvm.options>-Xmx3g -Dfile.encoding=UTF-8 -ea --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvm.options>
   </properties>
@@ -127,7 +127,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.11.0</version>
           <configuration>
             <release>17</release>
           </configuration>
@@ -135,7 +135,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
-          <version>2.7</version>
+          <version>2.16.0</version>
           <configuration>
             <generateBackupPoms>false</generateBackupPoms>
           </configuration>
@@ -181,7 +181,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.2.1</version>
+          <version>3.3.0</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -194,7 +194,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.10.0</version>
+          <version>3.12.1</version>
           <executions>
             <execution>
               <id>attach-descriptor</id>
@@ -210,23 +210,24 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.3</version>
+          <version>3.0.1</version>
           <configuration>
             <goals>deploy site-deploy</goals>
             <autoVersionSubmodules>true</autoVersionSubmodules>
             <useReleaseProfile>false</useReleaseProfile>
             <releaseProfiles>sonatype-release-profile</releaseProfiles>
+            <tagNameFormat>v@{project.version}</tagNameFormat>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.3.1</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>jaxb2-maven-plugin</artifactId>
-          <version>2.4</version>
+          <version>2.5.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -234,14 +235,17 @@
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-ssh</artifactId>
+        <version>2.10</version>
       </extension>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-scm</artifactId>
+        <version>2.10</version>
       </extension>
       <extension>
         <groupId>org.apache.maven.doxia</groupId>
         <artifactId>doxia-integration-tools</artifactId>
+        <version>1.11.1</version>
       </extension>
     </extensions>
     <plugins>
@@ -312,22 +316,22 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>2.0.1</version>
+        <version>2.0.7</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>log4j-over-slf4j</artifactId>
-        <version>2.0.1</version>
+        <version>2.0.7</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
-        <version>2.0.1</version>
+        <version>2.0.7</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.4.1</version>
+        <version>1.4.8</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
@@ -405,7 +409,7 @@
       <dependency>
         <groupId>org.aspectj</groupId>
         <artifactId>aspectjrt</artifactId>
-        <version>1.9.9.1</version>
+        <version>1.9.19</version>
       </dependency>
       <dependency>
         <groupId>commons-beanutils</groupId>
@@ -415,7 +419,7 @@
       <dependency>
         <groupId>commons-digester</groupId>
         <artifactId>commons-digester</artifactId>
-        <version>1.8.1</version>
+        <version>2.1</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
@@ -448,7 +452,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.11.0</version>
+        <version>2.13.0</version>
       </dependency>
       <dependency>
         <groupId>javax.annotation</groupId>
@@ -514,6 +518,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.5.0</version>
         <configuration>
           <linksource>true</linksource>
           <notimestamp>true</notimestamp>
@@ -544,6 +549,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
+        <version>3.3.0</version>
         <reportSets>
           <reportSet>
             <id>aggregate</id>
@@ -557,6 +563,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.4.5</version>
         <configuration>
           <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
         </configuration>
@@ -566,15 +573,13 @@
               <report>index</report>
               <report>summary</report>
               <report>modules</report>
-              <report>cim</report>
               <report>dependencies</report>
               <report>dependency-info</report>
-              <report>dependency-management</report>
               <report>distribution-management</report>
-              <report>issue-tracking</report>
-              <report>license</report>
-              <report>project-team</report>
-              <report>mailing-list</report>
+              <report>issue-management</report>
+              <report>licenses</report>
+              <report>team</report>
+              <report>mailing-lists</report>
               <report>scm</report>
             </reports>
           </reportSet>
@@ -591,11 +596,12 @@
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.13</version>
             <extensions>true</extensions>
             <configuration>
               <serverId>ossrh</serverId>
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <!-- <autoReleaseAfterClose>true</autoReleaseAfterClose> -->
+              <autoReleaseAfterClose>true</autoReleaseAfterClose>
             </configuration>
           </plugin>
           <plugin>
@@ -613,6 +619,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.5.0</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
@@ -625,6 +632,7 @@
           <plugin>
             <artifactId>maven-gpg-plugin</artifactId>
             <groupId>org.apache.maven.plugins</groupId>
+            <version>3.1.0</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
