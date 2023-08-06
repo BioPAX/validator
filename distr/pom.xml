@@ -29,16 +29,27 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.6.0</version>
+				<groupId>org.apache.maven.plugins</groupId>
 				<configuration>
 					<finalName>biopax-validator-${project.version}</finalName>
 					<descriptors>
 						<descriptor>src/main/assembly/assembly.xml</descriptor>
 					</descriptors>
 				</configuration>
-<!--
-disabled making zip during install/package phase due to Travis CI fails (heap memory);
-do run: mvn assembly:single manually instead
--->
+				<!--
+                  disable executions here if CI/CD fails during install/package phase (e.g. a memory issue);
+                  run: mvn assembly:single manually instead
+                -->
+				<executions>
+					<execution>
+						<id>distr-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
