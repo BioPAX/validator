@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>5.1.0</version>
+		<version>5.1.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>validator-core</artifactId>

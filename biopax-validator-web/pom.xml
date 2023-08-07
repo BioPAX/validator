@@ -11,7 +11,7 @@
 
   <groupId>org.biopax.validator</groupId>
   <artifactId>biopax-validator-web</artifactId>
-  <version>5.1.0</version>
+  <version>5.1.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>Webservice</name>
   <description>BioPAX Validator Web Service</description>
@@ -50,7 +50,7 @@
     <connection>scm:git:git://github.com/BioPAX/validator.git</connection>
     <developerConnection>scm:git:git@github.com:BioPAX/validator.git</developerConnection>
     <url>https://github.com/BioPAX/validator/tree/master/</url>
-    <tag>v5.1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
