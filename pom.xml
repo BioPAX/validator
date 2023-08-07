@@ -290,6 +290,16 @@
           <artifactId>jaxb2-maven-plugin</artifactId>
           <version>2.5.0</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.5.0</version>
+          <configuration>
+            <doclint>none</doclint>
+            <failOnError>false</failOnError>
+            <excludePackageNames>org.biopax.validator.jaxb:org.biopax.validator.api.beans:org.biopax.validator.impl:org.biopax.validator.rules:net.biomodels.*</excludePackageNames>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -572,10 +582,11 @@
           <linksource>true</linksource>
           <notimestamp>true</notimestamp>
           <links combine.children="append">
-            <link>http://download.oracle.com/javase/7/docs/api/</link>
+            <link>http://download.oracle.com/javase/17/docs/api/</link>
           </links>
           <level>public</level>
           <failOnError>false</failOnError>
+          <doclint>none</doclint>
           <excludePackageNames>org.biopax.validator.jaxb:org.biopax.validator.api.beans:org.biopax.validator.impl:org.biopax.validator.rules:net.biomodels.*</excludePackageNames>
         </configuration>
         <reportSets>

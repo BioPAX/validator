@@ -108,6 +108,19 @@
 
   <build>
     <finalName>biopax-validator-web</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <doclint>none</doclint>
+            <failOnError>false</failOnError>
+            <excludePackageNames>org.biopax.validator.jaxb:org.biopax.validator.api.beans:org.biopax.validator.impl:org.biopax.validator.rules:net.biomodels.*</excludePackageNames>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

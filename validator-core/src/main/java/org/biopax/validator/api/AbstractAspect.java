@@ -19,6 +19,9 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractAspect {
 	private static final Log log = LogFactory.getLog(AbstractAspect.class);
 
+	/**
+	 * BioPAX Validator instance
+	 */
 	protected Validator validator;
 
 	/**
@@ -72,8 +75,7 @@ public abstract class AbstractAspect {
 			validator.report(obj, errorCode, reportedBy, false, msg.toString());
 		} else {
 			log.error("validator is null; skipping " +
-				"an intercepted 'syntax.error': " + msg.toString()
-				+ " reported by: " + reportedBy);
+				"an intercepted 'syntax.error': " + msg + " reported by: " + reportedBy);
 		}
 	}
 
