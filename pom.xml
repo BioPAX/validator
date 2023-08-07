@@ -177,7 +177,7 @@
     <github.global.server>github</github.global.server>
     <spring.version>5.3.28</spring.version>
     <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</agent>
-    <paxtools.version>5.2.1</paxtools.version>
+    <paxtools.version>5.3.0</paxtools.version>
     <license.licenseName>MIT</license.licenseName>
     <jvm.options>-Xmx3g -Dfile.encoding=UTF-8 -ea --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvm.options>
   </properties>
