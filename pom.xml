@@ -178,7 +178,7 @@
     <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring-framework.version}/spring-instrument-${spring-framework.version}.jar</agent>
     <paxtools.version>6.0.0-SNAPSHOT</paxtools.version>
     <license.licenseName>MIT</license.licenseName>
-    <jvm.options>-Xmx2g -Dfile.encoding=UTF-8 -ea --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvm.options>
+    <jvm.options>-Xmx3g -Dfile.encoding=UTF-8 -ea --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvm.options>
   </properties>
 
   <build>
@@ -399,12 +399,6 @@
         <version>1.4.9</version>
       </dependency>
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.13.2</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-beans</artifactId>
         <version>${spring-framework.version}</version>
@@ -580,7 +574,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.5.0</version>
         <configuration>
           <linksource>true</linksource>
           <notimestamp>true</notimestamp>
@@ -589,7 +582,7 @@
           </links>
           <level>public</level>
           <failOnError>false</failOnError>
-          <doclint>none</doclint>
+<!--          <doclint>none</doclint>-->
           <excludePackageNames>org.biopax.validator.jaxb:org.biopax.validator.api.beans:org.biopax.validator.impl:org.biopax.validator.rules:net.biomodels.*</excludePackageNames>
         </configuration>
         <reportSets>
