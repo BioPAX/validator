@@ -3,15 +3,17 @@
  */
 import java.io.*;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.biopax.validator.BiopaxValidatorClient;
 import org.biopax.validator.BiopaxValidatorClient.RetFormat;
 import org.biopax.validator.jaxb.ValidatorResponse;
-import org.junit.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 // remove @Ignore when biopax.org/biopax-validator/  is available
-@Ignore
+@Disabled
 public class BiopaxValidatorClientTest {
 
 	@Test
@@ -43,12 +45,12 @@ public class BiopaxValidatorClientTest {
 		
 		//System.out.println(baos.toString());
 		
-		Assert.assertTrue(baos.size()>0);
+		Assertions.assertTrue(baos.size()>0);
 		
 		ValidatorResponse resp = client.unmarshal(baos.toString());
 		
-		Assert.assertNotNull(resp);
-		Assert.assertFalse(resp.getValidation().isEmpty());
+		Assertions.assertNotNull(resp);
+		Assertions.assertFalse(resp.getValidation().isEmpty());
 		
 		System.out.println(resp.getValidation().get(0).getSummary()
 				+ "; cases: " + resp.getValidation().get(0).getTotalProblemsFound());

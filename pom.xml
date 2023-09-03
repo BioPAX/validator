@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.biopax.validator</groupId>
   <artifactId>parent</artifactId>
-  <version>5.1.1-SNAPSHOT</version>
+  <version>6.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -124,7 +125,7 @@
   <distributionManagement>
     <site>
       <!-- do:
-        mvn site site:stage -DstagingDirectory=/tmp/path
+        mvn site site:stage -DstagingDirectory=/tmp/path (absolute path!)
          - then manually copy the site and push to the gh-pages branch. -->
       <id>github</id>
       <name>BioPAX Validator Maven site</name>
@@ -174,9 +175,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <github.global.server>github</github.global.server>
-    <spring.version>5.3.28</spring.version>
-    <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</agent>
-    <paxtools.version>5.3.0</paxtools.version>
+    <spring-framework.version>5.3.29</spring-framework.version>
+    <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring-framework.version}/spring-instrument-${spring-framework.version}.jar</agent>
+    <paxtools.version>6.0.0-SNAPSHOT</paxtools.version>
     <license.licenseName>MIT</license.licenseName>
     <jvm.options>-Xmx3g -Dfile.encoding=UTF-8 -ea --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvm.options>
   </properties>
@@ -202,32 +203,6 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.2</version>
-          <configuration>
-            <testFailureIgnore>false</testFailureIgnore>
-            <argLine>${jvm.options}</argLine>
-            <includes>
-              <include>**/*Test.java</include>
-            </includes>
-            <useSystemClassLoader>false</useSystemClassLoader>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.22.1</version>
-          <configuration>
-            <argLine>${jvm.options} -javaagent:${agent}</argLine>
-            <runOrder>alphabetical</runOrder>
-            <includes>
-              <include>**/*IT.java</include>
-            </includes>
-            <useSystemClassLoader>false</useSystemClassLoader>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.1.0</version>
           <executions>
@@ -241,7 +216,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.2.1</version>
+          <version>3.3.0</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -287,7 +262,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>jaxb2-maven-plugin</artifactId>
-          <version>2.5.0</version>
+          <version>3.1.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -297,6 +272,25 @@
             <doclint>none</doclint>
             <failOnError>false</failOnError>
             <excludePackageNames>org.biopax.validator.jaxb:org.biopax.validator.api.beans:org.biopax.validator.impl:org.biopax.validator.rules:net.biomodels.*</excludePackageNames>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.1.2</version>
+          <configuration>
+            <argLine>${jvm.options}</argLine>
+            <runOrder>alphabetical</runOrder>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>3.1.2</version>
+          <configuration>
+            <argLine>${jvm.options} -javaagent:${agent}</argLine>
+            <runOrder>alphabetical</runOrder>
+            <useSystemClassLoader>false</useSystemClassLoader>
           </configuration>
         </plugin>
       </plugins>
@@ -335,6 +329,19 @@
         <configuration>
           <skipDeploy>true</skipDeploy>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>verify</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -393,72 +400,56 @@
         <version>1.4.9</version>
       </dependency>
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.13.2</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-beans</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context-support</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
         <scope>test</scope>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-oxm</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-tx</artifactId>
         <scope>runtime</scope>
-        <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-web</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-webmvc</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-aop</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-aspects</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-instrument</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.aspectj</groupId>
@@ -519,20 +510,32 @@
         <version>1.3.2</version>
       </dependency>
       <dependency>
-        <groupId>javax.xml.bind</groupId>
-        <artifactId>jaxb-api</artifactId>
-        <version>2.4.0-b180830.0359</version>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>4.0.0</version>
       </dependency>
       <dependency>
-        <groupId>org.glassfish.jaxb</groupId>
-        <artifactId>jaxb-runtime</artifactId>
-        <version>2.4.0-b180830.0438</version>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-impl</artifactId>
+        <version>4.0.3</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
-        <groupId>com.sun.activation</groupId>
-        <artifactId>javax.activation</artifactId>
-        <version>1.2.0</version>
+        <groupId>jakarta.activation</groupId>
+        <artifactId>jakarta.activation-api</artifactId>
+        <version>2.1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.9.3</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>5.9.3</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -543,21 +546,16 @@
       <artifactId>javax.annotation-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.glassfish.jaxb</groupId>
-      <artifactId>jaxb-runtime</artifactId>
-      <scope>runtime</scope>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sun.activation</groupId>
-      <artifactId>javax.activation</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
     </dependency>
     <dependency>
       <!-- one of obo-fetcher's deps uses log4j directly-->
@@ -585,7 +583,7 @@
           </links>
           <level>public</level>
           <failOnError>false</failOnError>
-          <doclint>none</doclint>
+<!--          <doclint>none</doclint>-->
           <excludePackageNames>org.biopax.validator.jaxb:org.biopax.validator.api.beans:org.biopax.validator.impl:org.biopax.validator.rules:net.biomodels.*</excludePackageNames>
         </configuration>
         <reportSets>

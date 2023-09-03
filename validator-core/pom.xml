@@ -4,12 +4,13 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.biopax.validator</groupId>
-		<version>5.1.1-SNAPSHOT</version>
+		<version>6.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>validator-core</artifactId>
 	<name>Core</name>
 	<description>Object model validation and reporting library</description>
+	<packaging>jar</packaging>
 
 	<url>https://biopax.github.io/validator</url>
 
@@ -32,19 +33,6 @@
 						</configuration>
 					</execution>
 				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.glassfish.jaxb</groupId>
-						<artifactId>jaxb-runtime</artifactId>
-						<version>2.3.1</version>
-						<scope>runtime</scope>
-					</dependency>
-					<dependency>
-						<groupId>com.sun.activation</groupId>
-						<artifactId>javax.activation</artifactId>
-						<version>1.2.0</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -96,6 +84,10 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
 		</dependency>
 	</dependencies>
 

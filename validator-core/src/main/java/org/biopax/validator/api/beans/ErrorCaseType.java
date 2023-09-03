@@ -1,9 +1,9 @@
 package org.biopax.validator.api.beans;
 
+import jakarta.xml.bind.annotation.*;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
-import javax.xml.bind.annotation.*;
 
 @XmlType(name="ErrorCaseType")
 @XmlAccessorType(XmlAccessType.FIELD)

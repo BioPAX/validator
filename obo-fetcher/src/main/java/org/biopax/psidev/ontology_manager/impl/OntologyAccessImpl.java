@@ -74,7 +74,7 @@ public class OntologyAccessImpl implements OntologyAccess, Serializable {
     private Map<String, OntologyTermI> id2ontologyTerm = new HashMap<>( 1024 );
 
     /**
-     * Collection of root terms of that ontology. A root term is defined as follow: term having no parent.
+     * Collection of root terms of that ontology. A root term is a term having no parent.
      */
     private Collection<OntologyTermI> roots = null;
 
@@ -214,7 +214,7 @@ public class OntologyAccessImpl implements OntologyAccess, Serializable {
     /**
      * Go through the list of all CV Term and select those that are obsolete.
      *
-     * @return a non null Collection of obsolete term.
+     * @return a non-null Collection of obsolete term.
      */
     public Collection<OntologyTermI> getObsoleteTerms() {
         return Collections.unmodifiableCollection( obsoleteTerms );
@@ -274,28 +274,6 @@ public class OntologyAccessImpl implements OntologyAccess, Serializable {
         for ( OntologyTermI child : directChildren ) {
             getAllChildren( prefix+"     ", child, children, traversedChildren );
         }
-    }
-
-    // Utility - Display methods
-
-    public void print() {
-        log.info( ontologyTerms.size() + " terms to display." );
-        final Collection<OntologyTermI> roots = getRoots();
-        log.info( this.roots.size() + " root(s) found." );
-        for ( OntologyTermI root : roots ) {
-            print( root );
-        }
-    }
-
-    private void print( OntologyTermI term, String indent ) {
-        log.info( indent + term.getTermAccession() + "   " + term.getPreferredName() );
-        for ( OntologyTermI child : getDirectChildren( term ) ) {
-            print( child, indent + "  " );
-        }
-    }
-
-    public void print( OntologyTermI term ) {
-        print( term, "" );
     }
 
     public OntologyTermI getTermForAccession(String accession) {

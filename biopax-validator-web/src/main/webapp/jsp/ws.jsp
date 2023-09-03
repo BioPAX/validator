@@ -60,11 +60,6 @@ As an example, there is a basic BioPAX validator client module
 sources are here</a> (see test classes there as well:).
 </div>
 
-<div class="row">
-<h3>Suggest</h3>
-	<p>A new experimental <a target="_blank" href="docs/index.html">BioPAX Suggester</a> web service.</p>
-</div>
-
 <jsp:include page="footer.jsp"/>
 
 </body>

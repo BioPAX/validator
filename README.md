@@ -12,7 +12,7 @@
 The BioPAX Validator is a command line tool, Java library, and online
 web service for BioPAX formatted pathway data validation. The validator
 checks for more than a hundred BioPAX Level3 rules and best practices, 
-provides human readable reports and can automatically fix some common 
+provides human-readable reports and can automatically fix some common 
 mistakes in data (can also process Level1 and Level2 data, which are 
 first auto-converted to the Level3, and then Level3 rules apply). 
 The validator is in use by the BioPAX community and is continuously being
@@ -27,7 +27,17 @@ pathway databases and tools that support BioPAX.
 
 ## Usage
 
-Download and expand the latest ZIP distribution from <http://www.biopax.org/downloads/validator/>.
+Download and expand the latest ZIP distribution from <http://www.biopax.org/downloads/validator/> 
+
+Or build it from the sources:
+
+```
+mvn clean install
+cd dist
+mvn assembly:assembly
+```
+
+then use the resulting `biopax-validator-${version}-all.zip` (move somewhere, expand)
 
 ### Console (batch)
 
@@ -71,14 +81,11 @@ Use --help parameter to see all the server options (e.g., httpPort, ajpPort)
 
 ## Developer notes
 
-It's built with Java ${java.version} (requires 8 or above), Paxtools ${paxtools.version} (BioPAX Model API, Java library), 
-Spring Framework ${spring.version}, OXM, @AspectJ, AOP, LTW, etc. Validation _Rules_ are java 
-objects that implement _Rule<E>_ interface, extend _AbstractRule<E>_, where _E_
-is usually either a BioPAX class or _Model_. Controlled vocabulary rules 
-extend _AbstractCvRule_ and use _CvRestriction_ and OBO Ontology Manager 
-(based on PSIDEV EBI sources) to lookup for valid ontology terms and synonyms.
-Rules may call other rules, but usually it is not recommended, for they are 
-better keep simple and independent. 
+Validation _Rules_ are java objects that implement _Rule<E>_ interface and 
+extend _AbstractRule<E>_, where _<E>_ is usually either a BioPAX class or _Model_. 
+Controlled vocabulary rules extend _AbstractCvRule_ and use _CvRestriction_ and 
+OBO Ontology Manager (derived from PSIDEV EBI code) to lookup for valid ontology terms and synonyms.
+Validation Rules can call other Rules, but this is not recommended (better keep it simple, independent). 
 
 _Post-model_ validation mode is to check 
 all the rules/objects after the BioPAX model is built (created in memory or 
@@ -92,8 +99,8 @@ BioPAX error types, levels, categories, messages, cases are reported.
 Spring AOP, MessageSource, resource bundles, and OXM help collect the errors, 
 translate to human-readable messages and write the validation report (xml or html).
 Settings such as _behavior_ (level), error code, category and message templates
-are configured via the resource bundles: rules.properties, codes.properties and 
-profiles.properties (e.g., /rules_fr_CA.properties can be added to see messages 
+are configured via the resource bundles: `rules.properties`, `codes.properties` and 
+`profiles.properties` (e.g., `/rules_fr_CA.properties` can be added to see messages 
 in French). 
 
 To disable LTW AOP, set ```<context:load-time-weaver aspectj-weaving="off"/>```
@@ -116,3 +123,36 @@ or revert to the default configuration)
 
 The validator-core module is not specific to BioPAX; 
 it could be used for another domain with alternative validation rules module.
+
+You can also start the web app with maven (plugin)
+
+```
+mvn clean install
+cd biopax-validator-web
+mvn spring-boot:run
+```
+
+and also access it at localhost:8080 (live reload is enabled - can edit js/css/html/jsp and immediately see the effect 
+without restarting the app)
+
+This is convenient for development but the problem is that LTW does not properly/fully wok for some reason, -
+the validator will not catch syntax errors or unknown property errors, unlike when it's run via `sh server.sh` or 
+when docker container (i.e. when the app was run using e.g. `java -javaagent:agent.jar ... -jar app.war` command)
+
+## Docker
+
+### build the project and image(s) from sources
+```
+mvn clean install
+cd biopax-validator-web
+mvn dockerfile:build
+#mvn dockerfile:tag
+#mvn dockerfile:push
+```
+
+### run
+Run with docker (can also do with compose or terraform)
+```
+docker run --name validator -it pathwaycommons/biopax-validator -p 8080:8080
+```
+

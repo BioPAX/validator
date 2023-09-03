@@ -6,6 +6,7 @@ import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyManager;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
 import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -32,7 +33,7 @@ public class OntologyManagerImpl implements OntologyManager {
 
   /**
    * The Map that holds the Ontologies.
-   * The key is the ontology ID and the value is a ontology inplementing the OntologyAccess interface.
+   * The key is the ontology ID and the value is an ontology implementing the OntologyAccess interface.
    */
   private Map<String, OntologyAccess> ontologyMap = new HashMap<>();
 
@@ -163,38 +164,27 @@ public class OntologyManagerImpl implements OntologyManager {
     return term;
   }
 
-  /*
-   * 	Some CV URI/URLs may include
-   *  'obo.' in it (now deprecated) or not, like e.g.
-   *  'obo.so', 'obo.go' vs. simply 'so', 'go'
-   */
   public OntologyTermI getTermByUri(String uri) {
-    if (uri.startsWith("urn:miriam:obo.")) {
-      int pos = uri.indexOf(':', 15); //e.g. the colon after 'go' in "...:obo.go:GO%3A0005654"
-      String acc = uri.substring(pos + 1);
-      acc = urlDecode(acc);
-      OntologyTermI term = findTermByAccession(acc); // acc. is globally unique in CvService!..
-      return term;
-    } else if (uri.startsWith("http://identifiers.org/obo.")) {
-      int pos = uri.indexOf('/', 27); //e.g. the slash after 'go' in "...obo.go/GO:0005654"
-      String acc = uri.substring(pos + 1);
-      OntologyTermI term = findTermByAccession(acc);
-      return term;
-    } else if (uri.startsWith("urn:miriam:")) {
-      int pos = uri.indexOf(':', 11); //e.g. the last colon in "...:go:GO%3A0005654"
-      String acc = uri.substring(pos + 1);
-      acc = urlDecode(acc);
-      OntologyTermI term = findTermByAccession(acc);
-      return term;
-    } else if (uri.startsWith("http://identifiers.org/")) {
-      int pos = uri.indexOf('/', 23); //e.g. the slash after 'org/go' in "...org/go/GO:0005654"
-      String acc = uri.substring(pos + 1);
-      OntologyTermI term = findTermByAccession(acc);
-      return term;
-    } else {
-      if (log.isDebugEnabled())
-        log.debug("Cannot Decode not a Controlled Vocabulary's URI : " + uri);
+    if(!StringUtils.hasText(uri)) {
       return null;
+    }
+    if (uri.toLowerCase().startsWith("urn:miriam:")) { //btw, this type of URI is deprecated
+      int pos = uri.lastIndexOf(':'); //e.g. the last colon in "urn:miriam:go:GO%3A0005654"
+      String acc = uri.substring(pos + 1);
+      acc = urlDecode(acc);
+      OntologyTermI term = findTermByAccession(acc);
+      return term;
+    } else if (uri.toLowerCase().contains("identifiers.org") || uri.contains("bioregistry.io")) {
+      int pos = uri.lastIndexOf('/');
+      String acc = uri.substring(pos + 1);
+      OntologyTermI term = findTermByAccession(acc);
+      if(term == null) {
+        term = findTermByAccession(acc.toUpperCase()); //might help "GO:1234" vs "go:1234" cases
+      }
+      return term;
+    } else { // CURIE (e.g. "go:1234")?
+      OntologyTermI term = findTermByAccession(uri);
+      return (term != null) ? term : findTermByAccession(uri.toUpperCase());
     }
   }
 
@@ -256,8 +246,7 @@ public class OntologyManagerImpl implements OntologyManager {
         if (ots.size() == 1) //use if unambiguous
           ot = ots.iterator().next();
         else
-          log.info("ambiguous term: " + term +
-                     " found by searchig in ontology: " + ontologyAccess.getName());
+          log.info("ambiguous term: " + term + " found by searchig in ontology: " + ontologyAccess.getName());
       }
     }
 

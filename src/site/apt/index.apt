@@ -12,7 +12,7 @@ of biological processes including metabolic and signaling pathways,
 molecular interactions and gene networks. Pathguide.org lists the 
 pathway databases and tools that support BioPAX.  
 
-What is the BioPAX Validator
+What is BioPAX Validator
 
   The BioPAX Validator is a command line tool, Java library, and online
 web service for BioPAX formatted pathway data validation. The validator

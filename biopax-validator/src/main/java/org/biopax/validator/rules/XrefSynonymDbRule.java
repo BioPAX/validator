@@ -34,9 +34,9 @@ public class XrefSynonymDbRule extends AbstractRule<Xref> {
     // if primary is null, do nothing, - another rule (XrefRule) reports this
     if (primary != null && !primary.equalsIgnoreCase(db)) {
       // report only if it is definitely not official db synonym
-      if (xrefUtils.isUnofficialOrMisspelledDbName(db))
+      if (xrefUtils.isUnofficialOrMisspelledDbName(db)) {
         error(validation, x, "db.name.spelling", validation.isFix(), db, primary);
-
+      }
       // fix, sometimes w/o error message, anyway ;)
       if (validation.isFix()) {
         x.setDb(primary);

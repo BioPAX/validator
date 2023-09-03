@@ -35,7 +35,6 @@
             <item name="Validator" href="https://www.biopax.org/validator"/>
             <item name="Docs" href="https://biopax.github.io/validator"/>
             <item name="Javadoc" href="apidocs/index.html"/>
-            <item name="Project" href="https://github.com/BioPAX/validator"/>
         </links>
         <menu ref="modules"/>
         <menu ref="reports" inherit="top"/>

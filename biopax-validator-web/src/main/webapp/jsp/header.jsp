@@ -25,7 +25,6 @@
 							<li><a href="ws">Web Service</a></li>
 							<li><a href="rules">BioPAX Rules</a></li>
 							<li><a href="errorTypes">Errors</a></li>
-							<li><a href="extraCfg">Other</a></li>
                     	</ul>
                 	</li>
 					<li class="dropdown">
@@ -36,8 +35,8 @@
 							<li><a href="https://github.com/BioPAX/validator/wiki/BioPAXRules" target="_blank">Wiki (Rules)</a></li>
 							<li><a href="https://biopax.github.io/validator/" target="_blank">Project, Docs</a></li>
 							<li><a href="https://www.pathwaycommons.org" target="_blank">Pathway Commons</a></li>
-							<li><a href="http://www.ebi.ac.uk/miriam/" target="_blank">MIRIAM</a></li>
-							<li><a href="http://www.obofoundry.org/" target="_blank">OBO</a></li>
+							<li><a href="https://bioregistry.io" target="_blank">Bioregistry</a></li>
+							<li><a href="https://www.obofoundry.org/" target="_blank">OBO</a></li>
                     	</ul>
                 	</li>
 					<li><a href="https://github.com/BioPAX/validator/issues" target="_blank">Report</a></li>

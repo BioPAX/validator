@@ -28,29 +28,29 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
 
   static {
     // allow ONLY listed db names (synonyms will be considered too) for member UnificationXrefs of:
-    allow.put(BioSource.class, new HashSet<String>(Arrays.asList("taxonomy")));
-    allow.put(Provenance.class, new HashSet<String>(Arrays.asList("miriam")));
-    allow.put(CellVocabulary.class, new HashSet<String>(Arrays.asList("cl")));
-    allow.put(TissueVocabulary.class, new HashSet<String>(Arrays.asList("bto")));
-    allow.put(CellularLocationVocabulary.class, new HashSet<String>(Arrays.asList("go")));
-    allow.put(EvidenceCodeVocabulary.class, new HashSet<String>(Arrays.asList("mi")));
-    allow.put(ExperimentalFormVocabulary.class, new HashSet<String>(Arrays.asList("mi")));
-    allow.put(InteractionVocabulary.class, new HashSet<String>(Arrays.asList("mi")));
-    allow.put(SequenceModificationVocabulary.class, new HashSet<String>(Arrays.asList("so", "mod")));
-    allow.put(PhenotypeVocabulary.class, new HashSet<String>(Arrays.asList("pato")));
-    allow.put(RelationshipTypeVocabulary.class, new HashSet<String>(Arrays.asList("mi")));
-    allow.put(SequenceRegionVocabulary.class, new HashSet<String>(Arrays.asList("so")));
+    allow.put(BioSource.class, new HashSet<>(Arrays.asList("taxonomy")));
+    allow.put(Provenance.class, new HashSet<>(Arrays.asList("miriam")));
+    allow.put(CellVocabulary.class, new HashSet<>(Arrays.asList("cl")));
+    allow.put(TissueVocabulary.class, new HashSet<>(Arrays.asList("bto")));
+    allow.put(CellularLocationVocabulary.class, new HashSet<>(Arrays.asList("go")));
+    allow.put(EvidenceCodeVocabulary.class, new HashSet<>(Arrays.asList("mi")));
+    allow.put(ExperimentalFormVocabulary.class, new HashSet<>(Arrays.asList("mi")));
+    allow.put(InteractionVocabulary.class, new HashSet<>(Arrays.asList("mi")));
+    allow.put(SequenceModificationVocabulary.class, new HashSet<>(Arrays.asList("so", "mod")));
+    allow.put(PhenotypeVocabulary.class, new HashSet<>(Arrays.asList("pato")));
+    allow.put(RelationshipTypeVocabulary.class, new HashSet<>(Arrays.asList("mi")));
+    allow.put(SequenceRegionVocabulary.class, new HashSet<>(Arrays.asList("so")));
 
     // not recommended xref.db names (and all synonyms) for UnificationXrefs of
-    deny.put(Dna.class, new HashSet<String>(Arrays.asList("uniprot", "pubmed")));
-    deny.put(Rna.class, new HashSet<String>(Arrays.asList("uniprot")));
-    deny.put(DnaReference.class, new HashSet<String>(Arrays.asList("uniprot", "pubmed")));
-    deny.put(RnaReference.class, new HashSet<String>(Arrays.asList("uniprot")));
-    deny.put(SmallMoleculeReference.class, new HashSet<String>(Arrays.asList("uniprot")));
-    deny.put(SmallMolecule.class, new HashSet<String>(Arrays.asList("uniprot")));
-    deny.put(PhysicalEntity.class, new HashSet<String>(Arrays.asList("go")));
-    deny.put(ProteinReference.class, new HashSet<String>(Arrays.asList("OMIM", "Entrez Gene")));
-    deny.put(Interaction.class, new HashSet<String>(Arrays.asList("mi")));
+    deny.put(Dna.class, new HashSet<>(Arrays.asList("uniprot", "pubmed")));
+    deny.put(Rna.class, new HashSet<>(Arrays.asList("uniprot")));
+    deny.put(DnaReference.class, new HashSet<>(Arrays.asList("uniprot", "pubmed")));
+    deny.put(RnaReference.class, new HashSet<>(Arrays.asList("uniprot")));
+    deny.put(SmallMoleculeReference.class, new HashSet<>(Arrays.asList("uniprot")));
+    deny.put(SmallMolecule.class, new HashSet<>(Arrays.asList("uniprot")));
+    deny.put(PhysicalEntity.class, new HashSet<>(Arrays.asList("go")));
+    deny.put(ProteinReference.class, new HashSet<>(Arrays.asList("OMIM", "Entrez Gene")));
+    deny.put(Interaction.class, new HashSet<>(Arrays.asList("mi")));
   }
 
   private XrefUtils helper;

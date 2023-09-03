@@ -1,17 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.14</version>
+    <version>2.7.15</version>
     <relativePath />
   </parent>
 
   <groupId>org.biopax.validator</groupId>
   <artifactId>biopax-validator-web</artifactId>
-  <version>5.1.1-SNAPSHOT</version>
+  <version>6.0.0-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>Webservice</name>
   <description>BioPAX Validator Web Service</description>
@@ -94,14 +96,14 @@
   </developers>
 
   <properties>
-<!--    <spring-framework.version>5.3.28</spring-framework.version>--><!-- defined in the parent pom -->
+<!--    <spring-framework.version>5.3.29</spring-framework.version>--><!-- defined in the parent pom -->
     <start-class>org.biopax.validator.web.Application</start-class>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <license.licenseName>MIT</license.licenseName>
-    <docker.image.prefix>pathwaycommons</docker.image.prefix>
     <jvm.options>-Xmx3g -Dfile.encoding=UTF-8 -ea --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvm.options>
-    <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring-framework.version}/spring-instrument-${spring-framework.version}.jar</agent>
+<!--    <agent>${settings.localRepository}/org/springframework/spring-instrument/${spring-framework.version}/spring-instrument-${spring-framework.version}.jar</agent>-->
+    <agent>target/spring-instrument.jar</agent><!-- this copy is created by maven-dependency-plugin -->
   </properties>
 
   <build>
@@ -150,36 +152,54 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.2</version>
+        <version>3.1.2</version>
         <configuration>
           <argLine>${jvm.options}</argLine>
-          <includes>
-            <include>**/*Test.java</include>
-          </includes>
-          <useSystemClassLoader>false</useSystemClassLoader>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.22.2</version>
+        <version>3.1.2</version>
         <configuration>
           <argLine>${jvm.options} -javaagent:${agent}</argLine>
-          <runOrder>alphabetical</runOrder>
-          <includes>
-            <include>**/*IT.java</include>
-          </includes>
-          <useSystemClassLoader>false</useSystemClassLoader>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.6.0</version>
+        <executions>
+          <execution>
+            <id>copy-spring-instrument-jar</id>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.springframework</groupId>
+                  <artifactId>spring-instrument</artifactId>
+                  <type>jar</type>
+                  <destFileName>spring-instrument.jar</destFileName>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>com.spotify</groupId>
         <artifactId>dockerfile-maven-plugin</artifactId>
         <version>1.4.13</version>
         <configuration>
-          <repository>${docker.image.prefix}/biopax-validator</repository>
+          <repository>pathwaycommons/biopax-validator</repository>
+<!--          <useMavenSettingsForAuth>true</useMavenSettingsForAuth>-->
+<!--          <repository>registry.hub.docker.com/pathwaycommons/${project.artifactId}</repository>-->
           <buildArgs>
-            <JAR_FILE>target/${project.build.finalName}.war</JAR_FILE>
+            <APP_JAR>target/biopax-validator-web.war</APP_JAR>
+            <AGENT_JAR>target/spring-instrument.jar</AGENT_JAR>
           </buildArgs>
         </configuration>
       </plugin>
@@ -190,54 +210,6 @@
         <configuration>
           <skip>true</skip>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.asciidoctor</groupId>
-        <artifactId>asciidoctor-maven-plugin</artifactId>
-        <version>2.2.2</version>
-        <executions>
-          <execution>
-            <id>generate-docs</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>process-asciidoc</goal>
-            </goals>
-            <configuration>
-              <backend>html</backend>
-              <doctype>book</doctype>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.springframework.restdocs</groupId>
-            <artifactId>spring-restdocs-asciidoctor</artifactId>
-            <version>2.0.6.RELEASE</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <!-- maven-resources-plugin must go after asciidoctor-maven-plugin (same phase)-->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.3.0</version>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.outputDirectory}/static/docs</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.build.directory}/generated-docs</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -272,25 +244,14 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-      <version>1.3.2</version>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
+      <version>2.1.2</version>
     </dependency>
     <dependency>
-      <groupId>com.sun.activation</groupId>
-      <artifactId>javax.activation</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>2.4.0-b180830.0359</version>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jaxb</groupId>
-      <artifactId>jaxb-runtime</artifactId>
-      <version>2.4.0-b180830.0438</version>
-      <scope>runtime</scope>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>4.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -318,11 +279,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
       <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.restdocs</groupId>
-      <artifactId>spring-restdocs-mockmvc</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>taglibs</groupId>
