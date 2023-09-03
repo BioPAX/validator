@@ -5,7 +5,8 @@
 echo "JAVA_HOME=$JAVA_HOME"
 echo "Running The BioPAX Validator Web Server..."
 
-VALIDATOR_OPTS="-javaagent:lib/spring-instrument-${spring-framework.version}.jar -Xmx4g -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/./urandom --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED"
+JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED"
+VALIDATOR_OPTS="-javaagent:lib/spring-instrument-${spring-framework.version}.jar -Xmx4g -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/./urandom"
 
 # if you have a Google Analytics account and want to track this app visits,
 # add your code using the JVM option: -Dbiopax.validator.ga.code="UA-XXXX-Y"
