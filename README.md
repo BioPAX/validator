@@ -135,7 +135,7 @@ mvn spring-boot:run
 and also access it at localhost:8080 (live reload is enabled - can edit js/css/html/jsp and immediately see the effect 
 without restarting the app)
 
-This is convenient for development but the problem is that LTW does not properly/fully wok for some reason, -
+This is convenient for development but the problem is that LTW does not properly/fully work for some reason, -
 the validator will not catch syntax errors or unknown property errors, unlike when it's run via `sh server.sh` or 
 when docker container (i.e. when the app was run using e.g. `java -javaagent:agent.jar ... -jar app.war` command)
 
@@ -155,4 +155,3 @@ Run with docker (can also do with compose or terraform)
 ```
 docker run --name validator -it pathwaycommons/biopax-validator -p 8080:8080
 ```
-
