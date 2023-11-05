@@ -153,5 +153,5 @@ mvn dockerfile:build
 ### run
 Run with docker (can also do with compose or terraform)
 ```
-docker run --name validator -it pathwaycommons/biopax-validator -p 8080:8080
+docker run --rm --name validator -it -p 8080:8080 pathwaycommons/biopax-validator
 ```
