@@ -1,7 +1,9 @@
 import org.biopax.validator.BiopaxIdentifier;
+import org.biopax.validator.api.beans.ErrorCaseType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import java.io.*;
+import java.util.stream.Collectors;
 
 import org.biopax.validator.api.Validator;
 import org.biopax.validator.api.beans.Validation;
@@ -71,7 +73,8 @@ public class LoadTimeWeavingIT {
 		);
 		biopaxValidator.validate(validation);
 		assertEquals(5,validation.getError().size());
-		validation.getError().stream().forEach(System.out::println);
+		validation.getError().stream().forEach(e -> System.out.println(e + ": " + e.getErrorCase().size() + " case(s); "
+				+ e.getErrorCase().stream().map(ErrorCaseType::toString).collect(Collectors.joining())));
 	}
 
 	@Test

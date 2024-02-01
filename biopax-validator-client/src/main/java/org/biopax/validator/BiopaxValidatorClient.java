@@ -237,16 +237,11 @@ public class BiopaxValidatorClient {
 		}
 
         // collect files
-        Collection<File> files = new HashSet<File>();
+        Collection<File> files = new HashSet<>();
         
         if (fileOrDir.isDirectory()) {
             // validate all the OWL files in the folder
-            FilenameFilter filter = new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    return (name.endsWith(".owl"));
-                }
-            };
-            
+            FilenameFilter filter = (dir, name) -> (name.endsWith(".owl"));
             for (String s : fileOrDir.list(filter)) {
                 files.add(new File(
                 	fileOrDir.getCanonicalPath() + File.separator + s));
@@ -271,14 +266,10 @@ public class BiopaxValidatorClient {
         { 	
         	//do POST for location (Location header present if there's a 301/302/307 redirect on the way)
         	loc = Request.Post(loc).execute()
-        			.handleResponse(new ResponseHandler<String>() {
-						public String handleResponse(HttpResponse httpResponse)
-								throws ClientProtocolException, IOException {
-							Header header = httpResponse.getLastHeader("Location");
-//							System.out.println("header=" + header);
-							return (header != null) ? header.getValue().trim() : null;
-						}
-			});
+        			.handleResponse(httpResponse -> {
+								Header header = httpResponse.getLastHeader("Location");
+								return (header != null) ? header.getValue().trim() : null;
+							});
         	 
         	if(loc != null) {
         		location = loc;   	

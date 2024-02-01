@@ -34,7 +34,7 @@ Or build it from the sources:
 ```
 mvn clean install
 cd dist
-mvn assembly:assembly
+mvn assembly:single
 ```
 
 then use the resulting `biopax-validator-${version}-all.zip` (move somewhere, expand)
