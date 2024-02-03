@@ -127,10 +127,9 @@ public class ValidatorController {
 
     } else if (request instanceof MultipartHttpServletRequest) {
       MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-      Map files = multiRequest.getFileMap();
+      Map<String,MultipartFile> files = multiRequest.getFileMap();
       Assert.state(!files.isEmpty(), "No files to validate");
-      for (Object o : files.values()) {
-        MultipartFile file = (MultipartFile) o;
+      for (MultipartFile file : files.values()) {
         String filename = file.getOriginalFilename();
         // a workaround (for some reason there is always a no-name-file;
         // this might be a javascript isue)

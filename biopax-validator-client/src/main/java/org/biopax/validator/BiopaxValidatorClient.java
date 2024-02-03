@@ -12,9 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
@@ -105,13 +102,14 @@ public class BiopaxValidatorClient {
      * @throws IOException
      */
     public void validate(boolean autofix, String profile, RetFormat retFormat, Behavior filterBy,
-    		Integer maxErrs, String biopaxUrl, File[] biopaxFiles, OutputStream out) throws IOException 
+												 Integer maxErrs, String biopaxUrl, List<File> biopaxFiles, OutputStream out) throws IOException
     {
     	MultipartEntityBuilder meb = MultipartEntityBuilder.create();
     	meb.setCharset(Charset.forName("UTF-8"));
     	
-    	if(autofix)
-    		meb.addTextBody("autofix", "true");
+    	if(autofix) {
+				meb.addTextBody("autofix", "true");
+			}
 
 		//TODO: add extra options (normalizer.fixDisplayName, normalizer.xmlBase)?
 
@@ -123,10 +121,12 @@ public class BiopaxValidatorClient {
     		meb.addTextBody("filter", filterBy.toString());
     	if(maxErrs != null && maxErrs > 0)
     		meb.addTextBody("maxErrors", maxErrs.toString());
-    	if(biopaxFiles != null && biopaxFiles.length > 0)
-    		for (File f : biopaxFiles) //important: use MULTIPART_FORM_DATA content-type
-    			meb.addBinaryBody("file", f, ContentType.MULTIPART_FORM_DATA, f.getName());
-    	else if(biopaxUrl != null) {
+    	if(biopaxFiles != null) {
+				int i = 0;
+				for (File f : biopaxFiles) { //important: use MULTIPART_FORM_DATA content-type
+					meb.addBinaryBody("file_"+(i++), f, ContentType.MULTIPART_FORM_DATA, f.getName());
+				}
+			} else if(biopaxUrl != null) {
     		meb.addTextBody("url", biopaxUrl);
     	} else {
     		log.error("Nothing to do (no BioPAX data specified)!");
@@ -134,7 +134,6 @@ public class BiopaxValidatorClient {
     	}
     	
     	HttpEntity httpEntity = meb.build();
-//    	if(log.isDebugEnabled()) httpEntity.writeTo(System.err);
     	String content = Executor.newInstance()
     			.execute(Request.Post(url).body(httpEntity))
     				.returnContent().asString();  	
@@ -237,8 +236,7 @@ public class BiopaxValidatorClient {
 		}
 
         // collect files
-        Collection<File> files = new HashSet<>();
-        
+        List<File> files = new ArrayList<>();
         if (fileOrDir.isDirectory()) {
             // validate all the OWL files in the folder
             FilenameFilter filter = (dir, name) -> (name.endsWith(".owl"));
@@ -254,7 +252,7 @@ public class BiopaxValidatorClient {
         if (!files.isEmpty()) {
         	BiopaxValidatorClient val = new BiopaxValidatorClient();
         	val.validate(fix, profile, outf, level, maxErrs, 
-        		null, files.toArray(new File[]{}), new FileOutputStream(output));
+        		null, files, new FileOutputStream(output));
         }
     }
     

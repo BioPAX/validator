@@ -2,6 +2,7 @@
  *
  */
 import java.io.*;
+import java.util.List;
 
 import jakarta.xml.bind.JAXBException;
 
@@ -12,45 +13,49 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-// remove @Ignore when biopax.org/biopax-validator/  is available
+/*
+Uncomment when biopax.org/biopax-validator/ is available,
+or run the web app locally (see readme) and this test with -Dbiopax.validator.url=http://localhost:8080/check JVM opt.
+or use client.setUrl in the test case below.
+*/
 @Disabled
 public class BiopaxValidatorClientTest {
 
 	@Test
 	public void testClientHtml() throws IOException {
 		BiopaxValidatorClient client = new BiopaxValidatorClient();
-		
-		File[] files = new File[] {
-				new File(getClass().getResource(
-						File.separator + "testBiopaxElementIdRule.owl").getFile())
-		};
-		
+		List<File> files = List.of(
+				new File(getClass().getResource(File.separator + "testBiopaxElementIdRule.owl").getFile()),
+				new File(getClass().getResource(File.separator + "testSyntaxErrors.owl").getFile())
+		);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		client.validate(false, null, RetFormat.HTML, null, null, null, files, baos);
-		
-		System.out.println(baos.toString());
+		String res = baos.toString();
+
+		Assertions.assertAll(
+				() -> Assertions.assertTrue(baos.size()>0),
+				() -> Assertions.assertTrue(res.contains("testBiopaxElementIdRule.owl")),
+				() -> Assertions.assertTrue(res.contains("testSyntaxErrors.owl"))
+		);
+//		System.out.println(baos);
     }
 	
 	@Test
 	public void testClientXml() throws IOException, JAXBException {
 		BiopaxValidatorClient client = new BiopaxValidatorClient();
-		
-		File[] files = new File[] {
-				new File(getClass().getResource(
-					File.separator + "testBiopaxElementIdRule.owl").getFile())
-		};
-		
+		List<File> files = List.of(
+				new File(getClass().getResource(File.separator + "testBiopaxElementIdRule.owl").getFile()),
+				new File(getClass().getResource(File.separator + "testSyntaxErrors.owl").getFile())
+		);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		client.validate(true, null, RetFormat.XML, null, null, null, files, baos);
-		
-		//System.out.println(baos.toString());
-		
-		Assertions.assertTrue(baos.size()>0);
-		
 		ValidatorResponse resp = client.unmarshal(baos.toString());
-		
-		Assertions.assertNotNull(resp);
-		Assertions.assertFalse(resp.getValidation().isEmpty());
+
+		Assertions.assertAll(
+			() -> Assertions.assertTrue(baos.size()>0),
+			() -> Assertions.assertNotNull(resp),
+			() -> Assertions.assertEquals(2, resp.getValidation().size())
+		);
 		
 		System.out.println(resp.getValidation().get(0).getSummary()
 				+ "; cases: " + resp.getValidation().get(0).getTotalProblemsFound());
