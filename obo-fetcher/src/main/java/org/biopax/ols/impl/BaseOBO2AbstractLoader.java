@@ -705,7 +705,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
             retval.setAccession(safeTrim(xref.getDatabaseID()));
 //            if (retval.getAccession() != null && retval.getAccession().length() > 512) {
             if (retval.getAccession() != null && retval.getAccession().length() > 256) {
-                System.out.println("retval.getAccession().length() = " + retval.getAccession().length());
+//                System.out.println("retval.getAccession().length() = " + retval.getAccession().length());
                 logger.warn("dbxref accession longer than allowed database column length: " + retval.getAccession());
                 retval.setAccession(retval.getAccession().substring(0, 256));
 //                retval.setAccession(retval.getAccession().substring(0, 512));

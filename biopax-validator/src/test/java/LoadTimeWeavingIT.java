@@ -73,8 +73,8 @@ public class LoadTimeWeavingIT {
 		);
 		biopaxValidator.validate(validation);
 		assertEquals(5,validation.getError().size());
-		validation.getError().stream().forEach(e -> System.out.println(e + ": " + e.getErrorCase().size() + " case(s); "
-				+ e.getErrorCase().stream().map(ErrorCaseType::toString).collect(Collectors.joining())));
+//		validation.getError().stream().forEach(e -> System.out.println(e + ": " + e.getErrorCase().size() + " case(s); "
+//				+ e.getErrorCase().stream().map(ErrorCaseType::toString).collect(Collectors.joining())));
 	}
 
 	@Test

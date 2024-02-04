@@ -201,16 +201,12 @@ public class Main {
 
 
   public static Collection<Resource> getResourcesToValidate(String input) throws IOException {
-    Set<Resource> setRes = new HashSet<Resource>();
+    Set<Resource> setRes = new HashSet<>();
 
     File fileOrDir = new File(input);
     if (fileOrDir.isDirectory()) {
       // validate all the OWL files in the folder
-      FilenameFilter filter = new FilenameFilter() {
-        public boolean accept(File dir, String name) {
-          return (name.endsWith(".owl"));
-        }
-      };
+      FilenameFilter filter = (dir, name) -> (name.endsWith(".owl"));
       for (String s : fileOrDir.list(filter)) {
         String uri = "file:" + fileOrDir.getCanonicalPath() + File.separator + s;
         setRes.add(ctx.getResource(uri));

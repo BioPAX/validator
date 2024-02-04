@@ -225,12 +225,6 @@ public class LocalOntologyTest {
 		Assertions.assertEquals(0, parents.size());
 	}
 
-	private void printTerms(Collection<OntologyTermI> terms) {
-		for (OntologyTermI term : terms) {
-			System.out.println(term);
-		}
-	}
-
 	@Test
 	public final void testSearchTermByName() {
 		Set<OntologyTermI> term = manager.searchTermByName("O-phospho-L-serine");

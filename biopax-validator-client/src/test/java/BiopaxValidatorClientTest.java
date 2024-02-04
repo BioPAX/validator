@@ -39,7 +39,7 @@ public class BiopaxValidatorClientTest {
 		);
 //		System.out.println(baos);
     }
-	
+
 	@Test
 	public void testClientXml() throws IOException, JAXBException {
 		BiopaxValidatorClient client = new BiopaxValidatorClient();
@@ -52,13 +52,13 @@ public class BiopaxValidatorClientTest {
 		ValidatorResponse resp = client.unmarshal(baos.toString());
 
 		Assertions.assertAll(
-			() -> Assertions.assertTrue(baos.size()>0),
-			() -> Assertions.assertNotNull(resp),
-			() -> Assertions.assertEquals(2, resp.getValidation().size())
+				() -> Assertions.assertTrue(baos.size()>0),
+				() -> Assertions.assertNotNull(resp),
+				() -> Assertions.assertEquals(2, resp.getValidation().size())
 		);
-		
-		System.out.println(resp.getValidation().get(0).getSummary()
-				+ "; cases: " + resp.getValidation().get(0).getTotalProblemsFound());
-    }
+
+//		System.out.println(resp.getValidation().get(0).getSummary()
+//				+ "; cases: " + resp.getValidation().get(0).getTotalProblemsFound());
+	}
 	
 }
