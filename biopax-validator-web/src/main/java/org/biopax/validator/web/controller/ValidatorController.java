@@ -8,8 +8,8 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.biopax.paxtools.normalizer.Normalizer;
 import org.biopax.validator.api.beans.Behavior;
 import org.biopax.validator.api.beans.Validation;
@@ -34,7 +34,7 @@ public class ValidatorController {
 
   private ValidatorAdapter service;
 
-  private final static Log log = LogFactory.getLog(ValidatorController.class);
+  private final static Logger log = LoggerFactory.getLogger(ValidatorController.class);
   private final static String NEWLINE = System.getProperty ( "line.separator" );
 
   @Autowired

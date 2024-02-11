@@ -6,8 +6,8 @@ import java.io.StringWriter;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Basic class for the framework classes 
@@ -17,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
  * @author rodche
  */
 public abstract class AbstractAspect {
-	private static final Log log = LogFactory.getLog(AbstractAspect.class);
+	private static final Logger log = LoggerFactory.getLogger(AbstractAspect.class);
 
 	/**
 	 * BioPAX Validator instance

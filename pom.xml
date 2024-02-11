@@ -67,6 +67,7 @@
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.13</version>
             <extensions>true</extensions>
             <configuration>
               <serverId>ossrh</serverId>
@@ -100,6 +101,7 @@
           <plugin>
             <artifactId>maven-gpg-plugin</artifactId>
             <groupId>org.apache.maven.plugins</groupId>
+            <version>3.1.0</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -118,7 +120,7 @@
   <scm>
     <connection>scm:git:git://github.com/BioPAX/validator.git</connection>
     <developerConnection>scm:git:git@github.com:BioPAX/validator.git</developerConnection>
-    <url>https://github.com/BioPAX/validator</url>
+    <url>https://github.com/BioPAX/validator/tree/master</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -403,7 +405,7 @@
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.4.12</version>
+        <version>1.4.14</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
@@ -534,13 +536,13 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.9.3</version>
+        <version>5.10.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
-        <version>5.9.3</version>
+        <version>5.10.2</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -564,28 +566,27 @@
       <artifactId>junit-jupiter-params</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
       <!-- one of obo-fetcher's deps uses log4j directly-->
       <groupId>org.slf4j</groupId>
       <artifactId>log4j-over-slf4j</artifactId>
-      <scope>runtime</scope>
+      <scope>test</scope>
       <optional>true</optional>
     </dependency>
     <dependency>
+      <!--  obo and httpcomponents use JCL -->
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
-      <scope>runtime</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jul-to-slf4j</artifactId>
-      <scope>runtime</scope>
+      <scope>test</scope>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <scope>runtime</scope>
+      <scope>test</scope>
       <optional>true</optional>
     </dependency>
   </dependencies>

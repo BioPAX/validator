@@ -5,8 +5,8 @@ import java.util.*;
 import org.apache.commons.collections15.collection.CompositeCollection;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.biopax.paxtools.model.BioPAXFactory;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.level3.ControlledVocabulary;
@@ -36,7 +36,7 @@ import javax.annotation.PostConstruct;
  */
 public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
 {
-	private final static Log log = LogFactory.getLog(OntologyUtils.class);
+	private final static Logger log = LoggerFactory.getLogger(OntologyUtils.class);
 
 	//see the post-construct init() method, where the following fields get initialized
 	private OntologyManager ontologyManager;

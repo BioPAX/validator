@@ -1,7 +1,7 @@
 package org.biopax.psidev.ontology_manager.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
 
@@ -20,7 +20,7 @@ public class OntologyAccessImpl implements OntologyAccess, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final Log log = LogFactory.getLog( OntologyAccessImpl.class );
+    public static final Logger log = LoggerFactory.getLogger( OntologyAccessImpl.class );
 
     private String name;
 

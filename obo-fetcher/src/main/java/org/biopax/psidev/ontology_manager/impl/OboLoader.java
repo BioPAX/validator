@@ -1,7 +1,7 @@
 package org.biopax.psidev.ontology_manager.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.biopax.ols.TermRelationship;
 import org.biopax.ols.TermSynonym;
 import org.biopax.ols.impl.BaseOBO2AbstractLoader;
@@ -25,7 +25,7 @@ import java.util.*;
  * @since <pre>30-Sep-2005</pre>
  */
 public class OboLoader extends BaseOBO2AbstractLoader {
-    public static final Log log = LogFactory.getLog( OboLoader.class );
+    public static final Logger log = LoggerFactory.getLogger( OboLoader.class );
 
     public OboLoader( ) {
     }
@@ -50,7 +50,7 @@ public class OboLoader extends BaseOBO2AbstractLoader {
             setParser(new OBO2FormatParser(file.getAbsolutePath()));
             process();
         } catch ( Exception e ) {
-            log.fatal("Parse failed", e);
+            log.error("Parse failed", e);
         }
         return buildOntology(ontologyID);
     }

@@ -3,8 +3,8 @@ package org.biopax.validator;
 
 import java.lang.reflect.Method;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -31,7 +31,7 @@ import org.biopax.validator.api.AbstractAspect;
 @Aspect
 public class ExceptionsAspect extends AbstractAspect {
 
-	private static final Log log = LogFactory.getLog(ExceptionsAspect.class);
+	private static final Logger log = LoggerFactory.getLogger(ExceptionsAspect.class);
 
   @Autowired
 	@Override

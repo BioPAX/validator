@@ -9,9 +9,6 @@
             <outputPatternAsHeader>true</outputPatternAsHeader>
         </encoder>
     </appender>
-<!--    <logger name="org.springframework" level="info"/>-->
-<!--    <logger name="AspectJ Weaver" level="info"/>-->
-<!--    <logger name="org.biopax.ols" level="error"/>-->
     <logger name="org.biopax.psidev" level="error"/>
     <root level="info">
         <appender-ref ref="console"/>

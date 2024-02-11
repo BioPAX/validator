@@ -1,7 +1,7 @@
 package org.biopax.ols.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.biopax.ols.Annotation;
 import org.biopax.ols.Constants;
 import org.biopax.ols.DbXref;
@@ -27,7 +27,7 @@ import java.util.*;
  * @author Richard Cote
  */
 public abstract class BaseOBO2AbstractLoader implements Loader {
-    protected static Log logger = LogFactory.getLog(BaseOBO2AbstractLoader.class);
+    protected static Logger logger = LoggerFactory.getLogger(BaseOBO2AbstractLoader.class);
     protected HashMap<String, Term> ontologyTerms = new HashMap<>(5000);
     protected String ONTOLOGY_DEFINITION;
     protected String FULL_NAME;

@@ -8,8 +8,6 @@ import jakarta.xml.bind.*;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.fluent.Executor;
@@ -18,6 +16,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.biopax.validator.jaxb.Behavior;
 import org.biopax.validator.jaxb.ValidatorResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple (example) BioPAX Validator client 
@@ -27,7 +27,7 @@ import org.biopax.validator.jaxb.ValidatorResponse;
  *
  */
 public class BiopaxValidatorClient {
-	private static final Log log = LogFactory.getLog(BiopaxValidatorClient.class);
+	private static final Logger log = LoggerFactory.getLogger(BiopaxValidatorClient.class);
 	
 	/**
 	 * Default BioPAX Validator's URL

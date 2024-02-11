@@ -1,8 +1,8 @@
 package org.biopax.validator;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.normalizer.Normalizer;
@@ -31,7 +31,7 @@ import java.util.Set;
  * @author rodche
  */
 public class Main {
-  static final Log log = LogFactory.getLog(Main.class);
+  static final Logger log = LoggerFactory.getLogger(Main.class);
   static ApplicationContext ctx;
   static boolean autofix = false;
   static int maxErrors = 0;

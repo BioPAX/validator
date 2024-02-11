@@ -8,8 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import jakarta.xml.bind.annotation.*;
 
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.biopax.validator.api.Identifier;
 import org.biopax.validator.api.Rule;
 
@@ -18,7 +18,7 @@ import org.biopax.validator.api.Rule;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Validation implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private static final Log log = LogFactory.getLog(Validation.class);
+	private static final Logger log = LoggerFactory.getLogger(Validation.class);
 	
 	@XmlTransient
 	private Object model;

@@ -3,8 +3,8 @@ package org.biopax.validator.utils;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.biopax.validator.api.ValidatorUtils;
 import org.biopax.validator.api.beans.*;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -24,7 +24,7 @@ import java.util.Locale;
  */
 @Configurable
 public class CoreUtils implements ValidatorUtils {
-  private static final Log logger = LogFactory.getLog(CoreUtils.class);
+  private static final Logger logger = LoggerFactory.getLogger(CoreUtils.class);
   public static final int DEFAULT_MAX_ERRORS = 10000;
 
   private Locale locale;

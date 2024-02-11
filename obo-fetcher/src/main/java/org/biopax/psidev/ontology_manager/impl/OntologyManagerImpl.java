@@ -1,7 +1,7 @@
 package org.biopax.psidev.ontology_manager.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.biopax.psidev.ontology_manager.OntologyAccess;
 import org.biopax.psidev.ontology_manager.OntologyManager;
 import org.biopax.psidev.ontology_manager.OntologyTermI;
@@ -28,7 +28,7 @@ import java.util.*;
  */
 public class OntologyManagerImpl implements OntologyManager {
 
-  private static final Log log = LogFactory.getLog(OntologyManagerImpl.class);
+  private static final Logger log = LoggerFactory.getLogger(OntologyManagerImpl.class);
   private static final String TMPDIR = System.getProperty("java.io.tmpdir");
 
   /**

@@ -1,7 +1,7 @@
 package org.biopax.ols.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.biopax.ols.Parser;
 import org.obo.dataadapter.OBOAdapter;
 import org.obo.dataadapter.OBOFileAdapter;
@@ -20,7 +20,7 @@ import java.util.Set;
  * @version $Id: AbstractParser.java,v 1.9 2008/04/16 13:49:44 rglcote Exp $
  */
 public class OBO2FormatParser implements Parser {
-    private static Log logger = LogFactory.getLog(OBO2FormatParser.class);
+    private static Logger logger = LoggerFactory.getLogger(OBO2FormatParser.class);
 
     private OBOSession session;
 

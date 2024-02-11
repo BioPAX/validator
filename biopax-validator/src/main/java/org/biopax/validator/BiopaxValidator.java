@@ -7,8 +7,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.biopax.paxtools.controller.ModelUtils;
 import org.biopax.paxtools.converter.LevelUpgrader;
 import org.biopax.paxtools.io.SimpleIOHandler;
@@ -40,7 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author rodche
  */
 public class BiopaxValidator implements Validator {
-	private static final Log log = LogFactory.getLog(BiopaxValidator.class);
+	private static final Logger log = LoggerFactory.getLogger(BiopaxValidator.class);
 
 	@Autowired
 	private Set<Rule<?>> rules;
@@ -191,7 +191,7 @@ public class BiopaxValidator implements Validator {
 				} catch (Throwable t) {
 					//if we're here, there is probably a bug in the rule or validator!
 					String id = validation.identify(obj);
-					log.fatal(rule + ".check(" + id
+					log.error(rule + ".check(" + id
 						+ ") threw the exception: " + t.toString(), t);
 					// anyway, report it almost normally (for a user to see this in the results too)
 					validation.addError(utils.createError(id, "exception",
@@ -204,27 +204,25 @@ public class BiopaxValidator implements Validator {
 	private void execute(ExecutorService exec, final Set<Rule<?>> rules,
 											 final Validation validation, final Object obj)
 	{
-		exec.execute(new Runnable() {
-			@SuppressWarnings("unchecked") //obj can be either Model or a BPE
-			public void run() {
-				for(Rule rule : rules) {
-					Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(),
-            validation.getProfile());
-					if (behavior == Behavior.IGNORE)
-						continue; // skip disabled rule
+		//obj can be either Model or a BPE
+		exec.execute(() -> {
+			for(Rule rule : rules) {
+				Behavior behavior = utils.getRuleBehavior(rule.getClass().getName(),
+validation.getProfile());
+				if (behavior == Behavior.IGNORE)
+					continue; // skip disabled rule
 
-					try {
-						if (rule.canCheck(obj))
-							rule.check(validation, obj);
-					} catch (Throwable t) {
-						//if we're here, there is probably a bug in the rule or validator!
-						String id = validation.identify(obj);
-						log.fatal(rule + ".check(" + id
-							+ ") threw the exception: " + t.toString(), t);
-						// anyway, report it almost normally (for a user to see this in the results too)
-						validation.addError(utils.createError(id, "exception",
-							rule.getClass().getName(), null, false, t));
-					}
+				try {
+					if (rule.canCheck(obj))
+						rule.check(validation, obj);
+				} catch (Throwable t) {
+					//if we're here, there is probably a bug in the rule or validator!
+					String id = validation.identify(obj);
+					log.error(rule + ".check(" + id
+						+ ") threw the exception: " + t.toString(), t);
+					// anyway, report it almost normally (for a user to see this in the results too)
+					validation.addError(utils.createError(id, "exception",
+						rule.getClass().getName(), null, false, t));
 				}
 			}
 		});

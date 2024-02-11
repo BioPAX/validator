@@ -5,8 +5,8 @@ import java.util.Collection;
 import org.biopax.validator.api.beans.ErrorType;
 import org.biopax.validator.api.beans.Validation;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A validation rule.
@@ -18,12 +18,12 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class BaseRule<T> implements Rule<T> {
 
-  protected Log logger;
+  protected Logger logger;
 
   protected ValidatorUtils utils;
 
   public BaseRule() {
-    logger = LogFactory.getLog(this.getClass());
+    logger = LoggerFactory.getLogger(this.getClass());
   }
 
   /**
