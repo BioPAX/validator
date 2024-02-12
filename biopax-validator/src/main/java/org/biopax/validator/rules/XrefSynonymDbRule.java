@@ -30,7 +30,7 @@ public class XrefSynonymDbRule extends AbstractRule<Xref> {
       return; // another (cardinality) rule reports
     }
 
-    String primary = xrefUtils.getPrimaryDbName(db);
+    String primary = xrefUtils.getPrefix(db);
     // if primary is null, do nothing, - another rule (XrefRule) reports this
     if (primary != null && !primary.equalsIgnoreCase(db)) {
       // report only if it is definitely not official db synonym

@@ -240,8 +240,8 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
       String name = dbName(ns.getName()); //trim,uppercase
       String prefix = dbName(ns.getPrefix());
       final List<String> synonyms = new ArrayList<>();
+      synonyms.add(prefix); //add as first - will be primary db name for this id collection
       synonyms.add(name);
-      synonyms.add(prefix);
       //add synonyms from the registry
       ns.getSynonyms().forEach((s) -> synonyms.add(dbName(s)));
       //add custom synonyms of given prefix from the Resolver's map
@@ -287,12 +287,12 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
               merged.add(name);
           }
         }
-        //if possible, move the preferred name on top
+        //if possible, move the prefix and preferred name on top (the order is important)
         String topName = merged.get(0);
         Namespace ns = Resolver.getNamespace(topName);
         if(ns != null) {
-          String preferName = dbName(ns.getName());
-          merged.add(0, preferName);
+          merged.add(0, dbName(ns.getPrefix()));
+          merged.add(1, dbName(ns.getName()));
         }
         this.allSynonyms.addComposited(merged);
       } else {
@@ -322,7 +322,23 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   @Override
   public String getPrimaryDbName(String name) {
     List<String> names = getSynonymsForDbName(name);
-    return (names.isEmpty()) ? null : names.iterator().next();
+    if (names.isEmpty()) {
+      return null;
+    } else if (names.size() > 1) {
+      return names.get(1);
+    } else {
+      return names.get(0);
+    }
+  }
+
+  @Override
+  public String getPrefix(String name) {
+    List<String> names = getSynonymsForDbName(name);
+    if (names.isEmpty()) {
+      return null;
+    } else {
+      return names.get(0).toLowerCase();
+    }
   }
 
   @Override

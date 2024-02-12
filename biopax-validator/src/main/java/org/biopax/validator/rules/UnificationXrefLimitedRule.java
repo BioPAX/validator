@@ -96,7 +96,7 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
       initInternalMaps();
 
     if (x.getDb() == null
-      || helper.getPrimaryDbName(x.getDb()) == null) {
+      || helper.getPrefix(x.getDb()) == null) {
       // ignore for unknown databases (another rule checks)
       return;
     }

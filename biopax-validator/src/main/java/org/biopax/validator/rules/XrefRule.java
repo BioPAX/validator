@@ -30,8 +30,8 @@ public class XrefRule extends AbstractRule<Xref>{
 		String db = x.getDb();
 		if (db != null) { 
 			// check db
-			String preferedDbName = xrefUtils.getPrimaryDbName(db);
-			if (preferedDbName == null) {
+			String prefix = xrefUtils.getPrefix(db);
+			if (prefix == null) {
 				error(validation, x, "unknown.db", false, db);
 				return;
 			}
@@ -39,33 +39,31 @@ public class XrefRule extends AbstractRule<Xref>{
 			// check id
 			String id = x.getId();
 			if (id != null) {
-				if (!xrefUtils.canCheckIdFormatIn(preferedDbName)) {
-					logger.info("Can't check IDs (no regexp) for " 
-							+ db + " (" + preferedDbName + ")");
-				} else if (!xrefUtils.checkIdFormat(preferedDbName, id)) {
-					
-					String regxp = xrefUtils.getRegexpString(preferedDbName);
+				if (!xrefUtils.canCheckIdFormatIn(prefix)) {
+					logger.info("Can't check IDs (no regexp) for " + db + " (" + prefix + ")");
+				} else if (!xrefUtils.checkIdFormat(prefix, id)) {
+					String regxp = xrefUtils.getRegexpString(prefix);
 					// report error with fixed=false 
-					error(validation, x, "invalid.id.format", false, db, preferedDbName, id, regxp);
+					error(validation, x, "invalid.id.format", false, db, prefix, id, regxp);
 					
 					// try to fix (in some cases) using a hack
 					while(validation.isFix()) { //- no worries - will use 'break' to escape the infinite loop
-						// guess it's a Uniprot Isoform (next try splitting it into id and idVersion parts)
-						if (StringUtils.startsWithIgnoreCase(preferedDbName, "UNIPROT")) {
+						// guess it's Uniprot Isoform (next try splitting it into id and idVersion parts)
+						if (StringUtils.startsWithIgnoreCase(prefix, "uniprot")) {
 							if (id.contains("-")
-								&& xrefUtils.checkIdFormat("uniprot isoform",id.toUpperCase())) {
-								x.setDb("uniprot isoform");
+								&& xrefUtils.checkIdFormat("uniprot.isoform",id.toUpperCase())) {
+								x.setDb("uniprot.isoform");
 								x.setId(id.toUpperCase());
 								// update the error case, set fixed=true
 								error(validation, x, "invalid.id.format", true);
 								break;
 							}
 						} // guess it's in fact a PSI-MOD despite PSI-MI is used (todo: likely useless/obsolete code)
-						else if (preferedDbName.equalsIgnoreCase("MOLECULAR INTERACTIONS ONTOLOGY")) {
+						else if (prefix.equalsIgnoreCase("mi")) {
 							if (id.toUpperCase().startsWith("MOD")
 								&& xrefUtils.checkIdFormat("MOD", id.toUpperCase()))
 							{
-								x.setDb("MOD");
+								x.setDb("mod");
 								x.setId(id.toUpperCase());
 								// update the error case, set fixed=true
 								error(validation, x, "invalid.id.format", true);
@@ -81,7 +79,7 @@ public class XrefRule extends AbstractRule<Xref>{
 							i = id.lastIndexOf('-');
 						if(i > 0 && i < id.length()) {
 							String newId = id.substring(0, i);
-							if (xrefUtils.checkIdFormat(preferedDbName, newId)) {
+							if (xrefUtils.checkIdFormat(prefix, newId)) {
 								x.setId(newId);
 								x.setIdVersion(id.substring(i + 1));
 								// update the error case, set fixed=true there
@@ -91,30 +89,25 @@ public class XrefRule extends AbstractRule<Xref>{
 						}
 						
 						/* 
-						 * Fix if MI:, GO:, MOD:, etc., prefixes were simply missing/forgotten -
+						 * Add 'MI:','GO:','MOD:' etc. "banana" to the ID (though it's correct to use w/o that banana/prefix too)
 						 */
 						i = regxp.lastIndexOf(':');
 						if(i>0) {
 							// guess, regexp looks like "^GO:%d{7}", and we want to get "GO"
-							String prefix = regxp.substring(1, i).toUpperCase();
-							if (logger.isDebugEnabled())
-								logger.debug("Trying to fix id with missing prefix: " + prefix);
-							if(preferedDbName.equalsIgnoreCase(xrefUtils.getPrimaryDbName(prefix))
-									&& !id.toUpperCase().startsWith(prefix)) 
-							{
-								String newId = prefix + ':' + id;
-								if (xrefUtils.checkIdFormat(preferedDbName, newId)) {
+							String p = regxp.substring(1, i).toUpperCase();
+							if(prefix.equalsIgnoreCase(xrefUtils.getPrefix(p)) && !id.toUpperCase().startsWith(p)) {
+								String newId = p + ':' + id;
+								if (xrefUtils.checkIdFormat(prefix, newId)) {
 									x.setId(newId);
 									error(validation, x, "invalid.id.format", true);
-									if (logger.isDebugEnabled())
-										logger.debug(x.getModelInterface()
-											.getSimpleName() + " " + x
-											+ " 'id' auto-fixed! (was: " + id + ")");
+									if (logger.isDebugEnabled()) {
+										logger.debug(x.getModelInterface().getSimpleName() + " " + x
+												+ " 'id' auto-fixed! (was: " + id + ")");
+									}
 									break;
 								}
 							}
 						}
-						
 						
 						/*
 						 * Turning ID to upper case can sometimes help (e.g., KEGG, - c00022 to C00022 helps!) - 
@@ -122,15 +115,14 @@ public class XrefRule extends AbstractRule<Xref>{
 						 * use upper-case symbols (e.g., Uniport's begin with P, Q, O; also - GO:, MOD:, and NP_ - same idea)
 						 */
 						String newId = id.toUpperCase();
-						if (xrefUtils.checkIdFormat(preferedDbName, newId)) {
+						if (xrefUtils.checkIdFormat(prefix, newId)) {
 							x.setId(newId);
 							error(validation, x, "invalid.id.format", true);
-							if (logger.isDebugEnabled())
-								logger.debug(x.getModelInterface()
-									.getSimpleName() + " " + x
-									+ " 'id' auto-fixed! (was: " + id + ")");
+							if (logger.isDebugEnabled()) {
+								logger.debug(x.getModelInterface().getSimpleName() + " " + x + " 'id' auto-fixed! (was: " + id + ")");
+							}
 							break;
-						}			
+						}
 
 						break; //breaks this loop anyway
 					} //end while

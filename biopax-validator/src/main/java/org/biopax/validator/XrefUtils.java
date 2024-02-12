@@ -25,9 +25,18 @@ public interface XrefUtils {
    * It returns NULL for "unknown" database name.
    *
    * @param name case-insensitive name (of a bio ID type/resource) name
-   * @return preferred name
+   * @return preferred name (upper case)
    */
   String getPrimaryDbName(String name);
+
+  /**
+   * Gets the "prefix" (curated short name) for the DB (collection of IDs).
+   * It returns NULL for "unknown" database name.
+   *
+   * @param name case-insensitive name (of a bio ID type/resource) name
+   * @return prefix (lower case)
+   */
+  String getPrefix(String name);
 
   /**
    * Checks whether the ID format is valid for the database.

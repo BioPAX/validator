@@ -119,14 +119,25 @@ public class ValidatorIT {
 
   @Test
   public void primarySynonym() {
-    //not in registry: PIR
     assertAll(
-        () -> assertEquals("UNIPROT PROTEIN", xrefUtils.getPrimaryDbName("pir")),
+        () -> assertEquals("UNIPROT PROTEIN", xrefUtils.getPrimaryDbName("pir")), //not in registry: PIR (using extra synonyms)
         () -> assertEquals("GENE ONTOLOGY", xrefUtils.getPrimaryDbName("go")),
-        () -> assertEquals("KEGG COMPOUND", xrefUtils.getSynonymsForDbName("kegg compound").get(0)),
+        () -> assertEquals("KEGG.COMPOUND", xrefUtils.getSynonymsForDbName("kegg compound").get(0)),
+        () -> assertEquals("KEGG COMPOUND", xrefUtils.getSynonymsForDbName("kegg compound").get(1)),
         () -> assertEquals("KEGG COMPOUND", xrefUtils.getPrimaryDbName("ligand")), //ligand (deprecated) is inside kegg compound!
         () -> assertEquals("KEGG GENOME", xrefUtils.getPrimaryDbName("kegg organism")),
         () -> assertEquals("KYOTO ENCYCLOPEDIA OF GENES AND GENOMES", xrefUtils.getPrimaryDbName("KEGG"))
+    );
+  }
+
+  @Test
+  public void prefix() {
+    assertAll(
+        () -> assertEquals("uniprot", xrefUtils.getPrefix("pir")),
+        () -> assertEquals("go", xrefUtils.getPrefix("go")),
+        () -> assertEquals("kegg.compound", xrefUtils.getPrefix("ligand")),
+        () -> assertEquals("kegg.genome", xrefUtils.getPrefix("kegg organism")),
+        () -> assertEquals("kegg", xrefUtils.getPrefix("KEGG"))
     );
   }
 
