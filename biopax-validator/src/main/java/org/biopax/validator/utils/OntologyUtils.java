@@ -215,7 +215,7 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
       ontologyManager.loadOntologies(ontologyConfig);
       //Normalize ontology names
       for (String id : ontologyManager.getOntologyIDs()) {
-        Namespace ns = Resolver.getNamespace(id);
+        Namespace ns = Resolver.getNamespace(id, true);
         String officialName = id;
         if(ns != null) {
           officialName = ns.getName();
@@ -236,6 +236,7 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
     // first, we prepare lists of db synonyms from
     //  - Bioregistry.io (get each entry's prefix, name, synonyms)
     //  - MI (OBO terms under the "database citation" root)
+    // but not adding the spelling variants from the Resolver.getSpellmap().
     for (Namespace ns : Resolver.getNamespaces().values()) {
       String name = dbName(ns.getName()); //trim,uppercase
       String prefix = dbName(ns.getPrefix());
@@ -289,7 +290,7 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
         }
         //if possible, move the prefix and preferred name on top (the order is important)
         String topName = merged.get(0);
-        Namespace ns = Resolver.getNamespace(topName);
+        Namespace ns = Resolver.getNamespace(topName, true);
         if(ns != null) {
           merged.add(0, dbName(ns.getPrefix()));
           merged.add(1, dbName(ns.getName()));
@@ -321,9 +322,10 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
 
   @Override
   public String getPrimaryDbName(String name) {
-    List<String> names = getSynonymsForDbName(name);
+    List<String> names = getSynonymsForDbName(name); //these synonyms do not usually include all spelling variants
     if (names.isEmpty()) {
-      return null;
+      Namespace ns = Resolver.getNamespace(name, true); //also search in spelling variants
+      return ns != null ? ns.getName() : null;
     } else if (names.size() > 1) {
       return names.get(1);
     } else {
@@ -335,7 +337,8 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   public String getPrefix(String name) {
     List<String> names = getSynonymsForDbName(name);
     if (names.isEmpty()) {
-      return null;
+      Namespace ns = Resolver.getNamespace(name, true); //also search in spelling variants
+      return ns != null ? ns.getPrefix() : null;
     } else {
       return names.get(0).toLowerCase();
     }
@@ -350,13 +353,13 @@ public class OntologyUtils implements CvUtils, CvFactory, XrefUtils
   @Override
   public boolean canCheckIdFormatIn(String name) {
     String db = getPrimaryDbName(name);
-    Namespace ns = Resolver.getNamespace(db);
+    Namespace ns = Resolver.getNamespace(db, true);
     return  ns != null && StringUtils.isNotBlank(ns.getPattern());
   }
 
   @Override
   public String getRegexpString(String db) {
-    Namespace ns = Resolver.getNamespace(getPrimaryDbName(db));
+    Namespace ns = Resolver.getNamespace(getPrimaryDbName(db), true); //TODO: why primary name?..
     return  (ns != null) ? ns.getPattern() : null;
   }
 
