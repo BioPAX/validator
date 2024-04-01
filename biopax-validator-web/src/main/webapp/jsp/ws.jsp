@@ -11,7 +11,7 @@
 
 <jsp:include page="header.jsp"/>
 
-<h2>The BioPAX Validator Web Services</h2>
+<h2>The BioPAX Validator Web Service</h2>
 
 <div class="row">
 <h3>Check</h3>
@@ -57,7 +57,12 @@ to save locally and view off-line</li>
 As an example, there is a basic BioPAX validator client module 
 (it connects to the http://www.biopax.org/validator/check), and the
 <a target="_blank" href="https://github.com/BioPAX/validator/tree/master/biopax-validator-client">
-sources are here</a> (see test classes there as well:).
+sources are here</a> (see test classes there as well).
+</div>
+
+<div class="row">
+<h3>See also</h3>
+<a target="_blank" href="swagger-ui.html">BioPAX Validator API</a> documentation with examples (OpenAPI/Swagger).
 </div>
 
 <jsp:include page="footer.jsp"/>

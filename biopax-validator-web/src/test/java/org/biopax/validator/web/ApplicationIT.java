@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.http.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,6 +44,36 @@ public class ApplicationIT {
     biopaxValidator.getResults().clear(); // clean after itself
     assertEquals(1, validation.countErrors(null, null, "unknown.property",
       null, false, false));
+  }
+
+  @Test
+  public void xrefHttpGet() {
+    String result = template.getForObject(
+        "/xref/{db}/{id}/", String.class, "enzyme nomenclature", "6.1.1.5");
+    assertNotNull(result);
+    assertEquals("http://bioregistry.io/eccode:6.1.1.5", result);
+  }
+
+  @Test
+  public void xrefHttpPost() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    HttpEntity<String> requestEntity = new HttpEntity<>(headers); //empty body
+    ResponseEntity<String> responseEntity = template.exchange("/xref", HttpMethod.POST, requestEntity, String.class);
+
+    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+
+    HttpEntity<String> httpEntity = new HttpEntity<>(
+        //1st is wrong id; 2nd is ok; "ec" or "ec-code" must be identified as synonyms for "eccode"
+        "[{\"db\":\"ec\",\"id\":\"foo\"}, {\"db\":\"ec-code\",\"id\":\"1.1.1.1\"}]", headers);
+    String result = template.postForObject("/xref", httpEntity, String.class);
+
+    assertAll(
+        () -> assertNotNull(result),
+        () -> assertTrue(result.startsWith("{\"info\":\"Checked")),
+        () -> assertTrue(result.contains("eccode") && result.contains("enzyme commission code"))
+    );
   }
 
 }
