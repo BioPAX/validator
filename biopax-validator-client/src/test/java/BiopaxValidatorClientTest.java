@@ -37,8 +37,7 @@ public class BiopaxValidatorClientTest {
 				() -> Assertions.assertTrue(res.contains("testBiopaxElementIdRule.owl")),
 				() -> Assertions.assertTrue(res.contains("testSyntaxErrors.owl"))
 		);
-//		System.out.println(baos);
-    }
+  }
 
 	@Test
 	public void testClientXml() throws IOException, JAXBException {

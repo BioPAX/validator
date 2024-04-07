@@ -43,12 +43,12 @@ public class SuggesterControllerTest {
     // valid synonym and valid id
     String anXrefId = "6.1.1.5";
     given(service.xrefDbIdToUri("ec", anXrefId))
-      .willReturn("http://identifiers.org/ec-code/" + anXrefId);
+      .willReturn("http://bioregistry.io/eccode:" + anXrefId);
     // test typo (fixable) name
     given(service.xrefDbIdToUri("ec_code", anXrefId))
-      .willReturn("http://identifiers.org/ec-code/" + anXrefId);
+      .willReturn("http://bioregistry.io/eccode:" + anXrefId);
     given(service.xrefDbIdToUri("Enzyme Nomenclature", anXrefId))
-      .willReturn("http://identifiers.org/ec-code/" + anXrefId);
+      .willReturn("http://bioregistry.io/eccode:" + anXrefId);
     // bad not-fixable name
     given(service.xrefDbIdToUri("foo", anXrefId))
       .willThrow(new IllegalArgumentException("Datatype not found"));
@@ -59,15 +59,14 @@ public class SuggesterControllerTest {
 
   @Test
   public void shouldReturnUri() throws Exception {
-    mvc.perform(get("/xref/ec/6.1.1.5/").accept(MediaType.APPLICATION_JSON))
+    mvc.perform(get("/xref/ec/6.1.1.5/").accept(MediaType.TEXT_PLAIN))
       .andDo(print())
       .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(content().string(equalTo("http://identifiers.org/ec-code/6.1.1.5")));
+      .andExpect(content().string(equalTo("http://bioregistry.io/eccode:6.1.1.5")));
 
-    mvc.perform(get("/xref/ec_code/6.1.1.5/").accept(MediaType.APPLICATION_JSON))
+    mvc.perform(get("/xref/ec_code/6.1.1.5/").accept(MediaType.TEXT_PLAIN))
       .andExpect(status().isOk())
-      .andExpect(content().string(equalTo("http://identifiers.org/ec-code/6.1.1.5")));
+      .andExpect(content().string(equalTo("http://bioregistry.io/eccode:6.1.1.5")));
   }
 
   @Test
@@ -106,14 +105,14 @@ public class SuggesterControllerTest {
     y.setId("foo"); //invalid
     Xref xx = new Xref();
     xx.setDb("ec"); //ok
-    xx.setNamespace("ec-code");
+    xx.setNamespace("eccode");
     xx.setDbOk(true);
     xx.setId("1.1.1.1"); //ok
     xx.setIdOk(true);
     Xref yy = new Xref();
     yy.setDb("ec"); // ok
     yy.setDbOk(true);
-    yy.setNamespace("ec-code");
+    yy.setNamespace("eccode");
     yy.setId("foo"); //invalid
     Clue xyClue = new Clue("some info");
     xyClue.addValue(xx);

@@ -67,11 +67,10 @@ public class UnificationXrefLimitedRule extends AbstractRule<UnificationXref> {
   }
 
   private void addDbSynonymsTo(Map<Class<? extends BioPAXElement>,Set<String>> map) {
-    for (Map.Entry<Class<? extends BioPAXElement>,Set<String>> entry : map.entrySet()) {
-      Set<String> val = entry.getValue();
-      for (String db : new HashSet<>(val))
-        for (String s : helper.getSynonymsForDbName(db))
-          val.add(s);
+    for (Set<String> val : map.values()) {
+      for (String db : new HashSet<>(val)) {
+        val.addAll(helper.getSynonymsForDbName(db));
+      }
     }
   }
 

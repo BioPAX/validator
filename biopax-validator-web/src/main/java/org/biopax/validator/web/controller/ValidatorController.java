@@ -5,9 +5,8 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.biopax.paxtools.normalizer.Normalizer;
@@ -27,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+import static org.springframework.http.MediaType.*;
 
 @Controller
 public class ValidatorController {
@@ -42,24 +41,24 @@ public class ValidatorController {
     this.service = service;
   }
 
-  @RequestMapping(value = {"schema","schema.html"}, method = RequestMethod.GET, produces = APPLICATION_XML_VALUE)
-  @ResponseBody  public String getSchema() {
+  @GetMapping(value = {"schema","schema.html"}, produces = APPLICATION_XML_VALUE)
+  @ResponseBody public String getSchema() {
     return service.getSchema();
   }
 
   //Views (pages)
 
-  @RequestMapping({"/", "home", "home.html"})
+  @GetMapping({"/", "home", "home.html"})
   public String home() {
     return "home";
   }
 
-  @RequestMapping({"ws","ws.html"})
+  @GetMapping({"ws","ws.html"})
   public String ws() {
     return "ws";
   }
 
-  @RequestMapping(value={"check","check.html"}, method=RequestMethod.GET)
+  @GetMapping(value={"check","check.html"})
   public void check(Model model) {
     model.addAttribute("normalizer", new Normalizer());
     //user can edit some of normalizer's options in the 'check' view
@@ -89,18 +88,18 @@ public class ValidatorController {
    * @return results view name (or null if XML or normalized RDF/XML were requested)
    * @throws IOException when data cannot be read from the files or URL, etc.
    */
-  @RequestMapping(value={"check","check.html"}, method=RequestMethod.POST)
+  @PostMapping(value={"check","check.html"},
+      produces = {APPLICATION_XML_VALUE, TEXT_HTML_VALUE, "application/vnd.biopax.rdf+xml"})
   public String check(HttpServletRequest request, HttpServletResponse response,
                       Model mvcModel, Writer writer,
-    @RequestParam(required=false) String url,
-    @RequestParam(required=false) String retDesired,
-    @RequestParam(required=false) Boolean autofix,
-    @RequestParam(required=false) Behavior filter,
-    @RequestParam(required=false) Integer maxErrors,
-    @RequestParam(required=false) String profile,
-    //normalizer!=null when called from the JSP;
-    //but it's usually null when from the validator-client or a web script
-    @ModelAttribute("normalizer") Normalizer normalizer) throws IOException
+                      @RequestParam(required=false) String url,
+                      @RequestParam(required=false) String retDesired,
+                      @RequestParam(required=false) Boolean autofix,
+                      @RequestParam(required=false) Behavior filter,
+                      @RequestParam(required=false) Integer maxErrors,
+                      @RequestParam(required=false) String profile,
+                      //normalizer!=null when called from the JSP (browser); null when called from validator-client or script
+                      @ModelAttribute("normalizer") Normalizer normalizer) throws IOException
   {
     Resource resource; //to validate
     final int lim = (maxErrors != null)? maxErrors.intValue() : 0; //0->no error limit
@@ -110,7 +109,7 @@ public class ValidatorController {
     ValidatorResponse validatorResponse = new ValidatorResponse();
 
     if(url != null && url.length()>0) {
-      log.info("url : " + url);
+      log.info("validate from url : " + url);
 
       try {
         resource = new UrlResource(url);

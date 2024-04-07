@@ -36,8 +36,9 @@ public class ValidatorService implements ValidatorAdapter {
                              Behavior errorLevel, String profile,
                              Normalizer normalizer) throws IOException
   {
+    String dataDescr = data.getDescription();
     Validation validationResult = new Validation(new BiopaxIdentifier(),
-      data.getDescription(), isFix, errorLevel, errMax, profile);
+        dataDescr, isFix, errorLevel, errMax, profile);
     //run the biopax-validator (this updates the validationResult object)
     biopaxValidator.importModel(validationResult, data.getInputStream());
     biopaxValidator.validate(validationResult);
