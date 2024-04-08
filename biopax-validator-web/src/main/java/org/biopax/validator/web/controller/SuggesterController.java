@@ -29,7 +29,7 @@ public class SuggesterController {
     return uri;
   }
 
-  @PostMapping(value = "/xref", produces = APPLICATION_JSON_VALUE)
+  @PostMapping(value = {"/xref", "/xref/"}, produces = APPLICATION_JSON_VALUE)
   public Clue xref(@RequestBody Xref[] xrefs, HttpServletResponse response)
     throws IOException {
 
