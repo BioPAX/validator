@@ -53,7 +53,7 @@ public class OntologyUtilsTest {
     Set<String> dc = cvFactory.getDirectChildren("urn:miriam:go:GO%3A0005654");
     assertAll(
         () -> assertFalse(dc.isEmpty()),
-        () -> assertTrue(dc.contains("bioregistry.io/go:0044451"))
+        () -> assertTrue(dc.contains("http://bioregistry.io/go:0044451"))
     );
   }
 
@@ -62,9 +62,9 @@ public class OntologyUtilsTest {
     Set<String> dc = cvFactory.getAllChildren("identifiers.org/GO:0005654");
     assertAll(
         () -> assertFalse(dc.isEmpty()),
-        () -> assertTrue(dc.contains("bioregistry.io/go:0044451")),
-        () -> assertTrue(dc.contains("bioregistry.io/go:0071821")),
-        () -> assertTrue(dc.contains("bioregistry.io/go:0070847"))
+        () -> assertTrue(dc.contains("http://bioregistry.io/go:0044451")),
+        () -> assertTrue(dc.contains("http://bioregistry.io/go:0071821")),
+        () -> assertTrue(dc.contains("http://bioregistry.io/go:0070847"))
     );
   }
 
@@ -73,7 +73,7 @@ public class OntologyUtilsTest {
     Set<String> dc = cvFactory.getDirectParents("urn:miriam:go:GO%3A0005654");
     assertAll(
         () -> assertFalse(dc.isEmpty()),
-        () -> assertTrue(dc.contains("bioregistry.io/go:0031981"))
+        () -> assertTrue(dc.contains("http://bioregistry.io/go:0031981"))
     );
   }
 
@@ -82,9 +82,9 @@ public class OntologyUtilsTest {
     Set<String> dc = cvFactory.getAllParents("identifiers.org/go/GO:0005654");
     assertAll(
         () -> assertFalse(dc.isEmpty()),
-        () -> assertTrue(dc.contains("bioregistry.io/go:0031981")),
-        () -> assertTrue(dc.contains("bioregistry.io/go:0044428")),
-        () -> assertTrue(dc.contains("bioregistry.io/go:0044422"))
+        () -> assertTrue(dc.contains("http://bioregistry.io/go:0031981")),
+        () -> assertTrue(dc.contains("http://bioregistry.io/go:0044428")),
+        () -> assertTrue(dc.contains("http://bioregistry.io/go:0044422"))
     );
   }
 
@@ -94,7 +94,7 @@ public class OntologyUtilsTest {
       "identifiers.org/go/GO:0005737",
       "urn:miriam:obo.go:GO%3A0005737",
       "https://identifiers.org/GO:0005737",
-      "bioregistry.io/go:0005737"
+      "http://bioregistry.io/go:0005737"
   })
   public void buildCellularLocationVocabularyWhenIdOk(String uri) {
     CellularLocationVocabulary cv = cvFactory.getControlledVocabulary(uri
@@ -116,7 +116,7 @@ public class OntologyUtilsTest {
   @Test
   public void escapeChars() {
     ControlledVocabulary cv = cvFactory.getControlledVocabulary(
-      "bioregistry.io/mod:00048",SequenceModificationVocabulary.class,"");
+      "http://bioregistry.io/mod:00048",SequenceModificationVocabulary.class,"");
     assertAll(
         () -> assertTrue(cv instanceof SequenceModificationVocabulary),
         () -> assertTrue(cv.getTerm().contains("O4'-phospho-L-tyrosine")) // apostrophe
