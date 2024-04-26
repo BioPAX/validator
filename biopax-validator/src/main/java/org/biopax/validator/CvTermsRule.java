@@ -239,9 +239,9 @@ public abstract class CvTermsRule<T extends Level3Element> extends AbstractCvRul
         inferred.add(ot.getPreferredName());
       }
       else if(ot == null)
-        logger.warn("No term found by the xref.id: " + x.getId());
+        logger.warn("No term found by the xref.id: {}", x.getId());
       else
-        logger.debug("Invalid (for this CV context) term: " + x.getId());
+        logger.debug("Invalid (for this CV context) term: {}", x.getId());
     }
 
     return inferred;

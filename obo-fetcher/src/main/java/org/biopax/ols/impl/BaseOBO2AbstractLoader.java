@@ -132,10 +132,10 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
             if (obj instanceof OBOObject) {
                 processTerm((OBOObject) obj);
                 if (count % 1000 == 0) {
-                    logger.debug("Terms Processed: " + count);
+                    logger.debug("Terms Processed: {}", count);
                 }
             } else {
-                logger.info("Ignored object: " + obj.toString());
+                logger.info("Ignored object: {}", obj.toString());
             }
         }
         logger.info("Term processing done");
@@ -148,7 +148,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
             if (obj instanceof OBOObject) {
                 processTermRelationships((OBOObject) obj);
                 if (count % 1000 == 0) {
-                    logger.debug("Relationships Processed: " + count);
+                    logger.debug("Relationships Processed: {}", count);
                 }
             } else {
                 logger.info("Ignored object: " + obj.toString());
@@ -379,7 +379,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
                 obo:property
                 obo:class
             */
-            logger.debug("bogus term: " + obj.getID());
+            logger.debug("bogus term: {}", obj.getID());
             return;
         }
 
@@ -563,10 +563,10 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
                     if (tmpStr.endsWith(":")) {
                         tmpStr = tmpStr.substring(0, tmpStr.length() - 1);
                     }
-                    logger.debug("Setting property type: " + tmpStr);
+                    logger.debug("Setting property type: {}", tmpStr);
                     annot.setAnnotationType(tmpStr.trim());
                     if (annot.getAnnotationType() != null && annot.getAnnotationType().length() > 2000) {
-                        logger.warn("annotation type longer than allowed database column length - truncating " + trm.getIdentifier());
+                        logger.warn("annotation type longer than allowed database column length - truncating {}", trm.getIdentifier());
                         annot.setAnnotationType(annot.getAnnotationType().substring(0, 2000));
                     }
 
@@ -582,10 +582,10 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
                     if (tmpStr.startsWith("\"") && tmpStr.endsWith("\"")) {
                         tmpStr = tmpStr.substring(1, tmpStr.length() - 1);
                     }
-                    logger.debug("Setting property value: " + tmpStr.trim());
+                    logger.debug("Setting property value: {}", tmpStr.trim());
                     annot.setAnnotationStringValue(tmpStr.trim());
                     if (tmpStr != null && tmpStr.length() > 2000) {
-                        logger.warn("annotation value longer than allowed database column length - truncating " + trm.getIdentifier());
+                        logger.warn("annotation value longer than allowed database column length - truncating {}", trm.getIdentifier());
                         annot.setAnnotationStringValue(annot.getAnnotationStringValue().substring(0, 2000));
                     }
 
@@ -609,9 +609,8 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
                 annot.setParentTerm(trm);
 
             } catch (RuntimeException re) {
-                logger.warn("Error parsing property_value - Ignoring : " + pv.toString());
-                logger.debug("pv.getProperty() = " + pv.getProperty());
-                logger.debug("pv.getValue() = " + pv.getValue());
+                logger.warn("Error parsing property_value - Ignoring: {}", pv.toString());
+                logger.debug("pv.property: {}, pv.value: {}", pv.getProperty(), pv.getValue());
                 continue;
             }
             retval.add(annot);
@@ -739,7 +738,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
                 obo:property
                 obo:class
             */
-            logger.debug("bogus term: " + obj.getID());
+            logger.debug("bogus term: {}", obj.getID());
             return;
         }
 
@@ -806,7 +805,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
                 //add to retval
                 retval.add(trb);
             } else {
-                logger.debug("No object term found for link: " + lnk.toString());
+                logger.debug("No object term found for link: {}", lnk);
             }
         }
         return retval;
@@ -920,7 +919,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
                 //add to retval
                 retval.add(tpb);
             } else {
-                logger.debug("No object term found for term path: " + trm.getIdentifier() + "->" + termId);
+                logger.debug("No object term found for term path: {} -> {}", trm.getIdentifier(), termId);
             }
         }
         return retval;
@@ -952,7 +951,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
      */
     private Collection<TermSynonym> processSynonyms(OBOObject obj, TermBean trm) {
 
-        HashSet<TermSynonym> retval = new HashSet<TermSynonym>();
+        HashSet<TermSynonym> retval = new HashSet<>();
 
         //loop over synonyms
         Set<Synonym> syns = obj.getSynonyms();
@@ -965,32 +964,27 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
 
             String synVal = safeTrim(aSyn.getText());
             if (synVal != null) {
-
                 //set value
                 tsb.setSynonym(synVal);
 
                 if (synVal.length() > 2000) {
-                    logger.warn("synonym value longer than allowed database column length - truncating " + trm.getIdentifier());
+                    logger.warn("synonym value longer than allowed database column length - truncating {}", trm.getIdentifier());
                     tsb.setSynonym(tsb.getSynonym().substring(0, 2000));
                 }
 
                 //check to see if there's a defined synonymType for it
                 if (aSyn.getSynonymType() != null) {
-
-                    logger.debug("using user-defined synonym type: " + aSyn.getSynonymType().getName());
+                    logger.debug("using user-defined synonym type: {}", aSyn.getSynonymType().getName());
                     Term synTrm = ontologyTerms.get(aSyn.getSynonymType().getID());
                     if (synTrm != null) {
                         tsb.setSynonymType(synTrm);
                     } else {
                         throw new IllegalStateException(
-                                "Attempting to use user-defined synonym type that has not been initialized in common objects: "
-                                        + aSyn.getSynonymType().getID()
+                            "Attempting to use user-defined synonym type that has not been initialized in common objects: "
+                                 + aSyn.getSynonymType().getID()
                         );
                     }
-
                 } else {
-
-                    //logger.debug("using old-style synonym types");
                     //link synonymType Term
                     switch (aSyn.getScope()) {
                         case Synonym.EXACT_SYNONYM:
@@ -1010,7 +1004,6 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
                             tsb.setSynonymType(SYNONYM);
                             break;
                     }
-
                 }
 
                 Collection<Dbxref> oboSynXrefs = aSyn.getXrefs();
@@ -1033,7 +1026,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
                 retval.add(tsb);
 
             } else {
-                logger.debug("Null Synonym value encountered for " + trm.getIdentifier());
+                logger.debug("Null Synonym value encountered for {}", trm.getIdentifier());
             }
 
         }
@@ -1098,7 +1091,7 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
 
             }
         } catch (IndexOutOfBoundsException e) {
-            logger.debug("Could not create alt_id from URL from term: " + trm.getIdentifier());
+            logger.debug("Could not create alt_id from URL from term: {}", trm.getIdentifier());
         }
 
         return retval;
@@ -1108,9 +1101,8 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
      * for debugging
      */
     protected void dumpOntology() {
-
         for (String id : getRootTerms()) {
-            logger.debug("Root term: " + id);
+            logger.debug("Root term: {}", id);
             dumpTerm(ontologyTerms.get(id), "");
         }
     }
@@ -1153,20 +1145,20 @@ public abstract class BaseOBO2AbstractLoader implements Loader {
      * @param indent - spaces to indent
      */
     protected void dumpTerm(Term term, String indent) {
-
         if (indent.length() > 15) {
             return;
         }
         if (term != null) {
-            logger.debug(indent + "id: " + term.getIdentifier());
-            logger.debug(indent + "name: " + term.getName());
+            logger.debug("{}id: {}", indent, term.getIdentifier());
+            logger.debug("{}name: {}", indent, term.getName());
             if (term.getSynonyms() != null)
-                logger.debug(indent + "nb syn: " + term.getSynonyms().size());
+                logger.debug("{}nb syn: {}", indent, term.getSynonyms().size());
             if (term.getAnnotations() != null)
-                logger.debug(indent + "nb annot: " + term.getAnnotations().size());
+                logger.debug("{}nb annot: {}", indent, term.getAnnotations().size());
             if (term.getRelationships() != null) {
                 for (TermRelationship tr : term.getRelationships()) {
-                    String relationStr = indent + tr.getSubjectTerm().getName() + " " + tr.getPredicateTerm().getName() + " " + tr.getObjectTerm().getName();
+                    String relationStr = indent + tr.getSubjectTerm().getName() + " " + tr.getPredicateTerm().getName()
+                        + " " + tr.getObjectTerm().getName();
                     logger.debug(relationStr);
                     dumpTerm(tr.getSubjectTerm(), indent + " ");
                 }

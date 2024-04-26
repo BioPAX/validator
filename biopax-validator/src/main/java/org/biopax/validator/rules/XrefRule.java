@@ -40,7 +40,7 @@ public class XrefRule extends AbstractRule<Xref>{
 			String id = x.getId();
 			if (id != null) {
 				if (!xrefUtils.canCheckIdFormatIn(prefix)) {
-					logger.info("Can't check IDs (no regexp) for " + db + " (" + prefix + ")");
+					logger.info("Can't check ID (no regexp) for {} ({})", db, prefix);
 				} else if (!xrefUtils.checkIdFormat(prefix, id)) {
 					String regxp = xrefUtils.getRegexpString(prefix);
 					// report error with fixed=false 
@@ -101,8 +101,7 @@ public class XrefRule extends AbstractRule<Xref>{
 									x.setId(newId);
 									error(validation, x, "invalid.id.format", true);
 									if (logger.isDebugEnabled()) {
-										logger.debug(x.getModelInterface().getSimpleName() + " " + x
-												+ " 'id' auto-fixed! (was: " + id + ")");
+										logger.debug("{} {} 'id' auto-fixed! (was: {})", x.getModelInterface().getSimpleName(), x, id);
 									}
 									break;
 								}
@@ -119,7 +118,7 @@ public class XrefRule extends AbstractRule<Xref>{
 							x.setId(newId);
 							error(validation, x, "invalid.id.format", true);
 							if (logger.isDebugEnabled()) {
-								logger.debug(x.getModelInterface().getSimpleName() + " " + x + " 'id' auto-fixed! (was: " + id + ")");
+								logger.debug("{} {} 'id' auto-fixed! (was: {})", x.getModelInterface().getSimpleName(), x, id);
 							}
 							break;
 						}
