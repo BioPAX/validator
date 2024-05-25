@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.biopax.validator</groupId>
   <artifactId>parent</artifactId>
-  <version>6.0.0</version>
+  <version>6.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -119,7 +119,7 @@
     <connection>scm:git:git://github.com/BioPAX/validator.git</connection>
     <developerConnection>scm:git:git@github.com:BioPAX/validator.git</developerConnection>
     <url>https://github.com/BioPAX/validator/tree/master</url>
-    <tag>v6.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
