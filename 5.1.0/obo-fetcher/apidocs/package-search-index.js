@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.biopax.ols"},{"l":"org.biopax.ols.impl"},{"l":"org.biopax.psidev.ontology_manager"},{"l":"org.biopax.psidev.ontology_manager.impl"}];updateSearchResults();
